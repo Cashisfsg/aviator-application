@@ -1,16 +1,17 @@
 import "./App.css";
-import { Header } from "./containers/header";
-import { Bet } from "./components/bet";
-import { Table } from "./components/table";
+import { Header } from "./containers/header/header";
 import { RegistrationForm } from "./components/registration-form";
+import { BettingZone } from "./containers/betting-zone";
+import { Statistics } from "./containers/statistics";
 
 export const App = () => {
     return (
         <>
             <Header />
-            <Bet />
-            <Bet />
-            <Table />
+            <BettingZone />
+
+            {/* <Table /> */}
+            <Statistics />
             <RegistrationForm />
         </>
     );

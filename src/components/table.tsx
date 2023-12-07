@@ -37,7 +37,10 @@ export const Table = () => {
                     {Array(10)
                         .fill(0)
                         .map(_ => (
-                            <tr className="py-0.5">
+                            <tr
+                                key={_}
+                                className="py-0.5"
+                            >
                                 <td className="flex items-center gap-2 rounded-l-full bg-black px-4">
                                     <img
                                         src="https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png"

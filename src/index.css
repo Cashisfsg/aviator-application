@@ -29,10 +29,10 @@ a:hover {
 html {
     min-height: 100dvh;
     height: 100%;
+    /* scrollbar-gutter: stable; */
 }
 
 body {
-    margin: 0;
     display: flex;
     place-items: center;
     min-width: 320px;
