@@ -29,7 +29,8 @@ export default {
                     50: "#ffffff80"
                 },
                 red: {
-                    550: "#d0021b"
+                    550: "#d0021b",
+                    750: "#cB3d40"
                 },
                 green: {
                     50: "#b2f2a3",

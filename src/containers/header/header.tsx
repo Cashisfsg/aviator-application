@@ -1,5 +1,6 @@
 import { BurgerMenu } from "@/components/burger-menu";
 import { SignInButton } from "./components/sign-in-button";
+import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
 
 export const Header = () => {
@@ -7,9 +8,9 @@ export const Header = () => {
         <header>
             <div className="flex justify-end gap-4 bg-gray-700 px-4 py-2">
                 <SignInButton />
-                <button className="bg-red-400 px-4 py-3 font-bold">
-                    Регистрация
-                </button>
+
+                <SignUpButton />
+                {/* <button className=" px-4 py-3 font-bold">Регистрация</button> */}
             </div>
             <div className="flex items-center justify-between">
                 <Logo />

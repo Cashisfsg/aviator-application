@@ -1,18 +1,6 @@
 import "./App.css";
-import { Header } from "./containers/header/header";
-import { RegistrationForm } from "./components/registration-form";
-import { BettingZone } from "./containers/betting-zone";
-import { Statistics } from "./containers/statistics";
+import { ReactRouterProvider } from "./router/provider";
 
 export const App = () => {
-    return (
-        <>
-            <Header />
-            <BettingZone />
-
-            {/* <Table /> */}
-            <Statistics />
-            <RegistrationForm />
-        </>
-    );
+    return <ReactRouterProvider />;
 };
