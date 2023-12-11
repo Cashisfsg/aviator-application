@@ -93,7 +93,7 @@ const formSchema = z
             .regex(alphanumericRegex, {
                 message: "Поле может содержать только символы A-Z и цифры"
             })
-            .min(2, {
+            .min(8, {
                 message: "Минимальное количество символов не достигнуто"
             })
             .max(30, {
@@ -107,7 +107,7 @@ const formSchema = z
             .regex(alphanumericRegex, {
                 message: "Поле может содержать только символы A-Z и цифры"
             })
-            .min(2, {
+            .min(8, {
                 message: "Минимальное количество символов не достигнуто"
             })
             .max(30, {

@@ -1,10 +1,15 @@
-import { useId } from "react";
+import { useEffect, useId } from "react";
+import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Form } from "./form";
 
 export const SignInForm = () => {
     const formId = useId();
+
+    useEffect(() => {
+        sessionStorage.removeItem("email");
+    }, []);
 
     return (
         <>
@@ -19,7 +24,7 @@ export const SignInForm = () => {
                 </Label>
             </Form>
             <p className="text-right text-sm text-blue-500">
-                <a href="">Забыли пароль?</a>
+                <Link to="password/restore">Забыли пароль?</Link>
             </p>
             <button
                 form={formId}

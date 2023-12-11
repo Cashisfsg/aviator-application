@@ -9,7 +9,7 @@ const labelVariants = cva(
     {
         variants: {
             direction: {
-                column: "grid gap-y-2",
+                column: "space-y-2",
                 row: "flex items-center gap-x-2",
                 default: ""
             }
