@@ -1,4 +1,5 @@
 import { BurgerMenu } from "@/components/burger-menu";
+import { BalanceMenu } from "./components/modals/balance-menu";
 import { SignInButton } from "./components/sign-in-button";
 import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
@@ -18,9 +19,10 @@ export const Header = () => {
                     <span className="aspect-square h-8 w-8 rounded-full bg-orange-400">
                         ?
                     </span>
-                    <button className="border-2 border-r-4 border-gray-600">
+                    <BalanceMenu />
+                    {/* <button className="border-2 border-r-4 border-gray-600">
                         3000 $
-                    </button>
+                    </button> */}
                     <BurgerMenu />
                 </div>
             </div>
