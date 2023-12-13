@@ -1,11 +1,11 @@
-export const Table = () => {
+export const AllBets = () => {
     return (
         <>
             <table className="w-full">
                 <caption>
                     <table className="w-full">
                         <caption className="text-right">
-                            <button className="rounded-full bg-black px-4 py-1">
+                            <button className="bg-black rounded-full px-4 py-1">
                                 Предыдущий
                             </button>
                         </caption>
@@ -41,7 +41,7 @@ export const Table = () => {
                                 key={_}
                                 className="py-0.5"
                             >
-                                <td className="flex items-center gap-2 rounded-l-full bg-black px-4">
+                                <td className="bg-black flex items-center gap-2 rounded-l-full px-4">
                                     <img
                                         src="https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png"
                                         alt=""
@@ -52,7 +52,7 @@ export const Table = () => {
                                 </td>
                                 <td className="bg-black">100 $</td>
                                 <td className="bg-black">-</td>
-                                <td className="rounded-r-full bg-black">-</td>
+                                <td className="bg-black rounded-r-full">-</td>
                             </tr>
                         ))}
                 </tbody>

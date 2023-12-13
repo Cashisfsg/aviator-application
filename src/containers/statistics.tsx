@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table } from "@/components/table";
+import { AllBets } from "@/components/all-bets";
 import { BetHistory } from "@/components/bet-history";
 
 export const Statistics = () => {
@@ -15,13 +15,13 @@ export const Statistics = () => {
             </TabsList>
             <TabsContent
                 value="all"
-                className="bg-black-50 rounded-2.5xl mt-5 gap-x-1 gap-y-2"
+                className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50"
             >
-                <Table />
+                <AllBets />
             </TabsContent>
             <TabsContent
                 value="history"
-                className="bg-black-50 rounded-2.5xl mt-5 gap-x-1 gap-y-2 overflow-hidden pb-5 text-lg"
+                className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
             >
                 <BetHistory />
             </TabsContent>

@@ -4,9 +4,9 @@ export const Bet = () => {
     return (
         <Tabs
             defaultValue="bet"
-            className="bg-black-50 rounded-3xl px-6 pb-8 pt-4"
+            className="rounded-3xl bg-black-50 px-6 pb-8 pt-4"
         >
-            <TabsList className="mx-auto w-fit rounded-full border-2 border-gray-50 text-sm leading-none">
+            <TabsList>
                 <TabsTrigger value="bet">Ставка</TabsTrigger>
                 <TabsTrigger value="auto">Авто</TabsTrigger>
             </TabsList>
@@ -23,22 +23,22 @@ export const Bet = () => {
 const BetTab = () => {
     return (
         <>
-            <div className="bg-black-250 col-span-2 flex w-full items-center justify-between gap-4 rounded-full border border-gray-50 px-3 py-2 leading-none">
+            <div className="col-span-2 flex w-full items-center justify-between gap-4 rounded-full border border-gray-50 bg-black-250 px-3 py-2 leading-none">
                 <input
                     maxLength={5}
-                    className="w-full border-none bg-inherit text-center text-lg font-bold text-white outline-none"
+                    className="text-white w-full border-none bg-inherit text-center text-lg font-bold outline-none"
                 />
 
                 <div className="flex gap-x-2">
-                    <button className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-500 text-xl font-bold text-black">
+                    <button className="text-black flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-500 text-xl font-bold">
                         -
                     </button>
-                    <button className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-500 text-xl font-bold text-black">
+                    <button className="text-black flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-500 text-xl font-bold">
                         +
                     </button>
                 </div>
             </div>
-            <button className="hover:bg-green-350 bg-green-450 rounded-2.5xl row-span-3 border-2 border-green-50 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider transition-colors duration-500">
+            <button className="row-span-3 rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider transition-colors duration-500 hover:bg-green-350">
                 <p className="text-xl">Ставка</p>
                 <p>
                     <span className="text-2xl">1.00</span>&nbsp;
@@ -49,7 +49,7 @@ const BetTab = () => {
             {[1, 2, 5, 10].map(number => (
                 <button
                     key={number}
-                    className="bg-black-150 w-full rounded-full border border-gray-50 bg-white py-1 text-sm leading-none"
+                    className="bg-white w-full rounded-full border border-gray-50 bg-black-150 py-1 text-sm leading-none"
                 >
                     {number}
                 </button>

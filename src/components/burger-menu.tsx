@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useState, useId } from "react";
 
 import {
     DropdownMenu,
@@ -14,6 +14,8 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { FiMenu } from "react-icons/fi";
@@ -26,65 +28,112 @@ export const BurgerMenu = () => {
     const musicId = useId();
     const animationId = useId();
 
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger className="bg-white">
-                <FiMenu />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                align="end"
-                className="w-60 bg-red-400 text-red-400"
-            >
-                <DropdownMenuLabel className="text-black-150 text-base">
-                    <ul>
-                        <li className="flex justify-between">
-                            <Label
-                                htmlFor={soundId}
-                                className="flex items-center gap-1"
-                            >
-                                <HiOutlineSpeakerWave />
-                                <span>Звук</span>
-                            </Label>
-                            <Switch id={soundId} />
-                        </li>
-                        <li className="flex justify-between">
-                            <Label
-                                htmlFor={musicId}
-                                className="flex items-center gap-1"
-                            >
-                                <IoMusicalNotesOutline />
-                                <span>Музыка</span>
-                            </Label>
-                            <Switch id={musicId} />
-                        </li>
-                        <li className="flex justify-between">
-                            <Label
-                                htmlFor={animationId}
-                                className="flex items-center gap-1"
-                            >
-                                <LiaAsymmetrik />
-                                <span>Анимация</span>
-                            </Label>
-                            <Switch id={animationId} />
-                        </li>
-                    </ul>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+    const [open, setOpen] = useState(false);
 
-                <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                        Безопасность
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
-                            <DropdownMenuItem>Привязать email</DropdownMenuItem>
-                            <DropdownMenuItem>Изменить пароль</DropdownMenuItem>
-                        </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                </DropdownMenuSub>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+    return (
+        <>
+            <Popover open={open}>
+                <PopoverTrigger className="invisible"></PopoverTrigger>
+                <PopoverContent>Popover content</PopoverContent>
+            </Popover>
+            <DropdownMenu>
+                <DropdownMenuTrigger className="bg-white">
+                    <FiMenu />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    align="end"
+                    className="w-60 bg-slate-300/90 text-black-150"
+                >
+                    <DropdownMenuLabel className="text-sm">
+                        <ul>
+                            <li className="flex justify-between">
+                                <Label
+                                    htmlFor={soundId}
+                                    direction="row"
+                                >
+                                    <HiOutlineSpeakerWave />
+                                    <span>Звук</span>
+                                </Label>
+                                <Switch id={soundId} />
+                            </li>
+                            <li className="flex justify-between">
+                                <Label
+                                    htmlFor={musicId}
+                                    direction="row"
+                                >
+                                    <IoMusicalNotesOutline />
+                                    <span>Музыка</span>
+                                </Label>
+                                <Switch id={musicId} />
+                            </li>
+                            <li className="flex justify-between">
+                                <Label
+                                    htmlFor={animationId}
+                                    direction="row"
+                                >
+                                    <LiaAsymmetrik />
+                                    <span>Анимация</span>
+                                </Label>
+                                <Switch id={animationId} />
+                            </li>
+                        </ul>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem>Поддержка</DropdownMenuItem>
+                    <DropdownMenuItem>Правила игры</DropdownMenuItem>
+                    <DropdownMenuItem>Мои ставки</DropdownMenuItem>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                            Игровые лимиты
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                            <DropdownMenuSubContent
+                                className="bg-slate-300/90 shadow-md shadow-slate-100/90"
+                                sideOffset={6}
+                                alignOffset={-4}
+                                avoidCollisions={true}
+                            >
+                                <DropdownMenuItem>
+                                    Минимальная ставка 1000
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Максимальная ставка 10000
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Максимальный выигрыш за одну ставку 1000000
+                                </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                    <DropdownMenuItem>Новости</DropdownMenuItem>
+                    <DropdownMenuItem>Чат</DropdownMenuItem>
+                    <DropdownMenuItem>Партнёрская программа</DropdownMenuItem>
+
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                            Безопасность
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                            <DropdownMenuSubContent
+                                className="bg-slate-300/90 shadow-md shadow-slate-100/90"
+                                sideOffset={6}
+                                alignOffset={-4}
+                                avoidCollisions={true}
+                            >
+                                <DropdownMenuItem onClick={() => setOpen(true)}>
+                                    Привязать email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Изменить пароль
+                                </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
+
+                    <DropdownMenuItem>Выйти</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </>
     );
 };

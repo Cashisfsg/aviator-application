@@ -20,6 +20,15 @@ export default {
                 4.5: "18px"
             },
             colors: {
+                primary: {
+                    //? background colors
+                    100: "black", //? page background color
+                    200: "#1b1c1d", //? block background color
+                    300: "#000000b3", //? input background color
+                    425: "#2c2d30", //? active tab
+                    475: "#141516" //? unactive tab, buttons
+                },
+                secondary: {},
                 black: {
                     50: "#1b1c1d",
                     150: "#141516",
@@ -52,11 +61,22 @@ export default {
                 "accordion-up": {
                     from: { height: "var(--radix-accordion-content-height)" },
                     to: { height: 0 }
+                },
+                airplane: {
+                    from: { translate: "10px 273px" },
+                    to: { translate: "200px 0px" }
+                },
+                rotate: {
+                    0: { transform: "rotate(0deg)" },
+                    100: { transform: "rotate(360deg)" }
                 }
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
-                "accordion-up": "accordion-up 0.2s ease-out"
+                "accordion-up": "accordion-up 0.2s ease-out",
+                airplane:
+                    "airplane 10s cubic-bezier(0.25, 0.99, 0.65, 1) infinite",
+                rotate: "rotate 3s linear infinite"
             }
         }
     },
