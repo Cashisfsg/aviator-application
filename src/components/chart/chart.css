@@ -1,0 +1,197 @@
+.svg-container {
+    position: relative;
+    overflow: hidden;
+    /* mask-image: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0.9) 25%,
+        rgba(0, 0, 0, 0.2) 90%
+    );
+    background-origin: content-box;
+    background-clip: content-box; */
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0.4) 10%,
+            rgba(0, 0, 0, 0.6) 25%,
+            rgba(0, 0, 0, 0.75) 35%,
+            rgba(0, 0, 0, 0.95) 75%
+        ),
+        url("https://thumbs.dreamstime.com/b/вращение-синего-и-белого-солнцезащитного-круга-движение-фон-228680277.jpg")
+            center/cover no-repeat;
+}
+
+.sunrise {
+    object-fit: contain;
+}
+/* .svg-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0.2) 25%,
+            rgba(0, 0, 0, 0.9) 70%
+        ),
+        blueviolet;
+    z-index: 100;
+} */
+
+.airplane {
+    /* perspective: 20px; */
+    /* perspective: 100px; */
+
+    transform-style: preserve-3d;
+    translate: 0px 100%;
+    rotate: -12deg;
+    transition: all 3s linear;
+}
+
+.fly {
+    animation:
+        airplane 5s linear forwards,
+        fly 3s linear 5s infinite;
+}
+
+.propeller {
+    transform-origin: center -50% center;
+
+    /* animation: propeller 1s linear infinite; */
+}
+
+.propeller-2 {
+    transform-origin: center center;
+
+    /* animation: rotate 1s linear infinite; */
+}
+
+@keyframes airplane {
+    0% {
+        translate: 0px 240px;
+    }
+
+    5% {
+        translate: 0px 240px;
+    }
+    10% {
+        translate: 23px 238px;
+    }
+    15% {
+        translate: 45px 235px;
+    }
+    20% {
+        translate: 68px 232px;
+    }
+    25% {
+        translate: 91px 228px;
+    }
+    30% {
+        translate: 113px 223px;
+    }
+    35% {
+        translate: 136px 218px;
+    }
+    40% {
+        translate: 158px 211px;
+    }
+    45% {
+        translate: 181px 204px;
+    }
+    50% {
+        translate: 204px 195px;
+    }
+    55% {
+        translate: 226px 186px;
+    }
+    60% {
+        translate: 249px 174px;
+    }
+    65% {
+        translate: 272px 161px;
+    }
+    70% {
+        translate: 294px 145px;
+    }
+    75% {
+        translate: 317px 127px;
+    }
+    80% {
+        translate: 339px 106px;
+    }
+    85% {
+        translate: 362px 82px;
+    }
+    90% {
+        translate: 385px 54px;
+    }
+    95% {
+        translate: 407px 21px;
+    }
+    100% {
+        translate: 430px -18px;
+    }
+    /* 100% {
+        translate: 430px -18px;
+    } */
+}
+
+@keyframes fly {
+    0% {
+        translate: 430px -18px;
+    }
+    50% {
+        translate: 470px 21px;
+    }
+    100% {
+        translate: 430px -18px;
+    }
+}
+
+@keyframes flyout {
+    0% {
+        translate: "";
+    }
+
+    100% {
+        translate: 100% 100%;
+    }
+}
+
+@keyframes propeller {
+    0% {
+        transform: rotate3d(1, 0, 0, 0deg);
+    }
+    100% {
+        transform: rotate3d(1, 0, 0, 360deg);
+    }
+}
+
+#use-propeller {
+    animation: rotate 3s linear;
+}
+
+@keyframes rotate {
+    0% {
+        rotate: 0deg;
+    }
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.slider {
+    animation: slider 3s linear;
+}
+
+@keyframes slider {
+    0% {
+        width: 100%;
+    }
+    100% {
+        width: 0;
+    }
+}
+
+/* #figure {
+    background-image: url("https://thumbs.dreamstime.com/b/вращение-синего-и-белого-солнцезащитного-круга-движение-фон-228680277.jpg");
+} */

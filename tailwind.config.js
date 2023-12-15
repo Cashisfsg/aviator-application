@@ -17,6 +17,14 @@ export default {
         },
         extend: {
             height: {
+                4.5: "18px",
+                8.5: "34px"
+            },
+            width: {
+                4.5: "18px",
+                25: "100px"
+            },
+            translate: {
                 4.5: "18px"
             },
             colors: {
