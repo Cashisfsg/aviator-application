@@ -1,13 +1,13 @@
 import { Header } from "./header/header";
 import { BettingZone } from "./betting-zone";
 import { Statistics } from "./statistics";
-import { Chart } from "@/components/chart/chart";
+// import { Chart } from "@/components/chart/chart";
 
 export const Layout = () => {
     return (
         <>
             <Header />
-            <Chart />
+            {/* <Chart /> */}
             <BettingZone />
             <Statistics />
         </>

@@ -40,6 +40,8 @@
 .airplane {
     /* perspective: 20px; */
     /* perspective: 100px; */
+    /* aspect-ratio: 2.35;
+    height: 100%; */
 
     transform-style: preserve-3d;
     translate: 0px 100%;

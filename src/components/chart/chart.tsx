@@ -79,6 +79,56 @@ export const Chart = () => {
                     </g>
 
                     <RateCoefficient ref={rateRef} />
+                    <g transform="translate(10, 270) scale(0.95, 1)">
+                        {Array(10)
+                            .fill(0)
+                            .map((_, i) => (
+                                <g key={i}>
+                                    <circle
+                                        cx="10"
+                                        cy="0"
+                                        r="2"
+                                        fill="white"
+                                    >
+                                        <animate
+                                            attributeName="cx"
+                                            values={`${(i + 1) * 10}%; ${
+                                                i * 10
+                                            }%`}
+                                            dur="10s"
+                                            repeatCount="indefinite"
+                                        />
+                                    </circle>
+                                </g>
+                            ))}
+                    </g>
+                    <svg
+                        height="295"
+                        x="0"
+                        y="-25"
+                    >
+                        {Array(10)
+                            .fill(0)
+                            .map((_, i) => (
+                                <g key={i}>
+                                    <circle
+                                        cx="10"
+                                        cy="0"
+                                        r="2"
+                                        fill="red"
+                                    >
+                                        <animate
+                                            attributeName="cy"
+                                            values={`${i * 10}%; ${
+                                                (i + 1) * 10
+                                            }%`}
+                                            dur="10s"
+                                            repeatCount="indefinite"
+                                        />
+                                    </circle>
+                                </g>
+                            ))}
+                    </svg>
                 </svg>
             </figure>
             <button

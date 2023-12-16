@@ -6,7 +6,7 @@ export const Statistics = () => {
     return (
         <Tabs
             defaultValue="all"
-            className="rounded-3xl pb-8 pt-4"
+            className="rounded-2.5xl pb-8 pt-4"
         >
             <TabsList>
                 <TabsTrigger value="all">Все ставки</TabsTrigger>

@@ -20,9 +20,7 @@ export const Header = () => {
                         ?
                     </span>
                     <BalanceMenu />
-                    {/* <button className="border-2 border-r-4 border-gray-600">
-                        3000 $
-                    </button> */}
+
                     <BurgerMenu />
                 </div>
             </div>

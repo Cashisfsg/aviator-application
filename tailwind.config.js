@@ -24,6 +24,10 @@ export default {
                 4.5: "18px",
                 25: "100px"
             },
+            padding: {
+                0.25: "1px"
+            },
+
             translate: {
                 4.5: "18px"
             },
@@ -38,11 +42,13 @@ export default {
                 },
                 secondary: {},
                 black: {
+                    DEFAULT: "black",
                     50: "#1b1c1d",
                     150: "#141516",
                     250: "#000000B3"
                 },
                 white: {
+                    DEFAULT: "white",
                     50: "#ffffff80"
                 },
                 red: {
