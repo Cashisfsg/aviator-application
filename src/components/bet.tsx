@@ -40,7 +40,7 @@ const reducer = (state: State, action: Action): State => {
         case "change":
             if (isNaN(action.payload)) return state;
 
-            if (action.payload > MAX_BET) return 100;
+            if (action.payload > MAX_BET) return MAX_BET;
 
             return action.payload;
 
@@ -132,7 +132,7 @@ const BetTab = () => {
                             payload: +event.target.value
                         })
                     }
-                    className="text-white h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none outline-none"
+                    className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none"
                 />
 
                 <button

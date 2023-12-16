@@ -11,10 +11,11 @@ export const BalanceMenu = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>3000 $</DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-black-250 text-slate-200">
+            <DropdownMenuContent>
                 <DropdownMenuLabel>Баланс 3000 $</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Пополнить</DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem>Вывести</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

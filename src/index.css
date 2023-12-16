@@ -80,6 +80,16 @@ button:focus-visible {
     display: none;
 }
 
+.hide-scrollbar {
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 input[type="checkbox"] {
     appearance: none;
     width: 1rem;
