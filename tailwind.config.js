@@ -67,6 +67,7 @@ export default {
             borderRadius: {
                 "2.5xl": "20px"
             },
+            screens: { xs: "360px" },
             keyframes: {
                 "accordion-down": {
                     from: { height: 0 },

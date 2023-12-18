@@ -12,7 +12,7 @@ export const SignInButton = () => {
                     Вход
                 </Link>
             </DialogTrigger>
-            <DialogContent className="w-80 bg-black-50" />
+            <DialogContent className="w-80" />
         </Dialog>
     );
 };

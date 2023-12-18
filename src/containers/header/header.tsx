@@ -11,7 +11,6 @@ export const Header = () => {
                 <SignInButton />
 
                 <SignUpButton />
-                {/* <button className=" px-4 py-3 font-bold">Регистрация</button> */}
             </div>
             <div className="flex items-center justify-between">
                 <Logo />
@@ -25,8 +24,6 @@ export const Header = () => {
                             viewBox="0 0 16 16"
                             version="1.1"
                         >
-                            <title>8586C5FE-3BCF-459C-9756-F778B2FD4524</title>
-                            <desc>Created with sketchtool.</desc>
                             <defs />
                             <g
                                 id="Page-1"

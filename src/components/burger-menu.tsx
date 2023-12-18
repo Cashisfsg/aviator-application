@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useState, useId } from "react";
 
 import {
     DropdownMenu,
@@ -9,7 +9,11 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import {
+    MyBetsHistoryDialog,
+    SignOutAlertDialog,
+    BonusAndPromoDialog
+} from "@/components/dialogs";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -20,28 +24,41 @@ import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
 import { ImNewspaper } from "react-icons/im";
 import { SlPeople } from "react-icons/sl";
 import { IoExitOutline } from "react-icons/io5";
+import { BsStars } from "react-icons/bs";
 
 export const BurgerMenu = () => {
     const soundId = useId();
     const musicId = useId();
     const animationId = useId();
 
-    // const [open, setOpen] = useState(false);
+    const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+    const [myBetsHistoryDialogOpen, setMyBetsHistoryDialogOpen] =
+        useState(false);
+    const [bonusAndPromoDialogOpen, setBonusAndPromoDialogOpen] =
+        useState(false);
 
     return (
         <>
-            <Popover>
-                <PopoverTrigger className="invisible"></PopoverTrigger>
-                <PopoverContent>Popover content</PopoverContent>
-            </Popover>
-            <DropdownMenu>
+            <MyBetsHistoryDialog
+                open={myBetsHistoryDialogOpen}
+                setOpen={setMyBetsHistoryDialogOpen}
+            />
+            <SignOutAlertDialog
+                open={alertDialogOpen}
+                setOpen={setAlertDialogOpen}
+            />
+            <BonusAndPromoDialog
+                open={bonusAndPromoDialogOpen}
+                setOpen={setBonusAndPromoDialogOpen}
+            />
+            <DropdownMenu modal={false}>
                 <DropdownMenuTrigger>
                     <FiMenu />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
                     align="end"
-                    className="hide-scrollbar max-h-[calc(100dvh-100px)] w-72 overflow-y-auto bg-[#2c2d30]"
+                    className="w-72 bg-[#2c2d30]"
                 >
                     <DropdownMenuLabel className="p-0 text-sm">
                         <div className="flex items-center justify-between p-2.5">
@@ -151,6 +168,14 @@ export const BurgerMenu = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="h-3" />
 
+                    <DropdownMenuItem
+                        onClick={() => setBonusAndPromoDialogOpen(true)}
+                    >
+                        <BsStars className="text-base text-[#767b85]" />
+                        <span>Бонусы и промокоды</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+
                     <DropdownMenuItem>
                         <BiSupport className="text-base text-[#767b85]" />
                         <span>Поддержка</span>
@@ -177,7 +202,9 @@ export const BurgerMenu = () => {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setMyBetsHistoryDialogOpen(true)}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="15"
@@ -251,7 +278,7 @@ export const BurgerMenu = () => {
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setAlertDialogOpen(true)}>
                         <IoExitOutline className="text-base text-[#767B85]" />
                         <span>Выйти</span>
                     </DropdownMenuItem>

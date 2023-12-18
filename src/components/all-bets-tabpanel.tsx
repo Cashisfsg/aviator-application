@@ -1,4 +1,4 @@
-import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
+import { Table, Row, Cell } from "./ui/table";
 
 const bet_data = [
     {
@@ -31,7 +31,7 @@ const bet_data = [
     }
 ];
 
-export const AllBets = () => {
+export const AllBetsTabpanel = () => {
     return (
         <>
             <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539]">
@@ -53,13 +53,6 @@ export const AllBets = () => {
             <Table
                 headers={["Кол-во ставок", "Сумма ставок", "Сумма выигрыша"]}
                 data={[["2554", "5545 $", "1551 $"]]}
-                renderHeader={headers => (
-                    <Row>
-                        {headers.map(header => (
-                            <TableHeaderCell>{header}</TableHeaderCell>
-                        ))}
-                    </Row>
-                )}
                 renderData={data => (
                     <>
                         {data.map(row => (
@@ -76,13 +69,6 @@ export const AllBets = () => {
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
                 data={bet_data}
-                renderHeader={headers => (
-                    <Row>
-                        {headers.map(header => (
-                            <TableHeaderCell>{header}</TableHeaderCell>
-                        ))}
-                    </Row>
-                )}
                 renderData={data => (
                     <>
                         {data.map(row => (

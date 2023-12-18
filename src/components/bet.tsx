@@ -105,7 +105,7 @@ const BetTab = () => {
                         viewBox="0 0 18 18"
                     >
                         <g
-                            fill-rule="nonzero"
+                            fillRule="nonzero"
                             fill="none"
                         >
                             <path
@@ -121,7 +121,6 @@ const BetTab = () => {
                 </button>
 
                 <input
-                    defaultValue={state}
                     maxLength={5}
                     autoComplete="off"
                     inputMode="numeric"
@@ -154,7 +153,7 @@ const BetTab = () => {
                         viewBox="0 0 18 18"
                     >
                         <g
-                            fill-rule="nonzero"
+                            fillRule="nonzero"
                             fill="none"
                         >
                             <path

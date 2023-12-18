@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AllBets } from "@/components/all-bets";
-import { BetHistory } from "@/components/bet-history";
+import { AllBetsTabpanel } from "@/components/all-bets-tabpanel";
+import { MyBetsTabpanel } from "@/components/my-bets-tabpanel";
+import { TopBetsTabpanel } from "@/components/top-bets-tabpanel";
 
 export const Statistics = () => {
     return (
@@ -10,20 +11,26 @@ export const Statistics = () => {
         >
             <TabsList>
                 <TabsTrigger value="all">Все ставки</TabsTrigger>
-                <TabsTrigger value="history">Мои</TabsTrigger>
+                <TabsTrigger value="my">Мои</TabsTrigger>
                 <TabsTrigger value="top">Топ</TabsTrigger>
             </TabsList>
             <TabsContent
                 value="all"
                 className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
             >
-                <AllBets />
+                <AllBetsTabpanel />
             </TabsContent>
             <TabsContent
-                value="history"
+                value="my"
                 className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
             >
-                <BetHistory />
+                <MyBetsTabpanel />
+            </TabsContent>
+            <TabsContent
+                value="top"
+                className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
+            >
+                <TopBetsTabpanel />
             </TabsContent>
         </Tabs>
     );

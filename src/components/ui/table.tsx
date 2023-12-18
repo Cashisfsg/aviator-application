@@ -1,25 +1,30 @@
 import { cn } from "@/utils";
-import React from "react";
 
 type TableProps<
     H extends string[] | number[] | object,
     D extends (string[] | number[] | object)[]
 > = {
-    caption?: React.ReactElement;
     headers: H;
     data: D;
-    renderHeader: (headers: H) => React.ReactElement;
+    renderCaption?: React.ReactNode;
+    renderHeader?: (headers: H) => React.ReactElement;
     renderData: (data: D) => React.ReactElement;
 };
 
 export const Table = <
-    H extends string[] | number[] | object,
+    H extends (string | number)[],
     D extends (string[] | number[] | object)[]
 >({
-    caption,
+    renderCaption: caption,
     headers,
     data,
-    renderHeader,
+    renderHeader = headers => (
+        <Row>
+            {headers.map(header => (
+                <TableHeaderCell key={header}>{header}</TableHeaderCell>
+            ))}
+        </Row>
+    ),
     renderData,
     className,
     ...props
@@ -32,10 +37,27 @@ export const Table = <
                 className
             )}
         >
-            {caption ? <caption>{caption}</caption> : null}
+            {caption ? caption : null}
             <thead>{renderHeader(headers)}</thead>
-            <tbody className="text-sm">{renderData(data)}</tbody>
+            <tbody className="text-sm">{renderData?.(data)}</tbody>
         </table>
+    );
+};
+
+interface CaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {}
+
+export const Caption: React.FC<CaptionProps> = ({
+    className,
+    children,
+    ...props
+}) => {
+    return (
+        <caption
+            {...props}
+            className={cn("px-1 py-2 text-sm text-[#9ea0a3]", className)}
+        >
+            {children}
+        </caption>
     );
 };
 
@@ -46,7 +68,7 @@ export const Row: React.FC<RowProps> = ({ className, children, ...props }) => {
         <tr
             {...props}
             className={cn(
-                "[&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg",
+                "[&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg ",
                 className
             )}
         >
@@ -66,7 +88,7 @@ export const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
     return (
         <th
             {...props}
-            className={cn("py-1 text-xs text-[#7b7b7b]", className)}
+            className={cn("p-1 text-xs text-[#7b7b7b]", className)}
         >
             {children}
         </th>
