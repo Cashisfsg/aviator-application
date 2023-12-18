@@ -6,14 +6,14 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 
-import { MyBetsHistoryDialogTable } from "@/components/tables/";
+import { DailyStatisticsTable } from "@/components/tables/";
 
-interface MyBetsHistoryDialogProps {
+interface DailyStatisticsDialogProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MyBetsHistoryDialog: React.FC<MyBetsHistoryDialogProps> = ({
+export const DailyStatisticsDialog: React.FC<DailyStatisticsDialogProps> = ({
     open,
     setOpen
 }) => {
@@ -24,7 +24,7 @@ export const MyBetsHistoryDialog: React.FC<MyBetsHistoryDialogProps> = ({
             modal={false}
         >
             <DialogTrigger className="sr-only">
-                История моих ставок
+                Подробный список по дням
             </DialogTrigger>
             <DialogContent
                 route={false}
@@ -32,10 +32,10 @@ export const MyBetsHistoryDialog: React.FC<MyBetsHistoryDialogProps> = ({
             >
                 <DialogHeader>
                     <DialogTitle className="rounded-md bg-[#2c2d30] px-4 py-2 text-lg font-bold text-gray-300">
-                        История моих ставок
+                        Подробный список по дням
                     </DialogTitle>
                 </DialogHeader>
-                <MyBetsHistoryDialogTable />
+                <DailyStatisticsTable />
             </DialogContent>
         </Dialog>
     );

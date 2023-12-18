@@ -1,5 +1,4 @@
-import { BurgerMenu } from "@/components/burger-menu";
-import { BalanceMenu } from "./components/modals/balance-menu";
+import { BurgerMenu, BalanceMenu } from "@/components/dropdown-menus";
 import { SignInButton } from "./components/sign-in-button";
 import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
@@ -14,7 +13,7 @@ export const Header = () => {
             </div>
             <div className="flex items-center justify-between">
                 <Logo />
-                <div className="flex items-center gap-4 ">
+                <div className="relative flex items-center gap-4 py-2">
                     <button className="rounded-full bg-orange-400 p-1 text-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

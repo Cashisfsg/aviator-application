@@ -12,8 +12,14 @@ import {
 import {
     MyBetsHistoryDialog,
     SignOutAlertDialog,
-    BonusAndPromoDialog
+    BonusAndPromoDialog,
+    DailyStatisticsDialog
 } from "@/components/dialogs";
+
+import {
+    GameLimitsPopover,
+    PartnershipProgramPopover
+} from "@/components/popovers";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -36,6 +42,11 @@ export const BurgerMenu = () => {
         useState(false);
     const [bonusAndPromoDialogOpen, setBonusAndPromoDialogOpen] =
         useState(false);
+    const [dailyStatisticsDialogOpen, setDailyStatisticsDialogOpen] =
+        useState(false);
+    const [partnershipProgramPopoverOpen, setPartnershipProgramPopoverOpen] =
+        useState(false);
+    const [gameLimitsPopoverOpen, setGameLimitsPopoverOpen] = useState(false);
 
     return (
         <>
@@ -51,13 +62,27 @@ export const BurgerMenu = () => {
                 open={bonusAndPromoDialogOpen}
                 setOpen={setBonusAndPromoDialogOpen}
             />
+            <DailyStatisticsDialog
+                open={dailyStatisticsDialogOpen}
+                setOpen={setDailyStatisticsDialogOpen}
+            />
+            <GameLimitsPopover
+                open={gameLimitsPopoverOpen}
+                setOpen={setGameLimitsPopoverOpen}
+            />
+            <PartnershipProgramPopover
+                open={partnershipProgramPopoverOpen}
+                setOpen={setPartnershipProgramPopoverOpen}
+                setDailyStatisticsDialogOpen={setDailyStatisticsDialogOpen}
+            />
             <DropdownMenu modal={false}>
-                <DropdownMenuTrigger>
+                <DropdownMenuTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
                     <FiMenu />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
                     align="end"
+                    sideOffset={10}
                     className="w-72 bg-[#2c2d30]"
                 >
                     <DropdownMenuLabel className="p-0 text-sm">
@@ -221,7 +246,9 @@ export const BurgerMenu = () => {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setGameLimitsPopoverOpen(true)}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
@@ -252,7 +279,9 @@ export const BurgerMenu = () => {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setPartnershipProgramPopoverOpen(true)}
+                    >
                         <SlPeople className="text-base text-[#767B85]" />
                         <span>Партнёрская программа</span>
                     </DropdownMenuItem>

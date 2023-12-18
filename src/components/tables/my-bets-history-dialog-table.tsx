@@ -21,7 +21,7 @@ const data = [
     { date: new Date(), bet: 15000, ratio: "1.23", gain: 18450 }
 ];
 
-export const MyBetsHistoryTableDialog = () => {
+export const MyBetsHistoryDialogTable = () => {
     return (
         <Collapsible>
             <Table
@@ -31,10 +31,7 @@ export const MyBetsHistoryTableDialog = () => {
                 renderData={data => (
                     <>
                         {data.slice(0, 3).map((row, i) => (
-                            <Row
-                                key={i}
-                                className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
-                            >
+                            <Row key={i}>
                                 <Cell className="px-2 py-1 text-left text-[10px] leading-none">
                                     <p>
                                         {row.date.toLocaleTimeString([], {

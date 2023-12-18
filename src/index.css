@@ -70,7 +70,7 @@ button:focus-visible {
 }
 
 [role="dialog"] {
-    max-height: 100dvh;
+    max-height: calc(100dvh - 1rem);
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;

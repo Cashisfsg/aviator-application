@@ -10,7 +10,9 @@ import {
 export const BalanceMenu = () => {
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>3000 $</DropdownMenuTrigger>
+            <DropdownMenuTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
+                3000 $
+            </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>Баланс 3000 $</DropdownMenuLabel>
                 <DropdownMenuSeparator />
