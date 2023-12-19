@@ -10,6 +10,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         return (
             <input
                 type={type}
+                autoComplete="off"
                 className={cn(
                     "block w-full rounded-lg border-2 border-gray-500 bg-transparent px-4 py-2 outline-transparent aria-[invalid=true]:border-red-750",
                     className

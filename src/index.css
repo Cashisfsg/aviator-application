@@ -90,6 +90,11 @@ button:focus-visible {
     display: none;
 }
 
+input:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 1px;
+}
+
 input[type="checkbox"] {
     appearance: none;
     width: 1rem;

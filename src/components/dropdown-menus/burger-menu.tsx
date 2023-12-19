@@ -318,12 +318,12 @@ export const BurgerMenu = () => {
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-xs">
+                            <DropdownMenuItem className="text-[#767b85]">
                                 <span>Привязать эмейл</span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-xs">
-                                <span>Привязать пароль</span>
+                            <DropdownMenuItem className="text-[#767b85]">
+                                <span>Изменить пароль</span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                         </CollapsibleContent>

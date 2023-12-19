@@ -145,7 +145,7 @@ export const SignUpForm = () => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-12"
+                className="space-y-8"
             >
                 <FormField
                     control={form.control}
@@ -315,21 +315,25 @@ export const SignUpForm = () => {
                                 </PopoverTrigger>
                                 <PopoverContent
                                     align="start"
-                                    className="w-[270px]"
+                                    className="w-[270px] border-gray-50 bg-[#2c2d30] text-white"
                                 >
                                     <form
                                         onSubmit={event => {
                                             event.preventDefault();
                                             event.stopPropagation();
                                             const code =
-                                                event.currentTarget.elements
-                                                    ?.code.value;
+                                                event.currentTarget.elements?.namedItem(
+                                                    "code"
+                                                )?.value;
                                             form.setValue("promo", code);
                                             setPromoOpen(false);
                                         }}
                                         className="relative "
                                     >
-                                        <Input name="code" />
+                                        <Input
+                                            name="code"
+                                            autoComplete="off"
+                                        />
                                         <button className="absolute right-4 top-1/2 w-max -translate-y-1/2 rounded-md bg-blue-300 p-0.5">
                                             <FaCheck />
                                         </button>

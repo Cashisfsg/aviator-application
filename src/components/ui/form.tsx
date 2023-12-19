@@ -161,10 +161,7 @@ const FormMessage = React.forwardRef<
         <p
             ref={ref}
             id={formMessageId}
-            className={cn(
-                "text-red-750 absolute text-xs font-medium",
-                className
-            )}
+            className={cn("text-xs font-medium text-red-750", className)}
             {...props}
         >
             <IoWarningOutline className="inline align-middle" /> <>{body}</>

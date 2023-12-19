@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import {
     Popover,
     PopoverTrigger,
@@ -15,6 +17,20 @@ interface PartnershipProgramPopoverProps {
 export const PartnershipProgramPopover: React.FC<
     PartnershipProgramPopoverProps
 > = ({ open, setPopoverOpen, setDailyStatisticsDialogOpen }) => {
+    const telegramLinkRef = useRef<HTMLAnchorElement>(null);
+
+    const copyTelegramLinkToClipboard = async () => {
+        const link = telegramLinkRef.current?.textContent;
+
+        if (!link) return;
+
+        try {
+            await navigator.clipboard.writeText(link);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <Popover
             open={open}
@@ -41,10 +57,16 @@ export const PartnershipProgramPopover: React.FC<
                 </p>
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
-                    <a className="w-full overflow-hidden text-ellipsis text-blue-600">
+                    <a
+                        ref={telegramLinkRef}
+                        className="w-full overflow-hidden text-ellipsis text-blue-600"
+                    >
                         http://t.me/dadasdadafsdasdasddddddddddddasd
                     </a>
-                    <button className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]">
+                    <button
+                        onClick={copyTelegramLinkToClipboard}
+                        className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
+                    >
                         Скопировать
                     </button>
 
