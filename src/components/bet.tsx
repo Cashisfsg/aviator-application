@@ -15,12 +15,12 @@ export const Bet = () => {
                 <TabsTrigger value="auto">Авто</TabsTrigger>
             </TabsList>
             <BetTab />
-            <TabsContent
+            {/* <TabsContent
                 value="auto"
                 className="flex items-center justify-around"
             >
                 <AutoBetTab />
-            </TabsContent>
+            </TabsContent> */}
         </Tabs>
     );
 };
