@@ -14,7 +14,7 @@ interface BonusTableProps {
 export const BonusTable: React.FC<BonusTableProps> = ({ data }) => {
     return (
         <Table
-            className="table-fixed px-1.5 text-center"
+            className="px-1.5 text-center"
             headers={[
                 "Сумма бонуса, UZS",
                 "Коэфф., при котором можно заработать выигрыш",
@@ -31,7 +31,7 @@ export const BonusTable: React.FC<BonusTableProps> = ({ data }) => {
                                     {row.ratio}x
                                 </span>
                             </Cell>
-                            <Cell className="grid grid-cols-[1fr_auto] grid-rows-2 px-2 py-1 text-left text-[10px] leading-none">
+                            <Cell className="grid grid-cols-[1fr_auto] grid-rows-2 gap-x-2 px-2 py-1 text-left text-[10px] leading-none">
                                 <p>
                                     {row.date.toLocaleTimeString([], {
                                         hour: "2-digit",

@@ -1,6 +1,5 @@
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
     DialogHeader,
     DialogTitle
@@ -23,9 +22,6 @@ export const DailyStatisticsDialog: React.FC<DailyStatisticsDialogProps> = ({
             onOpenChange={setOpen}
             modal={false}
         >
-            <DialogTrigger className="sr-only">
-                Подробный список по дням
-            </DialogTrigger>
             <DialogContent
                 route={false}
                 className="p-0"

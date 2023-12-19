@@ -8,13 +8,13 @@ import { GuestListTable } from "../tables";
 
 interface PartnershipProgramPopoverProps {
     open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setDailyStatisticsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PartnershipProgramPopover: React.FC<
     PartnershipProgramPopoverProps
-> = ({ open, setOpen: setPopoverOpen, setDailyStatisticsDialogOpen }) => {
+> = ({ open, setPopoverOpen, setDailyStatisticsDialogOpen }) => {
     return (
         <Popover
             open={open}
@@ -41,9 +41,9 @@ export const PartnershipProgramPopover: React.FC<
                 </p>
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
-                    <span className="text-[#83878e]">
-                        http://t.me/dadasdadafs
-                    </span>
+                    <a className="w-full overflow-hidden text-ellipsis text-blue-600">
+                        http://t.me/dadasdadafsdasdasddddddddddddasd
+                    </a>
                     <button className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]">
                         Скопировать
                     </button>
@@ -60,7 +60,6 @@ export const PartnershipProgramPopover: React.FC<
                 </p>
 
                 <GuestListTable
-                    setPopoverOpen={setPopoverOpen}
                     setDailyStatisticsDialogOpen={setDailyStatisticsDialogOpen}
                 />
             </PopoverContent>

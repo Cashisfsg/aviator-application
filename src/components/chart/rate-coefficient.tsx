@@ -62,7 +62,7 @@ export const RateCoefficient = forwardRef<RateElement>(({ ...props }, ref) => {
                 dominantBaseline="middle"
                 x="50%"
                 y="30%"
-                fontSize="1.5rem"
+                fontSize="2rem"
                 className="font-semibold uppercase opacity-0 transition-opacity duration-500"
                 ref={textRef}
             >

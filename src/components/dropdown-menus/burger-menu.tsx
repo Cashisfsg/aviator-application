@@ -72,7 +72,7 @@ export const BurgerMenu = () => {
             />
             <PartnershipProgramPopover
                 open={partnershipProgramPopoverOpen}
-                setOpen={setPartnershipProgramPopoverOpen}
+                setPopoverOpen={setPartnershipProgramPopoverOpen}
                 setDailyStatisticsDialogOpen={setDailyStatisticsDialogOpen}
             />
             <DropdownMenu modal={false}>

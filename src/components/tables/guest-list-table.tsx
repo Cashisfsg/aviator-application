@@ -6,12 +6,10 @@ const data = [
 ];
 
 interface GuestListTableProps {
-    setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setDailyStatisticsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GuestListTable: React.FC<GuestListTableProps> = ({
-    setPopoverOpen,
     setDailyStatisticsDialogOpen
 }) => {
     return (
@@ -24,15 +22,14 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                     <span className="float-left text-white">
                         Список приглашенных
                     </span>
-                    <a
+                    <span
                         onClick={() => {
                             setDailyStatisticsDialogOpen(true);
-                            setPopoverOpen(false);
                         }}
                         className="float-right cursor-pointer text-blue-500"
                     >
                         По дням
-                    </a>
+                    </span>
                 </Caption>
             }
             renderData={data => (

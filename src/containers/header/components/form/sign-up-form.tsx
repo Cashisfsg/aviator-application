@@ -160,10 +160,9 @@ export const SignUpForm = () => {
                                 <PopoverTrigger asChild>
                                     <FormControl>
                                         <Button
-                                            variant="outline"
                                             role="combobox"
                                             className={cn(
-                                                "w-full justify-between border-2 py-4 text-base aria-[invalid=true]:border-red-750 focus:aria-[invalid=true]:outline focus:aria-[invalid=true]:-outline-offset-2",
+                                                "w-full justify-between border-2 border-gray-500 bg-none py-4 text-base aria-[invalid=true]:border-red-750 focus:aria-[invalid=true]:outline focus:aria-[invalid=true]:-outline-offset-2",
                                                 !field.value &&
                                                     "text-muted-foreground"
                                             )}
@@ -374,7 +373,7 @@ export const SignUpForm = () => {
 
                 <Button
                     type="submit"
-                    className="text-white w-full bg-blue-500 py-2 text-xl font-bold"
+                    className="w-full bg-blue-500 py-2 text-xl font-bold text-white"
                 >
                     Зарегистрироваться
                 </Button>
