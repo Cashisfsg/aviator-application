@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { IoWarningOutline } from "react-icons/io5";
+
 import { cn } from "@/utils";
 
 export interface InputProps
@@ -24,3 +26,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 export { Input };
+
+interface ErrorMessageProps
+    extends React.OutputHTMLAttributes<HTMLOutputElement> {
+    message?: string;
+}
+
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({
+    message,
+    className,
+
+    ...props
+}) => {
+    return (
+        <output
+            {...props}
+            className={cn("block text-xs text-red-750", className)}
+        >
+            <IoWarningOutline className="mt-[1.5px] inline align-top" />{" "}
+            {message}
+        </output>
+    );
+};

@@ -88,8 +88,8 @@ export default {
                 }
             },
             animation: {
-                "accordion-down": "accordion-down 0.2s ease-out",
-                "accordion-up": "accordion-up 0.2s ease-out",
+                "accordion-down": "accordion-down 3s ease-out",
+                "accordion-up": "accordion-up 3s ease-out",
                 airplane:
                     "airplane 10s cubic-bezier(0.25, 0.99, 0.65, 1) infinite",
                 rotate: "rotate 3s linear infinite"

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export const action = async () => {
-    return redirect("/aviator_front/password/reset");
+    return redirect("/aviator_front/main/password/reset");
 };
 
 export const ConfirmEmailForm = () => {

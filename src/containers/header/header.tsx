@@ -3,6 +3,9 @@ import { SignInButton } from "./components/sign-in-button";
 import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
 
+import { Dialog } from "@/components/ui/dialog/dialog";
+import { SignInForm } from "./components/form/sign-in-form";
+
 export const Header = () => {
     return (
         <header>
@@ -10,6 +13,16 @@ export const Header = () => {
                 <SignInButton />
 
                 <SignUpButton />
+                <Dialog>
+                    <Dialog.Trigger className="rounded-lg bg-green-400 px-4 py-3 font-bold">
+                        Trigger
+                    </Dialog.Trigger>
+                    <Dialog.Portal>
+                        <Dialog.Content>
+                            <SignInForm />
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog>
             </div>
             <div className="flex items-center justify-between">
                 <Logo />

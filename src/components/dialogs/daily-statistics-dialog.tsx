@@ -24,6 +24,7 @@ export const DailyStatisticsDialog: React.FC<DailyStatisticsDialogProps> = ({
         >
             <DialogContent
                 route={false}
+                onInteractOutside={event => event.preventDefault()}
                 className="p-0"
             >
                 <DialogHeader>

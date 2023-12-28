@@ -2,6 +2,12 @@ import {
     createBrowserRouter,
     RouterProvider as Provider
 } from "react-router-dom";
+
+import { MainPage, PaymentPage } from "@/pages";
+import { PrivateRoute } from "./private-outlet";
+
+// import { SignInForm } from "@/containers/header/components/form/sign-in-form";
+// import { SignUpForm } from "@/containers/header/components/form/sign-up-form";
 import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
 import { SignUpModal } from "@/containers/header/components/modals/sign-up-modal";
 import { RestorePasswordModal } from "@/containers/header/components/modals/restore-password-modal";
@@ -28,33 +34,44 @@ const router = createBrowserRouter([
         },
         children: [
             {
-                index: true,
-                element: <SignInModal />
-            },
-            {
-                path: "sign-up",
-                element: <SignUpModal />
-            },
-            {
-                path: "password",
-                element: <RestorePasswordModal />,
+                path: "main",
+                element: <MainPage />,
                 children: [
                     {
-                        path: "restore",
-                        element: <RestorePasswordForm />,
-                        action: restorePasswordAction
+                        path: "sign-in",
+                        element: <SignInModal />
                     },
                     {
-                        path: "confirm-email",
-                        element: <ConfirmEmailForm />,
-                        action: confirmEmailAction
+                        path: "sign-up",
+                        element: <SignUpModal />
                     },
                     {
-                        path: "reset",
-                        element: <ResetPasswordForm />,
-                        action: resetPasswordAction
+                        path: "password",
+                        element: <RestorePasswordModal />,
+                        children: [
+                            {
+                                path: "restore",
+                                element: <RestorePasswordForm />,
+                                action: restorePasswordAction
+                            },
+                            {
+                                path: "confirm-email",
+                                element: <ConfirmEmailForm />,
+                                action: confirmEmailAction
+                            },
+                            {
+                                path: "reset",
+                                element: <ResetPasswordForm />,
+                                action: resetPasswordAction
+                            }
+                        ]
                     }
                 ]
+            },
+            {
+                path: "payment",
+                element: <PrivateRoute />,
+                children: [{ path: "draw", element: <PaymentPage /> }]
             }
         ]
     }

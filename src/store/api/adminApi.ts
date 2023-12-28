@@ -10,7 +10,7 @@ import {
 export const adminApi = createApi({
     reducerPath: "adminApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://raw.githubusercontent.com"
+        baseUrl: import.meta.env.VITE_API_BASE_URL
     }),
     endpoints: builder => ({
         //! =================================================================

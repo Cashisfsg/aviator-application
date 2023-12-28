@@ -7,7 +7,7 @@ export interface UserRegistrationCredentials {
     passwordConfirm: string;
     email: string;
     telegramId: number;
-    from: string;
+    from?: string;
 }
 
 export interface UserAuthorizationData {

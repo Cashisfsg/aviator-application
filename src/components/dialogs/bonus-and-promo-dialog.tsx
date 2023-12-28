@@ -37,6 +37,7 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
             </DialogTrigger>
             <DialogContent
                 route={false}
+                // onInteractOutside={event => event.preventDefault()}
                 className="p-0 pb-4"
             >
                 <section>
@@ -98,6 +99,7 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
                 hour: "2-digit",
                 minute: "2-digit"
             })}`,
+            duration: 5000,
             action: (
                 <ToastAction altText="Скрыть всплывающее окно">
                     Скрыть

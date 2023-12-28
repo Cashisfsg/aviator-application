@@ -17,7 +17,7 @@ export const action = async ({ request }: any) => {
     const formData = await request.formData();
     sessionStorage.setItem("email", formData.get("email"));
 
-    return redirect("/aviator_front/password/confirm-email");
+    return redirect("/aviator_front/main/password/confirm-email");
 };
 
 const formSchema = z.object({

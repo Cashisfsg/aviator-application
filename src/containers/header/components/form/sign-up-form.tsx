@@ -5,6 +5,11 @@ import * as z from "zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import {
+    useCreateNewUserAccountMutation,
+    UserRegistrationCredentials
+} from "@/store";
+
+import {
     Form,
     FormControl,
     FormField,
@@ -60,18 +65,14 @@ const currencies = [
     { label: "Саудовский риял", value: "SAR" }
 ];
 
-const formSchema = z
+const formSchema: z.ZodType<
+    UserRegistrationCredentials & { accepted_terms: boolean }
+> = z
     .object({
         currency: z.string({
             required_error: "Поле обязательно для заполнения"
         }),
-        email: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .email({ message: "Укажите корректный адрес электронной почты" }),
-        username: z
+        login: z
             .string()
             .min(1, {
                 message: "Поле обязательно для заполнения"
@@ -99,7 +100,7 @@ const formSchema = z
             .max(30, {
                 message: "Превышено максимально допустимое количество символов"
             }),
-        confirm_password: z
+        passwordConfirm: z
             .string()
             .min(1, {
                 message: "Поле обязательно для заполнения"
@@ -113,10 +114,17 @@ const formSchema = z
             .max(30, {
                 message: "Превышено максимально допустимое количество символов"
             }),
-        promo: z.string().optional(),
+        email: z
+            .string()
+            .min(1, {
+                message: "Поле обязательно для заполнения"
+            })
+            .email({ message: "Укажите корректный адрес электронной почты" }),
+        from: z.string().optional(),
+        telegramId: z.number(),
         accepted_terms: z.literal(true)
     })
-    .refine(data => data.password === data.confirm_password, {
+    .refine(data => data.password === data.passwordConfirm, {
         message: "Пароли должны совпадать",
         path: ["confirm_password"]
     });
@@ -124,21 +132,27 @@ const formSchema = z
 export const SignUpForm = () => {
     const [open, setOpen] = React.useState(false);
     const [promoOpen, setPromoOpen] = React.useState(false);
+    const [createNewUser] = useCreateNewUserAccountMutation();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
-            email: "",
+            login: "",
             password: "",
-            confirm_password: "",
-            promo: "",
+            passwordConfirm: "",
+            email: "",
+            from: "",
+            telegramId: 123,
             accepted_terms: undefined
         }
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = ({
+        accepted_terms,
+        ...values
+    }: z.infer<typeof formSchema>) => {
         console.log(values);
+        createNewUser(values);
     };
 
     return (
@@ -231,7 +245,7 @@ export const SignUpForm = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="username"
+                    name="login"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Логин</FormLabel>
@@ -279,7 +293,7 @@ export const SignUpForm = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="confirm_password"
+                    name="passwordConfirm"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Подтвердите пароль</FormLabel>
@@ -296,7 +310,7 @@ export const SignUpForm = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="promo"
+                    name="from"
                     render={({ field }) => (
                         <FormItem>
                             <Popover
@@ -325,7 +339,7 @@ export const SignUpForm = () => {
                                                 event.currentTarget.elements?.namedItem(
                                                     "code"
                                                 )?.value;
-                                            form.setValue("promo", code);
+                                            form.setValue("from", code);
                                             setPromoOpen(false);
                                         }}
                                         className="relative "
@@ -371,6 +385,20 @@ export const SignUpForm = () => {
                                     Условиями пользовательского соглашения
                                 </a>
                             </p>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="telegramId"
+                    render={({ field }) => (
+                        <FormItem className="flex items-center gap-4 ">
+                            <FormControl>
+                                <Input
+                                    type="hidden"
+                                    {...field}
+                                />
+                            </FormControl>
                         </FormItem>
                     )}
                 />

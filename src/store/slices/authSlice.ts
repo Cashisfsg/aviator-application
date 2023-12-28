@@ -8,15 +8,44 @@ interface AuthState {
 
 const authSlice = createSlice({
     name: "auth",
-    initialState: { token: null } as AuthState,
+    initialState: () => {
+        const token = localStorage.getItem("token");
+
+        return { token: token ? JSON.parse(token) : null } as AuthState;
+    },
     reducers: {},
     extraReducers: builder => {
-        builder.addMatcher(
-            api.endpoints.authenticateUser.matchFulfilled,
-            (state, { payload }) => {
-                state.token = payload.token;
-            }
-        );
+        builder
+            .addMatcher(
+                api.endpoints.authenticateUser.matchFulfilled,
+                (state, { payload }) => {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify(payload.token)
+                    );
+                    state.token = payload.token;
+                }
+            )
+            .addMatcher(
+                api.endpoints.createNewUserAccount.matchFulfilled,
+                (state, { payload }) => {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify(payload.token)
+                    );
+                    state.token = payload.token;
+                }
+            )
+            .addMatcher(
+                api.endpoints.confirmPasswordChange.matchFulfilled,
+                (state, { payload }) => {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify(payload.token)
+                    );
+                    state.token = payload.token;
+                }
+            );
     }
 });
 

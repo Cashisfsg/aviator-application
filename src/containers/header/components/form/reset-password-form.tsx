@@ -17,7 +17,7 @@ interface FormFields {
 }
 
 export const action = async () => {
-    return redirect("/aviator_front/");
+    return redirect("/aviator_front/main/");
 };
 
 const alphanumericRegex = /^[A-Za-z0-9]+$/;

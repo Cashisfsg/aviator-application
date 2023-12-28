@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RootStore } from "..";
 
 interface Requisite {
     _id: string;
@@ -36,7 +37,14 @@ interface Replenishment {
 export const replenishmentApi = createApi({
     reducerPath: "replenishmentApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://raw.githubusercontent.com"
+        baseUrl: import.meta.env.VITE_API_BASE_URL,
+        prepareHeaders: (headers, { getState }) => {
+            const token = (getState() as RootStore).auth.token;
+            if (token) {
+                headers.set("authorization", `Bearer ${token}`);
+            }
+            return headers;
+        }
     }),
     endpoints: builder => ({
         //! =================================================================

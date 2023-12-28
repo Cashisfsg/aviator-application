@@ -12,7 +12,7 @@ import {
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://raw.githubusercontent.com"
+        baseUrl: import.meta.env.VITE_API_BASE_URL
     }),
     endpoints: builder => ({
         createNewUserAccount: builder.mutation<

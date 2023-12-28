@@ -56,31 +56,6 @@ export const BurgerMenu = () => {
 
     return (
         <>
-            <MyBetsHistoryDialog
-                open={myBetsHistoryDialogOpen}
-                setOpen={setMyBetsHistoryDialogOpen}
-            />
-            <SignOutAlertDialog
-                open={alertDialogOpen}
-                setOpen={setAlertDialogOpen}
-            />
-            <BonusAndPromoDialog
-                open={bonusAndPromoDialogOpen}
-                setOpen={setBonusAndPromoDialogOpen}
-            />
-            <DailyStatisticsDialog
-                open={dailyStatisticsDialogOpen}
-                setOpen={setDailyStatisticsDialogOpen}
-            />
-            <GameLimitsPopover
-                open={gameLimitsPopoverOpen}
-                setOpen={setGameLimitsPopoverOpen}
-            />
-            <PartnershipProgramPopover
-                open={partnershipProgramPopoverOpen}
-                setPopoverOpen={setPartnershipProgramPopoverOpen}
-                setDailyStatisticsDialogOpen={setDailyStatisticsDialogOpen}
-            />
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
                     <FiMenu />
@@ -89,7 +64,7 @@ export const BurgerMenu = () => {
                 <DropdownMenuContent
                     align="end"
                     sideOffset={10}
-                    className="w-72 bg-[#2c2d30]"
+                    className="z-50 w-72 bg-[#2c2d30]"
                 >
                     <DropdownMenuLabel className="p-0 text-sm">
                         <div className="flex items-center justify-between p-2.5">
@@ -200,9 +175,16 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator className="h-3" />
 
                     <DropdownMenuItem
-                        onClick={() => setBonusAndPromoDialogOpen(true)}
+                        // onPointerUp={() =>
+                        //     setTimeout(() => {
+                        //     }, 200)
+                        // }
+                        onClick={() => {
+                            // event.nativeEvent.stopImmediatePropagation();
+                            setBonusAndPromoDialogOpen(true);
+                        }}
                     >
-                        <BsStars className="text-base text-[#767b85]" />
+                        <BsStars className="text-base text-[#313131]" />
                         <span>Бонусы и промокоды</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -234,7 +216,11 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem
-                        onClick={() => setMyBetsHistoryDialogOpen(true)}
+                        onPointerUp={() =>
+                            setTimeout(() => {
+                                setMyBetsHistoryDialogOpen(true);
+                            }, 200)
+                        }
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +239,11 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem
-                        onClick={() => setGameLimitsPopoverOpen(true)}
+                        onPointerUp={() =>
+                            setTimeout(() => {
+                                setGameLimitsPopoverOpen(true);
+                            }, 200)
+                        }
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -286,7 +276,11 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem
-                        onClick={() => setPartnershipProgramPopoverOpen(true)}
+                        onPointerUp={() =>
+                            setTimeout(() => {
+                                setPartnershipProgramPopoverOpen(true);
+                            }, 200)
+                        }
                     >
                         <SlPeople className="text-base text-[#767B85]" />
                         <span>Партнёрская программа</span>
@@ -336,6 +330,31 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator className="h-3" />
                 </DropdownMenuContent>
             </DropdownMenu>
+            <MyBetsHistoryDialog
+                open={myBetsHistoryDialogOpen}
+                setOpen={setMyBetsHistoryDialogOpen}
+            />
+            <SignOutAlertDialog
+                open={alertDialogOpen}
+                setOpen={setAlertDialogOpen}
+            />
+            <BonusAndPromoDialog
+                open={bonusAndPromoDialogOpen}
+                setOpen={setBonusAndPromoDialogOpen}
+            />
+            <DailyStatisticsDialog
+                open={dailyStatisticsDialogOpen}
+                setOpen={setDailyStatisticsDialogOpen}
+            />
+            <GameLimitsPopover
+                open={gameLimitsPopoverOpen}
+                setOpen={setGameLimitsPopoverOpen}
+            />
+            <PartnershipProgramPopover
+                open={partnershipProgramPopoverOpen}
+                setPopoverOpen={setPartnershipProgramPopoverOpen}
+                setDailyStatisticsDialogOpen={setDailyStatisticsDialogOpen}
+            />
         </>
     );
 };

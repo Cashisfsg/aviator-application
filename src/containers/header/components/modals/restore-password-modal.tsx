@@ -38,7 +38,7 @@ export const RestorePasswordModal = () => {
                     <span className="text-xs">Ещё нет аккаунта?</span>
                     <br />
                     <Link
-                        to="/aviator_front/sign-up"
+                        to="/aviator_front/main/sign-up"
                         className="text-xs text-blue-500"
                     >
                         Зарегистрироваться
@@ -48,7 +48,7 @@ export const RestorePasswordModal = () => {
                     <span className="text-xs">Не привязана почта?</span>
                     <br />
                     <Link
-                        to="/aviator_front/sign-up"
+                        to="/aviator_front/main/sign-up"
                         className="text-xs text-blue-500"
                     >
                         Восстановить без почты
