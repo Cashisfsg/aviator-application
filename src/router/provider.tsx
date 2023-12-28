@@ -6,22 +6,17 @@ import {
 import { MainPage, PaymentPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
-// import { SignInForm } from "@/containers/header/components/form/sign-in-form";
-// import { SignUpForm } from "@/containers/header/components/form/sign-up-form";
 import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
 import { SignUpModal } from "@/containers/header/components/modals/sign-up-modal";
 import { RestorePasswordModal } from "@/containers/header/components/modals/restore-password-modal";
+import { RestorePasswordForm } from "@/containers/header/components/form/restore-password-form";
 import {
-    RestorePasswordForm,
-    action as restorePasswordAction
-} from "@/containers/header/components/form/restore-password-form";
-import {
-    ConfirmEmailForm,
-    action as confirmEmailAction
+    ConfirmEmailForm
+    // action as confirmEmailAction
 } from "@/containers/header/components/form/confirm-email-form";
 import {
-    ResetPasswordForm,
-    action as resetPasswordAction
+    ResetPasswordForm
+    // action as resetPasswordAction
 } from "@/containers/header/components/form/reset-password-form";
 
 const router = createBrowserRouter([
@@ -51,18 +46,17 @@ const router = createBrowserRouter([
                         children: [
                             {
                                 path: "restore",
-                                element: <RestorePasswordForm />,
-                                action: restorePasswordAction
+                                element: <RestorePasswordForm />
                             },
                             {
                                 path: "confirm-email",
-                                element: <ConfirmEmailForm />,
-                                action: confirmEmailAction
+                                element: <ConfirmEmailForm />
+                                // action: confirmEmailAction
                             },
                             {
                                 path: "reset",
-                                element: <ResetPasswordForm />,
-                                action: resetPasswordAction
+                                element: <ResetPasswordForm />
+                                // action: resetPasswordAction
                             }
                         ]
                     }

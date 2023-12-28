@@ -1,5 +1,5 @@
 import { useEffect, useId } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -47,6 +47,7 @@ export const SignInForm = () => {
     // const { dialogRef } = useDialogContext();
     const formId = useId();
     const [authenticate, { isError, error }] = useAuthenticateUserMutation();
+    const navigate = useNavigate();
 
     const {
         register,
@@ -68,12 +69,11 @@ export const SignInForm = () => {
     const onSubmitHandler = async (data: z.infer<typeof formSchema>) => {
         const response = await authenticate(data);
 
-        if (!response?.error) {
-            reset();
-            // dialogRef?.current?.close();
-        }
+        if (response?.error) return;
 
-        console.log(response);
+        reset();
+        navigate("/aviator_front/main");
+        // dialogRef?.current?.close();
     };
 
     return (

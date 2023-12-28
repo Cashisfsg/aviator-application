@@ -1,5 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { adminApi, authApi, betApi, userApi, replenishmentApi } from "./api";
+import {
+    adminApi,
+    authApi,
+    betApi,
+    drawApi,
+    userApi,
+    replenishmentApi
+} from "./api";
 import { authReducer } from "./slices";
 
 export const store = configureStore({
@@ -8,6 +15,7 @@ export const store = configureStore({
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
+        [drawApi.reducerPath]: drawApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [replenishmentApi.reducerPath]: replenishmentApi.reducer
     },
@@ -16,6 +24,7 @@ export const store = configureStore({
             .concat(adminApi.middleware)
             .concat(authApi.middleware)
             .concat(betApi.middleware)
+            .concat(drawApi.middleware)
             .concat(userApi.middleware)
             .concat(replenishmentApi.middleware)
 });

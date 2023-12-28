@@ -1,24 +1,26 @@
 import { useRef, useId } from "react";
-import { Form, redirect, useSubmit } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSendConfirmationCodeMutation } from "@/store";
 
 import * as z from "zod";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ErrorMessage } from "@/components/ui/input";
 
 interface FormFields {
     email: string;
 }
 
-export const action = async ({ request }: any) => {
-    const formData = await request.formData();
-    sessionStorage.setItem("email", formData.get("email"));
+// export const action = async ({ request }: any) => {
+//     const formData = await request.formData();
+//     sessionStorage.setItem("email", formData.get("email"));
 
-    return redirect("/aviator_front/main/password/confirm-email");
-};
+//     return redirect("/aviator_front/main/password/confirm-email");
+// };
 
 const formSchema = z.object({
     email: z
@@ -31,8 +33,11 @@ const formSchema = z.object({
 
 export const RestorePasswordForm = () => {
     const formRef = useRef<HTMLFormElement>(null);
-    const submit = useSubmit();
+    // const submit = useSubmit();
     const emailErrorId = useId();
+    const navigate = useNavigate();
+    const [sendConfirmationCode, { error, isError }] =
+        useSendConfirmationCodeMutation();
 
     const email = sessionStorage.getItem("email");
 
@@ -43,14 +48,17 @@ export const RestorePasswordForm = () => {
         }
     });
 
-    const onSubmit: SubmitHandler<FormFields> = () => {
-        submit(formRef.current, {
-            method: "post"
-        });
+    const onSubmit: SubmitHandler<FormFields> = async ({ email }) => {
+        const response = await sendConfirmationCode({ email });
+
+        if (response?.error) return;
+
+        sessionStorage.setItem("email", email);
+        navigate("/aviator_front/main/password/confirm-email");
     };
 
     return (
-        <Form
+        <form
             className="space-y-8"
             onSubmit={form.handleSubmit(onSubmit)}
             ref={formRef}
@@ -62,19 +70,28 @@ export const RestorePasswordForm = () => {
                 <Input
                     {...form.register("email")}
                     aria-invalid={
-                        form.formState.errors.email ? "true" : "false"
+                        form.formState.errors.email
+                            ? "true"
+                            : isError
+                              ? "true"
+                              : "false"
                     }
                     aria-errormessage={emailErrorId}
                     autoComplete="off"
                 />
-                <output
-                    id={emailErrorId}
-                    className="block text-xs text-red-750"
-                >
-                    {form.formState.errors.email?.message}
-                </output>
+                {isError ? (
+                    <ErrorMessage
+                        id={emailErrorId}
+                        message={error?.data?.message}
+                    />
+                ) : form.formState.errors.email ? (
+                    <ErrorMessage
+                        id={emailErrorId}
+                        message={form.formState.errors.email?.message}
+                    />
+                ) : null}
             </Label>
             <Button variant="confirm">Восстановить</Button>
-        </Form>
+        </form>
     );
 };

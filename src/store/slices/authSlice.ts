@@ -4,6 +4,7 @@ import { RootStore } from "..";
 
 interface AuthState {
     token: string | null;
+    isAuthenticated: boolean;
 }
 
 const authSlice = createSlice({
@@ -11,7 +12,10 @@ const authSlice = createSlice({
     initialState: () => {
         const token = localStorage.getItem("token");
 
-        return { token: token ? JSON.parse(token) : null } as AuthState;
+        return {
+            token,
+            isAuthenticated: false
+        } as AuthState;
     },
     reducers: {},
     extraReducers: builder => {
@@ -24,6 +28,7 @@ const authSlice = createSlice({
                         JSON.stringify(payload.token)
                     );
                     state.token = payload.token;
+                    state.isAuthenticated = true;
                 }
             )
             .addMatcher(
@@ -34,6 +39,7 @@ const authSlice = createSlice({
                         JSON.stringify(payload.token)
                     );
                     state.token = payload.token;
+                    state.isAuthenticated = true;
                 }
             )
             .addMatcher(
@@ -51,4 +57,7 @@ const authSlice = createSlice({
 
 export const { reducer: authReducer, actions: authActions } = authSlice;
 
-export const getAuthenticationStatus = (state: RootStore) => state.auth.token;
+export const getAuthenticationStatus = (state: RootStore) => ({
+    token: state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated
+});

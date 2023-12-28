@@ -49,6 +49,7 @@ export interface User {
     leader: string;
     descendants: string[];
     bonuses: string[];
+    profileImage: string;
 }
 
 export interface UserBalance {

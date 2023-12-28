@@ -3,27 +3,20 @@ import { SignInButton } from "./components/sign-in-button";
 import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
 
-import { Dialog } from "@/components/ui/dialog/dialog";
-import { SignInForm } from "./components/form/sign-in-form";
+import { useAuth } from "@/store/hooks/useAuth";
 
 export const Header = () => {
+    const { isAuthenticated } = useAuth();
+
     return (
         <header>
-            <div className="flex justify-end gap-4 bg-[#2c2d30] px-4 py-2">
-                <SignInButton />
+            {!isAuthenticated ? (
+                <div className="flex justify-end gap-4 bg-[#2c2d30] px-4 py-2">
+                    <SignInButton />
 
-                <SignUpButton />
-                <Dialog>
-                    <Dialog.Trigger className="rounded-lg bg-green-400 px-4 py-3 font-bold">
-                        Trigger
-                    </Dialog.Trigger>
-                    <Dialog.Portal>
-                        <Dialog.Content>
-                            <SignInForm />
-                        </Dialog.Content>
-                    </Dialog.Portal>
-                </Dialog>
-            </div>
+                    <SignUpButton />
+                </div>
+            ) : null}
             <div className="flex items-center justify-between">
                 <Logo />
                 <div className="relative flex items-center gap-4 py-2">

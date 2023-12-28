@@ -8,36 +8,55 @@ import {
     SuccessResponse,
     ChangePasswordRequest
 } from "./types";
+import { RootStore } from "..";
 
 export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL
+        baseUrl: import.meta.env.VITE_API_BASE_URL,
+        prepareHeaders: (headers, { getState }) => {
+            const token = (getState() as RootStore).auth.token;
+            if (token) {
+                headers.set("authorization", `Bearer ${token}`);
+            }
+            return headers;
+        }
     }),
+    tagTypes: ["User", "Balance"],
     endpoints: builder => ({
         //! =================================================================
         getUser: builder.query<User, void>({
             query: () => ({
                 url: "user"
-            })
+            }),
+            providesTags: ["User"]
         }),
         getUserBalance: builder.query<UserBalance, void>({
             query: () => ({
                 url: "user/balance"
-            })
+            }),
+            providesTags: ["Balance"]
         }),
         getUserBonus: builder.query<UserBonus, void>({
             query: () => ({
                 url: "user/bonus"
             })
         }),
-        getUserRequisite: builder.query<UserRequisite, void>({
+        getUserRequisites: builder.query<UserRequisite, void>({
             query: () => ({
                 url: "user/requisites"
             })
         }),
+        getUserRecommendedRequisites: builder.query<UserRequisite, void>({
+            query: () => ({
+                url: "user/requisites/recommended"
+            })
+        }),
         //! =================================================================
-        sendPromo: builder.mutation<SuccessResponse, { promoCode: string }>({
+        activatePromoCode: builder.mutation<
+            SuccessResponse,
+            { promoCode: string }
+        >({
             query: body => ({
                 url: "user/bonus",
                 method: "POST",
@@ -91,6 +110,29 @@ export const userApi = createApi({
                 method: "PUT",
                 body
             })
+        }),
+        changeProfileImage: builder.mutation<User, File>({
+            query: file => {
+                const formData = new FormData();
+                formData.append("file", file);
+                return {
+                    url: "/user/profile-image",
+                    method: "PUT",
+                    body: formData,
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    formData: true
+                };
+            },
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["User"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         })
     })
 });
@@ -102,13 +144,16 @@ export const {
     useLazyGetUserBalanceQuery,
     useGetUserBonusQuery,
     useLazyGetUserBonusQuery,
-    useGetUserRequisiteQuery,
-    useLazyGetUserRequisiteQuery,
-    useSendPromoMutation,
+    useGetUserRequisitesQuery,
+    useLazyGetUserRequisitesQuery,
+    useGetUserRecommendedRequisitesQuery,
+    useLazyGetUserRecommendedRequisitesQuery,
+    useActivatePromoCodeMutation,
     useSendEmailConfirmationCodeMutation,
     useConfirmEmailMutation,
     useSendEmailChangeCodeMutation,
     useChangeEmailMutation,
     useChangePasswordConfirmMutation,
-    useChangeUserPasswordMutation
+    useChangeUserPasswordMutation,
+    useChangeProfileImageMutation
 } = userApi;

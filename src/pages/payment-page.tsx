@@ -1,8 +1,16 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 
 import { Popover } from "@/components/ui/popover/popover";
 import { PaymentDrawForm } from "@/components/forms/payment-draw-form";
 import { PaymentHistoryPopover } from "@/components/popovers/payment-history-popoever";
+import {
+    useGetUserQuery,
+    useGetUserRequisitesQuery,
+    useGetUserRecommendedRequisitesQuery
+} from "@/store";
+
+import { BalanceMenu } from "@/components/dropdown-menus";
 
 import UzCard from "@/assets/uzcard-360w.webp";
 import Humo from "@/assets/humo-360w.webp";
@@ -12,6 +20,7 @@ import World from "@/assets/world-360w.webp";
 import Bitcoin from "@/assets/bitcoin-360w.webp";
 
 import { FaPhoneVolume } from "react-icons/fa6";
+import { Logo } from "@/containers/header/components/logo";
 
 interface Payment {
     id: number;
@@ -72,14 +81,27 @@ export const PaymentPage = () => {
         null
     );
 
+    const { data: user } = useGetUserQuery();
+    const { data: requisites } = useGetUserRequisitesQuery();
+    const { data: recommended } = useGetUserRecommendedRequisitesQuery();
+
+    console.log("Requisites: ", requisites);
+    console.log("Recommended requisites: ", recommended);
+
     return (
         <>
+            <header className="flex items-center justify-between py-2">
+                <Link to="/aviator_front/main">
+                    <Logo />
+                </Link>
+                <BalanceMenu />
+            </header>
             <h1 className="text-2xl font-bold">Вывод</h1>
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
                     <p className="justify-self-start text-sm leading-5 text-slate-400">
-                        user ID
+                        {user?.telegramId}
                     </p>
                     <div
                         ref={setRenderElement}

@@ -5,6 +5,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
 import { BonusTable, DepositBonusTable } from "@/components/tables";
+import { useActivatePromoCodeMutation } from "@/store";
 
 interface Bonus {
     id: number;
@@ -69,43 +70,76 @@ interface ActivationFormProps {
     setBonusData: React.Dispatch<React.SetStateAction<Bonus[]>>;
 }
 
+interface FormFields {
+    promoCode: HTMLInputElement;
+}
+
 const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
+    const [activatePromo] = useActivatePromoCodeMutation();
+
     const { toast } = useToast();
 
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = event => {
+    const handleSubmit: React.FormEventHandler<
+        HTMLFormElement & FormFields
+    > = async event => {
         event.preventDefault();
 
-        const input = event.currentTarget.elements.namedItem(
-            "promo"
-        ) as HTMLInputElement;
-        const promo = input.value;
+        const { promoCode } = event.currentTarget;
+        const promo = promoCode.value;
         const date = new Date();
 
-        if (promo === "") input.setAttribute("value", "Ввести промокод");
+        if (promo.trim() === "")
+            promoCode.setAttribute("value", "Ввести промокод");
 
-        setBonusData(bonusData => {
-            return [...bonusData, { id: 3, date: date, sum: 123, ratio: 1 }];
-        });
-        input.setAttribute("type", "button");
+        const response = await activatePromo({ promoCode: promo });
 
-        toast({
-            title: "Промокод успешно активирован",
-            description: `${date.toLocaleDateString([], {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            })}, ${date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-            })}`,
-            duration: 5000,
-            action: (
-                <ToastAction altText="Скрыть всплывающее окно">
-                    Скрыть
-                </ToastAction>
-            )
-        });
+        promoCode.setAttribute("type", "button");
+
+        if (response?.error) {
+            toast({
+                title: response?.error?.data?.message,
+                description: `${date.toLocaleDateString([], {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                })}, ${date.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                })}`,
+                duration: 5000,
+                action: (
+                    <ToastAction altText="Скрыть всплывающее окно">
+                        Скрыть
+                    </ToastAction>
+                )
+            });
+        } else {
+            setBonusData(bonusData => {
+                return [
+                    ...bonusData,
+                    { id: 3, date: date, sum: 123, ratio: 1 }
+                ];
+            });
+            toast({
+                title: "Промокод успешно активирован",
+                description: `${date.toLocaleDateString([], {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                })}, ${date.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                })}`,
+                duration: 5000,
+                action: (
+                    <ToastAction altText="Скрыть всплывающее окно">
+                        Скрыть
+                    </ToastAction>
+                )
+            });
+        }
     };
 
     return (
@@ -115,7 +149,7 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
         >
             <input
                 type="button"
-                name="promo"
+                name="promoCode"
                 autoComplete="off"
                 defaultValue="Ввести промокод"
                 onClick={event => {

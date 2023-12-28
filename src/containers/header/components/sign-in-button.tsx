@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-// import { Dialog } from "@/components/ui/dialog/dialog";
-
 export const SignInButton = () => {
     return (
         <Dialog>
@@ -18,21 +16,3 @@ export const SignInButton = () => {
         </Dialog>
     );
 };
-
-// export const SignInButton = () => {
-//     const navigate = useNavigate();
-
-//     return (
-//         <Dialog>
-//             <Dialog.Trigger
-//                 className="rounded-lg bg-green-400 px-4 py-3 font-bold"
-//                 onClick={() => navigate("/aviator_front/main/sign-in")}
-//             >
-//                 Вход
-//             </Dialog.Trigger>
-//             <Dialog.Portal>
-//                 <Dialog.Content className="w-80 space-y-4 text-white"></Dialog.Content>
-//             </Dialog.Portal>
-//         </Dialog>
-//     );
-// };

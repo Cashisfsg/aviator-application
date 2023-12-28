@@ -30,7 +30,7 @@ import {
     PopoverTrigger
 } from "@/components/ui/popover";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { Form } from "./form";
@@ -43,26 +43,9 @@ import { cn } from "@/utils";
 const alphanumericRegex = /^[A-Za-z0-9]+$/;
 
 const currencies = [
-    { label: "Доллар США", value: "USD" },
-    { label: "Евро", value: "EUR" },
-    { label: "Фунт стерлингов", value: "GBP" },
-    { label: "Японская йена", value: "JPY" },
-    { label: "Канадский доллар", value: "CAD" },
-    { label: "Швейцарский франк", value: "CHF" },
-    { label: "Австралийский доллар", value: "AUD" },
-    { label: "Китайский юань", value: "CNY" },
-    { label: "Шведская крона", value: "SEK" },
-    { label: "Новозеландский доллар", value: "NZD" },
-    { label: "Мексиканское песо", value: "MXN" },
-    { label: "Сингапурский доллар", value: "SGD" },
-    { label: "Гонконгский доллар", value: "HKD" },
-    { label: "Норвежская крона", value: "NOK" },
-    { label: "Южноафриканский рэнд", value: "ZAR" },
-    { label: "Турецкая лира", value: "TRY" },
-    { label: "Российский рубль", value: "RUB" },
-    { label: "Индийская рупия", value: "INR" },
-    { label: "Бразильский реал", value: "BRL" },
-    { label: "Саудовский риял", value: "SAR" }
+    { id: 1, label: "Казахский тенге", value: "KZT" },
+    { id: 2, label: "Российский рубль", value: "RUB" },
+    { id: 3, label: "Узбекистанский сум", value: "UZS" }
 ];
 
 const formSchema: z.ZodType<
@@ -147,12 +130,12 @@ export const SignUpForm = () => {
         }
     });
 
-    const onSubmit = ({
+    const onSubmit = async ({
         accepted_terms,
         ...values
     }: z.infer<typeof formSchema>) => {
         console.log(values);
-        createNewUser(values);
+        await createNewUser(values);
     };
 
     return (
@@ -200,40 +183,39 @@ export const SignUpForm = () => {
                                             Валюта не найдена
                                         </CommandEmpty>
                                         <CommandGroup>
-                                            <ScrollArea className="h-64">
-                                                {currencies.map(currency => (
-                                                    <CommandItem
-                                                        value={currency.label}
-                                                        key={currency.value}
-                                                        onSelect={() => {
-                                                            form.resetField(
-                                                                "currency",
-                                                                {
-                                                                    keepError:
-                                                                        false
-                                                                }
-                                                            );
-                                                            form.setValue(
-                                                                "currency",
-                                                                currency.value
-                                                            );
+                                            {/* <ScrollArea className="h-64"> */}
+                                            {currencies.map(currency => (
+                                                <CommandItem
+                                                    value={currency.label}
+                                                    key={currency.value}
+                                                    onSelect={() => {
+                                                        form.resetField(
+                                                            "currency",
+                                                            {
+                                                                keepError: false
+                                                            }
+                                                        );
+                                                        form.setValue(
+                                                            "currency",
+                                                            currency.value
+                                                        );
 
-                                                            setOpen(false);
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                currency.value ===
-                                                                    field.value
-                                                                    ? "opacity-100"
-                                                                    : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {currency.label}
-                                                    </CommandItem>
-                                                ))}
-                                            </ScrollArea>
+                                                        setOpen(false);
+                                                    }}
+                                                >
+                                                    <Check
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            currency.value ===
+                                                                field.value
+                                                                ? "opacity-100"
+                                                                : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {currency.label}
+                                                </CommandItem>
+                                            ))}
+                                            {/* </ScrollArea> */}
                                         </CommandGroup>
                                     </Command>
                                 </PopoverContent>

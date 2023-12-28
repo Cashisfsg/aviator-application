@@ -8,6 +8,7 @@ import {
     ChangePasswordConfirmRequest,
     ChangePasswordRequest
 } from "./types";
+import { userApi } from ".";
 
 export const authApi = createApi({
     reducerPath: "authApi",
@@ -30,7 +31,15 @@ export const authApi = createApi({
                 url: "auth/login",
                 method: "POST",
                 body
-            })
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }),
         sendConfirmationCode: builder.mutation<
             SuccessResponse,

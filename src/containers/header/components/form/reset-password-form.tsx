@@ -1,24 +1,26 @@
 // import { useRef } from "react";
-import { Form, redirect, useSubmit } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useChangePasswordMutation } from "@/store";
+import { useAuth } from "@/store/hooks/useAuth";
 
 import * as z from "zod";
 
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Input, ErrorMessage } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 // import { DialogClose } from "@/components/ui/dialog";
 // import { DialogCloseProps } from "@radix-ui/react-dialog";
 
 interface FormFields {
     password: string;
-    confirm_password: string;
+    passwordConfirm: string;
 }
 
-export const action = async () => {
-    return redirect("/aviator_front/main/");
-};
+// export const action = async () => {
+//     return redirect("/aviator_front/main/");
+// };
 
 const alphanumericRegex = /^[A-Za-z0-9]+$/;
 
@@ -38,7 +40,7 @@ const formSchema = z
             .max(30, {
                 message: "Превышено максимально допустимое количество символов"
             }),
-        confirm_password: z
+        passwordConfirm: z
             .string()
             .min(1, {
                 message: "Поле обязательно для заполнения"
@@ -53,27 +55,44 @@ const formSchema = z
                 message: "Превышено максимально допустимое количество символов"
             })
     })
-    .refine(data => data.password === data.confirm_password, {
+    .refine(data => data.password === data.passwordConfirm, {
         message: "Пароли должны совпадать",
-        path: ["confirm_password"]
+        path: ["passwordConfirm"]
     });
 
 export const ResetPasswordForm = () => {
-    const submit = useSubmit();
+    // const submit = useSubmit();
     // const closeRef = useRef<
     //     DialogCloseProps & React.RefAttributes<HTMLButtonElement>
     // >(null);
+
+    const navigate = useNavigate();
+    const [changePassword] = useChangePasswordMutation();
+    const { token } = useAuth();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             password: "",
-            confirm_password: ""
+            passwordConfirm: ""
         }
     });
 
-    const onSubmit: SubmitHandler<FormFields> = () => {
-        submit(null, { method: "post" });
+    const handleSubmit: SubmitHandler<FormFields> = async ({
+        password,
+        passwordConfirm
+    }) => {
+        if (!token) return;
+
+        const response = await changePassword({
+            password,
+            passwordConfirm,
+            token
+        });
+
+        if (response?.error) return;
+
+        navigate("/aviator_front/main/sign-in");
     };
 
     // const handleSubmit = () => {
@@ -83,10 +102,10 @@ export const ResetPasswordForm = () => {
     // };
 
     return (
-        <Form
+        <form
             // method="POST"
             className="grid gap-y-8"
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleSubmit)}
         >
             <Label>
                 <span className="text-xs">
@@ -99,24 +118,26 @@ export const ResetPasswordForm = () => {
                     }
                     autoComplete="off"
                 />
-                <output className="block text-xs text-red-750">
-                    {form.formState.errors.password?.message}
-                </output>
+                {form.formState.errors.password ? (
+                    <ErrorMessage
+                        message={form.formState.errors.password?.message}
+                    />
+                ) : null}
             </Label>
             <Label>
                 <span className="text-sm">Повторите пароль</span>
                 <Input
-                    {...form.register("confirm_password")}
+                    {...form.register("passwordConfirm")}
                     aria-invalid={
-                        form.formState.errors.confirm_password
-                            ? "true"
-                            : "false"
+                        form.formState.errors.passwordConfirm ? "true" : "false"
                     }
                     autoComplete="off"
                 />
-                <output className="block text-xs text-red-750">
-                    {form.formState.errors.confirm_password?.message}
-                </output>
+                {form.formState.errors.passwordConfirm ? (
+                    <ErrorMessage
+                        message={form.formState.errors.passwordConfirm?.message}
+                    />
+                ) : null}
             </Label>
 
             <Button
@@ -129,6 +150,6 @@ export const ResetPasswordForm = () => {
                 ref={closeRef}
                 hidden
             ></DialogClose> */}
-        </Form>
+        </form>
     );
 };

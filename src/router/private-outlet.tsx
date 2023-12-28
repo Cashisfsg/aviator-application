@@ -2,10 +2,10 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/store/hooks/useAuth";
 
 export const PrivateRoute = () => {
-    const { token } = useAuth();
+    const { isAuthenticated } = useAuth();
     const location = useLocation();
 
-    return token ? (
+    return isAuthenticated ? (
         <Outlet />
     ) : (
         <Navigate
