@@ -1,16 +1,16 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 import { Popover } from "@/components/ui/popover/popover";
-import { PaymentDrawForm } from "@/components/forms/payment-draw-form";
 import { PaymentHistoryPopover } from "@/components/popovers/payment-history-popoever";
+import { PaymentDrawDialog } from "@/components/dialogs/payment-draw-dialog";
+
 import {
     useGetUserQuery,
     useGetUserRequisitesQuery,
     useGetUserRecommendedRequisitesQuery
 } from "@/store";
 
-import { BalanceMenu } from "@/components/dropdown-menus";
+import { Header, PaymentMethod, TechnicalSupport } from "./components";
 
 import UzCard from "@/assets/uzcard-360w.webp";
 import Humo from "@/assets/humo-360w.webp";
@@ -19,10 +19,7 @@ import Qiwi from "@/assets/qiwi-360w.webp";
 import World from "@/assets/world-360w.webp";
 import Bitcoin from "@/assets/bitcoin-360w.webp";
 
-import { FaPhoneVolume } from "react-icons/fa6";
-import { Logo } from "@/containers/header/components/logo";
-
-interface Payment {
+export interface Payment {
     id: number;
     img: string;
     currency: string;
@@ -75,11 +72,11 @@ const methods: Payment[] = [
     }
 ];
 
-export const PaymentPage = () => {
-    const dialogRef = useRef<HTMLDialogElement>(null);
+export const PaymentDrawPage = () => {
     const [renderElement, setRenderElement] = useState<HTMLDivElement | null>(
         null
     );
+    const [paymentDrawDialogOpen, setPaymentDrawDialogOpen] = useState(false);
 
     const { data: user } = useGetUserQuery();
     const { data: requisites } = useGetUserRequisitesQuery();
@@ -90,12 +87,7 @@ export const PaymentPage = () => {
 
     return (
         <>
-            <header className="flex items-center justify-between py-2">
-                <Link to="/aviator_front/main">
-                    <Logo />
-                </Link>
-                <BalanceMenu />
-            </header>
+            <Header />
             <h1 className="text-2xl font-bold">Вывод</h1>
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
@@ -154,6 +146,7 @@ export const PaymentPage = () => {
                             <PaymentMethod
                                 key={method.id}
                                 payment={method}
+                                onClick={() => setPaymentDrawDialogOpen(true)}
                             />
                         ))}
                     </ul>
@@ -186,45 +179,12 @@ export const PaymentPage = () => {
                 </section>
 
                 <TechnicalSupport />
+
+                <PaymentDrawDialog
+                    open={paymentDrawDialogOpen}
+                    setOpen={setPaymentDrawDialogOpen}
+                />
             </article>
-            <dialog
-                // ref={dialogRef}
-                onClose={event => console.log(event.target)}
-            >
-                <button onClick={() => dialogRef.current?.close()}>x</button>
-                <PaymentDrawForm />
-            </dialog>
         </>
-    );
-};
-
-interface PaymentProps {
-    payment: Payment;
-}
-
-const PaymentMethod: React.FC<PaymentProps> = ({ payment }) => {
-    return (
-        <li className="grid aspect-video w-full cursor-pointer select-none grid-rows-[minmax(0,1fr)_minmax(0,3fr)_minmax(0,1fr)] items-center gap-y-1 rounded-2.5xl bg-slate-300/70 px-3 py-2 leading-none shadow-md transition-transform duration-200 hover:scale-105">
-            <p className="text-right">{payment.currency}</p>
-            <img
-                src={payment.img}
-                alt={payment.title}
-                // height="60"
-                className="max-h-full object-cover object-center"
-            />
-            <p className="text-left text-xs font-bold xs:text-sm sm:text-base">
-                {payment.title}
-            </p>
-        </li>
-    );
-};
-
-const TechnicalSupport = () => {
-    return (
-        <button className="fixed right-5 top-[80%] flex items-center gap-x-2 border bg-slate-100/90 px-3 py-2 shadow-md transition-transform duration-200 hover:scale-110 lg:bg-slate-300">
-            <FaPhoneVolume />
-            <span className="sr-only sm:not-sr-only">Поддержка 24/7</span>
-            <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
-        </button>
     );
 };

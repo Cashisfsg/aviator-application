@@ -3,7 +3,13 @@ import { useSelector } from "react-redux";
 import { getAuthenticationStatus } from "../slices/authSlice";
 
 export const useAuth = () => {
-    const authState = useSelector(getAuthenticationStatus);
+    const { token, isAuthenticated } = useSelector(getAuthenticationStatus);
 
-    return useMemo(() => authState, [authState]);
+    return useMemo(
+        () => ({
+            token,
+            isAuthenticated
+        }),
+        [token, isAuthenticated]
+    );
 };

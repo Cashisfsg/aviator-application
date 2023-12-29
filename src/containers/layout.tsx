@@ -1,13 +1,13 @@
-import { useRef } from "react";
+// import { useRef } from "react";
 import { Outlet } from "react-router-dom";
 
 // import { Header } from "./header/header";
 import { Toaster } from "@/components/ui/toaster";
 
-import { Dialog, DialogElement } from "@/components/ui/dialog-text";
+// import { Dialog, DialogElement } from "@/components/ui/dialog-text";
 
 export const Layout = () => {
-    const dialogRef = useRef<DialogElement>(null);
+    // const dialogRef = useRef<DialogElement>(null);
 
     return (
         <>
@@ -17,7 +17,7 @@ export const Layout = () => {
             </main>
             <Toaster />
             {/* <Dialog ref={dialogRef} /> */}
-            <button
+            {/* <button
                 onClick={() => {
                     const isOpen = dialogRef.current?.getState();
                     if (isOpen) {
@@ -32,7 +32,7 @@ export const Layout = () => {
                 }}
             >
                 Open dialog
-            </button>
+            </button> */}
         </>
     );
 };

@@ -8,6 +8,10 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import { useAppDispatch } from "@/store";
+import { logout } from "@/store/slices";
+
+// import {  } from "@/store";
 
 interface SignOutAlertDialogProps {
     open: boolean;
@@ -18,6 +22,8 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
     open,
     setOpen
 }) => {
+    const dispatch = useAppDispatch();
+
     return (
         <AlertDialog
             open={open}
@@ -32,7 +38,9 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Нет</AlertDialogCancel>
-                    <AlertDialogAction>Да</AlertDialogAction>
+                    <AlertDialogAction onClick={() => dispatch(logout())}>
+                        Да
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

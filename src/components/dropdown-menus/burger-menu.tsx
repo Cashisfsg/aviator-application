@@ -85,13 +85,13 @@ export const BurgerMenu = () => {
                                     height="40"
                                     className="row-span-2 rounded-full"
                                 />
-                                <p>{user?.login}</p>
+                                <p>{user?.login || "Username"}</p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-                                    {user?.telegramId}
+                                    {user?.telegramId || "user ID"}
                                 </p>
                             </div>
                             {isAuthenticated ? (
-                                <label className="flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2.5 py-1.5 text-[#83878e]">
+                                <label className="flex cursor-pointer items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2.5 py-1.5 text-[#83878e]">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="20"
@@ -362,7 +362,9 @@ export const BurgerMenu = () => {
 
                     {isAuthenticated ? (
                         <DropdownMenuItem
-                            onClick={() => setAlertDialogOpen(true)}
+                            onClick={() => {
+                                setAlertDialogOpen(true);
+                            }}
                         >
                             <IoExitOutline className="text-base text-[#767B85]" />
                             <span>Выйти</span>

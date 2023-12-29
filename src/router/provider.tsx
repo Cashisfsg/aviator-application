@@ -1,9 +1,10 @@
 import {
     createBrowserRouter,
-    RouterProvider as Provider
+    RouterProvider as Provider,
+    Navigate
 } from "react-router-dom";
 
-import { MainPage, PaymentPage } from "@/pages";
+import { MainPage, PaymentDrawPage, PaymentReplenishmentPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
 import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
@@ -57,6 +58,15 @@ const router = createBrowserRouter([
                                 path: "reset",
                                 element: <ResetPasswordForm />
                                 // action: resetPasswordAction
+                            },
+                            {
+                                path: "*",
+                                element: (
+                                    <Navigate
+                                        to="/aviator_front/main"
+                                        replace
+                                    />
+                                )
                             }
                         ]
                     }
@@ -64,8 +74,35 @@ const router = createBrowserRouter([
             },
             {
                 path: "payment",
-                element: <PrivateRoute />,
-                children: [{ path: "draw", element: <PaymentPage /> }]
+                element: <PrivateRoute to="/aviator_front/main" />,
+                children: [
+                    {
+                        path: "draw",
+                        element: <PaymentDrawPage />
+                    },
+                    {
+                        path: "replenishment",
+                        element: <PaymentReplenishmentPage />
+                    },
+                    {
+                        path: "*",
+                        element: (
+                            <Navigate
+                                to="/aviator_front/payment/draw"
+                                replace
+                            />
+                        )
+                    }
+                ]
+            },
+            {
+                path: "*",
+                element: (
+                    <Navigate
+                        to="/aviator_front/main"
+                        replace
+                    />
+                )
             }
         ]
     }

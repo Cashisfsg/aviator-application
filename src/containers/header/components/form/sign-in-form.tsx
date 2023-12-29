@@ -87,6 +87,9 @@ export const SignInForm = () => {
                     <span>Логин</span>
                     <Input
                         type="text"
+                        aria-invalid={
+                            isError || errors.login ? "true" : "false"
+                        }
                         {...register("login")}
                     />
                     {errors?.login ? (
@@ -97,6 +100,9 @@ export const SignInForm = () => {
                     <span>Пароль</span>
                     <Input
                         type="password"
+                        aria-invalid={
+                            isError || errors.password ? "true" : "false"
+                        }
                         {...register("password")}
                     />
                     {errors?.password ? (

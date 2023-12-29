@@ -30,7 +30,9 @@ export const BalanceMenu = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link to="/aviator_front/payment">Пополнить</Link>
+                    <Link to="/aviator_front/payment/replenishment">
+                        Пополнить
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

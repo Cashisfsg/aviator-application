@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { authApi as api } from "../api/authApi";
+
+import { authApi as api, userApi } from "../api";
 import { RootStore } from "..";
 
 interface AuthState {
@@ -10,14 +11,25 @@ interface AuthState {
 const authSlice = createSlice({
     name: "auth",
     initialState: () => {
-        const token = localStorage.getItem("token");
+        const storedData = localStorage.getItem("token");
+
+        if (!storedData) return { token: null, isAuthenticated: false };
+
+        const { token } = JSON.parse(storedData);
 
         return {
             token,
-            isAuthenticated: false
+            isAuthenticated: Boolean(token)
         } as AuthState;
     },
-    reducers: {},
+    reducers: {
+        logout: state => {
+            localStorage.removeItem("token");
+            state.token = null;
+            state.isAuthenticated = false;
+            userApi.util.resetApiState();
+        }
+    },
     extraReducers: builder => {
         builder
             .addMatcher(
@@ -25,7 +37,7 @@ const authSlice = createSlice({
                 (state, { payload }) => {
                     localStorage.setItem(
                         "token",
-                        JSON.stringify(payload.token)
+                        JSON.stringify({ token: payload.token })
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
@@ -36,7 +48,7 @@ const authSlice = createSlice({
                 (state, { payload }) => {
                     localStorage.setItem(
                         "token",
-                        JSON.stringify(payload.token)
+                        JSON.stringify({ token: payload.token })
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
@@ -47,7 +59,7 @@ const authSlice = createSlice({
                 (state, { payload }) => {
                     localStorage.setItem(
                         "token",
-                        JSON.stringify(payload.token)
+                        JSON.stringify({ token: payload.token })
                     );
                     state.token = payload.token;
                 }
@@ -61,3 +73,5 @@ export const getAuthenticationStatus = (state: RootStore) => ({
     token: state.auth.token,
     isAuthenticated: state.auth.isAuthenticated
 });
+
+export const { logout } = authSlice.actions;
