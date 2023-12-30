@@ -8,10 +8,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-import { useAppDispatch } from "@/store";
-import { logout } from "@/store/slices";
-
-// import {  } from "@/store";
+import { useAppDispatch, userApi, replenishmentApi, logout } from "@/store";
 
 interface SignOutAlertDialogProps {
     open: boolean;
@@ -38,7 +35,13 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Нет</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => dispatch(logout())}>
+                    <AlertDialogAction
+                        onClick={() => {
+                            dispatch(logout());
+                            dispatch(userApi.util.resetApiState());
+                            dispatch(replenishmentApi.util.resetApiState());
+                        }}
+                    >
                         Да
                     </AlertDialogAction>
                 </AlertDialogFooter>

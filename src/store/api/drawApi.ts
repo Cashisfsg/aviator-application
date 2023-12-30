@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Requisite } from "./types";
+import { Requisite, PaymentDrawRequest } from "./types";
 import { RootStore } from "..";
 
 interface Draw {
@@ -31,14 +31,7 @@ export const drawApi = createApi({
                 url: "withdrawals"
             })
         }),
-        createDraw: builder.mutation<
-            Draw,
-            {
-                currency: string;
-                amount: number;
-                requisite: string;
-            }
-        >({
+        createDraw: builder.mutation<Draw, PaymentDrawRequest>({
             query: body => ({
                 url: "withdrawals",
                 method: "POST",
@@ -62,5 +55,6 @@ export const drawApi = createApi({
 export const {
     useGetAllDrawsQuery,
     useLazyGetAllDrawsQuery,
-    useCreateDrawMutation
+    useCreateDrawMutation,
+    useCancelDrawMutation
 } = drawApi;

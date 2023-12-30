@@ -12,78 +12,22 @@ import {
 
 import { Header, PaymentMethod, TechnicalSupport } from "./components";
 
-import UzCard from "@/assets/uzcard-360w.webp";
-import Humo from "@/assets/humo-360w.webp";
-import Visa from "@/assets/visa-360w.webp";
-import Qiwi from "@/assets/qiwi-360w.webp";
-import World from "@/assets/world-360w.webp";
-import Bitcoin from "@/assets/bitcoin-360w.webp";
-
-export interface Payment {
-    id: number;
-    img: string;
-    currency: string;
-    title: string;
-    type: string;
-}
-
-const methods: Payment[] = [
-    {
-        id: 1,
-        img: UzCard,
-        currency: "UZS",
-        title: "UzCard",
-        type: "recommended"
-    },
-    {
-        id: 2,
-        img: Humo,
-        currency: "UZS",
-        title: "Карта HUMO",
-        type: "recommended"
-    },
-    {
-        id: 3,
-        img: Visa,
-        currency: "UZS",
-        title: "Карта Visa",
-        type: "recommended"
-    },
-    {
-        id: 4,
-        img: Qiwi,
-        currency: "RUB",
-        title: "Qiwi кошелёк",
-        type: "recommended"
-    },
-    {
-        id: 5,
-        img: World,
-        currency: "RUB",
-        title: "Карта РФ банка",
-        type: "recommended"
-    },
-    {
-        id: 6,
-        img: Bitcoin,
-        currency: "CRYPTO",
-        title: "Bitcoin",
-        type: "recommended"
-    }
-];
-
 export const PaymentDrawPage = () => {
     const [renderElement, setRenderElement] = useState<HTMLDivElement | null>(
         null
     );
     const [paymentDrawDialogOpen, setPaymentDrawDialogOpen] = useState(false);
+    const [selectedRequisiteId, setSelectedRequisiteId] = useState<
+        string | null
+    >(null);
 
     const { data: user } = useGetUserQuery();
-    const { data: requisites } = useGetUserRequisitesQuery();
-    const { data: recommended } = useGetUserRecommendedRequisitesQuery();
-
-    console.log("Requisites: ", requisites);
-    console.log("Recommended requisites: ", recommended);
+    const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
+        useGetUserRequisitesQuery();
+    const {
+        data: recommendedRequisites,
+        isSuccess: isRecommendedRequisitesRequestSuccess
+    } = useGetUserRecommendedRequisitesQuery();
 
     return (
         <>
@@ -109,80 +53,58 @@ export const PaymentDrawPage = () => {
                                 </Popover.Content>
                             </Popover.Portal>
                         </Popover>
-                        {/* <button
-                            id="trigger"
-                            onClick={() => {
-                                dialogRef.current?.close();
-                            }}
-                        >
-                            История
-                        </button>
-                        <dialog
-                            ref={dialogRef}
-                            onClick={event => {
-                                const rect =
-                                    dialogRef.current?.getBoundingClientRect();
-                                const isInDialog =
-                                    rect.top <= event.clientY &&
-                                    event.clientY <= rect.bottom &&
-                                    rect.left <= event.clientX &&
-                                    event.clientX <= rect.left + rect.width;
-                                if (!isInDialog) {
-                                    dialogRef.current?.close();
-                                }
-                            }}
-                            className="absolute left-auto top-[calc(100%+0.25rem)] m-0 border border-red-400"
-                        >
-                            Popover
-                        </dialog> */}
                     </div>
                 </header>
                 <section>
                     <h2 className="text-lg uppercase text-slate-400">
                         Рекомендуемые способы
                     </h2>
-                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                        {methods.map(method => (
-                            <PaymentMethod
-                                key={method.id}
-                                payment={method}
-                                onClick={() => setPaymentDrawDialogOpen(true)}
-                            />
-                        ))}
-                    </ul>
+                    {isRecommendedRequisitesRequestSuccess ? (
+                        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                            {recommendedRequisites.map(requisite => (
+                                <PaymentMethod
+                                    key={requisite._id}
+                                    requisite={requisite}
+                                    onClick={() => {
+                                        setPaymentDrawDialogOpen(true);
+                                        setSelectedRequisiteId(requisite._id);
+                                    }}
+                                />
+                            ))}
+                        </ul>
+                    ) : null}
                 </section>
-                <section>
-                    <h2 className="text-lg uppercase text-slate-400">
-                        Методы RUB
-                    </h2>
-                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                        {methods.map(method => (
-                            <PaymentMethod
-                                key={method.id}
-                                payment={method}
-                            />
-                        ))}
-                    </ul>
-                </section>
-                <section>
-                    <h2 className="text-lg uppercase text-slate-400">
-                        Методы CRYPTO
-                    </h2>
-                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                        {methods.map(method => (
-                            <PaymentMethod
-                                key={method.id}
-                                payment={method}
-                            />
-                        ))}
-                    </ul>
-                </section>
+
+                {isRequisitesRequestSuccess
+                    ? requisites.map(requisite => (
+                          <section key={requisite.currency}>
+                              <h2 className="text-lg uppercase text-slate-400">
+                                  Методы {requisite.currency}
+                              </h2>
+                              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                  {requisite.requisites.map(method => (
+                                      <PaymentMethod
+                                          key={method._id}
+                                          requisite={method}
+                                          onClick={() => {
+                                              setPaymentDrawDialogOpen(true);
+                                              setSelectedRequisiteId(
+                                                  method._id
+                                              );
+                                          }}
+                                      />
+                                  ))}
+                              </ul>
+                          </section>
+                      ))
+                    : null}
 
                 <TechnicalSupport />
 
                 <PaymentDrawDialog
                     open={paymentDrawDialogOpen}
                     setOpen={setPaymentDrawDialogOpen}
+                    selectedRequisiteId={selectedRequisiteId}
                 />
             </article>
         </>

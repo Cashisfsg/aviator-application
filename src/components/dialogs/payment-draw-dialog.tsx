@@ -5,11 +5,13 @@ import { PaymentDrawForm } from "@/components/forms";
 interface PaymentDialogProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    selectedRequisiteId: string | null;
 }
 
 export const PaymentDrawDialog: React.FC<PaymentDialogProps> = ({
     open,
-    setOpen
+    setOpen,
+    selectedRequisiteId
 }) => {
     return (
         <Dialog
@@ -21,7 +23,10 @@ export const PaymentDrawDialog: React.FC<PaymentDialogProps> = ({
                 route={false}
                 className="w-80 border-slate-200 bg-slate-100 text-black-50"
             >
-                <PaymentDrawForm setOpen={setOpen} />
+                <PaymentDrawForm
+                    setOpen={setOpen}
+                    selectedRequisiteId={selectedRequisiteId}
+                />
             </DialogContent>
         </Dialog>
     );

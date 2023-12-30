@@ -6,7 +6,8 @@ import {
     UserRequisite,
     Token,
     SuccessResponse,
-    ChangePasswordRequest
+    ChangePasswordRequest,
+    Requisite
 } from "./types";
 import { RootStore } from "..";
 
@@ -42,12 +43,12 @@ export const userApi = createApi({
                 url: "user/bonus"
             })
         }),
-        getUserRequisites: builder.query<UserRequisite, void>({
+        getUserRequisites: builder.query<UserRequisite[], void>({
             query: () => ({
                 url: "user/requisites"
             })
         }),
-        getUserRecommendedRequisites: builder.query<UserRequisite, void>({
+        getUserRecommendedRequisites: builder.query<Requisite[], void>({
             query: () => ({
                 url: "user/requisites/recommended"
             })

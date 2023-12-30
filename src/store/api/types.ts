@@ -99,6 +99,7 @@ export interface AdminAuthorizationData {
     password: string;
 }
 
+//! ================= Payment types ================= //
 export interface Requisite {
     _id: string;
     requisite: string;
@@ -120,4 +121,11 @@ export interface Replenishment {
     requisite: Requisite;
     createdAt: string;
     completedDate: string;
+}
+
+export interface PaymentDrawRequest {
+    currency: string;
+    amount: number;
+    requisite: string;
+    userRequisite: string;
 }
