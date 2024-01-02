@@ -1,24 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Requisite, SuccessResponse } from "./types";
+import { SuccessResponse, Replenishment } from "./types";
 import { RootStore } from "..";
 
 interface Currency {
     currency: string;
     amount: number;
     requisite: string;
-}
-
-interface Replenishment {
-    user: string;
-    amount: number;
-    currency: string;
-    deduction: number;
-    status: string;
-    statusMessage: string;
-    isPayConfirmed: boolean;
-    requisite: Requisite;
-    createdAt: string;
-    completedDate: string;
 }
 
 export const replenishmentApi = createApi({
@@ -33,12 +20,20 @@ export const replenishmentApi = createApi({
             return headers;
         }
     }),
+    tagTypes: ["Deposit"],
     endpoints: builder => ({
         //! =================================================================
         getAllDeposits: builder.query<Replenishment[], void>({
             query: () => ({
                 url: "replenishments"
-            })
+            }),
+            transformResponse: (response: Replenishment[]) => {
+                if (Array.isArray(response)) {
+                    return response.reverse();
+                }
+                return response;
+            },
+            providesTags: ["Deposit"]
         }),
         getReplenishmentById: builder.query<Replenishment, { id: number }>({
             query: ({ id }) => ({
@@ -51,26 +46,29 @@ export const replenishmentApi = createApi({
                 url: `replenishments`,
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags: ["Deposit"]
         }),
         //! =================================================================
         cancelReplenishmentById: builder.mutation<
             SuccessResponse,
-            { id: number }
+            { id: string }
         >({
             query: ({ id }) => ({
                 url: `replenishments/cancel/${id}`,
                 method: "PUT"
-            })
+            }),
+            invalidatesTags: ["Deposit"]
         }),
         confirmReplenishmentById: builder.mutation<
             SuccessResponse,
-            { id: number }
+            { id: string }
         >({
             query: ({ id }) => ({
                 url: `replenishments/confirm/${id}`,
                 method: "PUT"
-            })
+            }),
+            invalidatesTags: ["Deposit"]
         })
     })
 });

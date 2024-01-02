@@ -111,6 +111,7 @@ export interface Requisite {
 }
 
 export interface Replenishment {
+    _id: string;
     user: string;
     amount: number;
     currency: string;

@@ -1,11 +1,4 @@
-import {
-    useGetAllDepositsQuery,
-    useCancelReplenishmentByIdMutation,
-    Replenishment
-} from "@/store";
-
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { useGetAllDepositsQuery, Replenishment } from "@/store";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -28,7 +21,11 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                 className
             )}
         >
-            <ScrollArea className={deposits?.length !== 0 ? "h-64" : "h-auto"}>
+            <ScrollArea
+                className={
+                    deposits && deposits?.length >= 2 ? "h-64" : "h-auto"
+                }
+            >
                 {isSuccess ? (
                     deposits.length !== 0 ? (
                         deposits.map((deposit, index) => (
@@ -37,7 +34,7 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                                     key={deposit?.createdAt}
                                     deposit={deposit}
                                 />
-                                {index !== deposits.length ? (
+                                {index !== deposits.length - 1 ? (
                                     <hr className="h-2" />
                                 ) : null}
                             </>
@@ -56,36 +53,6 @@ interface PaymentDetailsProps {
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
-    const [cancelDeposit] = useCancelReplenishmentByIdMutation();
-    const { toast } = useToast();
-
-    const abortDeposit = async () => {
-        const response = await cancelDeposit({ id: 2 });
-
-        if (response?.error) return;
-
-        const date = new Date();
-
-        toast({
-            title: response?.data?.message,
-            description: `${date.toLocaleDateString([], {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            })}, ${date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-            })}`,
-            duration: 5000,
-            action: (
-                <ToastAction altText="Скрыть всплывающее окно">
-                    Скрыть
-                </ToastAction>
-            )
-        });
-    };
-
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
             <tbody>
@@ -93,7 +60,18 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
                     <td className="px-1.5 py-0.5">Дата создания</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {deposit?.createdAt
-                            ? new Date(deposit?.createdAt).toLocaleDateString()
+                            ? `${new Date(
+                                  deposit?.createdAt
+                              ).toLocaleDateString([], {
+                                  day: "numeric",
+                                  month: "numeric",
+                                  year: "numeric"
+                              })} ${new Date(
+                                  deposit?.createdAt
+                              ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit"
+                              })}`
                             : null}
                     </td>
                 </tr>
@@ -101,9 +79,18 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {deposit?.completedDate
-                            ? new Date(
+                            ? `${new Date(
                                   deposit?.completedDate
-                              ).toLocaleDateString()
+                              ).toLocaleDateString([], {
+                                  day: "numeric",
+                                  month: "numeric",
+                                  year: "numeric"
+                              })} ${new Date(
+                                  deposit?.completedDate
+                              ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit"
+                              })}`
                             : null}
                     </td>
                 </tr>
@@ -114,34 +101,34 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
                     </td>
                 </tr>
                 <tr>
-                    <td className="px-1.5 py-0.5">Статус</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">{deposit?.status}</td>
-                </tr>
-                <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {deposit?.amount} {deposit?.currency}
                     </td>
                 </tr>
                 <tr>
-                    <td className="px-1.5 py-0.5">Реквизит</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.requisite.requisite}
-                    </td>
+                    <td className="px-1.5 py-0.5">Статус</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">{deposit?.status}</td>
                 </tr>
-                {deposit?.isPayConfirmed ? (
+
+                {deposit?.statusMessage ? (
                     <tr>
-                        <td className="px-1.5 py-0.5">ID 1234</td>
+                        <td className="px-1.5 py-0.5">Причина отмены</td>
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            <button
-                                onClick={abortDeposit}
-                                className="text-right text-blue-500"
-                            >
-                                Отменить
-                            </button>
+                            {deposit?.statusMessage}
                         </td>
                     </tr>
                 ) : null}
+                {/* {!deposit?.isPayConfirmed ? ( */}
+                <tr>
+                    <td className="px-1.5 py-0.5 text-slate-500">ID 1234</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">
+                        <button className="text-right text-blue-500">
+                            Открыть
+                        </button>
+                    </td>
+                </tr>
+                {/* ) : null} */}
             </tbody>
         </table>
     );

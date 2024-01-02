@@ -17,6 +17,7 @@ export const PaymentReplenishmentPage = () => {
     );
     const [paymentDepositDialogOpen, setPaymentDepositDialogOpen] =
         useState(false);
+    const [selectedRequisiteId, setSelectedRequisiteId] = useState("");
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
@@ -90,6 +91,7 @@ export const PaymentReplenishmentPage = () => {
                                     requisite={requisite}
                                     onClick={() => {
                                         setPaymentDepositDialogOpen(true);
+                                        setSelectedRequisiteId(requisite._id);
                                     }}
                                 />
                             ))}
@@ -110,6 +112,9 @@ export const PaymentReplenishmentPage = () => {
                                           requisite={method}
                                           onClick={() => {
                                               setPaymentDepositDialogOpen(true);
+                                              setSelectedRequisiteId(
+                                                  method._id
+                                              );
                                           }}
                                       />
                                   ))}
@@ -123,6 +128,7 @@ export const PaymentReplenishmentPage = () => {
                 <PaymentDepositDialog
                     open={paymentDepositDialogOpen}
                     setOpen={setPaymentDepositDialogOpen}
+                    selectedRequisiteId={selectedRequisiteId}
                 />
             </article>
         </>
