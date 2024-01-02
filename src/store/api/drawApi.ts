@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Requisite, PaymentDrawRequest } from "./types";
 import { RootStore } from "..";
 
-interface Draw {
+export interface Draw {
     user: string;
     amount: number;
     currency: string;

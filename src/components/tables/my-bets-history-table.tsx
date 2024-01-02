@@ -1,4 +1,6 @@
-import { Table, Row, Cell } from "../ui/table";
+import { useGetUserBetsQuery } from "@/store";
+
+import { Table, Row, Cell } from "@/components/ui/table";
 
 const formatterUSD = new Intl.NumberFormat("ru-RU", {
     style: "decimal",
@@ -17,6 +19,10 @@ const data = [
 ];
 
 export const MyBetsHistoryTable = () => {
+    const { data: bets } = useGetUserBetsQuery({});
+
+    console.log("My bets: ", bets);
+
     return (
         <Table
             className="px-1.5"

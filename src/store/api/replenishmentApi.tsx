@@ -1,19 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Requisite, SuccessResponse } from "./types";
 import { RootStore } from "..";
-
-interface Requisite {
-    _id: string;
-    requisite: string;
-    name: string;
-    currency: string;
-    img: string;
-    commission: number;
-    status: string;
-}
-
-interface SuccessResponse {
-    message: string;
-}
 
 interface Currency {
     currency: string;
@@ -48,7 +35,7 @@ export const replenishmentApi = createApi({
     }),
     endpoints: builder => ({
         //! =================================================================
-        getAllReplenishments: builder.query<Replenishment[], void>({
+        getAllDeposits: builder.query<Replenishment[], void>({
             query: () => ({
                 url: "replenishments"
             })
@@ -89,8 +76,8 @@ export const replenishmentApi = createApi({
 });
 
 export const {
-    useGetAllReplenishmentsQuery,
-    useLazyGetAllReplenishmentsQuery,
+    useGetAllDepositsQuery,
+    useLazyGetAllDepositsQuery,
     useGetReplenishmentByIdQuery,
     useLazyGetReplenishmentByIdQuery,
     useAddReplenishmentMutation,

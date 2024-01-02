@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import { Popover } from "@/components/ui/popover/popover";
-import { PaymentHistoryPopover } from "@/components/popovers/payment-history-popoever";
 import { PaymentDrawDialog } from "@/components/dialogs/payment-draw-dialog";
+import { DrawHistoryPopover } from "@/components/popovers";
 
 import {
     useGetUserQuery,
@@ -49,7 +49,7 @@ export const PaymentDrawPage = () => {
                             </Popover.Trigger>
                             <Popover.Portal renderElement={renderElement}>
                                 <Popover.Content className="bg-transparent">
-                                    <PaymentHistoryPopover />
+                                    <DrawHistoryPopover />
                                 </Popover.Content>
                             </Popover.Portal>
                         </Popover>

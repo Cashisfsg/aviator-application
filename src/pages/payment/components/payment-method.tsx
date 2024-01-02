@@ -18,7 +18,6 @@ export const PaymentMethod: React.FC<PaymentProps> = ({
                 src={requisite.img}
                 alt={requisite.name}
                 loading="lazy"
-                // height="60"
                 className="max-h-full object-cover object-center"
             />
             <p className="text-left text-xs font-bold xs:text-sm sm:text-base">

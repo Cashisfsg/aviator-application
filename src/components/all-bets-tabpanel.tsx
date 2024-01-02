@@ -1,37 +1,20 @@
-import { Table, Row, Cell } from "./ui/table";
+import { useState, useEffect } from "react";
 
-const bet_data = [
-    {
-        url: "https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png",
-        nickname: "d***5",
-        bet: "100",
-        ratio: "1.23",
-        gain: "100"
-    },
-    {
-        url: "https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png",
-        nickname: "d***5",
-        bet: "100",
-        ratio: "1.23",
-        gain: "100"
-    },
-    {
-        url: "https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png",
-        nickname: "d***5",
-        bet: "100",
-        ratio: "1.23",
-        gain: "100"
-    },
-    {
-        url: "https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png",
-        nickname: "d***5",
-        bet: "100",
-        ratio: "1.23",
-        gain: "100"
-    }
-];
+import { Table, Row, Cell } from "@/components/ui/table";
+import { socket } from "@/components/socket/socket";
+import { Player } from "./socket/types";
 
 export const AllBetsTabpanel = () => {
+    const [players, setPlayers] = useState<Player[]>([]);
+
+    useEffect(() => {
+        socket.on("game", data => {
+            console.log("game being started");
+
+            // setPlayers(data.currentPlayers);
+        });
+    }, []);
+
     return (
         <>
             <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539]">
@@ -68,29 +51,32 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={bet_data}
+                data={players}
                 renderData={data => (
                     <>
                         {data.map(row => (
-                            <Row className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]">
+                            <Row
+                                key={row.playerLogin}
+                                className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                            >
                                 <Cell className="flex items-center gap-x-2">
                                     <img
-                                        src={row.url}
+                                        src="https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png"
                                         alt="User avatar image"
                                         height="30"
                                         width="30"
                                     />
                                     <span className="text-[#9ea0a3]">
-                                        {row.nickname}
+                                        {row.playerLogin}
                                     </span>
                                 </Cell>
                                 <Cell>{row.bet} $</Cell>
                                 <Cell>
                                     <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
-                                        {row.ratio}x
+                                        {row.coeff}x
                                     </span>
                                 </Cell>
-                                <Cell>{row.gain} $</Cell>
+                                <Cell>{row.win} $</Cell>
                             </Row>
                         ))}
                     </>

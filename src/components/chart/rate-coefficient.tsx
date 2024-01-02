@@ -6,6 +6,8 @@ import {
     useImperativeHandle
 } from "react";
 
+import { socket } from "@/components/socket/socket";
+
 export interface RateElement extends React.SVGAttributes<SVGTextElement> {
     startAnimation: () => void;
     stopAnimation: () => void;
@@ -14,19 +16,25 @@ export interface RateElement extends React.SVGAttributes<SVGTextElement> {
 
 export const RateCoefficient = forwardRef<RateElement>(({ ...props }, ref) => {
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(1);
     const groupRef = useRef<SVGGElement>(null);
     const textRef = useRef<SVGTextElement>(null);
     const rateRef = useRef<SVGTextElement>(null);
 
+    // useEffect(() => {
+    //     if (!isAnimationPlaying) return;
+
+    //     const timeout = setInterval(() => {
+    //         setValue(value => +(value + 0.01).toFixed(2));
+    //     }, 80);
+
+    //     return () => clearInterval(timeout);
+    // }, [isAnimationPlaying]);
+
     useEffect(() => {
-        if (!isAnimationPlaying) return;
-
-        const timeout = setInterval(() => {
-            setValue(value => +(value + 0.01).toFixed(2));
-        }, 80);
-
-        return () => clearInterval(timeout);
+        socket.on("game", data => {
+            setValue(data.x.toFixed(2));
+        });
     }, [isAnimationPlaying]);
 
     useImperativeHandle(

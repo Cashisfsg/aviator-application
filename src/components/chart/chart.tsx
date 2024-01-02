@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { socket } from "@/components/socket/socket";
 import "./chart.css";
 import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
@@ -12,6 +13,53 @@ export const Chart = () => {
     const animationRef = useRef<Animation>();
 
     const [startScreen, setStartScreen] = useState(true);
+
+    useEffect(() => {
+        socket.on("crash", () => {
+            gameOver();
+        });
+        socket.on("loading", data => {
+            console.log("Loading data: ", data);
+
+            restart();
+            startGame();
+        });
+        socket.on("game", () => {
+            airplaneRef.current?.classList.add("fly");
+
+            rateRef.current?.startAnimation();
+            setStartScreen(false);
+        });
+    }, []);
+
+    const startGame = () => {
+        if (!airplaneRef.current) return;
+
+        setStartScreen(true);
+    };
+
+    const gameOver = () => {
+        if (!airplaneRef.current) return;
+
+        animationRef.current = airplaneRef.current.animate(
+            [
+                {
+                    translate: "800px 0px"
+                }
+            ],
+            { duration: 1000, iterations: 1, fill: "forwards" }
+        );
+        rateRef.current?.stopAnimation();
+        containerRef.current?.setAttribute("data-active", "false");
+    };
+
+    const restart = () => {
+        if (!airplaneRef.current) return;
+        rateRef.current?.resetAnimation();
+        airplaneRef.current.classList.remove("fly");
+        animationRef.current?.cancel();
+        containerRef.current?.setAttribute("data-active", "true");
+    };
 
     return (
         <section>
@@ -46,10 +94,10 @@ export const Chart = () => {
                         <g
                             onTransitionEnd={event => {
                                 event.stopPropagation();
-                                airplaneRef.current?.classList.add("fly");
+                                // airplaneRef.current?.classList.add("fly");
 
-                                rateRef.current?.startAnimation();
-                                setStartScreen(false);
+                                // rateRef.current?.startAnimation();
+                                // setStartScreen(false);
                             }}
                             className="opacity-100 transition-all duration-500"
                         >
@@ -140,7 +188,7 @@ export const Chart = () => {
                     </svg>
                 </svg>
             </figure>
-            <button
+            {/* <button
                 onClick={() => {
                     if (!airplaneRef.current) return;
 
@@ -177,7 +225,7 @@ export const Chart = () => {
                 }}
             >
                 Сброс
-            </button>
+            </button> */}
         </section>
     );
 };

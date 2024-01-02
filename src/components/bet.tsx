@@ -1,6 +1,8 @@
-import { useReducer, useRef } from "react";
+import { useReducer, useEffect, useRef } from "react";
+import { useStateSelector } from "@/store";
+import { socket } from "@/components/socket/socket";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 
@@ -42,6 +44,11 @@ const reducer = (state: State, action: Action): State => {
 
             if (action.payload > MAX_BET) return MAX_BET;
 
+            socket.emit("bet", {
+                currency: "RUB",
+                bet: Number(action.payload)
+            });
+
             return action.payload;
 
         case "increment":
@@ -64,6 +71,39 @@ const BetTab = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
+    const token = useStateSelector(state => state.auth.token);
+
+    useEffect(() => {
+        const onConnect = () => {
+            console.log("Connect to server");
+            socket.on("game", data => {
+                console.log("game being started");
+
+                // console.log("Players: ", data);
+            });
+            socket.on("loading", () => {
+                console.log("Make bet");
+            });
+        };
+
+        const onDisconnect = () => {
+            console.log("Disconnect from server");
+        };
+
+        socket.connect();
+
+        socket.on("connect", onConnect);
+        socket.on("disconnect", onDisconnect);
+        // socket.on("bet", () => {
+        //     console.log("Делайте ваши ставки");
+        // });
+
+        return () => {
+            socket.off("connect", onConnect);
+            socket.off("disconnect", onDisconnect);
+            socket.disconnect();
+        };
+    }, [token]);
 
     const handlePointerDown = (
         type: "increment" | "decrement",
@@ -194,6 +234,19 @@ const BetTab = () => {
                     {number}
                 </button>
             ))}
+            <button
+                onClick={() => {
+                    // socket.auth({token})
+                    console.log("Making bet");
+
+                    socket.emit("bet", {
+                        currency: "RUB",
+                        bet: 123
+                    });
+                }}
+            >
+                Сделай ставку
+            </button>
         </section>
     );
 };

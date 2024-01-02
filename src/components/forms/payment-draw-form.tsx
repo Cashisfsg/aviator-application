@@ -28,7 +28,8 @@ const formSchema: z.ZodType<
             required_error: "Поле обязательно для заполнения",
             invalid_type_error: "Поле может содержать только цифры"
         })
-        .int({ message: "Введенное значение должно быть целым числом" }),
+        .int({ message: "Введенное значение должно быть целым числом" })
+        .gte(100, "Минимальная сумма выплат 100"),
     userRequisite: z
         .string()
         .min(1, {
@@ -62,7 +63,7 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
     } = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            amount: undefined,
+            amount: 0,
             userRequisite: ""
         }
     });
@@ -142,7 +143,9 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
                     className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus-visible:outline-slate-400/70"
                 />
                 {errors?.amount ? (
-                    <ErrorMessage message={errors?.amount?.message} />
+                    <ErrorMessage
+                        message={`${errors?.amount?.message} ${selectedRequisite?.currency}`}
+                    />
                 ) : null}
                 {isError ? (
                     <ErrorMessage message={error?.data?.message} />
