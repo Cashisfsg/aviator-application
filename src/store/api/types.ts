@@ -32,6 +32,7 @@ export interface ChangePasswordConfirmRequest {
 }
 
 export interface ChangePasswordRequest {
+    token: string;
     password: string;
     passwordConfirm: string;
 }

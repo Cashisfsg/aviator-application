@@ -3,8 +3,8 @@ import { useStateSelector } from "@/store";
 import { socket } from "@/components/socket/socket";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
+// import { Label } from "./ui/label";
+// import { Switch } from "./ui/switch";
 
 export const Bet = () => {
     return (
@@ -77,9 +77,7 @@ const BetTab = () => {
         const onConnect = () => {
             console.log("Connect to server");
             socket.on("game", data => {
-                console.log("game being started");
-
-                // console.log("Players: ", data);
+                console.log("game being started", data.currentPlayers);
             });
             socket.on("loading", () => {
                 console.log("Make bet");
@@ -90,7 +88,7 @@ const BetTab = () => {
             console.log("Disconnect from server");
         };
 
-        socket.connect();
+        // socket.connect();
 
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
@@ -101,7 +99,7 @@ const BetTab = () => {
         return () => {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
-            socket.disconnect();
+            // socket.disconnect();
         };
     }, [token]);
 
@@ -236,12 +234,11 @@ const BetTab = () => {
             ))}
             <button
                 onClick={() => {
-                    // socket.auth({token})
                     console.log("Making bet");
 
                     socket.emit("bet", {
                         currency: "RUB",
-                        bet: 123
+                        bet: 0.01
                     });
                 }}
             >
@@ -251,25 +248,25 @@ const BetTab = () => {
     );
 };
 
-const AutoBetTab = () => {
-    return (
-        <>
-            <button className="h-5 w-25 shrink-0 whitespace-nowrap rounded-full border border-[#1d7aca] bg-[#45c0f2] text-xs font-bold uppercase leading-none">
-                Авто игра
-            </button>
-            <div className="flex">
-                <Label
-                    direction="row"
-                    className="text-xs leading-none"
-                >
-                    <span>Авто кешаут</span>
-                    <Switch />
-                </Label>
-                <div>
-                    <input className="w-full" />
-                    <button>x</button>
-                </div>
-            </div>
-        </>
-    );
-};
+// const AutoBetTab = () => {
+//     return (
+//         <>
+//             <button className="h-5 w-25 shrink-0 whitespace-nowrap rounded-full border border-[#1d7aca] bg-[#45c0f2] text-xs font-bold uppercase leading-none">
+//                 Авто игра
+//             </button>
+//             <div className="flex">
+//                 <Label
+//                     direction="row"
+//                     className="text-xs leading-none"
+//                 >
+//                     <span>Авто кешаут</span>
+//                     <Switch />
+//                 </Label>
+//                 <div>
+//                     <input className="w-full" />
+//                     <button>x</button>
+//                 </div>
+//             </div>
+//         </>
+//     );
+// };

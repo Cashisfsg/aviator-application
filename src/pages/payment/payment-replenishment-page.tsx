@@ -17,6 +17,10 @@ export const PaymentReplenishmentPage = () => {
     );
     const [paymentDepositDialogOpen, setPaymentDepositDialogOpen] =
         useState(false);
+    const [initialFormState, setInitialFormState] = useState({
+        state: "init",
+        replenishmentId: ""
+    });
     const [selectedRequisiteId, setSelectedRequisiteId] = useState("");
 
     const { data: user } = useGetUserQuery();
@@ -47,7 +51,14 @@ export const PaymentReplenishmentPage = () => {
                             </Popover.Trigger>
                             <Popover.Portal renderElement={renderElement}>
                                 <Popover.Content className="bg-transparent">
-                                    <DepositsHistoryPopover />
+                                    <DepositsHistoryPopover
+                                        setInitialFormState={
+                                            setInitialFormState
+                                        }
+                                        setDialogOpen={
+                                            setPaymentDepositDialogOpen
+                                        }
+                                    />
                                 </Popover.Content>
                             </Popover.Portal>
                         </Popover>
@@ -91,6 +102,10 @@ export const PaymentReplenishmentPage = () => {
                                     requisite={requisite}
                                     onClick={() => {
                                         setPaymentDepositDialogOpen(true);
+                                        setInitialFormState(state => ({
+                                            ...state,
+                                            state: "init"
+                                        }));
                                         setSelectedRequisiteId(requisite._id);
                                     }}
                                 />
@@ -112,6 +127,10 @@ export const PaymentReplenishmentPage = () => {
                                           requisite={method}
                                           onClick={() => {
                                               setPaymentDepositDialogOpen(true);
+                                              setInitialFormState(state => ({
+                                                  ...state,
+                                                  state: "init"
+                                              }));
                                               setSelectedRequisiteId(
                                                   method._id
                                               );
@@ -127,6 +146,7 @@ export const PaymentReplenishmentPage = () => {
 
                 <PaymentDepositDialog
                     open={paymentDepositDialogOpen}
+                    initialFormState={initialFormState}
                     setOpen={setPaymentDepositDialogOpen}
                     selectedRequisiteId={selectedRequisiteId}
                 />

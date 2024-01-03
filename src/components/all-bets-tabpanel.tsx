@@ -9,9 +9,9 @@ export const AllBetsTabpanel = () => {
 
     useEffect(() => {
         socket.on("game", data => {
-            console.log("game being started");
+            console.log("game being started", data);
 
-            // setPlayers(data.currentPlayers);
+            // setPlayers(data);
         });
     }, []);
 

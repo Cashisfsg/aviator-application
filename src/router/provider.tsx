@@ -19,6 +19,11 @@ import {
     ResetPasswordForm
     // action as resetPasswordAction
 } from "@/containers/header/components/form/reset-password-form";
+import { SecurityForm } from "@/components/forms/security-form";
+import { SecurityBindEmailForm } from "@/components/forms/security-bind-email-form";
+import { SecurityConfirmBindingEmailForm } from "@/components/forms/security-confirm-binding-email-form";
+import { SecurityResetPasswordForm } from "@/components/forms/security-reset-password-form";
+import { SecurityConfirmResetPasswordForm } from "@/components/forms/security-confirm-reset-password-form";
 
 const router = createBrowserRouter([
     {
@@ -67,6 +72,31 @@ const router = createBrowserRouter([
                                         replace
                                     />
                                 )
+                            }
+                        ]
+                    },
+                    {
+                        path: "security",
+                        children: [
+                            {
+                                index: true,
+                                element: <SecurityForm />
+                            },
+                            {
+                                path: "bind-email",
+                                element: <SecurityBindEmailForm />
+                            },
+                            {
+                                path: "bind-email/confirm",
+                                element: <SecurityConfirmBindingEmailForm />
+                            },
+                            {
+                                path: "reset-password",
+                                element: <SecurityResetPasswordForm />
+                            },
+                            {
+                                path: "reset-password/confirm",
+                                element: <SecurityConfirmResetPasswordForm />
                             }
                         ]
                     }

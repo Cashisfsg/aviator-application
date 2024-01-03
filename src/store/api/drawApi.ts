@@ -3,11 +3,13 @@ import { Requisite, PaymentDrawRequest } from "./types";
 import { RootStore } from "..";
 
 export interface Draw {
+    _id: string;
     user: string;
     amount: number;
     currency: string;
     status: string;
     statusMessage: string;
+    userRequisite: string;
     requisite: Requisite;
     createdAt: string;
     completedDate: string;
@@ -25,29 +27,35 @@ export const drawApi = createApi({
             return headers;
         }
     }),
+
+    tagTypes: ["Draw"],
     endpoints: builder => ({
         getAllDraws: builder.query<Draw[], void>({
             query: () => ({
                 url: "withdrawals"
-            })
+            }),
+
+            providesTags: ["Draw"]
         }),
         createDraw: builder.mutation<Draw, PaymentDrawRequest>({
             query: body => ({
                 url: "withdrawals",
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags: ["Draw"]
         }),
         cancelDraw: builder.mutation<
             Draw,
             {
-                id: number;
+                id: string;
             }
         >({
             query: ({ id }) => ({
                 url: `withdrawals/${id}/cancel`,
                 method: "PUT"
-            })
+            }),
+            invalidatesTags: ["Draw"]
         })
     })
 });

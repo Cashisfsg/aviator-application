@@ -63,6 +63,16 @@ const authSlice = createSlice({
                     );
                     state.token = payload.token;
                 }
+            )
+            .addMatcher(
+                userApi.endpoints.changePasswordConfirm.matchFulfilled,
+                (state, { payload }) => {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify({ token: payload.token })
+                    );
+                    state.token = payload.token;
+                }
             );
     }
 });

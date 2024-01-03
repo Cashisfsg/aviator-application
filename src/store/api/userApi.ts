@@ -99,8 +99,8 @@ export const userApi = createApi({
             SuccessResponse,
             ChangePasswordRequest
         >({
-            query: body => ({
-                url: "/user/password/{token}",
+            query: ({ token, ...body }) => ({
+                url: `/user/password/${token}`,
                 method: "PUT",
                 body
             })

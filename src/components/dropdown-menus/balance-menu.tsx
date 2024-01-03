@@ -22,11 +22,11 @@ export const BalanceMenu = () => {
                 disabled={!isAuthenticated}
                 className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5"
             >
-                {data?.balance || "300"} {data?.currency || "$"}
+                {data?.balance.toFixed(2) || "300"} {data?.currency || "$"}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>
-                    Баланс {data?.balance} {data?.currency}
+                    Баланс {data?.balance.toFixed(2)} {data?.currency}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

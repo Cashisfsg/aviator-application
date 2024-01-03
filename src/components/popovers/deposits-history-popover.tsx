@@ -4,11 +4,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { cn } from "@/utils";
 
-interface PaymentHistoryPopoverProps
-    extends React.HTMLAttributes<HTMLElement> {}
+interface PaymentHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {
+    setInitialFormState: React.Dispatch<
+        React.SetStateAction<{
+            state: string;
+            replenishmentId: string;
+        }>
+    >;
+    setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
     className,
+    setInitialFormState,
+    setDialogOpen,
     ...props
 }) => {
     const { data: deposits, isSuccess } = useGetAllDepositsQuery();
@@ -33,6 +42,8 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                                 <PaymentDetails
                                     key={deposit?.createdAt}
                                     deposit={deposit}
+                                    setInitialFormState={setInitialFormState}
+                                    setDialogOpen={setDialogOpen}
                                 />
                                 {index !== deposits.length - 1 ? (
                                     <hr className="h-2" />
@@ -50,15 +61,26 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
 
 interface PaymentDetailsProps {
     deposit?: Replenishment;
+    setInitialFormState?: React.Dispatch<
+        React.SetStateAction<{
+            state: string;
+            replenishmentId: string;
+        }>
+    >;
+    setDialogOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
+const PaymentDetails: React.FC<PaymentDetailsProps> = ({
+    deposit,
+    setInitialFormState,
+    setDialogOpen
+}) => {
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
             <tbody>
                 <tr>
-                    <td className="px-1.5 py-0.5">Дата создания</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">
+                    <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
+                    <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                         {deposit?.createdAt
                             ? `${new Date(
                                   deposit?.createdAt
@@ -119,16 +141,34 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ deposit }) => {
                         </td>
                     </tr>
                 ) : null}
-                {/* {!deposit?.isPayConfirmed ? ( */}
                 <tr>
                     <td className="px-1.5 py-0.5 text-slate-500">ID 1234</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">
-                        <button className="text-right text-blue-500">
-                            Открыть
-                        </button>
-                    </td>
+                    {deposit?.status === "Ожидает оплаты" ? (
+                        <td className="py-0.5 pl-1.5 pr-2.5">
+                            <button
+                                onClick={() => {
+                                    if (deposit?.isPayConfirmed) {
+                                        setInitialFormState?.(state => ({
+                                            ...state,
+                                            state: "confirmed",
+                                            replenishmentId: deposit?._id
+                                        }));
+                                    } else {
+                                        setInitialFormState?.(state => ({
+                                            ...state,
+                                            state: "second",
+                                            replenishmentId: deposit?._id
+                                        }));
+                                    }
+                                    setDialogOpen?.(true);
+                                }}
+                                className="text-right text-blue-500"
+                            >
+                                Открыть
+                            </button>
+                        </td>
+                    ) : null}
                 </tr>
-                {/* ) : null} */}
             </tbody>
         </table>
     );

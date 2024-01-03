@@ -1,47 +1,18 @@
 import { useEffect, useId } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import * as z from "zod";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+    authorizationCredentialsSchema as formSchema,
+    AuthorizationCredentialsFormSchema as FormSchema
+} from "@/utils/schemas";
 
 import { useAuthenticateUserMutation } from "@/store";
 // import { useDialogContext } from "@/components/ui/dialog/use-dialog-context";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
-
-const formSchema = z.object({
-    login: z
-        .string()
-        .min(1, {
-            message: "Поле обязательно для заполнения"
-        })
-        .regex(alphanumericRegex, {
-            message: "Поле может содержать только символы A-Z и цифры"
-        })
-        .min(2, {
-            message: "Логин должен содержать не менее 2 символов"
-        })
-        .max(20, {
-            message: "Превышено максимально допустимое количество символов"
-        }),
-    password: z
-        .string()
-        .min(1, {
-            message: "Поле обязательно для заполнения"
-        })
-        .regex(alphanumericRegex, {
-            message: "Поле может содержать только символы A-Z и цифры"
-        })
-        .min(8, {
-            message: "Пароль должен содержать не менее 8 символов"
-        })
-        .max(30, {
-            message: "Превышено максимально допустимое количество символов"
-        })
-});
 
 export const SignInForm = () => {
     // const { dialogRef } = useDialogContext();
@@ -54,7 +25,7 @@ export const SignInForm = () => {
         handleSubmit,
         reset,
         formState: { errors }
-    } = useForm<z.infer<typeof formSchema>>({
+    } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             login: "",
@@ -66,7 +37,7 @@ export const SignInForm = () => {
         sessionStorage.removeItem("email");
     }, []);
 
-    const onSubmitHandler = async (data: z.infer<typeof formSchema>) => {
+    const onSubmitHandler: SubmitHandler<FormSchema> = async data => {
         const response = await authenticate(data);
 
         if (response?.error) return;

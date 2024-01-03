@@ -1,7 +1,6 @@
 import { io } from "socket.io-client";
 
 const URL = "http://5.45.65.88:8080";
-// const token = JSON.parse("");
 
 export const socket = io(URL, {
     auth: {

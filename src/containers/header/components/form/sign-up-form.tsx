@@ -1,13 +1,13 @@
 import * as React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Check, ChevronsUpDown } from "lucide-react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
-    useCreateNewUserAccountMutation,
-    UserRegistrationCredentials
-} from "@/store";
+    registrationCredentialsSchema as formSchema,
+    RegistrationCredentialsFormSchema as FormSchema
+} from "@/utils/schemas";
+
+import { useCreateNewUserAccountMutation } from "@/store";
 
 import {
     Form,
@@ -33,14 +33,11 @@ import {
 // import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { Form } from "./form";
-// import { Label } from "@/components/ui/label";
 
 import { FaCheck } from "react-icons/fa6";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/utils";
-
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
 
 const currencies = [
     { id: 1, label: "Казахский тенге", value: "KZT" },
@@ -48,76 +45,12 @@ const currencies = [
     { id: 3, label: "Узбекистанский сум", value: "UZS" }
 ];
 
-const formSchema: z.ZodType<
-    UserRegistrationCredentials & { accepted_terms: boolean }
-> = z
-    .object({
-        currency: z.string({
-            required_error: "Поле обязательно для заполнения"
-        }),
-        login: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .regex(alphanumericRegex, {
-                message: "Поле может содержать только символы A-Z и цифры"
-            })
-            .min(2, {
-                message: "Минимальное количество символов не достигнуто"
-            })
-            .max(20, {
-                message: "Превышено максимально допустимое количество символов"
-            }),
-        password: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .regex(alphanumericRegex, {
-                message: "Поле может содержать только символы A-Z и цифры"
-            })
-            .min(8, {
-                message: "Минимальное количество символов не достигнуто"
-            })
-            .max(30, {
-                message: "Превышено максимально допустимое количество символов"
-            }),
-        passwordConfirm: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .regex(alphanumericRegex, {
-                message: "Поле может содержать только символы A-Z и цифры"
-            })
-            .min(8, {
-                message: "Минимальное количество символов не достигнуто"
-            })
-            .max(30, {
-                message: "Превышено максимально допустимое количество символов"
-            }),
-        email: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .email({ message: "Укажите корректный адрес электронной почты" }),
-        from: z.string().optional(),
-        telegramId: z.number(),
-        accepted_terms: z.literal(true)
-    })
-    .refine(data => data.password === data.passwordConfirm, {
-        message: "Пароли должны совпадать",
-        path: ["confirm_password"]
-    });
-
 export const SignUpForm = () => {
     const [open, setOpen] = React.useState(false);
     const [promoOpen, setPromoOpen] = React.useState(false);
     const [createNewUser] = useCreateNewUserAccountMutation();
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             login: "",
@@ -130,10 +63,10 @@ export const SignUpForm = () => {
         }
     });
 
-    const onSubmit = async ({
+    const onSubmit: SubmitHandler<FormSchema> = async ({
         accepted_terms,
         ...values
-    }: z.infer<typeof formSchema>) => {
+    }) => {
         console.log(values);
         await createNewUser(values);
     };

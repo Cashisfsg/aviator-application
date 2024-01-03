@@ -23,7 +23,9 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                 className
             )}
         >
-            <ScrollArea className={draws?.length !== 0 ? "h-64" : "h-auto"}>
+            <ScrollArea
+                className={draws && draws?.length >= 2 ? "h-64" : "h-auto"}
+            >
                 {isSuccess ? (
                     draws.length !== 0 ? (
                         draws.map((draw, index) => (
@@ -32,7 +34,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                                     key={draw?.createdAt}
                                     draw={draw}
                                 />
-                                {index !== draws.length ? (
+                                {index !== draws.length - 1 ? (
                                     <hr className="h-2" />
                                 ) : null}
                             </>
@@ -54,8 +56,10 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     const [cancelDraw] = useCancelDrawMutation();
     const { toast } = useToast();
 
-    const abortDraw = async () => {
-        const response = await cancelDraw({ id: 2 });
+    const abortDraw = async (id: string | undefined) => {
+        if (!id) return;
+
+        const response = await cancelDraw({ id });
 
         if (response?.error) return;
 
@@ -85,8 +89,8 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
         <table className="w-full bg-white text-left text-sm">
             <tbody>
                 <tr>
-                    <td className="px-1.5 py-0.5">Дата создания</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">
+                    <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
+                    <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                         {draw?.createdAt
                             ? new Date(draw?.createdAt).toLocaleDateString()
                             : null}{" "}
@@ -107,34 +111,34 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     </td>
                 </tr>
                 <tr>
-                    <td className="px-1.5 py-0.5">Статус</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">{draw?.status}</td>
-                </tr>
-                <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {draw?.amount} {draw?.currency}
                     </td>
                 </tr>
                 <tr>
+                    <td className="px-1.5 py-0.5">Статус</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">{draw?.status}</td>
+                </tr>
+                <tr>
                     <td className="px-1.5 py-0.5">Реквизит</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.requisite.requisite}
+                        {draw?.userRequisite}
                     </td>
                 </tr>
-                {draw?.status === "Ожидает оплаты" ? (
-                    <tr>
-                        <td className="px-1.5 py-0.5">ID 1234</td>
+                <tr>
+                    <td className="px-1.5 py-0.5">ID 1234</td>
+                    {draw?.status === "Ожидает оплаты" ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
                             <button
-                                onClick={abortDraw}
+                                onClick={() => abortDraw(draw?._id)}
                                 className="text-right text-blue-500"
                             >
                                 Отменить
                             </button>
                         </td>
-                    </tr>
-                ) : null}
+                    ) : null}
+                </tr>
             </tbody>
         </table>
     );

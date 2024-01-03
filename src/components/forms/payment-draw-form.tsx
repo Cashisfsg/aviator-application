@@ -29,7 +29,7 @@ const formSchema: z.ZodType<
             invalid_type_error: "Поле может содержать только цифры"
         })
         .int({ message: "Введенное значение должно быть целым числом" })
-        .gte(100, "Минимальная сумма выплат 100"),
+        .gte(20, "Минимальная сумма выплат 100"),
     userRequisite: z
         .string()
         .min(1, {

@@ -1,5 +1,6 @@
 import { Table } from "./ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useGetTopBetsQuery } from "@/store";
 
 export const TopBetsTabpanel = () => {
     return (
@@ -16,7 +17,18 @@ export const TopBetsTabpanel = () => {
                     <TabsTrigger value="month">Месяц</TabsTrigger>
                     <TabsTrigger value="year">Год</TabsTrigger>
                 </TabsList>
+                <TabsContent value="day">
+                    <TabDay />
+                </TabsContent>
             </Tabs>
         </>
     );
+};
+
+const TabDay = () => {
+    const { data: bets } = useGetTopBetsQuery({});
+
+    console.log(bets);
+
+    return <></>;
 };

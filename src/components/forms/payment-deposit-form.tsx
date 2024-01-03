@@ -7,10 +7,10 @@ import { ToastAction } from "@/components/ui/toast";
 import {
     useGetUserRequisitesQuery,
     useAddReplenishmentMutation,
+    useGetAllDepositsQuery,
     useConfirmReplenishmentByIdMutation,
     useCancelReplenishmentByIdMutation,
-    Replenishment,
-    Requisite
+    Replenishment
 } from "@/store";
 
 import { Label } from "@/components/ui/label";
@@ -27,6 +27,10 @@ type ReplenishmentFormState =
 
 interface ReplenishmentFormProps {
     selectedRequisiteId: string;
+    initialFormState: {
+        state: string;
+        replenishmentId: string;
+    };
 }
 
 interface FormFields {
@@ -34,12 +38,21 @@ interface FormFields {
 }
 
 export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
-    selectedRequisiteId
+    selectedRequisiteId,
+    initialFormState
 }) => {
-    const [formState, setFormState] = useState<ReplenishmentFormState>("init");
-    const [currentDeposit, setCurrentDeposit] = useState<Replenishment | null>(
-        null
+    const [formState, setFormState] = useState<ReplenishmentFormState>(
+        initialFormState.state
     );
+    const { data: allReplenishments } = useGetAllDepositsQuery();
+    const [currentReplenishment, setCurrentReplenishment] = useState<
+        Replenishment | undefined
+    >(() => {
+        return allReplenishments?.find(
+            replenishment =>
+                replenishment?._id === initialFormState.replenishmentId
+        );
+    });
     const { data: requisites } = useGetUserRequisitesQuery();
     const [depositBalance] = useAddReplenishmentMutation();
     const [confirmReplenishment] = useConfirmReplenishmentByIdMutation();
@@ -65,7 +78,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         if (response?.error) return;
 
-        setCurrentDeposit(response?.data);
+        setCurrentReplenishment(response?.data);
         setFormState("second");
     };
 
@@ -162,9 +175,8 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                     </ToastAction>
                 )
             });
+            setFormState("rejected");
         }
-
-        setFormState("rejected");
     };
 
     switch (formState) {
@@ -219,10 +231,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         case "second":
             return (
-                <PaymentDetails
-                    selectedRequisite={selectedRequisite}
-                    currentDeposit={currentDeposit}
-                >
+                <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
                         <span>Время на оплату 30:00</span>
@@ -246,10 +255,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         case "confirm":
             return (
-                <PaymentDetails
-                    selectedRequisite={selectedRequisite}
-                    currentDeposit={currentDeposit}
-                >
+                <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
                         <span>Время на оплату 30:00</span>
@@ -261,7 +267,9 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
                     <p className="text-center text-sm text-black">
                         <button
-                            onClick={() => confirmPayment(currentDeposit?._id)}
+                            onClick={() =>
+                                confirmPayment(currentReplenishment?._id)
+                            }
                             className="float-left w-24 bg-lime-500 py-2 text-white"
                         >
                             Да
@@ -280,10 +288,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         case "confirmed":
             return (
-                <PaymentDetails
-                    selectedRequisite={selectedRequisite}
-                    currentDeposit={currentDeposit}
-                >
+                <PaymentDetails currentDeposit={currentReplenishment}>
                     <Field
                         label={"Статус заявки"}
                         value={"В обработке..."}
@@ -300,10 +305,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         case "reject":
             return (
-                <PaymentDetails
-                    selectedRequisite={selectedRequisite}
-                    currentDeposit={currentDeposit}
-                >
+                <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
                         <span>Время на оплату 30:00</span>
@@ -316,7 +318,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                     <p className="text-center text-sm text-black">
                         <button
                             onClick={() =>
-                                abortReplenishment(currentDeposit?._id)
+                                abortReplenishment(currentReplenishment?._id)
                             }
                             className="float-left w-24 bg-red-500 py-2 text-white"
                         >
@@ -336,10 +338,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
         case "rejected":
             return (
-                <PaymentDetails
-                    selectedRequisite={selectedRequisite}
-                    currentDeposit={currentDeposit}
-                >
+                <PaymentDetails currentDeposit={currentReplenishment}>
                     <Field
                         label={"Статус заявки"}
                         value={"Отменена"}
@@ -382,13 +381,11 @@ const Field: React.FC<FieldProps> = ({ className, label, value }) => {
 };
 
 interface PaymentDetailsProps {
-    selectedRequisite: Requisite | undefined;
-    currentDeposit: Replenishment | null;
+    currentDeposit: Replenishment | undefined;
     children: React.ReactNode;
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({
-    selectedRequisite,
     currentDeposit,
     children
 }) => {
@@ -396,18 +393,18 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
         <div className="grid gap-y-4">
             <p className="flex h-10 items-center rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
                 <img
-                    src={selectedRequisite?.img}
+                    src={currentDeposit?.requisite?.img}
                     alt=""
                     className="h-full"
                 />{" "}
                 <span className="inline-block w-full overflow-hidden text-ellipsis">
-                    {selectedRequisite?.name}
+                    {currentDeposit?.requisite?.name}
                 </span>
             </p>
 
             <Field
                 label={"Реквизиты для пополнения"}
-                value={selectedRequisite?.requisite || ""}
+                value={currentDeposit?.requisite?.requisite || ""}
             />
 
             <Field
