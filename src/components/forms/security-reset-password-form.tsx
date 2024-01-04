@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { passwordSchema, PasswordFormSchema } from "@/utils/schemas";
 
-import { useChangePasswordConfirmMutation } from "@/store";
+import { useGetUserQuery, useChangePasswordConfirmMutation } from "@/store";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const SecurityResetPasswordForm = () => {
+    const { data: user } = useGetUserQuery();
     const [changeOldPassword, { isSuccess, isError, error }] =
         useChangePasswordConfirmMutation();
     const {
@@ -58,8 +59,20 @@ export const SecurityResetPasswordForm = () => {
                 ) : null}
             </Label>
             <Link
-                to=""
-                className="text-right text-xs"
+                to={
+                    user?.email
+                        ? "/aviator_front/main/security/email/confirm"
+                        : "/aviator_front/main/security/bind-email"
+                }
+                state={
+                    user?.email
+                        ? {
+                              nextUrl:
+                                  "/aviator_front/main/security/reset-password/confirm"
+                          }
+                        : null
+                }
+                className="text-right text-xs text-[#757b85]"
             >
                 Сбросить через Email
             </Link>

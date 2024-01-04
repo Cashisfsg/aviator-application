@@ -11,7 +11,6 @@ import {
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 interface PaymentDrawFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -84,24 +83,10 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
         if (response?.error) return;
 
         setOpen(false);
-        const date = new Date();
+
         toast({
             title: "Заявка на вывод успешно создана",
-            description: `${date.toLocaleDateString([], {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            })}, ${date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-            })}`,
-            duration: 5000,
-            action: (
-                <ToastAction altText="Скрыть всплывающее окно">
-                    Скрыть
-                </ToastAction>
-            )
+            duration: 5000
         });
     };
 

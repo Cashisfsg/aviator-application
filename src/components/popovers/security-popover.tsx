@@ -21,12 +21,17 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
             onOpenChange={setPopoverOpen}
         >
             <PopoverTrigger
-                // className="sr-only"
+                className="sr-only right-0"
                 tabIndex={-1}
             >
                 Trigger
             </PopoverTrigger>
-            <PopoverContent className="w-60  border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white">
+            <PopoverContent
+                side="bottom"
+                sideOffset={20}
+                align="end"
+                className="w-60  border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
+            >
                 <Outlet />
             </PopoverContent>
         </Popover>

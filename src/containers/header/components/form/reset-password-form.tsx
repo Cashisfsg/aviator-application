@@ -2,7 +2,10 @@ import { useNavigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { passwordPairSchema, PasswordPairFormSchema } from "@/utils/schemas";
+import {
+    passwordPairSchema as formSchema,
+    PasswordPairFormSchema as FormSchema
+} from "@/utils/schemas";
 
 import { useChangePasswordMutation } from "@/store";
 import { useAuth } from "@/store/hooks/useAuth";
@@ -16,15 +19,15 @@ export const ResetPasswordForm = () => {
     const [changePassword] = useChangePasswordMutation();
     const { token } = useAuth();
 
-    const form = useForm<PasswordPairFormSchema>({
-        resolver: zodResolver(passwordPairSchema),
+    const form = useForm<FormSchema>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             password: "",
             passwordConfirm: ""
         }
     });
 
-    const onSubmitHandler: SubmitHandler<PasswordPairFormSchema> = async ({
+    const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         password,
         passwordConfirm
     }) => {

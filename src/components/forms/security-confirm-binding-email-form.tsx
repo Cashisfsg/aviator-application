@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useChangeEmailMutation } from "@/store";
+import { useToast } from "@/components/ui/use-toast";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ interface FormFields {
 
 export const SecurityConfirmBindingEmailForm = () => {
     const [changeEmail, { isError, isSuccess }] = useChangeEmailMutation();
+    const { toast } = useToast();
 
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -18,7 +20,14 @@ export const SecurityConfirmBindingEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        await changeEmail({ code: code.value });
+        const response = await changeEmail({ code: code.value });
+
+        if (response?.error) return;
+
+        toast({
+            description: "Email был успешно изменён",
+            duration: 5000
+        });
     };
 
     if (isSuccess) {
@@ -35,7 +44,7 @@ export const SecurityConfirmBindingEmailForm = () => {
                 <span>На ваш Email отправлен код</span>
                 <Input
                     readOnly
-                    className="border-[#414148]"
+                    className="border-[#414148] focus-visible:outline-transparent"
                 />
             </Label>
             <Label>

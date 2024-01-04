@@ -1,7 +1,6 @@
 import { useGetAllDrawsQuery, useCancelDrawMutation, Draw } from "@/store";
 
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -63,25 +62,9 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
 
         if (response?.error) return;
 
-        const date = new Date();
-
         toast({
             title: response?.data?.message,
-            description: `${date.toLocaleDateString([], {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            })}, ${date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-            })}`,
-            duration: 5000,
-            action: (
-                <ToastAction altText="Скрыть всплывающее окно">
-                    Скрыть
-                </ToastAction>
-            )
+            duration: 5000
         });
     };
 

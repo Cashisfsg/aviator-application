@@ -171,7 +171,7 @@ figure {
 }
 
 #use-propeller {
-    animation: rotate 3s linear;
+    animation: rotate 4.75s linear;
 }
 
 @keyframes rotate {
@@ -184,7 +184,7 @@ figure {
 }
 
 .slider {
-    animation: slider 3s linear;
+    animation: slider 4.75s linear;
 }
 
 @keyframes slider {

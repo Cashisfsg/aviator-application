@@ -1,6 +1,9 @@
 import { useState, useId } from "react";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "@/store/hooks/useAuth";
+import { useGetUserQuery, useChangeProfileImageMutation } from "@/store";
+
 import {
     MyBetsHistoryDialog,
     SignOutAlertDialog,
@@ -24,12 +27,6 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import {
-    Collapsible,
-    CollapsibleTrigger,
-    CollapsibleContent
-} from "@/components/ui/collapsible";
-
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -40,8 +37,8 @@ import { ImNewspaper } from "react-icons/im";
 import { SlPeople } from "react-icons/sl";
 import { IoExitOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
-import { useAuth } from "@/store/hooks/useAuth";
-import { useGetUserQuery, useChangeProfileImageMutation } from "@/store";
+
+import Avatar from "@/assets/avatar-360w.webp";
 
 export const BurgerMenu = () => {
     const soundId = useId();
@@ -80,10 +77,7 @@ export const BurgerMenu = () => {
                         <div className="flex items-center justify-between p-2.5">
                             <div className="grid w-max grid-cols-[auto_auto] grid-rows-2 items-center gap-x-2.5 leading-none">
                                 <img
-                                    src={
-                                        user?.profileImage ||
-                                        "https://c0.klipartz.com/pngpicture/85/114/gratis-png-avatar-usuario-perfil-masculino-logo-icono-de-perfil.png"
-                                    }
+                                    src={user?.profileImage || Avatar}
                                     alt="Profile image"
                                     width="40"
                                     height="40"
@@ -216,7 +210,7 @@ export const BurgerMenu = () => {
                                 }, 200)
                             }
                         >
-                            <BsStars className="text-base text-[#313131]" />
+                            <BsStars className="text-base text-[#767b85]" />
                             <span>Бонусы и промокоды</span>
                         </DropdownMenuItem>
                     ) : null}

@@ -1,10 +1,10 @@
 import { useReducer, useEffect, useRef } from "react";
-import { useStateSelector } from "@/store";
-import { socket } from "@/components/socket/socket";
+import { useAuth } from "@/store/hooks/useAuth";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import { Label } from "./ui/label";
 // import { Switch } from "./ui/switch";
+import { socket } from "./socket/socket";
 
 export const Bet = () => {
     return (
@@ -44,11 +44,6 @@ const reducer = (state: State, action: Action): State => {
 
             if (action.payload > MAX_BET) return MAX_BET;
 
-            socket.emit("bet", {
-                currency: "RUB",
-                bet: Number(action.payload)
-            });
-
             return action.payload;
 
         case "increment":
@@ -71,13 +66,13 @@ const BetTab = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
-    const token = useStateSelector(state => state.auth.token);
+    const { token } = useAuth();
 
     useEffect(() => {
         const onConnect = () => {
             console.log("Connect to server");
-            socket.on("game", data => {
-                console.log("game being started", data.currentPlayers);
+            socket.on("game", () => {
+                console.log("game being started");
             });
             socket.on("loading", () => {
                 console.log("Make bet");
@@ -92,6 +87,16 @@ const BetTab = () => {
 
         socket.on("connect", onConnect);
         socket.on("disconnect", onDisconnect);
+        socket.on("currentPlayers", data => {
+            console.log("Current players: ", data);
+        });
+        socket.on("game", () => {
+            console.log("game being started");
+        });
+        socket.on("loading", () => {
+            console.log("Make bet");
+        });
+
         // socket.on("bet", () => {
         //     console.log("Делайте ваши ставки");
         // });

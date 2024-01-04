@@ -1,6 +1,7 @@
 import {
     Toast,
     // ToastClose,
+    ToastAction,
     ToastDescription,
     ToastProvider,
     ToastTitle,
@@ -13,13 +14,7 @@ export function Toaster() {
 
     return (
         <ToastProvider>
-            {toasts.map(function ({
-                id,
-                title,
-                description,
-                action,
-                ...props
-            }) {
+            {toasts.map(function ({ id, title, description, ...props }) {
                 return (
                     <Toast
                         key={id}
@@ -27,13 +22,29 @@ export function Toaster() {
                     >
                         <div className="grid gap-1">
                             {title && <ToastTitle>{title}</ToastTitle>}
-                            {description && (
+                            {description ? (
                                 <ToastDescription>
                                     {description}
                                 </ToastDescription>
+                            ) : (
+                                <ToastDescription>
+                                    {new Date().toLocaleDateString([], {
+                                        weekday: "long",
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric"
+                                    })}
+                                    ,
+                                    {new Date().toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </ToastDescription>
                             )}
                         </div>
-                        {action}
+                        <ToastAction altText="Скрыть всплывающее окно">
+                            Скрыть
+                        </ToastAction>
                         {/* <ToastClose /> */}
                     </Toast>
                 );

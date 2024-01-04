@@ -9,18 +9,23 @@ export const SecurityForm = () => {
         <div className="grid gap-y-4">
             <h3 className="text-center">Безопасность</h3>
             {user?.email ? (
-                <div className="grid gap-y-2">
-                    <p>Ваш Email</p>
-                    <p className="rounded-md border border-[#414148] px-4 py-2">
-                        {user?.email}
-                    </p>
+                <>
+                    <div className="grid gap-y-2">
+                        <p>Ваш Email</p>
+                        <p className="rounded-md border border-[#414148] px-4 py-2">
+                            {user?.email}
+                        </p>
+                    </div>
                     <Link
-                        to=""
+                        to="/aviator_front/main/security/email/confirm"
+                        state={{
+                            nextUrl: "/aviator_front/main/security/bind-email"
+                        }}
                         className=" text-right text-xs text-[#757b85]"
                     >
                         Изменить
                     </Link>
-                </div>
+                </>
             ) : (
                 <Link
                     to="/aviator_front/main/security/bind-email"

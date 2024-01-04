@@ -29,17 +29,17 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
                     Игровые лимиты
                 </h3>
                 <span className="self-center">Минимальная ставка (UZS)</span>
-                <button className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]">
+                <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     1000
-                </button>
+                </span>
                 <span className="self-center">Максимальная ставка (UZS)</span>
-                <button className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]">
+                <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     100000
-                </button>
+                </span>
                 <span>Максимальный выигрыш за одну ставку (UZS)</span>
-                <button className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]">
+                <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     1000000
-                </button>
+                </span>
             </PopoverContent>
         </Popover>
     );

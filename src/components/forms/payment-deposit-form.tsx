@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { DialogClose } from "@/components/ui/dialog";
 import { useToast } from "../ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 import {
     useGetUserRequisitesQuery,
@@ -85,46 +84,17 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
     const confirmPayment = async (id: string | undefined) => {
         if (!id) return;
 
-        const date = new Date();
         const response = await confirmReplenishment({ id });
 
         if (response?.error) {
             toast({
                 title: response?.error?.message,
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
         } else {
             toast({
                 title: response?.data?.message,
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
         }
 
@@ -134,46 +104,17 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
     const abortReplenishment = async (id: string | undefined) => {
         if (!id) return;
 
-        const date = new Date();
         const response = await cancelReplenishment({ id });
 
         if (response?.error) {
             toast({
                 title: response?.error?.message,
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
         } else {
             toast({
                 title: response?.data?.message,
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
             setFormState("rejected");
         }

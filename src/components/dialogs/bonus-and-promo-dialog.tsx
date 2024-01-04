@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
@@ -79,7 +78,7 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
 
     const { toast } = useToast();
 
-    const handleSubmit: React.FormEventHandler<
+    const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
     > = async event => {
         event.preventDefault();
@@ -98,21 +97,7 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
         if (response?.error) {
             toast({
                 title: response?.error?.data?.message,
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
         } else {
             setBonusData(bonusData => {
@@ -123,44 +108,32 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
             });
             toast({
                 title: "Промокод успешно активирован",
-                description: `${date.toLocaleDateString([], {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                })}, ${date.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })}`,
-                duration: 5000,
-                action: (
-                    <ToastAction altText="Скрыть всплывающее окно">
-                        Скрыть
-                    </ToastAction>
-                )
+                duration: 5000
             });
         }
     };
 
     return (
         <form
-            onSubmit={handleSubmit}
-            className="basis-32 space-y-1 [&:has(input[type='button'])>button]:hidden"
+            onSubmit={onSubmitHandler}
+            className="group basis-32 space-y-1"
         >
             <input
                 type="button"
                 name="promoCode"
+                required
                 autoComplete="off"
                 defaultValue="Ввести промокод"
                 onClick={event => {
                     event.currentTarget.type = "text";
+                    event.currentTarget.setAttribute("defaultValue", "");
                     event.currentTarget.setAttribute("value", "");
                 }}
                 className="w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 focus-visible:outline-none [&type='text']:focus-visible:ring-0 [&type=button]:hover:bg-green-350 [&type=button]:active:translate-y-[1px] [&type=button]:active:border-[#1c7430]"
             />
             <button
                 type="submit"
-                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white"
+                className="group-has-[input[type=button]]:hidden w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white"
             >
                 Активировать
             </button>

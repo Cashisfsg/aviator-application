@@ -64,13 +64,19 @@ export const userApi = createApi({
                 body
             })
         }),
-        sendEmailConfirmationCode: builder.mutation<SuccessResponse, void>({
+        sendConfirmationCodeOnExistingEmail: builder.mutation<
+            SuccessResponse,
+            void
+        >({
             query: () => ({
                 url: "user/confirm-email/send-code",
                 method: "POST"
             })
         }),
-        confirmEmail: builder.mutation<SuccessResponse, { code: string }>({
+        confirmExistingEmail: builder.mutation<
+            SuccessResponse,
+            { code: string }
+        >({
             query: body => ({
                 url: "user/confirm-email",
                 method: "POST",
@@ -150,8 +156,8 @@ export const {
     useGetUserRecommendedRequisitesQuery,
     useLazyGetUserRecommendedRequisitesQuery,
     useActivatePromoCodeMutation,
-    useSendEmailConfirmationCodeMutation,
-    useConfirmEmailMutation,
+    useSendConfirmationCodeOnExistingEmailMutation,
+    useConfirmExistingEmailMutation,
     useSendEmailChangeCodeMutation,
     useChangeEmailMutation,
     useChangePasswordConfirmMutation,

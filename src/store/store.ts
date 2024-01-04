@@ -4,8 +4,9 @@ import {
     authApi,
     betApi,
     drawApi,
-    userApi,
-    replenishmentApi
+    replenishmentApi,
+    // socketApi,
+    userApi
 } from "./api";
 import { authReducer } from "./slices";
 
@@ -16,8 +17,9 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
         [drawApi.reducerPath]: drawApi.reducer,
-        [userApi.reducerPath]: userApi.reducer,
-        [replenishmentApi.reducerPath]: replenishmentApi.reducer
+        [replenishmentApi.reducerPath]: replenishmentApi.reducer,
+        // [socketApi.reducerPath]: socketApi.reducer,
+        [userApi.reducerPath]: userApi.reducer
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
@@ -25,6 +27,7 @@ export const store = configureStore({
             .concat(authApi.middleware)
             .concat(betApi.middleware)
             .concat(drawApi.middleware)
-            .concat(userApi.middleware)
             .concat(replenishmentApi.middleware)
+            // .concat(socketApi.middleware)
+            .concat(userApi.middleware)
 });

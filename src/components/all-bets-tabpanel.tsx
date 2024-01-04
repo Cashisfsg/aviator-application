@@ -1,20 +1,6 @@
-import { useState, useEffect } from "react";
-
 import { Table, Row, Cell } from "@/components/ui/table";
-import { socket } from "@/components/socket/socket";
-import { Player } from "./socket/types";
 
 export const AllBetsTabpanel = () => {
-    const [players, setPlayers] = useState<Player[]>([]);
-
-    useEffect(() => {
-        socket.on("game", data => {
-            console.log("game being started", data);
-
-            // setPlayers(data);
-        });
-    }, []);
-
     return (
         <>
             <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539]">
@@ -38,10 +24,10 @@ export const AllBetsTabpanel = () => {
                 data={[["2554", "5545 $", "1551 $"]]}
                 renderData={data => (
                     <>
-                        {data.map(row => (
-                            <Row>
+                        {data.map((row, i) => (
+                            <Row key={i}>
                                 {row.map(cell => (
-                                    <Cell>{cell}</Cell>
+                                    <Cell key={cell}>{cell}</Cell>
                                 ))}
                             </Row>
                         ))}
@@ -51,7 +37,7 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={players}
+                data={[{}]}
                 renderData={data => (
                     <>
                         {data.map(row => (

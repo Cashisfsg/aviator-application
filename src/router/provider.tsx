@@ -24,6 +24,7 @@ import { SecurityBindEmailForm } from "@/components/forms/security-bind-email-fo
 import { SecurityConfirmBindingEmailForm } from "@/components/forms/security-confirm-binding-email-form";
 import { SecurityResetPasswordForm } from "@/components/forms/security-reset-password-form";
 import { SecurityConfirmResetPasswordForm } from "@/components/forms/security-confirm-reset-password-form";
+import { SecurityConfirmExistingEmailForm } from "@/components/forms/security-confirm-existing-email-form";
 
 const router = createBrowserRouter([
     {
@@ -77,6 +78,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "security",
+                        element: <PrivateRoute to="/aviator_front/main" />,
                         children: [
                             {
                                 index: true,
@@ -91,12 +93,25 @@ const router = createBrowserRouter([
                                 element: <SecurityConfirmBindingEmailForm />
                             },
                             {
+                                path: "email/confirm",
+                                element: <SecurityConfirmExistingEmailForm />
+                            },
+                            {
                                 path: "reset-password",
                                 element: <SecurityResetPasswordForm />
                             },
                             {
                                 path: "reset-password/confirm",
                                 element: <SecurityConfirmResetPasswordForm />
+                            },
+                            {
+                                path: "*",
+                                element: (
+                                    <Navigate
+                                        to="/aviator_front/main"
+                                        replace
+                                    />
+                                )
                             }
                         ]
                     }
