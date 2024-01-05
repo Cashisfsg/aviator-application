@@ -19,7 +19,7 @@ const authSlice = createSlice({
 
         return {
             token,
-            isAuthenticated: Boolean(token)
+            isAuthenticated: true
         } as AuthState;
     },
     reducers: {

@@ -13,7 +13,7 @@ import {
 
 import {
     GameLimitsPopover,
-    PartnershipProgramPopover
+    ReferralProgramPopover
 } from "@/components/popovers";
 
 import { SecurityPopover } from "../popovers/security-popover";
@@ -52,7 +52,7 @@ export const BurgerMenu = () => {
         useState(false);
     const [dailyStatisticsDialogOpen, setDailyStatisticsDialogOpen] =
         useState(false);
-    const [partnershipProgramPopoverOpen, setPartnershipProgramPopoverOpen] =
+    const [referralProgramPopoverOpen, setReferralProgramPopoverOpen] =
         useState(false);
     const [gameLimitsPopoverOpen, setGameLimitsPopoverOpen] = useState(false);
     const [securityPopoverOpen, setSecurityPopoverOpen] = useState(false);
@@ -74,7 +74,7 @@ export const BurgerMenu = () => {
                     className="z-50 w-72 bg-[#2c2d30]"
                 >
                     <DropdownMenuLabel className="p-0 text-sm">
-                        <div className="flex items-center justify-between p-2.5">
+                        <div className="flex items-center justify-between gap-1.5 p-2.5">
                             <div className="grid w-max grid-cols-[auto_auto] grid-rows-2 items-center gap-x-2.5 leading-none">
                                 <img
                                     src={user?.profileImage || Avatar}
@@ -83,7 +83,9 @@ export const BurgerMenu = () => {
                                     height="40"
                                     className="row-span-2 rounded-full"
                                 />
-                                <p>{user?.login || "Username"}</p>
+                                <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {user?.login || "Username"}
+                                </p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
                                     {user?.telegramId || "user ID"}
                                 </p>
@@ -310,12 +312,12 @@ export const BurgerMenu = () => {
                         <DropdownMenuItem
                             onPointerUp={() =>
                                 setTimeout(() => {
-                                    setPartnershipProgramPopoverOpen(true);
+                                    setReferralProgramPopoverOpen(true);
                                 }, 200)
                             }
                         >
                             <SlPeople className="text-base text-[#767B85]" />
-                            <span>Партнёрская программа</span>
+                            <span>Реферальная программа</span>
                         </DropdownMenuItem>
                     ) : null}
                     <DropdownMenuSeparator />
@@ -326,7 +328,7 @@ export const BurgerMenu = () => {
                             onPointerUp={() =>
                                 setTimeout(() => {
                                     setSecurityPopoverOpen(true);
-                                }, 200)
+                                }, 250)
                             }
                         >
                             <Link to="/aviator_front/main/security">
@@ -430,9 +432,9 @@ export const BurgerMenu = () => {
                         open={gameLimitsPopoverOpen}
                         setOpen={setGameLimitsPopoverOpen}
                     />
-                    <PartnershipProgramPopover
-                        open={partnershipProgramPopoverOpen}
-                        setPopoverOpen={setPartnershipProgramPopoverOpen}
+                    <ReferralProgramPopover
+                        open={referralProgramPopoverOpen}
+                        setPopoverOpen={setReferralProgramPopoverOpen}
                         setDailyStatisticsDialogOpen={
                             setDailyStatisticsDialogOpen
                         }

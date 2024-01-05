@@ -19,12 +19,14 @@ import {
     ResetPasswordForm
     // action as resetPasswordAction
 } from "@/containers/header/components/form/reset-password-form";
-import { SecurityForm } from "@/components/forms/security-form";
-import { SecurityBindEmailForm } from "@/components/forms/security-bind-email-form";
-import { SecurityConfirmBindingEmailForm } from "@/components/forms/security-confirm-binding-email-form";
-import { SecurityResetPasswordForm } from "@/components/forms/security-reset-password-form";
-import { SecurityConfirmResetPasswordForm } from "@/components/forms/security-confirm-reset-password-form";
-import { SecurityConfirmExistingEmailForm } from "@/components/forms/security-confirm-existing-email-form";
+import {
+    SecurityForm,
+    SecurityBindEmailForm,
+    SecurityConfirmBindingEmailForm,
+    SecurityConfirmExistingEmailForm,
+    SecurityConfirmResetPasswordForm,
+    SecurityResetPasswordForm
+} from "@/components/forms";
 
 const router = createBrowserRouter([
     {

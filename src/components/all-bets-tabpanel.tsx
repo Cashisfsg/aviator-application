@@ -1,5 +1,7 @@
 import { Table, Row, Cell } from "@/components/ui/table";
 
+import Avatar from "@/assets/avatar-360w.webp";
+
 export const AllBetsTabpanel = () => {
     return (
         <>
@@ -37,7 +39,7 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={[{}]}
+                data={[]}
                 renderData={data => (
                     <>
                         {data.map(row => (
@@ -47,10 +49,11 @@ export const AllBetsTabpanel = () => {
                             >
                                 <Cell className="flex items-center gap-x-2">
                                     <img
-                                        src="https://www.shareicon.net/data/1024x1024/2016/11/01/849379_man_1024x1024.png"
+                                        src={Avatar}
                                         alt="User avatar image"
                                         height="30"
                                         width="30"
+                                        className="rounded-full"
                                     />
                                     <span className="text-[#9ea0a3]">
                                         {row.playerLogin}
@@ -68,6 +71,9 @@ export const AllBetsTabpanel = () => {
                     </>
                 )}
             />
+            {/* {!bets || bets.length === 0 ? ( */}
+            <p className="py-2 text-center text-base font-semibold">Пусто</p>
+            {/* ) : null} */}
         </>
     );
 };

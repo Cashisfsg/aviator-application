@@ -88,6 +88,49 @@ button:focus-visible {
     display: none;
 }
 
+.custom-scrollbar {
+    overflow-y: auto;
+}
+/* .custom-scrollbar::-webkit-scrollbar {
+    width: 0.5rem;
+    background-color: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: greenyellow;
+    border-radius: 100rem;
+} */
+@property --var1 {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #1b1c1d;
+}
+
+.scrollbar {
+    /* height: 100%; */
+    /* width: 100%; */
+    overflow-y: scroll;
+    transition: --var1 0.5s;
+}
+
+@media screen and (hover: hover) {
+    .scrollbar:hover {
+        --var1: #aaa;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        padding: 2px;
+        background: transparent;
+        width: 10px;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        border: 3px solid #1b1c1d;
+        background: var(--var1);
+        border-radius: 5px;
+    }
+}
+
 input:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.8);
     outline-offset: 1px;

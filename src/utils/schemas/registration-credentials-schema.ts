@@ -56,7 +56,9 @@ export const registrationCredentialsSchema = z
             })
             .email({ message: "Укажите корректный адрес электронной почты" }),
         from: z.string().optional(),
-        telegramId: z.number(),
+        telegramId: z.coerce.number({
+            required_error: "Поле обязательно для заполнения"
+        }),
         accepted_terms: z.literal(true)
     })
     .refine(data => data.password === data.passwordConfirm, {

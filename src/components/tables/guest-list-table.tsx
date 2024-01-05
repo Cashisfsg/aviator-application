@@ -1,9 +1,7 @@
 import { Table, Caption, Cell, Row } from "@/components/ui/table";
+import { useGetUserReferralQuery } from "@/store";
 
-const data = [
-    { id: 121215, date: new Date(), gain: 1200 },
-    { id: 121245, date: new Date(), gain: 200 }
-];
+import { formatDate, formatTime } from "@/utils/helpers";
 
 interface GuestListTableProps {
     setDailyStatisticsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,45 +10,39 @@ interface GuestListTableProps {
 export const GuestListTable: React.FC<GuestListTableProps> = ({
     setDailyStatisticsDialogOpen
 }) => {
+    const { data: referral } = useGetUserReferralQuery();
+
     return (
         <Table
             className="text-center"
             headers={["ID", "Дата регистрации", "Заработано"]}
-            data={data}
+            data={referral?.descendants || []}
             renderCaption={
                 <Caption className="align-bottom ">
                     <span className="float-left text-white">
                         Список приглашенных
                     </span>
-                    <span
+                    <button
                         onClick={() => {
                             setDailyStatisticsDialogOpen(true);
                         }}
                         className="float-right cursor-pointer text-blue-500"
                     >
                         По дням
-                    </span>
+                    </button>
                 </Caption>
             }
             renderData={data => (
                 <>
-                    {data.map(row => (
-                        <Row key={row.id}>
-                            <Cell className="text-xs">{row.id}</Cell>
+                    {data.map(descendant => (
+                        <Row key={descendant._id}>
+                            <Cell className="text-xs">{descendant._id}</Cell>
                             <Cell className="text-xs">
-                                {row.date.toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit"
-                                })}
-                                ,{" "}
-                                {row.date.toLocaleDateString([], {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                })}
+                                {formatTime(descendant?.createdAt)},{" "}
+                                {formatDate(descendant?.createdAt)}
                             </Cell>
                             <Cell className="text-xs text-white">
-                                {row.gain} UZS
+                                {descendant?.earnings} {referral?.currency}
                             </Cell>
                         </Row>
                     ))}

@@ -1,5 +1,7 @@
 import { useRef } from "react";
 
+import { useGetUserReferralQuery } from "@/store";
+
 import {
     Popover,
     PopoverTrigger,
@@ -8,16 +10,20 @@ import {
 
 import { GuestListTable } from "../tables";
 
-interface PartnershipProgramPopoverProps {
+interface ReferralProgramPopoverProps {
     open: boolean;
     setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setDailyStatisticsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const PartnershipProgramPopover: React.FC<
-    PartnershipProgramPopoverProps
-> = ({ open, setPopoverOpen, setDailyStatisticsDialogOpen }) => {
+export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
+    open,
+    setPopoverOpen,
+    setDailyStatisticsDialogOpen
+}) => {
     const telegramLinkRef = useRef<HTMLAnchorElement>(null);
+
+    const { data: referral } = useGetUserReferralQuery();
 
     const copyTelegramLinkToClipboard = async () => {
         const link = telegramLinkRef.current?.textContent;
@@ -37,7 +43,7 @@ export const PartnershipProgramPopover: React.FC<
             onOpenChange={setPopoverOpen}
         >
             <PopoverTrigger className="sr-only right-0">
-                Партнёрская программа
+                Реферальная программа
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"
@@ -46,7 +52,7 @@ export const PartnershipProgramPopover: React.FC<
                 className="space-y-2 border-gray-50 bg-[#1b1c1d] leading-none text-[#83878e]"
             >
                 <h3 className="col-span-2 text-center text-base font-bold text-white">
-                    Партнёрская программа
+                    Реферальная программа
                 </h3>
                 <p className="text-sm">
                     Приглашая людей, вы можете заработать до 40% от их ставок{" "}
@@ -72,12 +78,14 @@ export const PartnershipProgramPopover: React.FC<
 
                     <span>Количество приглашённых</span>
                     <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-xs text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                        10
+                        {referral?.descendants
+                            ? referral?.descendants.length
+                            : 0}
                     </span>
 
                     <span>Всего заработанных</span>
                     <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-xs text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                        1000513 UZS
+                        {referral?.referralBalance || 0} {referral?.currency}
                     </span>
                 </p>
 

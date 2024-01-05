@@ -32,7 +32,7 @@ import {
 
 // import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, ErrorMessage } from "@/components/ui/input";
 
 import { FaCheck } from "react-icons/fa6";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -48,7 +48,8 @@ const currencies = [
 export const SignUpForm = () => {
     const [open, setOpen] = React.useState(false);
     const [promoOpen, setPromoOpen] = React.useState(false);
-    const [createNewUser] = useCreateNewUserAccountMutation();
+    const [createNewUser, { isError, error }] =
+        useCreateNewUserAccountMutation();
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -58,7 +59,7 @@ export const SignUpForm = () => {
             passwordConfirm: "",
             email: "",
             from: "",
-            telegramId: 123,
+            telegramId: 566789,
             accepted_terms: undefined
         }
     });
@@ -310,13 +311,16 @@ export const SignUpForm = () => {
                         <FormItem className="flex items-center gap-4 ">
                             <FormControl>
                                 <Input
-                                    type="hidden"
+                                    // type="hidden"
                                     {...field}
                                 />
                             </FormControl>
                         </FormItem>
                     )}
                 />
+                {isError ? (
+                    <ErrorMessage message={error?.data?.message} />
+                ) : null}
 
                 <Button
                     type="submit"

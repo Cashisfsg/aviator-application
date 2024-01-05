@@ -11,6 +11,18 @@ import {
 } from "./types";
 import { RootStore } from "..";
 
+interface Referral {
+    currency: string;
+    referralBalance: number;
+    descendants: Descendant[];
+}
+export interface Descendant {
+    _id: string;
+    createdAt: string;
+    updatedUt: string;
+    earnings: number;
+}
+
 export const userApi = createApi({
     reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
@@ -31,6 +43,11 @@ export const userApi = createApi({
                 url: "user"
             }),
             providesTags: ["User"]
+        }),
+        getUserReferral: builder.query<Referral, void>({
+            query: () => ({
+                url: "/user/referral"
+            })
         }),
         getUserBalance: builder.query<UserBalance, void>({
             query: () => ({
@@ -147,6 +164,8 @@ export const userApi = createApi({
 export const {
     useGetUserQuery,
     useLazyGetUserQuery,
+    useGetUserReferralQuery,
+    useLazyGetUserReferralQuery,
     useGetUserBalanceQuery,
     useLazyGetUserBalanceQuery,
     useGetUserBonusQuery,

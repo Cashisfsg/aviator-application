@@ -56,7 +56,7 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
 
                 <section>
                     <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-center text-lg font-bold text-gray-300">
-                        Бонусы и промокоды
+                        Бонусы на пополнение
                     </h2>
                     <DepositBonusTable />
                 </section>
@@ -133,7 +133,7 @@ const ActivationBonusForm = ({ setBonusData }: ActivationFormProps) => {
             />
             <button
                 type="submit"
-                className="group-has-[input[type=button]]:hidden w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white"
+                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white group-has-[input[type=button]]:hidden"
             >
                 Активировать
             </button>
