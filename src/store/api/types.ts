@@ -80,17 +80,19 @@ export interface UserRequisite {
 //! ================= Bet types ================= //
 
 export interface Bet {
+    _id: string;
     bet: number;
     currency: string;
     time: string;
     coeff: number;
     win: number;
-    player: string;
+    playerId: string;
+    playerLogin: string;
 }
 
-export interface BetRequestQueryParams {
-    skip?: number;
-    limit?: number;
+export interface PaginationParams {
+    skip: number;
+    limit: number;
 }
 
 //! ================= Admin types ================= //

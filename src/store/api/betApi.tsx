@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Bet, BetRequestQueryParams } from "./types";
+import { Bet, PaginationParams } from "./types";
 import { RootStore } from "..";
 
 export const betApi = createApi({
@@ -14,17 +14,22 @@ export const betApi = createApi({
             return headers;
         }
     }),
+    tagTypes: ["My", "Top"],
     endpoints: builder => ({
-        getTopBets: builder.query<Bet[], BetRequestQueryParams>({
-            query: ({ skip = 0, limit = 6 }) => ({
+        getTopBets: builder.query<Bet[], PaginationParams | void>({
+            query: args => ({
                 url: "bets/tops",
-                params: { skip, limit }
+                params: args
+                    ? { limit: args.limit, skip: args.skip }
+                    : undefined
             })
         }),
-        getUserBets: builder.query<Bet[], BetRequestQueryParams>({
-            query: ({ skip = 0, limit = 6 }) => ({
+        getUserBets: builder.query<Bet[], PaginationParams | void>({
+            query: args => ({
                 url: "bets/my",
-                params: { skip, limit }
+                params: args
+                    ? { limit: args.limit, skip: args.skip }
+                    : undefined
             })
         })
     })

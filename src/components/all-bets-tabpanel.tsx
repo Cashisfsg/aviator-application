@@ -1,8 +1,23 @@
+import { useState, useEffect } from "react";
+import { socket } from "./socket/socket";
+import { Player } from "./socket/types";
+
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
 export const AllBetsTabpanel = () => {
+    const [players, setPlayers] = useState<Player[]>([]);
+
+    useEffect(() => {
+        socket.on("currentPlayers", data => {
+            setPlayers(data);
+        });
+        socket.on("crash", () => {
+            setPlayers([]);
+        });
+    }, []);
+
     return (
         <>
             <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539]">
@@ -39,12 +54,12 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={[]}
+                data={players}
                 renderData={data => (
                     <>
-                        {data.map(row => (
+                        {data.map(player => (
                             <Row
-                                key={row.playerLogin}
+                                key={player?.playerLogin}
                                 className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
                             >
                                 <Cell className="flex items-center gap-x-2">
@@ -56,24 +71,35 @@ export const AllBetsTabpanel = () => {
                                         className="rounded-full"
                                     />
                                     <span className="text-[#9ea0a3]">
-                                        {row.playerLogin}
+                                        {`${player?.playerLogin?.substring(
+                                            0,
+                                            1
+                                        )}***${player?.playerLogin?.substring(
+                                            player?.playerLogin?.length - 1
+                                        )}`}
                                     </span>
                                 </Cell>
-                                <Cell>{row.bet} $</Cell>
+                                <Cell>
+                                    {player?.bet} {player?.currency}
+                                </Cell>
                                 <Cell>
                                     <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
-                                        {row.coeff}x
+                                        {player?.coeff}x
                                     </span>
                                 </Cell>
-                                <Cell>{row.win} $</Cell>
+                                <Cell>
+                                    {player?.win} {player?.currency}
+                                </Cell>
                             </Row>
                         ))}
                     </>
                 )}
             />
-            {/* {!bets || bets.length === 0 ? ( */}
-            <p className="py-2 text-center text-base font-semibold">Пусто</p>
-            {/* ) : null} */}
+            {!players || players.length === 0 ? (
+                <p className="py-2 text-center text-base font-semibold">
+                    Пусто
+                </p>
+            ) : null}
         </>
     );
 };

@@ -5,12 +5,6 @@ import { useGetTopBetsQuery } from "@/store";
 export const TopBetsTabpanel = () => {
     return (
         <>
-            <Table
-                headers={["Куши", "Наибольшие выигрыши", "Коэфф."]}
-                data={[]}
-                renderData={() => <></>}
-            />
-
             <Tabs defaultValue="day">
                 <TabsContent value="day">
                     <TabDay />
@@ -32,15 +26,43 @@ export const TopBetsTabpanel = () => {
 };
 
 const TabDay = () => {
-    const { data: bets } = useGetTopBetsQuery({});
+    const { data: bets } = useGetTopBetsQuery();
 
     console.log(bets);
 
     return (
         <>
-            {/* {!bets || bets.length === 0 ? ( */}
-            <p className="py-2 text-center text-base font-semibold">Пусто</p>
-            {/* ) : null} */}
+            <Table
+                headers={["Куши", "Наибольшие выигрыши", "Коэфф."]}
+                data={bets || []}
+                renderData={() => <></>}
+            />
+            {!bets || bets.length === 0 ? (
+                <p className="py-2 text-center text-base font-semibold">
+                    Пусто
+                </p>
+            ) : null}
         </>
     );
 };
+
+// const TabMonth = () => {
+//     const { data: bets } = useGetTopBetsQuery();
+
+//     console.log(bets);
+
+//     return (
+//         <>
+//             <Table
+//                 headers={["Куши", "Наибольшие выигрыши", "Коэфф."]}
+//                 data={[]}
+//                 renderData={() => <></>}
+//             />
+//             {!bets || bets.length === 0 ? (
+//                 <p className="py-2 text-center text-base font-semibold">
+//                     Пусто
+//                 </p>
+//             ) : null}
+//         </>
+//     );
+// };

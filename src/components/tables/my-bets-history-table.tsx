@@ -1,11 +1,14 @@
-import { useGetUserBetsQuery } from "@/store";
+import { useGetUserBetsQuery, useGetTopBetsQuery } from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const MyBetsHistoryTable = () => {
-    const { data: bets } = useGetUserBetsQuery({});
+    const { data: bets } = useGetTopBetsQuery(
+        { skip: 0, limit: 6 },
+        { refetchOnFocus: true }
+    );
 
     return (
         <>
@@ -16,10 +19,23 @@ export const MyBetsHistoryTable = () => {
                 renderData={data => (
                     <>
                         {data.map(bet => (
-                            <Row className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]">
+                            <Row
+                                key={bet?._id}
+                                className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                            >
                                 <Cell className="px-2 py-1 text-left text-[10px] leading-none">
-                                    <p>{formatTime(bet?.time)}</p>
-                                    <p>{formatDate(bet?.time)}</p>
+                                    <time
+                                        dateTime={bet?.time}
+                                        className="block"
+                                    >
+                                        {formatTime(bet?.time)}
+                                    </time>
+                                    <time
+                                        dateTime={bet?.time}
+                                        className="block"
+                                    >
+                                        {formatDate(bet?.time)}
+                                    </time>
                                 </Cell>
                                 <Cell>{formatCurrency(bet?.bet)}</Cell>
                                 <Cell>

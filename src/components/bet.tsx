@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useRef } from "react";
 import { useAuth } from "@/store/hooks/useAuth";
+import { useAppDispatch, userApi } from "@/store";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import { Label } from "./ui/label";
@@ -67,6 +68,8 @@ const BetTab = () => {
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const { token } = useAuth();
+
+    const appDispatch = useAppDispatch();
 
     useEffect(() => {
         const onConnect = () => {
@@ -174,7 +177,7 @@ const BetTab = () => {
                             payload: +event.target.value
                         })
                     }
-                    className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none"
+                    className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none focus-visible:outline-none"
                 />
 
                 <button
@@ -245,6 +248,8 @@ const BetTab = () => {
                         currency: "RUB",
                         bet: 0.01
                     });
+
+                    appDispatch(userApi.util.invalidateTags(["Balance"]));
                 }}
             >
                 Сделай ставку

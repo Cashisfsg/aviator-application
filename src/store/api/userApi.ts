@@ -7,7 +7,8 @@ import {
     Token,
     SuccessResponse,
     ChangePasswordRequest,
-    Requisite
+    Requisite,
+    PaginationParams
 } from "./types";
 import { RootStore } from "..";
 
@@ -49,6 +50,16 @@ export const userApi = createApi({
                 url: "/user/referral"
             })
         }),
+        getUserReferralByDays: builder.query<Referral, PaginationParams | void>(
+            {
+                query: args => ({
+                    url: "/user/referral/by-days",
+                    params: args
+                        ? { limit: args.limit, skip: args.skip }
+                        : undefined
+                })
+            }
+        ),
         getUserBalance: builder.query<UserBalance, void>({
             query: () => ({
                 url: "user/balance"
@@ -166,6 +177,8 @@ export const {
     useLazyGetUserQuery,
     useGetUserReferralQuery,
     useLazyGetUserReferralQuery,
+    useGetUserReferralByDaysQuery,
+    useLazyGetUserReferralByDaysQuery,
     useGetUserBalanceQuery,
     useLazyGetUserBalanceQuery,
     useGetUserBonusQuery,

@@ -412,7 +412,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 
             <Field
                 label={"К оплате"}
-                value={`${currentDeposit?.deduction} ${currentDeposit?.currency}`}
+                value={`${currentDeposit?.deduction.toFixed(
+                    2
+                )} ${currentDeposit?.currency}`}
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useGetUserReferralQuery } from "@/store";
+import { useGetUserReferralByDaysQuery } from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 import {
@@ -16,7 +16,7 @@ const MAX_ITEMS_BEFORE_EXPAND = 3;
 export const DailyStatisticsTable = () => {
     const [open, setOpen] = useState(false);
 
-    const { data: referral } = useGetUserReferralQuery();
+    const { data: referral } = useGetUserReferralByDaysQuery();
 
     return (
         <Collapsible

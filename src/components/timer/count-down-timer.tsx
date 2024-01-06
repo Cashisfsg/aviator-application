@@ -14,9 +14,12 @@ export const CountDownTimer: React.FC<TimerProps> = ({
 }) => {
     const [time, setTime] = useState({ minutes: 0, seconds: 0 });
 
+    // prettier-ignore
     const timeString = `${
-        time.minutes < 10 ? `0${time.minutes}` : time.minutes
-    }:${time.seconds < 10 ? `0${time.seconds}` : time.seconds}`;
+        `${time.minutes}`.padStart(2, "0")
+    }:${
+        `${time.seconds}`.padStart(2, "0")
+    }`;
 
     useEffect(() => {
         const timer = setInterval(() => {

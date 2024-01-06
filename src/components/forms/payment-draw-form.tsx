@@ -1,51 +1,22 @@
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-    useCreateDrawMutation,
-    useGetUserRequisitesQuery,
-    PaymentDrawRequest
-} from "@/store";
+    withdrawValidationSchema as formSchema,
+    WithdrawValidationSchema as FormSchema
+} from "@/utils/schemas";
+
+import { useCreateDrawMutation, useGetUserRequisitesQuery } from "@/store";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-interface PaymentDrawFormProps {
+interface PaymentWithdrawFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     selectedRequisiteId: string | null;
 }
 
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
-
-const formSchema: z.ZodType<
-    Pick<PaymentDrawRequest, "amount" | "userRequisite">
-> = z.object({
-    amount: z.coerce
-        .number({
-            required_error: "Поле обязательно для заполнения",
-            invalid_type_error: "Поле может содержать только цифры"
-        })
-        .int({ message: "Введенное значение должно быть целым числом" })
-        .gte(100, "Минимальная сумма выплат 100"),
-    userRequisite: z
-        .string()
-        .min(1, {
-            message: "Поле обязательно для заполнения"
-        })
-        .regex(alphanumericRegex, {
-            message: "Поле может содержать только цифры"
-        })
-        .min(10, {
-            message: "Поле должно содержать не менее 10 символов"
-        })
-        .max(20, {
-            message: "Превышено максимально допустимое количество символов"
-        })
-});
-
-export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
+export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
     setOpen,
     selectedRequisiteId
 }) => {
@@ -59,7 +30,7 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<z.infer<typeof formSchema>>({
+    } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             amount: 0,
@@ -69,7 +40,7 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
 
     const { toast } = useToast();
 
-    const onSubmitHandler: SubmitHandler<z.infer<typeof formSchema>> = async ({
+    const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         amount,
         userRequisite
     }) => {
@@ -137,7 +108,7 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
                 ) : null}
             </Label>
 
-            <button className="mt-4 rounded-md bg-lime-500 px-4 py-2 leading-none text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5">
+            <button className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5">
                 Подтвердить
             </button>
         </form>
