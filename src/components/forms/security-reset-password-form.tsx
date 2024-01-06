@@ -6,6 +6,7 @@ import { passwordSchema, PasswordFormSchema } from "@/utils/schemas";
 
 import { useGetUserQuery, useChangePasswordConfirmMutation } from "@/store";
 
+import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -39,8 +40,10 @@ export const SecurityResetPasswordForm = () => {
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
-            className="grid gap-y-4"
+            className="relative grid gap-y-4"
         >
+            <PreviousRouteLink />
+
             <h3 className="text-center">Сброс пароля</h3>
             <Label>
                 <span>Введите старый пароль</span>

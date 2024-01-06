@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useChangeEmailMutation } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
+import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -37,8 +38,9 @@ export const SecurityConfirmBindingEmailForm = () => {
     return (
         <form
             onSubmit={onSubmitHandler}
-            className="grid gap-y-4"
+            className="relative grid gap-y-4"
         >
+            <PreviousRouteLink />
             <h3 className="text-center">Привязать Email</h3>
             <Label>
                 <span>На ваш Email отправлен код</span>

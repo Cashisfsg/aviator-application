@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import { useSendEmailChangeCodeMutation } from "@/store";
 
+import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -40,8 +41,9 @@ export const SecurityBindEmailForm = () => {
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
-            className="grid gap-y-4"
+            className="relative grid gap-y-4"
         >
+            <PreviousRouteLink />
             <h3 className="text-center">Привязать Email</h3>
             <Label>
                 <span>Email</span>

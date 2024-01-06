@@ -8,6 +8,7 @@ import {
     useConfirmExistingEmailMutation
 } from "@/store";
 
+import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -47,8 +48,9 @@ export const SecurityConfirmExistingEmailForm = () => {
     return (
         <form
             onSubmit={onSubmitHandler}
-            className="grid gap-y-4"
+            className="relative grid gap-y-4"
         >
+            <PreviousRouteLink />
             <h3 className="text-center">Подтвердждение Email</h3>
             <Label>
                 <span>На ваш Email отправлен код</span>

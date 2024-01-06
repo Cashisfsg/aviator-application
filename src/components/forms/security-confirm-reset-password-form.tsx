@@ -2,11 +2,15 @@ import { Navigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { passwordPairSchema, PasswordPairFormSchema } from "@/utils/schemas";
+import {
+    passwordPairSchema as formSchema,
+    PasswordPairFormSchema as FormSchema
+} from "@/utils/schemas";
 
 import { useChangeUserPasswordMutation } from "@/store";
 import { useAuth } from "@/store/hooks/useAuth";
 
+import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -19,15 +23,15 @@ export const SecurityConfirmResetPasswordForm = () => {
         handleSubmit,
         register,
         formState: { errors }
-    } = useForm<PasswordPairFormSchema>({
-        resolver: zodResolver(passwordPairSchema),
+    } = useForm<FormSchema>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             password: "",
             passwordConfirm: ""
         }
     });
 
-    const onSubmitHandler: SubmitHandler<PasswordPairFormSchema> = async ({
+    const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         password,
         passwordConfirm
     }) => {
@@ -43,8 +47,10 @@ export const SecurityConfirmResetPasswordForm = () => {
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
-            className="grid gap-y-4"
+            className="relative grid gap-y-4"
         >
+            <PreviousRouteLink />
+
             <h3 className="text-center">Сброс пароля</h3>
             <Label>
                 <span>Введите новый пароль</span>
