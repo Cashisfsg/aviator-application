@@ -8,6 +8,12 @@ interface Currency {
     requisite: string;
 }
 
+interface Limit {
+    minLimit: number;
+    maxLimit: number;
+    currency: string;
+}
+
 export const replenishmentApi = createApi({
     reducerPath: "replenishmentApi",
     baseQuery: fetchBaseQuery({
@@ -34,6 +40,11 @@ export const replenishmentApi = createApi({
                 return response;
             },
             providesTags: ["Deposit"]
+        }),
+        getReplenishmentLimits: builder.query<Limit, void>({
+            query: () => ({
+                url: "/replenishments/limits"
+            })
         }),
         getReplenishmentById: builder.query<Replenishment, { id: number }>({
             query: ({ id }) => ({
@@ -76,6 +87,8 @@ export const replenishmentApi = createApi({
 export const {
     useGetAllDepositsQuery,
     useLazyGetAllDepositsQuery,
+    useGetReplenishmentLimitsQuery,
+    useLazyGetReplenishmentLimitsQuery,
     useGetReplenishmentByIdQuery,
     useLazyGetReplenishmentByIdQuery,
     useAddReplenishmentMutation,

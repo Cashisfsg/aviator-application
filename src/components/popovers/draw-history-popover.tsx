@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { cn } from "@/utils";
+import { formatDate, formatTime } from "@/utils/helpers";
 
 interface DrawHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {}
 
@@ -30,7 +31,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                         draws.map((draw, index) => (
                             <>
                                 <PaymentDetails
-                                    key={draw?.createdAt}
+                                    key={draw?._id}
                                     draw={draw}
                                 />
                                 {index !== draws.length - 1 ? (
@@ -69,22 +70,22 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     };
 
     return (
-        <table className="w-full bg-white text-left text-sm">
+        <table className="w-full bg-white text-left text-sm ">
             <tbody>
                 <tr>
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
-                        {draw?.createdAt
-                            ? new Date(draw?.createdAt).toLocaleDateString()
-                            : null}{" "}
+                        {`${formatDate(draw?.createdAt)} ${formatTime(
+                            draw?.createdAt
+                        )}`}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.completedDate
-                            ? new Date(draw?.completedDate).toLocaleDateString()
-                            : null}{" "}
+                        {`${formatDate(draw?.completedDate)} ${formatTime(
+                            draw?.completedDate
+                        )}`}
                     </td>
                 </tr>
                 <tr>
@@ -100,27 +101,42 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     </td>
                 </tr>
                 <tr>
-                    <td className="px-1.5 py-0.5">Статус</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">{draw?.status}</td>
-                </tr>
-                <tr>
                     <td className="px-1.5 py-0.5">Реквизит</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {draw?.userRequisite}
                     </td>
                 </tr>
                 <tr>
-                    <td className="px-1.5 py-0.5">ID 1234</td>
-                    {draw?.status === "Ожидает оплаты" ? (
+                    <td className="px-1.5 py-0.5">Статус</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">{draw?.status}</td>
+                </tr>
+                {draw?.statusMessage ? (
+                    <tr>
+                        <td className="px-1.5 py-0.5">Причина отмены</td>
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            <button
-                                onClick={() => abortDraw(draw?._id)}
-                                className="text-right text-blue-500"
-                            >
-                                Отменить
-                            </button>
+                            {draw?.statusMessage}
                         </td>
-                    ) : null}
+                    </tr>
+                ) : null}
+                <tr>
+                    <td
+                        // colSpan={2}
+                        className="inline-block w-5/12 overflow-hidden text-ellipsis whitespace-nowrap px-1.5 py-0.5"
+                    >
+                        {/* <span className="inline-block w-full overflow-hidden text-ellipsis whitespace-nowrap"> */}
+                        ID {draw?._id}
+                        {/* </span> */}
+                    </td>
+                    {/* {draw?.status === "Ожидает оплаты" ? ( */}
+                    <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
+                        <button
+                            onClick={() => abortDraw(draw?._id)}
+                            className="text-right text-blue-500"
+                        >
+                            Отменить
+                        </button>
+                    </td>
+                    {/* ) : null} */}
                 </tr>
             </tbody>
         </table>

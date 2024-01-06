@@ -3,6 +3,7 @@ import { useGetAllDepositsQuery, Replenishment } from "@/store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { cn } from "@/utils";
+import { formatDate, formatTime } from "@/utils/helpers";
 
 interface PaymentHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {
     setInitialFormState: React.Dispatch<
@@ -75,6 +76,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     setInitialFormState,
     setDialogOpen
 }) => {
+    const showReplenishmentDetails = () => {};
+
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
             <tbody>
@@ -82,18 +85,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                         {deposit?.createdAt
-                            ? `${new Date(
+                            ? `${formatDate(deposit?.createdAt)} ${formatTime(
                                   deposit?.createdAt
-                              ).toLocaleDateString([], {
-                                  day: "numeric",
-                                  month: "numeric",
-                                  year: "numeric"
-                              })} ${new Date(
-                                  deposit?.createdAt
-                              ).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit"
-                              })}`
+                              )}`
                             : null}
                     </td>
                 </tr>
@@ -101,18 +95,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         {deposit?.completedDate
-                            ? `${new Date(
+                            ? `${formatDate(
                                   deposit?.completedDate
-                              ).toLocaleDateString([], {
-                                  day: "numeric",
-                                  month: "numeric",
-                                  year: "numeric"
-                              })} ${new Date(
-                                  deposit?.completedDate
-                              ).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit"
-                              })}`
+                              )} ${formatTime(deposit?.completedDate)}`
                             : null}
                     </td>
                 </tr>

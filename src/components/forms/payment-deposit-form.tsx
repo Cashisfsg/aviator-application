@@ -5,6 +5,7 @@ import { useToast } from "../ui/use-toast";
 
 import {
     useGetUserRequisitesQuery,
+    useGetReplenishmentLimitsQuery,
     useAddReplenishmentMutation,
     useGetAllDepositsQuery,
     useConfirmReplenishmentByIdMutation,
@@ -14,6 +15,7 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { CountDownTimer } from "../timer/count-down-timer";
 import { cn } from "@/utils";
 
 type ReplenishmentFormState =
@@ -44,6 +46,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         initialFormState.state
     );
     const { data: allReplenishments } = useGetAllDepositsQuery();
+    const { data: limits } = useGetReplenishmentLimitsQuery();
     const [currentReplenishment, setCurrentReplenishment] = useState<
         Replenishment | undefined
     >(() => {
@@ -148,7 +151,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                             />
 
                             <span className="text-right text-xs">
-                                от 10 000 до 2 000 000
+                                {`от ${limits?.minLimit} до ${limits?.maxLimit} ${limits?.currency}`}
                             </span>
                         </Label>
                         <button className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5">
@@ -175,7 +178,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
-                        <span>Время на оплату 30:00</span>
+                        <span>
+                            Время на оплату{" "}
+                            <CountDownTimer
+                                targetDate={currentReplenishment?.completedDate}
+                            />
+                        </span>
                     </p>
 
                     <button
@@ -199,7 +207,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
-                        <span>Время на оплату 30:00</span>
+                        <span>
+                            Время на оплату{" "}
+                            <CountDownTimer
+                                targetDate={currentReplenishment?.completedDate}
+                            />
+                        </span>
                     </p>
 
                     <p className="text-center text-sm text-black">
@@ -249,7 +262,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
                         <span>ID 1234</span>
-                        <span>Время на оплату 30:00</span>
+                        <span>
+                            Время на оплату{" "}
+                            <CountDownTimer
+                                targetDate={currentReplenishment?.completedDate}
+                            />
+                        </span>
                     </p>
 
                     <p className="text-center text-sm text-black">
