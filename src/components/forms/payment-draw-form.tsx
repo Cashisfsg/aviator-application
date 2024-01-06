@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import {
     useCreateDrawMutation,
@@ -28,7 +28,7 @@ const formSchema: z.ZodType<
             invalid_type_error: "Поле может содержать только цифры"
         })
         .int({ message: "Введенное значение должно быть целым числом" })
-        .gte(20, "Минимальная сумма выплат 100"),
+        .gte(100, "Минимальная сумма выплат 100"),
     userRequisite: z
         .string()
         .min(1, {
@@ -69,10 +69,10 @@ export const PaymentDrawForm: React.FC<PaymentDrawFormProps> = ({
 
     const { toast } = useToast();
 
-    const onSubmitHandler = async ({
+    const onSubmitHandler: SubmitHandler<z.infer<typeof formSchema>> = async ({
         amount,
         userRequisite
-    }: z.infer<typeof formSchema>) => {
+    }) => {
         const response = await createDraw({
             currency: selectedRequisite?.currency as string,
             amount: Number(amount),

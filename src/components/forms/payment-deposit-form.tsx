@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { DialogClose } from "@/components/ui/dialog";
-import { useToast } from "../ui/use-toast";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    depositValidationSchema as formSchema,
+    DepositValidationSchema as FormSchema
+} from "@/utils/schemas";
 
 import {
     useGetUserRequisitesQuery,
@@ -13,8 +18,10 @@ import {
     Replenishment
 } from "@/store";
 
+import { DialogClose } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Input, ErrorMessage } from "@/components/ui/input";
 import { CountDownTimer } from "../timer/count-down-timer";
 import { cn } from "@/utils";
 
@@ -46,7 +53,11 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         initialFormState.state
     );
     const { data: allReplenishments } = useGetAllDepositsQuery();
-    const { data: limits } = useGetReplenishmentLimitsQuery();
+    const {
+        data: limits,
+        isSuccess: isLimitsSuccessResponse,
+        isLoading: isLimitsLoading
+    } = useGetReplenishmentLimitsQuery();
     const [currentReplenishment, setCurrentReplenishment] = useState<
         Replenishment | undefined
     >(() => {
@@ -59,22 +70,33 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
     const [depositBalance] = useAddReplenishmentMutation();
     const [confirmReplenishment] = useConfirmReplenishmentByIdMutation();
     const [cancelReplenishment] = useCancelReplenishmentByIdMutation();
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm<FormSchema>({
+        resolver: zodResolver(
+            formSchema(
+                limits?.minLimit || 100,
+                limits?.maxLimit || 1000,
+                limits?.currency || "RUB"
+            )
+        ),
+        defaultValues: {
+            amount: 0
+        }
+    });
     const { toast } = useToast();
 
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
         .find(requisite => requisite._id === selectedRequisiteId);
 
-    const onSubmitHandler: React.FormEventHandler<
-        HTMLFormElement & FormFields
-    > = async event => {
-        event.preventDefault();
-
-        const { amount } = event.currentTarget;
-
+    const onSubmitHandler: SubmitHandler<FormSchema> = async ({ amount }) => {
         const response = await depositBalance({
             currency: selectedRequisite?.currency as string,
-            amount: Number(amount.value),
+            amount: Number(amount),
             requisite: selectedRequisite?._id as string
         });
 
@@ -128,7 +150,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             return (
                 <>
                     <form
-                        onSubmit={onSubmitHandler}
+                        onSubmit={handleSubmit(onSubmitHandler)}
                         className="grid gap-y-4"
                     >
                         <p className="flex h-10 items-center rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
@@ -141,20 +163,32 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                                 {selectedRequisite?.name}
                             </span>
                         </p>
+
                         <Label className="grid gap-y-1 space-y-0 text-sm text-slate-400">
                             <span>Сумма депозита</span>
                             <Input
                                 inputMode="numeric"
-                                name="amount"
-                                required
-                                className="border-none bg-slate-300/70 leading-none text-black shadow-md focus-visible:outline-slate-400/70"
+                                aria-invalid={errors?.amount ? "true" : "false"}
+                                {...register("amount")}
+                                className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus-visible:outline-slate-400/70"
                             />
+                            {errors?.amount ? (
+                                <ErrorMessage
+                                    message={errors?.amount?.message}
+                                />
+                            ) : null}
 
-                            <span className="text-right text-xs">
-                                {`от ${limits?.minLimit} до ${limits?.maxLimit} ${limits?.currency}`}
-                            </span>
+                            {isLimitsSuccessResponse ? (
+                                <span className="text-right text-xs">
+                                    {`от ${limits?.minLimit} до ${limits?.maxLimit} ${limits?.currency}`}
+                                </span>
+                            ) : null}
                         </Label>
-                        <button className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5">
+
+                        <button
+                            disabled={isLimitsLoading}
+                            className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
+                        >
                             Пополнить
                         </button>
                     </form>
