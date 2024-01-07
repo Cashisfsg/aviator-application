@@ -1,11 +1,11 @@
-import { useGetUserBetsQuery, useGetTopBetsQuery } from "@/store";
+import { useGetUserBetsQuery } from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const MyBetsHistoryTable = () => {
-    const { data: bets } = useGetTopBetsQuery(
+    const { data: bets } = useGetUserBetsQuery(
         { skip: 0, limit: 6 },
         { refetchOnFocus: true }
     );
@@ -41,7 +41,7 @@ export const MyBetsHistoryTable = () => {
                                 <Cell>
                                     <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
                                         {bet?.win !== 0
-                                            ? `${formatCurrency(bet?.win)}x`
+                                            ? `${formatCurrency(bet?.coeff)}x`
                                             : "-"}
                                     </span>
                                 </Cell>

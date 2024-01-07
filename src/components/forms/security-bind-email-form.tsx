@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import {
-    emailValidationSchema,
-    EmailValidationFormSchema
+    emailValidationSchema as formSchema,
+    EmailValidationFormSchema as FormSchema
 } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -19,23 +19,19 @@ export const SecurityBindEmailForm = () => {
         handleSubmit,
         register,
         formState: { errors }
-    } = useForm<EmailValidationFormSchema>({
-        resolver: zodResolver(emailValidationSchema),
+    } = useForm<FormSchema>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             email: ""
         }
     });
 
-    const onSubmitHandler: SubmitHandler<EmailValidationFormSchema> = async ({
-        email
-    }) => {
+    const onSubmitHandler: SubmitHandler<FormSchema> = async ({ email }) => {
         await sendChangeCode({ email });
     };
 
     if (isSuccess) {
-        return (
-            <Navigate to="/aviator_front/main/security/bind-email/confirm" />
-        );
+        return <Navigate to="/main/security/bind-email/confirm" />;
     }
 
     return (

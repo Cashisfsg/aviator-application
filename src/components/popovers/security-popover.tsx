@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import {
     Popover,
@@ -15,6 +15,8 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
     open,
     setPopoverOpen
 }) => {
+    const navigate = useNavigate();
+
     return (
         <Popover
             open={open}
@@ -30,6 +32,7 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
                 side="bottom"
                 sideOffset={20}
                 align="end"
+                onPointerDownOutside={() => navigate("/main")}
                 className="w-60  border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
             >
                 <Outlet />

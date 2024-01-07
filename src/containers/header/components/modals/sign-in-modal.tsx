@@ -21,7 +21,7 @@ export const SignInModal = () => {
                 <span className="text-xs">Ещё нет аккаунта</span>
                 <br />
                 <Link
-                    to="/aviator_front/sign-up"
+                    to="/sign-up"
                     className="text-blue-500"
                 >
                     Зарегистрироваться

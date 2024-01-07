@@ -33,15 +33,11 @@ export const BalanceMenu = () => {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link to="/aviator_front/payment/replenishment">
-                                Пополнить
-                            </Link>
+                            <Link to="/payment/replenishment">Пополнить</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link to="/aviator_front/payment/draw">
-                                Вывести
-                            </Link>
+                            <Link to="/payment/draw">Вывести</Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

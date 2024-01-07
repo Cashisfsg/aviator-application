@@ -32,9 +32,7 @@ export const SecurityResetPasswordForm = () => {
     };
 
     if (isSuccess) {
-        return (
-            <Navigate to="/aviator_front/main/security/reset-password/confirm" />
-        );
+        return <Navigate to="/main/security/reset-password/confirm" />;
     }
 
     return (
@@ -64,14 +62,13 @@ export const SecurityResetPasswordForm = () => {
             <Link
                 to={
                     user?.email
-                        ? "/aviator_front/main/security/email/confirm"
-                        : "/aviator_front/main/security/bind-email"
+                        ? "/main/security/email/confirm"
+                        : "/main/security/bind-email"
                 }
                 state={
                     user?.email
                         ? {
-                              nextUrl:
-                                  "/aviator_front/main/security/reset-password/confirm"
+                              nextUrl: "/main/security/reset-password/confirm"
                           }
                         : null
                 }

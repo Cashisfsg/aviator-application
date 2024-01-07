@@ -61,12 +61,17 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
 
         const response = await cancelDraw({ id });
 
-        if (response?.error) return;
-
-        toast({
-            title: response?.data?.message,
-            duration: 5000
-        });
+        if (response?.error) {
+            toast({
+                title: response?.error?.data?.message,
+                duration: 5000
+            });
+        } else {
+            toast({
+                title: response?.data?.message,
+                duration: 5000
+            });
+        }
     };
 
     return (
@@ -119,14 +124,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     </tr>
                 ) : null}
                 <tr>
-                    <td
-                        // colSpan={2}
-                        className="inline-block w-5/12 overflow-hidden text-ellipsis whitespace-nowrap px-1.5 py-0.5"
-                    >
-                        {/* <span className="inline-block w-full overflow-hidden text-ellipsis whitespace-nowrap"> */}
-                        ID {draw?._id}
-                        {/* </span> */}
-                    </td>
+                    <td className="px-1.5 py-0.5">ID 12345</td>
                     {/* {draw?.status === "Ожидает оплаты" ? ( */}
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                         <button

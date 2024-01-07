@@ -6,7 +6,7 @@ export const SignInButton = () => {
         <Dialog>
             <DialogTrigger asChild>
                 <Link
-                    to="/aviator_front/main/sign-in"
+                    to="/main/sign-in"
                     className="rounded-lg bg-green-400 px-4 py-3 font-bold"
                 >
                     Вход

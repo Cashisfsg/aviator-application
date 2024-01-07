@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/input";
 
 // export const action = async () => {
-//     return redirect("/aviator_front/main/password/reset");
+//     return redirect("/main/password/reset");
 // };
 
 interface FormFields {
@@ -32,7 +32,7 @@ export const ConfirmEmailForm = () => {
 
         if (response?.error) return;
 
-        navigate("/aviator_front/main/password/reset");
+        navigate("/main/password/reset");
     };
 
     return (

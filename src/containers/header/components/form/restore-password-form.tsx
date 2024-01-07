@@ -40,7 +40,7 @@ export const RestorePasswordForm = () => {
         if (response?.error) return;
 
         sessionStorage.setItem("email", email);
-        navigate("/aviator_front/main/password/confirm-email");
+        navigate("/main/password/confirm-email");
     };
 
     return (

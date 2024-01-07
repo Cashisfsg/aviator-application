@@ -29,113 +29,49 @@ import {
 } from "@/components/forms";
 
 const router = createBrowserRouter([
+    // {
+    // path: "aviator_front",
+    // async lazy() {
+    //     return import("@/containers/layout").then(module => ({
+    //         Component: module.Layout
+    //     }));
+    // },
+    // children: [
     {
-        path: "aviator_front",
-        async lazy() {
-            return import("@/containers/layout").then(module => ({
-                Component: module.Layout
-            }));
-        },
+        path: "main",
+        element: <MainPage />,
         children: [
             {
-                path: "main",
-                element: <MainPage />,
-                children: [
-                    {
-                        path: "sign-in",
-                        element: <SignInModal />
-                    },
-                    {
-                        path: "sign-up",
-                        element: <SignUpModal />
-                    },
-                    {
-                        path: "password",
-                        element: <RestorePasswordModal />,
-                        children: [
-                            {
-                                path: "restore",
-                                element: <RestorePasswordForm />
-                            },
-                            {
-                                path: "confirm-email",
-                                element: <ConfirmEmailForm />
-                                // action: confirmEmailAction
-                            },
-                            {
-                                path: "reset",
-                                element: <ResetPasswordForm />
-                                // action: resetPasswordAction
-                            },
-                            {
-                                path: "*",
-                                element: (
-                                    <Navigate
-                                        to="/aviator_front/main"
-                                        replace
-                                    />
-                                )
-                            }
-                        ]
-                    },
-                    {
-                        path: "security",
-                        element: <PrivateRoute to="/aviator_front/main" />,
-                        children: [
-                            {
-                                index: true,
-                                element: <SecurityForm />
-                            },
-                            {
-                                path: "bind-email",
-                                element: <SecurityBindEmailForm />
-                            },
-                            {
-                                path: "bind-email/confirm",
-                                element: <SecurityConfirmBindingEmailForm />
-                            },
-                            {
-                                path: "email/confirm",
-                                element: <SecurityConfirmExistingEmailForm />
-                            },
-                            {
-                                path: "reset-password",
-                                element: <SecurityResetPasswordForm />
-                            },
-                            {
-                                path: "reset-password/confirm",
-                                element: <SecurityConfirmResetPasswordForm />
-                            },
-                            {
-                                path: "*",
-                                element: (
-                                    <Navigate
-                                        to="/aviator_front/main"
-                                        replace
-                                    />
-                                )
-                            }
-                        ]
-                    }
-                ]
+                path: "sign-in",
+                element: <SignInModal />
             },
             {
-                path: "payment",
-                element: <PrivateRoute to="/aviator_front/main" />,
+                path: "sign-up",
+                element: <SignUpModal />
+            },
+            {
+                path: "password",
+                element: <RestorePasswordModal />,
                 children: [
                     {
-                        path: "draw",
-                        element: <PaymentDrawPage />
+                        path: "restore",
+                        element: <RestorePasswordForm />
                     },
                     {
-                        path: "replenishment",
-                        element: <PaymentReplenishmentPage />
+                        path: "confirm-email",
+                        element: <ConfirmEmailForm />
+                        // action: confirmEmailAction
+                    },
+                    {
+                        path: "reset",
+                        element: <ResetPasswordForm />
+                        // action: resetPasswordAction
                     },
                     {
                         path: "*",
                         element: (
                             <Navigate
-                                to="/aviator_front/payment/draw"
+                                to="/main"
                                 replace
                             />
                         )
@@ -143,16 +79,89 @@ const router = createBrowserRouter([
                 ]
             },
             {
+                path: "security",
+                element: <PrivateRoute to="/main" />,
+                children: [
+                    {
+                        index: true,
+                        element: <SecurityForm />
+                    },
+                    {
+                        path: "bind-email",
+                        element: <SecurityBindEmailForm />
+                    },
+                    {
+                        path: "bind-email/confirm",
+                        element: <SecurityConfirmBindingEmailForm />
+                    },
+                    {
+                        path: "email/confirm",
+                        element: <SecurityConfirmExistingEmailForm />
+                    },
+                    {
+                        path: "reset-password",
+                        element: <SecurityResetPasswordForm />
+                    },
+                    {
+                        path: "reset-password/confirm",
+                        element: <SecurityConfirmResetPasswordForm />
+                    },
+                    {
+                        path: "*",
+                        element: (
+                            <Navigate
+                                to="/main"
+                                replace
+                            />
+                        )
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        path: "payment",
+        element: <PrivateRoute to="/main" />,
+        children: [
+            {
+                path: "draw",
+                element: <PaymentDrawPage />
+            },
+            {
+                path: "replenishment",
+                element: <PaymentReplenishmentPage />
+            },
+            {
                 path: "*",
                 element: (
                     <Navigate
-                        to="/aviator_front/main"
+                        to="/payment/draw"
                         replace
                     />
                 )
             }
         ]
+    },
+    {
+        path: "*",
+        element: (
+            <Navigate
+                to="/main"
+                replace
+            />
+        )
     }
+    //     ]
+    // },
+    // {
+    //     path: "*",
+    //     element: (
+    //         <Navigate
+    //             to="/main"
+    //             replace
+    //         />
+    //     )
+    // }
 ]);
 
 export const ReactRouterProvider = () => {

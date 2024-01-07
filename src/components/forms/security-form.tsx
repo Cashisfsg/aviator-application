@@ -17,9 +17,9 @@ export const SecurityForm = () => {
                         </p>
                     </div>
                     <Link
-                        to="/aviator_front/main/security/email/confirm"
+                        to="/main/security/email/confirm"
                         state={{
-                            nextUrl: "/aviator_front/main/security/bind-email"
+                            nextUrl: "/main/security/bind-email"
                         }}
                         className=" text-right text-xs text-[#757b85]"
                     >
@@ -28,14 +28,14 @@ export const SecurityForm = () => {
                 </>
             ) : (
                 <Link
-                    to="/aviator_front/main/security/bind-email"
+                    to="/main/security/bind-email"
                     className="mt-2 rounded-md border border-gray-50 bg-[#2c2d30] px-4 py-2 text-center"
                 >
                     Привязать Email
                 </Link>
             )}
             <Link
-                to="/aviator_front/main/security/reset-password"
+                to="/main/security/reset-password"
                 className="mt-2 rounded-md border border-gray-50 bg-[#2c2d30] px-4 py-2 text-center"
             >
                 Изменить пароль

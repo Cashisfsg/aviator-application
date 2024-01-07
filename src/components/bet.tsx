@@ -31,7 +31,7 @@ export const Bet = () => {
 type State = number;
 
 type Action =
-    | { type: "change"; payload: number }
+    | { type: "input"; payload: number }
     | { type: "increment"; payload: number }
     | { type: "decrement"; payload: number };
 
@@ -40,7 +40,7 @@ const MIN_BET = 1;
 
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-        case "change":
+        case "input":
             if (isNaN(action.payload)) return state;
 
             if (action.payload > MAX_BET) return MAX_BET;
@@ -173,7 +173,7 @@ const BetTab = () => {
                     value={state}
                     onChange={event =>
                         dispatch({
-                            type: "change",
+                            type: "input",
                             payload: +event.target.value
                         })
                     }
@@ -214,6 +214,7 @@ const BetTab = () => {
                     </svg>
                 </button>
             </div>
+
             <button
                 style={{ textShadow: "0 1px 2px rgba(0, 0, 0, .5)" }}
                 className="row-span-3 rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
@@ -242,8 +243,6 @@ const BetTab = () => {
             ))}
             <button
                 onClick={() => {
-                    console.log("Making bet");
-
                     socket.emit("bet", {
                         currency: "RUB",
                         bet: 0.01
@@ -253,6 +252,17 @@ const BetTab = () => {
                 }}
             >
                 Сделай ставку
+            </button>
+            <button
+                onClick={() => {
+                    socket.emit("cash-out", {
+                        betNumber: 1
+                    });
+
+                    appDispatch(userApi.util.invalidateTags(["Balance"]));
+                }}
+            >
+                Выводи бабки
             </button>
         </section>
     );

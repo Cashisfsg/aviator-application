@@ -32,7 +32,7 @@ export const SecurityConfirmBindingEmailForm = () => {
     };
 
     if (isSuccess) {
-        return <Navigate to="/aviator_front/main/security" />;
+        return <Navigate to="/main/security" />;
     }
 
     return (

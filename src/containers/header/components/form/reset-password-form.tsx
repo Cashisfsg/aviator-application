@@ -41,7 +41,7 @@ export const ResetPasswordForm = () => {
 
         if (response?.error) return;
 
-        navigate("/aviator_front/main/sign-in");
+        navigate("/main/sign-in");
     };
 
     return (

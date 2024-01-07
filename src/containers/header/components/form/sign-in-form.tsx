@@ -43,7 +43,7 @@ export const SignInForm = () => {
         if (response?.error) return;
 
         reset();
-        navigate("/aviator_front/main");
+        navigate("/main");
         // dialogRef?.current?.close();
     };
 
@@ -84,9 +84,7 @@ export const SignInForm = () => {
                 </Label>
             </form>
             <p className="text-right text-sm text-blue-500">
-                <Link to="/aviator_front/main/password/restore">
-                    Забыли пароль?
-                </Link>
+                <Link to="/main/password/restore">Забыли пароль?</Link>
             </p>
             <button
                 form={formId}

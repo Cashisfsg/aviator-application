@@ -6,7 +6,7 @@ export const SignUpButton = () => {
         <Dialog>
             <DialogTrigger asChild>
                 <Link
-                    to="/aviator_front/main/sign-up"
+                    to="/main/sign-up"
                     className="rounded-lg bg-red-400 px-4 py-3 font-bold"
                 >
                     Регистрация

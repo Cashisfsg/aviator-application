@@ -18,7 +18,7 @@ export const RestorePasswordModal = () => {
             <DialogHeader>
                 <DialogTitle>
                     <Button
-                        // to="/aviator_front"
+                        // to=""
                         onClick={() => navigate(-1)}
                         className="absolute left-4 top-4 p-0 text-2xl text-white-50 transition-colors hover:text-slate-300"
                     >
@@ -38,7 +38,7 @@ export const RestorePasswordModal = () => {
                     <span className="text-xs">Ещё нет аккаунта?</span>
                     <br />
                     <Link
-                        to="/aviator_front/main/sign-up"
+                        to="/main/sign-up"
                         className="text-xs text-blue-500"
                     >
                         Зарегистрироваться
@@ -48,7 +48,7 @@ export const RestorePasswordModal = () => {
                     <span className="text-xs">Не привязана почта?</span>
                     <br />
                     <Link
-                        to="/aviator_front/main/sign-up"
+                        to="/main/sign-up"
                         className="text-xs text-blue-500"
                     >
                         Восстановить без почты

@@ -13,7 +13,7 @@ export const Statistics = () => {
             {isAuthenticated ? (
                 <Tabs
                     defaultValue="all"
-                    className="rounded-2.5xl pb-8 pt-4"
+                    className="rounded-2.5xl pb-8"
                 >
                     <TabsList>
                         <TabsTrigger value="all">Все ставки</TabsTrigger>
@@ -40,7 +40,7 @@ export const Statistics = () => {
                     </TabsContent>
                 </Tabs>
             ) : (
-                <section className="mt-4 overflow-hidden rounded-2.5xl bg-black-50">
+                <section className="overflow-hidden rounded-2.5xl bg-black-50">
                     <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-lg font-bold text-gray-300">
                         Игровая статистика
                     </h2>

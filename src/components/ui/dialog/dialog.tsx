@@ -157,7 +157,7 @@ Dialog.Close = ({ className, onClick, ...props }) => {
     const handleClick: React.MouseEventHandler<HTMLButtonElement> = event => {
         onClick?.(event);
         dialogRef.current?.close();
-        navigate("/aviator_front/main/sign-in");
+        navigate("/main/sign-in");
     };
 
     return (
