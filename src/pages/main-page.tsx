@@ -13,8 +13,8 @@ export const MainPage = () => {
                 <Chart />
                 <BettingZone />
                 <Statistics />
-                <Toaster />
             </main>
+            <Toaster />
         </>
     );
 };

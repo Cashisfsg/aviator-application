@@ -1,10 +1,12 @@
+import { lazy, Suspense } from "react";
+
 import {
     createBrowserRouter,
     RouterProvider as Provider,
     Navigate
 } from "react-router-dom";
 
-import { MainPage, PaymentDrawPage, PaymentReplenishmentPage } from "@/pages";
+import { MainPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
 import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
@@ -27,6 +29,18 @@ import {
     SecurityConfirmResetPasswordForm,
     SecurityResetPasswordForm
 } from "@/components/forms";
+
+const PaymentDrawPage = lazy(async () =>
+    import("@/pages/payment/payment-draw-page").then(module => ({
+        default: module.PaymentDrawPage
+    }))
+);
+
+const PaymentReplenishmentPage = lazy(async () =>
+    import("@/pages/payment/payment-replenishment-page").then(module => ({
+        default: module.PaymentReplenishmentPage
+    }))
+);
 
 const router = createBrowserRouter([
     // {
@@ -125,11 +139,26 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "draw",
-                element: <PaymentDrawPage />
+                // async lazy() {
+                //     return import("@/pages/payment/payment-draw-page").then(
+                //         module => ({
+                //             Component: module.PaymentDrawPage
+                //         })
+                //     );
+                // }
+                element: (
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <PaymentDrawPage />
+                    </Suspense>
+                )
             },
             {
                 path: "replenishment",
-                element: <PaymentReplenishmentPage />
+                element: (
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <PaymentReplenishmentPage />
+                    </Suspense>
+                )
             },
             {
                 path: "*",
