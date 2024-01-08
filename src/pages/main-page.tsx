@@ -14,6 +14,7 @@ export const MainPage = () => {
                 <BettingZone />
                 <Statistics />
             </main>
+
             <Toaster />
         </>
     );

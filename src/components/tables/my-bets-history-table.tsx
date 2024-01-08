@@ -5,10 +5,9 @@ import { Table, Row, Cell } from "@/components/ui/table";
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const MyBetsHistoryTable = () => {
-    const { data: bets } = useGetUserBetsQuery(
-        { skip: 0, limit: 6 },
-        { refetchOnFocus: true }
-    );
+    const { data: bets } = useGetUserBetsQuery(undefined, {
+        refetchOnFocus: true
+    });
 
     return (
         <>
