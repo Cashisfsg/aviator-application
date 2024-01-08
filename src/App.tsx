@@ -1,12 +1,28 @@
+import { useEffect } from "react";
+
 import "./App.css";
 import { ReactRouterProvider } from "./router/provider";
-import { store } from "./store";
-import { Provider } from "react-redux";
+import { useAppDispatch, setUndefinedUser, TelegramClient } from "./store";
 
 export const App = () => {
-    return (
-        <Provider store={store}>
-            <ReactRouterProvider />
-        </Provider>
-    );
+    const tg = (
+        window as Window & typeof globalThis & { Telegram: TelegramClient }
+    ).Telegram.WebApp;
+
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        // if (!tg?.initDataUnsafe?.user?.id) return;
+
+        // console.log(tg?.initDataUnsafe?.user?.id);
+        dispatch(
+            setUndefinedUser({
+                telegramId: 21,
+                profileImage: "asdsd",
+                login: "Login"
+            })
+        );
+    }, [tg?.initDataUnsafe?.user?.id]);
+
+    return <ReactRouterProvider />;
 };

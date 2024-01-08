@@ -1,7 +1,7 @@
 import { useState, useId } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth } from "@/store/hooks/useAuth";
+import { useAuth, useStateSelector } from "@/store";
 import { useGetUserQuery, useChangeProfileImageMutation } from "@/store";
 
 import {
@@ -58,7 +58,7 @@ export const BurgerMenu = () => {
     const [securityPopoverOpen, setSecurityPopoverOpen] = useState(false);
 
     const { isAuthenticated } = useAuth();
-    const { data: user } = useGetUserQuery();
+    const user = useStateSelector(state => state.auth.user);
     const [updateImage] = useChangeProfileImageMutation();
 
     return (
@@ -87,7 +87,7 @@ export const BurgerMenu = () => {
                                     {user?.login || "Username"}
                                 </p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-                                    {user?.telegramId || "user ID"}
+                                    {`ID ${user?.telegramId}` || "user ID"}
                                 </p>
                             </div>
                             {isAuthenticated ? (

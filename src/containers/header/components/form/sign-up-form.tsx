@@ -7,7 +7,7 @@ import {
     RegistrationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
-import { useCreateNewUserAccountMutation } from "@/store";
+import { useStateSelector, useCreateNewUserAccountMutation } from "@/store";
 
 import {
     Form,
@@ -51,15 +51,18 @@ export const SignUpForm = () => {
     const [createNewUser, { isError, error }] =
         useCreateNewUserAccountMutation();
 
+    const telegramId = useStateSelector(state => state.auth.user?.telegramId);
+    const login = useStateSelector(state => state.auth.user?.login);
+
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: "",
+            login: login,
             password: "",
             passwordConfirm: "",
             email: "",
             from: "",
-            telegramId: 566789,
+            telegramId,
             accepted_terms: undefined
         }
     });
