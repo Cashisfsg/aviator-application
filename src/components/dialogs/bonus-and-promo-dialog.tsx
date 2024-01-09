@@ -1,12 +1,11 @@
 import { useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useGetUserBonusQuery } from "@/store";
+import { useGetUserBonusQuery, useActivatePromoCodeMutation } from "@/store";
 
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
 import { BonusTable, DepositBonusTable } from "@/components/tables";
-import { useActivatePromoCodeMutation } from "@/store";
 
 interface BonusAndPromoDialogProps {
     open: boolean;
@@ -118,7 +117,7 @@ const ActivationBonusForm = () => {
                 autoComplete="off"
                 defaultValue="Ввести промокод"
                 onClick={onClickHandler}
-                className="w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 focus-visible:outline-none group-has-[input[type=button]:active]:translate-y-[1px] group-has-[input[type=button]:hover]:bg-green-350 [&type=button]:active:border-[#1c7430]"
+                className="w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 focus-visible:outline-none group-has-[input[type=button]:active]:translate-y-[1px] group-has-[input[type=button]:active]:border-[#1c7430] group-has-[input[type=button]:hover]:bg-green-350"
             />
             <button
                 type="submit"

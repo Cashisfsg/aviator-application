@@ -123,4 +123,8 @@ export const getAuthenticationStatus = (state: RootStore) => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
+export const selectToken = (state: RootStore) => state.auth.token;
+export const selectAuthenticationStatus = (state: RootStore) =>
+    state.auth.isAuthenticated;
+
 export const { logout, setUndefinedUser } = authSlice.actions;

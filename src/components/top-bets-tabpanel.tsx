@@ -1,11 +1,18 @@
-import { Table } from "./ui/table";
+import { Table, Row, Cell } from "./ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useGetTopBetsQuery } from "@/store";
+import { useGetUserBalanceQuery, useGetTopBetsQuery } from "@/store";
+
+import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const TopBetsTabpanel = () => {
     return (
         <>
             <Tabs defaultValue="day">
+                <TabsList className="mt-4">
+                    <TabsTrigger value="day">День</TabsTrigger>
+                    <TabsTrigger value="month">Месяц</TabsTrigger>
+                    <TabsTrigger value="year">Год</TabsTrigger>
+                </TabsList>
                 <TabsContent value="day">
                     <TabDay />
                 </TabsContent>
@@ -15,11 +22,6 @@ export const TopBetsTabpanel = () => {
                 <TabsContent value="year">
                     <TabDay />
                 </TabsContent>
-                <TabsList>
-                    <TabsTrigger value="day">День</TabsTrigger>
-                    <TabsTrigger value="month">Месяц</TabsTrigger>
-                    <TabsTrigger value="year">Год</TabsTrigger>
-                </TabsList>
             </Tabs>
         </>
     );
@@ -27,15 +29,63 @@ export const TopBetsTabpanel = () => {
 
 const TabDay = () => {
     const { data: bets } = useGetTopBetsQuery();
-
-    console.log(bets);
+    const { data: balance } = useGetUserBalanceQuery();
 
     return (
         <>
             <Table
-                headers={["Куши", "Наибольшие выигрыши", "Коэфф."]}
+                className="px-1.5"
+                headers={[
+                    "Время",
+                    `Ставка, ${balance?.currency}`,
+                    "Коэфф.",
+                    `Выигрыш, ${balance?.currency}`
+                ]}
                 data={bets || []}
-                renderData={() => <></>}
+                renderData={data => (
+                    <>
+                        {data.map(bet => (
+                            <Row
+                                key={bet?._id}
+                                className="[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white"
+                            >
+                                <Cell className="px-2 py-1 text-left text-[10px] leading-none">
+                                    <time
+                                        dateTime={bet?.time}
+                                        className="block"
+                                    >
+                                        {formatTime(bet?.time)}
+                                    </time>
+                                    <time
+                                        dateTime={bet?.time}
+                                        className="block"
+                                    >
+                                        {formatDate(bet?.time)}
+                                    </time>
+                                </Cell>
+                                <Cell>{formatCurrency(bet?.bet)}</Cell>
+                                <Cell>
+                                    <span
+                                        className={
+                                            bet?.win && bet?.win !== 0
+                                                ? "rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold"
+                                                : "px-3 py-0.5 text-sm font-bold"
+                                        }
+                                    >
+                                        {bet?.win && bet?.win !== 0
+                                            ? `${formatCurrency(bet?.coeff)}x`
+                                            : "-"}
+                                    </span>
+                                </Cell>
+                                <Cell>
+                                    {bet?.win && bet?.win !== 0
+                                        ? formatCurrency(bet?.win)
+                                        : "-"}
+                                </Cell>
+                            </Row>
+                        ))}
+                    </>
+                )}
             />
             {!bets || bets.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">

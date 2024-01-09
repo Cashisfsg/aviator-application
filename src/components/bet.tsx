@@ -1,11 +1,11 @@
-import { useState, useReducer, useEffect, useRef } from "react";
+import React, { useState, useReducer, useEffect, useRef } from "react";
 import { useAuth } from "@/store/hooks/useAuth";
 import { useAppDispatch, useGetUserBalanceQuery, userApi } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { Label } from "./ui/label";
-// import { Switch } from "./ui/switch";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { socket } from "./socket/socket";
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
 
@@ -14,22 +14,37 @@ interface BetProps {
 }
 
 export const Bet: React.FC<BetProps> = ({ betNumber }) => {
+    const [disabled, setDisabled] = useState(false);
+
     return (
         <Tabs
             defaultValue="bet"
             className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-6 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206]"
         >
             <TabsList className="group-has-[fieldset:disabled]:pointer-events-none group-has-[fieldset:disabled]:opacity-75">
-                <TabsTrigger value="bet">Ставка</TabsTrigger>
-                <TabsTrigger value="auto">Авто</TabsTrigger>
+                <TabsTrigger
+                    value="bet"
+                    disabled={disabled}
+                >
+                    Ставка
+                </TabsTrigger>
+                <TabsTrigger
+                    value="auto"
+                    disabled={disabled}
+                >
+                    Авто
+                </TabsTrigger>
             </TabsList>
             <BetTab betNumber={betNumber} />
-            {/* <TabsContent
+            <TabsContent
                 value="auto"
                 className="flex items-center justify-around"
             >
-                <AutoBetTab />
-            </TabsContent> */}
+                <AutoBetTab
+                    disabled={disabled}
+                    setDisabled={setDisabled}
+                />
+            </TabsContent>
         </Tabs>
     );
 };
@@ -90,7 +105,6 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
     const [currentBet, dispatch] = useReducer(reducer, initialBet);
     const [betState, setBetState] = useState<BetState>("init");
 
-    const inputValidValue = useRef<string>(String(initialBet));
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -158,37 +172,6 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         }, 500);
     };
 
-    const onChangeHandler: React.ChangeEventHandler<
-        HTMLInputElement
-    > = event => {
-        try {
-            inputValidValue.current = decimal(event.currentTarget.value);
-        } catch (error) {
-            return;
-        } finally {
-            dispatch({
-                type: "input",
-                payload: +inputValidValue.current
-            });
-        }
-    };
-
-    const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
-        if (!balance?.balance) return;
-
-        const value = validateBet(
-            event.target.value,
-            MIN_BET,
-            balance?.balance
-        );
-        event.currentTarget.value = value.toFixed(2);
-
-        dispatch({
-            type: "input",
-            payload: value
-        });
-    };
-
     const resetInterval = () => {
         clearTimeout(timerRef.current);
         clearInterval(intervalRef.current);
@@ -202,7 +185,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     data-state={betState}
                     className="grid grid-cols-[68px_68px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
                 >
-                    <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none ">
+                    <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
                         <button
                             type="button"
                             disabled={betState !== "init"}
@@ -239,7 +222,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                             </svg>
                         </button>
 
-                        <input
+                        {/* <input
                             maxLength={7}
                             autoComplete="off"
                             inputMode="numeric"
@@ -248,6 +231,12 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                             onChange={onChangeHandler}
                             onBlur={onBlurHandler}
                             className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none focus-visible:outline-none"
+                        /> */}
+                        <BetInput
+                            balance={balance?.balance}
+                            currentBet={currentBet}
+                            dispatch={dispatch}
+                            disabled={betState !== "init"}
                         />
 
                         <button
@@ -315,6 +304,58 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                 setBetState={setBetState}
             />
         </section>
+    );
+};
+
+interface BetInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    balance: number | undefined;
+    currentBet: number;
+    dispatch: React.Dispatch<Action>;
+}
+
+const BetInput: React.FC<BetInputProps> = ({
+    balance,
+    currentBet,
+    dispatch,
+    ...props
+}) => {
+    const inputValidValue = useRef<string>(String(currentBet));
+
+    const onChangeHandler: React.ChangeEventHandler<
+        HTMLInputElement
+    > = event => {
+        try {
+            inputValidValue.current = decimal(event.currentTarget.value);
+        } catch (error) {
+            return;
+        } finally {
+            event.currentTarget.value = inputValidValue.current;
+        }
+    };
+
+    const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
+        if (!balance) return;
+
+        const value = validateBet(event.target.value, MIN_BET, balance);
+        event.currentTarget.value = value.toFixed(2);
+
+        dispatch({
+            type: "input",
+            payload: value
+        });
+    };
+
+    return (
+        <input
+            {...props}
+            maxLength={7}
+            autoComplete="off"
+            inputMode="numeric"
+            defaultValue={currentBet}
+            onChange={onChangeHandler}
+            onBlur={onBlurHandler}
+            className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none focus-visible:outline-none"
+        />
     );
 };
 
@@ -416,25 +457,74 @@ const BetButton: React.FC<BetButtonProps> = ({
     }
 };
 
-// const AutoBetTab = () => {
-//     return (
-//         <>
-//             <button className="h-5 w-25 shrink-0 whitespace-nowrap rounded-full border border-[#1d7aca] bg-[#45c0f2] text-xs font-bold uppercase leading-none">
-//                 Авто игра
-//             </button>
-//             <div className="flex">
-//                 <Label
-//                     direction="row"
-//                     className="text-xs leading-none"
-//                 >
-//                     <span>Авто кешаут</span>
-//                     <Switch />
-//                 </Label>
-//                 <div>
-//                     <input className="w-full" />
-//                     <button>x</button>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
+interface AutoBetTabProps {
+    disabled: boolean;
+    setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const AutoBetTab: React.FC<AutoBetTabProps> = ({ disabled, setDisabled }) => {
+    const inputValidValue = useRef<string>(String(1));
+    const [value, setValue] = useState(1);
+
+    const { data: balance } = useGetUserBalanceQuery();
+
+    useEffect(() => {
+        const autoBet = ({ x }: { x: number }) => {
+            if (x < value || !disabled) return;
+
+            console.log("Game over. Auto bet win", x, value);
+
+            socket.off("game", autoBet);
+        };
+
+        socket.on("game", autoBet);
+
+        return () => {
+            socket.off("game", autoBet);
+        };
+    }, [value, disabled]);
+
+    const onChangeHandler: React.ChangeEventHandler<
+        HTMLInputElement
+    > = event => {
+        try {
+            inputValidValue.current = decimal(event.currentTarget.value);
+        } catch (error) {
+            return;
+        } finally {
+            event.currentTarget.value = inputValidValue.current;
+        }
+    };
+
+    const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
+        if (!balance?.balance) return;
+
+        const value = validateBet(event.target.value, 1.01, balance?.balance);
+        event.currentTarget.value = value.toFixed(2);
+        setValue(value);
+    };
+
+    return (
+        <>
+            <div className="grid grid-cols-[auto_100px] items-center justify-evenly  gap-3">
+                <Label
+                    direction="row"
+                    className="text-xs leading-none text-[#9ea0a3]"
+                >
+                    <span>Авто кешаут</span>
+                    <Switch onClick={() => setDisabled(state => !state)} />
+                </Label>
+                <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none">
+                    <input
+                        disabled={!disabled}
+                        defaultValue={1}
+                        onChange={onChangeHandler}
+                        onBlur={onBlurHandler}
+                        className="h-full w-full bg-transparent font-bold focus-visible:outline-none disabled:opacity-50"
+                    />
+                    <span>x</span>
+                </div>
+            </div>
+        </>
+    );
+};
