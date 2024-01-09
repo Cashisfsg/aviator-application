@@ -30,6 +30,12 @@ import {
     SecurityResetPasswordForm
 } from "@/components/forms";
 
+const PaymentLayout = lazy(async () =>
+    import("@/pages/payment/layout").then(module => ({
+        default: module.Layout
+    }))
+);
+
 const PaymentDrawPage = lazy(async () =>
     import("@/pages/payment/payment-draw-page").then(module => ({
         default: module.PaymentDrawPage
@@ -135,7 +141,16 @@ const router = createBrowserRouter([
     },
     {
         path: "payment",
-        element: <PrivateRoute to="/main" />,
+        element: (
+            <PrivateRoute
+                asChild
+                to="/main"
+            >
+                <Suspense fallback={<p>Loading...</p>}>
+                    <PaymentLayout />
+                </Suspense>
+            </PrivateRoute>
+        ),
         children: [
             {
                 path: "draw",

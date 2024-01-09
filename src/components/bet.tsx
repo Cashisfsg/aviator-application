@@ -139,8 +139,6 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         };
     }, [currentBet, betState, token]);
 
-    console.log("rerender");
-
     const handlePointerDown = (
         type: "increment" | "decrement",
         value: number
