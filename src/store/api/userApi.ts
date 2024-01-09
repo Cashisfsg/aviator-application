@@ -36,7 +36,7 @@ export const userApi = createApi({
             return headers;
         }
     }),
-    tagTypes: ["User", "Balance"],
+    tagTypes: ["User", "Balance", "Bonus"],
     endpoints: builder => ({
         //! =================================================================
         getUser: builder.query<User, void>({
@@ -66,10 +66,11 @@ export const userApi = createApi({
             }),
             providesTags: ["Balance"]
         }),
-        getUserBonus: builder.query<UserBonus, void>({
+        getUserBonus: builder.query<UserBonus[], void>({
             query: () => ({
                 url: "user/bonus"
-            })
+            }),
+            providesTags: ["Bonus"]
         }),
         getUserRequisites: builder.query<UserRequisite[], void>({
             query: () => ({
@@ -90,7 +91,8 @@ export const userApi = createApi({
                 url: "user/bonus",
                 method: "POST",
                 body
-            })
+            }),
+            invalidatesTags: ["Bonus"]
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,

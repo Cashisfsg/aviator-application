@@ -9,7 +9,7 @@ import {
     useGetUserRecommendedRequisitesQuery
 } from "@/store";
 
-import { Header, PaymentMethod, TechnicalSupport } from "./components";
+import { PaymentMethod, TechnicalSupport } from "./components";
 
 export const PaymentReplenishmentPage = () => {
     const [renderElement, setRenderElement] = useState<HTMLDivElement | null>(
@@ -33,7 +33,6 @@ export const PaymentReplenishmentPage = () => {
 
     return (
         <>
-            <Header />
             <h1 className="text-2xl font-bold">Пополнение</h1>
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">

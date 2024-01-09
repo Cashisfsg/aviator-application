@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useGetUserBetsQuery } from "@/store";
+import { useGetUserBetsQuery, useGetUserBalanceQuery } from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 import {
@@ -17,6 +17,7 @@ export const MyBetsHistoryDialogTable = () => {
     const [open, setOpen] = useState(false);
 
     const { data: bets } = useGetUserBetsQuery();
+    const { data: balance } = useGetUserBalanceQuery();
 
     return (
         <Collapsible
@@ -28,13 +29,9 @@ export const MyBetsHistoryDialogTable = () => {
                     className="px-1.5 text-center"
                     headers={[
                         "Время",
-                        `Ставка${
-                            bets && bets[0] ? `, ${bets[0]?.currency}` : ""
-                        }`,
+                        `Ставка, ${balance?.currency}`,
                         "Коэфф.",
-                        `Выигрыш${
-                            bets && bets[0] ? `, ${bets[0]?.currency}` : ""
-                        }`
+                        `Выигрыш, ${balance?.currency}`
                     ]}
                     data={bets || []}
                     renderData={data => (

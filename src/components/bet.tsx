@@ -17,7 +17,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
     return (
         <Tabs
             defaultValue="bet"
-            className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-6 pb-8 pt-4 has-[fieldset:disabled]:border-red-500"
+            className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-6 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206]"
         >
             <TabsList className="group-has-[fieldset:disabled]:pointer-events-none group-has-[fieldset:disabled]:opacity-75">
                 <TabsTrigger value="bet">Ставка</TabsTrigger>
@@ -195,7 +195,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
     };
 
     return (
-        <section className="mx-auto mt-5 grid max-w-[400px] grid-cols-[auto,1fr] gap-x-1 text-lg">
+        <section className=" mx-auto mt-5 grid max-w-[400px] grid-cols-[auto,1fr] gap-x-1 text-lg">
             <form>
                 <fieldset
                     disabled={betState !== "init"}
