@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useGetUserBonusQuery } from "@/store";
@@ -63,6 +63,7 @@ interface FormFields {
 }
 
 const ActivationBonusForm = () => {
+    const buttonRef = useRef<HTMLButtonElement>(null);
     const [activatePromo] = useActivatePromoCodeMutation();
 
     const { toast } = useToast();
@@ -75,12 +76,15 @@ const ActivationBonusForm = () => {
         const { promoCode } = event.currentTarget;
         const promo = promoCode.value;
 
-        if (promo.trim() === "")
-            promoCode.setAttribute("value", "Ввести промокод");
+        // if (promo.trim() === "") {
+        //     promoCode.setAttribute("value", "Ввести промокод");
+        //     return;
+        // }
 
         const response = await activatePromo({ promoCode: promo });
 
         promoCode.setAttribute("type", "button");
+        buttonRef.current?.setAttribute("disabled", "");
 
         if (response?.error) {
             toast({
@@ -95,6 +99,13 @@ const ActivationBonusForm = () => {
         }
     };
 
+    const onClickHandler: React.MouseEventHandler<HTMLInputElement> = event => {
+        event.currentTarget.type = "text";
+        event.currentTarget.setAttribute("defaultValue", "");
+        event.currentTarget.setAttribute("value", "");
+        buttonRef.current?.removeAttribute("disabled");
+    };
+
     return (
         <form
             onSubmit={onSubmitHandler}
@@ -106,16 +117,14 @@ const ActivationBonusForm = () => {
                 required
                 autoComplete="off"
                 defaultValue="Ввести промокод"
-                onClick={event => {
-                    event.currentTarget.type = "text";
-                    event.currentTarget.setAttribute("defaultValue", "");
-                    event.currentTarget.setAttribute("value", "");
-                }}
-                className="w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 focus-visible:outline-none [&type=button]:hover:bg-red-400 [&type=button]:active:translate-y-[1px] [&type=button]:active:border-[#1c7430]"
+                onClick={onClickHandler}
+                className="w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 focus-visible:outline-none group-has-[input[type=button]:active]:translate-y-[1px] group-has-[input[type=button]:hover]:bg-green-350 [&type=button]:active:border-[#1c7430]"
             />
             <button
                 type="submit"
-                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white group-has-[input[type=button]]:hidden"
+                disabled
+                ref={buttonRef}
+                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white disabled:pointer-events-none disabled:hidden"
             >
                 Активировать
             </button>
