@@ -8,11 +8,12 @@ import {
     // socketApi,
     userApi
 } from "./api";
-import { authReducer } from "./slices";
+import { authReducer, betSliceReducer } from "./slices";
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
+        bets: betSliceReducer,
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,

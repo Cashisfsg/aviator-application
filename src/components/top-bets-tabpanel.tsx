@@ -1,10 +1,17 @@
 import { Table, Row, Cell } from "./ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useGetUserBalanceQuery, useGetTopBetsQuery } from "@/store";
+import {
+    useGetUserBalanceQuery,
+    useGetTopBetsQuery,
+    useStateSelector,
+    useAppDispatch,
+    fetchUserBetsThunk
+} from "@/store";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const TopBetsTabpanel = () => {
+    const dispatch = useAppDispatch();
     return (
         <>
             <Tabs defaultValue="day">
@@ -22,17 +29,28 @@ export const TopBetsTabpanel = () => {
                 <TabsContent value="year">
                     <TabDay />
                 </TabsContent>
+                <button
+                    onClick={() => {
+                        dispatch(fetchUserBetsThunk());
+                    }}
+                >
+                    Get bets
+                </button>
             </Tabs>
         </>
     );
 };
 
 const TabDay = () => {
-    const { data: bets } = useGetTopBetsQuery();
+    // const { data: bets } = useGetTopBetsQuery();
     const { data: balance } = useGetUserBalanceQuery();
+    const { bets, status, error } = useStateSelector(state => state.bets);
+
+    console.log("Top bets: ", bets);
 
     return (
         <>
+            {status === "rejected" && <pre>{error}</pre>}
             <Table
                 className="px-1.5"
                 headers={[
