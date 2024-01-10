@@ -58,7 +58,6 @@ export const fetchTopBetsThunk = createAsyncThunk(
     async (args, { rejectWithValue, getState }) => {
         const { skip, limit } = (getState() as RootStore).bets.top
             .queryParams as QueryParams;
-        const token = (getState() as RootStore).auth.token as string;
         const searchParams = new URLSearchParams({
             skip: String(skip),
             limit: String(limit)
@@ -69,7 +68,6 @@ export const fetchTopBetsThunk = createAsyncThunk(
         try {
             const response = await fetch(url, {
                 headers: {
-                    Token: token,
                     "Content-Type": "application/json"
                 }
             });

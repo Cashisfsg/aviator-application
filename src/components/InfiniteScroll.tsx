@@ -27,6 +27,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
     return (
         <div className={className}>
             {children}
+
             <div
                 ref={ref}
                 className="invisible h-1"

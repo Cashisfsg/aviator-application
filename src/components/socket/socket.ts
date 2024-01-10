@@ -9,7 +9,7 @@ const token = storedData ? JSON.parse(storedData).token : null;
 export const socket = token
     ? io(URL, {
           auth: {
-              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OGM2MjcyNGVjYmE1MmRhZmU1YWIwMCIsImlhdCI6MTcwNDAxNTY0MiwiZXhwIjoxNzA0NjIwNDQyfQ.jbUSMw_gV9FEMoLLt7C179SWlAtpUS0Ug61iH2p-12Y"
+              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OGM2MjcyNGVjYmE1MmRhZmU1YWIwMCIsImlhdCI6MTcwNDg5NjU0MiwiZXhwIjoxNzA1NTAxMzQyfQ.nQgKfYCzj-ITslTd6_DM0mGX0wFfXhAOoPncpD1Kl_8"
           }
       })
     : io(URL);

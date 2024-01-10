@@ -15,6 +15,7 @@ interface BetProps {
 
 export const Bet: React.FC<BetProps> = ({ betNumber }) => {
     const [disabled, setDisabled] = useState(false);
+    const [betState, setBetState] = useState<BetState>("init");
 
     return (
         <Tabs
@@ -35,14 +36,21 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
                     Авто
                 </TabsTrigger>
             </TabsList>
-            <BetTab betNumber={betNumber} />
+            <BetTab
+                betNumber={betNumber}
+                betState={betState}
+                setBetState={setBetState}
+            />
             <TabsContent
                 value="auto"
                 className="flex items-center justify-around"
             >
                 <AutoBetTab
+                    betNumber={betNumber}
                     disabled={disabled}
                     setDisabled={setDisabled}
+                    betState={betState}
+                    setBetState={setBetState}
                 />
             </TabsContent>
         </Tabs>
@@ -53,7 +61,10 @@ type BetValue = number;
 
 type BetState = "init" | "bet" | "cash";
 
-interface BetTabProps extends Pick<BetProps, "betNumber"> {}
+interface BetTabProps extends Pick<BetProps, "betNumber"> {
+    betState: BetState;
+    setBetState: React.Dispatch<React.SetStateAction<BetState>>;
+}
 
 type Action =
     | {
@@ -100,16 +111,19 @@ const reducer = (state: BetValue, action: Action): BetValue => {
     }
 };
 
-const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
+const BetTab: React.FC<BetTabProps> = ({
+    betNumber,
+    betState,
+    setBetState
+}) => {
+    const { data: balance } = useGetUserBalanceQuery();
     const initialBet: BetValue = 1;
     const [currentBet, dispatch] = useReducer(reducer, initialBet);
-    const [betState, setBetState] = useState<BetState>("init");
 
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
     const { token } = useAuth();
-    const { data: balance } = useGetUserBalanceQuery();
 
     const appDispatch = useAppDispatch();
 
@@ -465,9 +479,18 @@ const BetButton: React.FC<BetButtonProps> = ({
 interface AutoBetTabProps {
     disabled: boolean;
     setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+    betNumber: 1 | 2;
+    betState: BetState;
+    setBetState: React.Dispatch<React.SetStateAction<BetState>>;
 }
 
-const AutoBetTab: React.FC<AutoBetTabProps> = ({ disabled, setDisabled }) => {
+const AutoBetTab: React.FC<AutoBetTabProps> = ({
+    disabled,
+    setDisabled,
+    betNumber,
+    betState,
+    setBetState
+}) => {
     const inputValidValue = useRef<string>(String(1));
     const [value, setValue] = useState(1);
 
@@ -477,7 +500,13 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ disabled, setDisabled }) => {
         const autoBet = ({ x }: { x: number }) => {
             if (x < value || !disabled) return;
 
-            console.log("Game over. Auto bet win", x, value);
+            socket.emit("cash-out", {
+                betNumber
+            });
+
+            setBetState("init");
+
+            console.log("Game over. Auto bet win", x * value);
 
             socket.off("game", autoBet);
         };
@@ -487,7 +516,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ disabled, setDisabled }) => {
         return () => {
             socket.off("game", autoBet);
         };
-    }, [value, disabled]);
+    }, [value, disabled, betState, setBetState]);
 
     const onChangeHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -504,7 +533,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ disabled, setDisabled }) => {
     const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
         if (!balance?.balance) return;
 
-        const value = validateBet(event.target.value, 1.01, balance?.balance);
+        const value = validateBet(event.target.value, 1.01, 100);
         event.currentTarget.value = value.toFixed(2);
         setValue(value);
     };
