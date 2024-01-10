@@ -1,6 +1,13 @@
 import React, { useState, useReducer, useEffect, useRef } from "react";
 import { useAuth } from "@/store/hooks/useAuth";
-import { useAppDispatch, useGetUserBalanceQuery, userApi } from "@/store";
+import {
+    useAppDispatch,
+    useStateSelector,
+    useGetUserBalanceQuery,
+    userApi,
+    selectCurrentGameTab,
+    selectAllTabs
+} from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -16,6 +23,10 @@ interface BetProps {
 export const Bet: React.FC<BetProps> = ({ betNumber }) => {
     const [disabled, setDisabled] = useState(false);
     const [betState, setBetState] = useState<BetState>("init");
+
+    const currentGameTab = useStateSelector(state =>
+        selectCurrentGameTab(state, betNumber)
+    );
 
     return (
         <Tabs

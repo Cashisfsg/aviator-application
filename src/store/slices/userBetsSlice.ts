@@ -69,7 +69,7 @@ export const fetchUserBetsThunk = createAsyncThunk(
         try {
             const response = await fetch(url, {
                 headers: {
-                    authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }
             });

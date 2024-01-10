@@ -12,7 +12,8 @@ import {
 import {
     authReducer,
     userBetsSliceReducer,
-    topBetsSliceReducer
+    topBetsSliceReducer,
+    gameSliceReducer
 } from "./slices";
 
 const betReducer = combineReducers({
@@ -24,6 +25,7 @@ export const store = configureStore({
     reducer: {
         auth: authReducer,
         bets: betReducer,
+        game: gameSliceReducer,
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
