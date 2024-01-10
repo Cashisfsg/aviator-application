@@ -431,12 +431,17 @@ const BetButton: React.FC<BetButtonProps> = ({
             );
         case "bet":
             return (
-                <button
-                    onClick={abortBet}
-                    className="rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f7001f] active:translate-y-[1px] active:border-[#b21f2d]"
-                >
-                    Отмена
-                </button>
+                <div className="grid h-full w-full grid-rows-[1fr_2fr] place-items-center">
+                    <p className="text-sm text-[#ffffffb3]">
+                        Ожидаем новый раунд
+                    </p>
+                    <button
+                        onClick={abortBet}
+                        className="h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f7001f] active:translate-y-[1px] active:border-[#b21f2d]"
+                    >
+                        Отмена
+                    </button>
+                </div>
             );
         case "cash":
             return (

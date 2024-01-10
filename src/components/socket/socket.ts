@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const URL = "http://5.45.65.88:8080";
+const URL = "https://5.45.65.88:8080";
 
 const storedData = localStorage.getItem("token");
 

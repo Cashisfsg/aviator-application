@@ -21,7 +21,7 @@ export const SignInModal = () => {
                 <span className="text-xs">Ещё нет аккаунта</span>
                 <br />
                 <Link
-                    to="/sign-up"
+                    to="/main/sign-up"
                     className="text-blue-500"
                 >
                     Зарегистрироваться
