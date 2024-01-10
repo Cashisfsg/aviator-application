@@ -68,18 +68,18 @@ const TabDay = () => {
                         `Выигрыш, ${balance?.currency}`
                     ]}
                     renderHeader={headers => (
-                        <thead className="sticky -top-0.5">
-                            <Row>
-                                {headers.map(header => (
-                                    <TableHeaderCell
-                                        key={header}
-                                        className="bg-black-50"
-                                    >
-                                        {header}
-                                    </TableHeaderCell>
-                                ))}
-                            </Row>
-                        </thead>
+                        // <thead className="sticky -top-0.5">
+                        <Row>
+                            {headers.map(header => (
+                                <TableHeaderCell
+                                    key={header}
+                                    className="sticky -top-0.5 bg-black-50"
+                                >
+                                    {header}
+                                </TableHeaderCell>
+                            ))}
+                        </Row>
+                        // </thead>
                     )}
                     data={bets || []}
                     renderData={data => (

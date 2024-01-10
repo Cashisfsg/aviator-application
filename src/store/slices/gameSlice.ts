@@ -1,3 +1,4 @@
+import { RefObject } from "react";
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { userApi } from "../api";
 import { RootStore } from "../types";
@@ -22,7 +23,7 @@ const initialState = [
         betState: "init",
         betNumber: 1,
         balance: 300,
-        currency: "",
+        currency: "USD",
         autoModeOn: false,
         currentBet: 1
     },
@@ -30,7 +31,7 @@ const initialState = [
         betState: "init",
         betNumber: 2,
         balance: 300,
-        currency: "",
+        currency: "USD",
         autoModeOn: false,
         currentBet: 1
     }
@@ -60,6 +61,7 @@ const gameSlice = createSlice({
                 type: "input" | "increment" | "decrement";
                 betNumber: 1 | 2;
                 value: number;
+                inputRef: RefObject<HTMLInputElement>;
             }>
         ) => {
             switch (action.payload.type) {
@@ -72,26 +74,38 @@ const gameSlice = createSlice({
                     if (
                         state[action.payload.betNumber - 1].currentBet +
                             action.payload.value >
-                        state[action.payload.betNumber - 1].balance
+                            state[action.payload.betNumber - 1].balance ||
+                        !action.payload.inputRef.current
                     )
                         return state;
 
                     state[action.payload.betNumber - 1].currentBet += Number(
                         action.payload.value.toFixed(2)
                     );
+                    action.payload.inputRef.current.value =
+                        state[action.payload.betNumber - 1].currentBet.toFixed(
+                            2
+                        );
+
                     break;
 
                 case "decrement":
                     if (
                         state[action.payload.betNumber - 1].currentBet -
                             action.payload.value <
-                        MIN_BET
+                            MIN_BET ||
+                        !action.payload.inputRef.current
                     )
                         return state;
 
                     state[action.payload.betNumber - 1].currentBet -= Number(
                         action.payload.value.toFixed(2)
                     );
+                    action.payload.inputRef.current.value =
+                        state[action.payload.betNumber - 1].currentBet.toFixed(
+                            2
+                        );
+
                     break;
 
                 default:
