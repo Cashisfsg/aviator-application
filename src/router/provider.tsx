@@ -5,8 +5,9 @@ import {
     RouterProvider as Provider,
     Navigate
 } from "react-router-dom";
+import GridLoader from "react-spinners/GridLoader";
 
-import { MainPage } from "@/pages";
+import { MainPage, ErrorPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
 import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
@@ -30,11 +31,23 @@ import {
     SecurityResetPasswordForm
 } from "@/components/forms";
 
+// const MainPage = lazy(async () =>
+//     import("@/pages/main-page").then(module => ({ default: module.MainPage }))
+// );
+
 const PaymentLayout = lazy(async () =>
     import("@/pages/payment/layout").then(module => ({
         default: module.Layout
     }))
 );
+
+// const SignInModal = lazy(async () =>
+//     import("@/containers/header/components/modals/sign-in-modal").then(
+//         module => ({
+//             default: module.SignInModal
+//         })
+//     )
+// );
 
 const PaymentDrawPage = lazy(async () =>
     import("@/pages/payment/payment-draw-page").then(module => ({
@@ -59,32 +72,52 @@ const router = createBrowserRouter([
     // children: [
     {
         path: "main",
-        element: <MainPage />,
+        element: (
+            // <Suspense
+            //     fallback={
+            //         <GridLoader
+            //             className="fixed left-1/2 top-1/2"
+            //             color={"red"}
+            //         />
+            //     }
+            // >
+            <MainPage />
+            // </Suspense>
+        ),
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: "sign-in",
-                element: <SignInModal />
+                element: <SignInModal />,
+                errorElement: <ErrorPage />
             },
             {
                 path: "sign-up",
-                element: <SignUpModal />
+                element: <SignUpModal />,
+                errorElement: <ErrorPage />
             },
             {
                 path: "password",
                 element: <RestorePasswordModal />,
+                errorElement: <ErrorPage />,
                 children: [
                     {
                         path: "restore",
-                        element: <RestorePasswordForm />
+                        element: <RestorePasswordForm />,
+                        errorElement: <ErrorPage />
                     },
                     {
                         path: "confirm-email",
-                        element: <ConfirmEmailForm />
+                        element: <ConfirmEmailForm />,
+                        errorElement: <ErrorPage />
+
                         // action: confirmEmailAction
                     },
                     {
                         path: "reset",
-                        element: <ResetPasswordForm />
+                        element: <ResetPasswordForm />,
+                        errorElement: <ErrorPage />
+
                         // action: resetPasswordAction
                     },
                     {
@@ -101,6 +134,7 @@ const router = createBrowserRouter([
             {
                 path: "security",
                 element: <PrivateRoute to="/main" />,
+                errorElement: <ErrorPage />,
                 children: [
                     {
                         index: true,
@@ -146,11 +180,20 @@ const router = createBrowserRouter([
                 asChild
                 to="/main"
             >
-                <Suspense fallback={<p>Loading...</p>}>
+                <Suspense
+                    fallback={
+                        <GridLoader
+                            className="fixed left-1/2 top-1/2"
+                            color={"red"}
+                        />
+                    }
+                >
                     <PaymentLayout />
                 </Suspense>
             </PrivateRoute>
         ),
+        errorElement: <ErrorPage />,
+
         children: [
             {
                 path: "draw",
@@ -162,18 +205,34 @@ const router = createBrowserRouter([
                 //     );
                 // }
                 element: (
-                    <Suspense fallback={<p>Loading...</p>}>
+                    <Suspense
+                        fallback={
+                            <GridLoader
+                                className="fixed left-1/2 top-1/2"
+                                color={"red"}
+                            />
+                        }
+                    >
                         <PaymentDrawPage />
                     </Suspense>
-                )
+                ),
+                errorElement: <ErrorPage />
             },
             {
                 path: "replenishment",
                 element: (
-                    <Suspense fallback={<p>Loading...</p>}>
+                    <Suspense
+                        fallback={
+                            <GridLoader
+                                className="fixed left-1/2 top-1/2"
+                                color={"red"}
+                            />
+                        }
+                    >
                         <PaymentReplenishmentPage />
                     </Suspense>
-                )
+                ),
+                errorElement: <ErrorPage />
             },
             {
                 path: "*",

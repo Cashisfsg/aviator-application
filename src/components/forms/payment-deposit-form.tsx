@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import FadeLoader from "react-spinners/FadeLoader";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,6 +25,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { CountDownTimer } from "../timer/count-down-timer";
+
 import { cn } from "@/utils";
 
 type ReplenishmentFormState =
@@ -39,10 +42,6 @@ interface ReplenishmentFormProps {
         state: string;
         replenishmentId: string;
     };
-}
-
-interface FormFields {
-    amount: HTMLInputElement;
 }
 
 export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
@@ -67,7 +66,8 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         );
     });
     const { data: requisites } = useGetUserRequisitesQuery();
-    const [depositBalance] = useAddReplenishmentMutation();
+    const [depositBalance, { isLoading: isReplenishmentRequestLoading }] =
+        useAddReplenishmentMutation();
     const [confirmReplenishment] = useConfirmReplenishmentByIdMutation();
     const [cancelReplenishment] = useCancelReplenishmentByIdMutation();
 
@@ -180,7 +180,11 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
                             {isLimitsSuccessResponse ? (
                                 <span className="text-right text-xs">
-                                    {`от ${limits?.minLimit} до ${limits?.maxLimit} ${limits?.currency}`}
+                                    {`от ${limits?.minLimit.toFixed(
+                                        2
+                                    )} до ${limits?.maxLimit.toFixed(
+                                        2
+                                    )} ${limits?.currency}`}
                                 </span>
                             ) : null}
                         </Label>
@@ -189,7 +193,11 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                             disabled={isLimitsLoading}
                             className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
                         >
-                            Пополнить
+                            {isReplenishmentRequestLoading ? (
+                                <FadeLoader />
+                            ) : (
+                                "Пополнить"
+                            )}
                         </button>
                     </form>
                     <p className="text-center text-xs text-black">

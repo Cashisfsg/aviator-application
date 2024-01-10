@@ -1,3 +1,4 @@
+import { combineReducers } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
 import {
     adminApi,
@@ -8,12 +9,21 @@ import {
     // socketApi,
     userApi
 } from "./api";
-import { authReducer, betSliceReducer } from "./slices";
+import {
+    authReducer,
+    userBetsSliceReducer,
+    topBetsSliceReducer
+} from "./slices";
+
+const betReducer = combineReducers({
+    my: userBetsSliceReducer,
+    top: topBetsSliceReducer
+});
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        bets: betSliceReducer,
+        bets: betReducer,
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,

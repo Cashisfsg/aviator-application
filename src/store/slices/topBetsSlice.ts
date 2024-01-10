@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Bet } from "../api/types";
-import { RootStore } from "..";
+import { RootStore } from "../types";
 // import { RootStore } from "..";
 
 interface QueryParams {
@@ -28,35 +28,35 @@ const initialState = {
 } as BetState;
 
 const betSlice = createSlice({
-    name: "bets",
+    name: "bets/top",
     initialState: () => initialState as BetState,
     reducers: {
-        resetState: state => {
+        resetTopBetsState: state => {
             return { ...state, ...initialState };
         }
     },
     extraReducers: builder =>
         builder
-            .addCase(fetchUserBetsThunk.pending, state => {
+            .addCase(fetchTopBetsThunk.pending, state => {
                 state.status = "pending";
                 state.error = null;
             })
-            .addCase(fetchUserBetsThunk.fulfilled, (state, action) => {
+            .addCase(fetchTopBetsThunk.fulfilled, (state, action) => {
                 state.status = "fulfilled";
                 state.bets = state.bets.concat(action.payload);
                 state.queryParams.skip += LIMIT;
                 state.hasNextPage = action.payload.length === LIMIT;
             })
-            .addCase(fetchUserBetsThunk.rejected, (state, action) => {
+            .addCase(fetchTopBetsThunk.rejected, (state, action) => {
                 state.status = "rejected";
                 state.error = action.payload as string;
             })
 });
 
-export const fetchUserBetsThunk = createAsyncThunk(
-    "bets/topBets",
+export const fetchTopBetsThunk = createAsyncThunk(
+    "bets/top/fetchTopBets",
     async (args, { rejectWithValue, getState }) => {
-        const { skip, limit } = (getState() as RootStore).bets
+        const { skip, limit } = (getState() as RootStore).bets.top
             .queryParams as QueryParams;
         const token = (getState() as RootStore).auth.token as string;
         const searchParams = new URLSearchParams({
@@ -87,6 +87,7 @@ export const fetchUserBetsThunk = createAsyncThunk(
     }
 );
 
-export const { reducer: betSliceReducer, actions: betSliceActions } = betSlice;
+export const { reducer: topBetsSliceReducer, actions: topBetsSliceActions } =
+    betSlice;
 
-export const { resetState } = betSlice.actions;
+export const { resetTopBetsState } = betSlice.actions;

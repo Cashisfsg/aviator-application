@@ -2,8 +2,8 @@ import {
     useGetUserBalanceQuery,
     useStateSelector,
     useAppDispatch,
-    fetchUserBetsThunk,
-    resetState
+    fetchTopBetsThunk,
+    resetTopBetsState
 } from "@/store";
 
 import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
@@ -39,11 +39,11 @@ const TabDay = () => {
 
     const { data: balance } = useGetUserBalanceQuery();
     const { bets, status, error, hasNextPage } = useStateSelector(
-        state => state.bets
+        state => state.bets.top
     );
 
     useEffect(() => {
-        dispatch(resetState());
+        dispatch(resetTopBetsState());
     }, []);
 
     console.log("Top bets: ", bets);
@@ -52,7 +52,7 @@ const TabDay = () => {
         <InfiniteScroll
             hasNextPage={hasNextPage}
             callback={() => {
-                dispatch(fetchUserBetsThunk());
+                dispatch(fetchTopBetsThunk());
             }}
             className="scrollbar max-h-64"
         >

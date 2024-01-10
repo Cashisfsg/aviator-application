@@ -1,2 +1,3 @@
 export * from "./authSlice";
-export * from "./betSlice";
+export * from "./topBetsSlice";
+export * from "./userBetsSlice";
