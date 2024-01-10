@@ -1,55 +1,61 @@
-import { Table, Row, Cell } from "./ui/table";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
     useGetUserBalanceQuery,
-    useGetTopBetsQuery,
     useStateSelector,
     useAppDispatch,
-    fetchUserBetsThunk
+    fetchUserBetsThunk,
+    resetState
 } from "@/store";
 
+import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { InfiniteScroll } from "./InfiniteScroll";
+
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
+import { useEffect } from "react";
 
 export const TopBetsTabpanel = () => {
-    const dispatch = useAppDispatch();
     return (
-        <>
-            <Tabs defaultValue="day">
-                <TabsList className="mt-4">
-                    <TabsTrigger value="day">День</TabsTrigger>
-                    <TabsTrigger value="month">Месяц</TabsTrigger>
-                    <TabsTrigger value="year">Год</TabsTrigger>
-                </TabsList>
-                <TabsContent value="day">
-                    <TabDay />
-                </TabsContent>
-                <TabsContent value="month">
-                    <TabDay />
-                </TabsContent>
-                <TabsContent value="year">
-                    <TabDay />
-                </TabsContent>
-                <button
-                    onClick={() => {
-                        dispatch(fetchUserBetsThunk());
-                    }}
-                >
-                    Get bets
-                </button>
-            </Tabs>
-        </>
+        <Tabs defaultValue="day">
+            <TabsList className="mt-4">
+                <TabsTrigger value="day">День</TabsTrigger>
+                <TabsTrigger value="month">Месяц</TabsTrigger>
+                <TabsTrigger value="year">Год</TabsTrigger>
+            </TabsList>
+            <TabsContent value="day">
+                <TabDay />
+            </TabsContent>
+            <TabsContent value="month">
+                <TabDay />
+            </TabsContent>
+            <TabsContent value="year">
+                <TabDay />
+            </TabsContent>
+        </Tabs>
     );
 };
 
 const TabDay = () => {
-    // const { data: bets } = useGetTopBetsQuery();
+    const dispatch = useAppDispatch();
+
     const { data: balance } = useGetUserBalanceQuery();
-    const { bets, status, error } = useStateSelector(state => state.bets);
+    const { bets, status, error, hasNextPage } = useStateSelector(
+        state => state.bets
+    );
+
+    useEffect(() => {
+        dispatch(resetState());
+    }, []);
 
     console.log("Top bets: ", bets);
 
     return (
-        <>
+        <InfiniteScroll
+            hasNextPage={hasNextPage}
+            callback={() => {
+                dispatch(fetchUserBetsThunk());
+            }}
+            className="scrollbar max-h-64"
+        >
             {status === "rejected" && <pre>{error}</pre>}
             <Table
                 className="px-1.5"
@@ -59,6 +65,20 @@ const TabDay = () => {
                     "Коэфф.",
                     `Выигрыш, ${balance?.currency}`
                 ]}
+                renderHeader={headers => (
+                    <thead className="sticky -top-0.5">
+                        <Row>
+                            {headers.map(header => (
+                                <TableHeaderCell
+                                    key={header}
+                                    className="bg-black-50"
+                                >
+                                    {header}
+                                </TableHeaderCell>
+                            ))}
+                        </Row>
+                    </thead>
+                )}
                 data={bets || []}
                 renderData={data => (
                     <>
@@ -110,7 +130,7 @@ const TabDay = () => {
                     Пусто
                 </p>
             ) : null}
-        </>
+        </InfiniteScroll>
     );
 };
 

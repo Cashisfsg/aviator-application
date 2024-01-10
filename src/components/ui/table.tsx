@@ -38,7 +38,7 @@ export const Table = <
             )}
         >
             {caption ? caption : null}
-            <thead>{renderHeader(headers)}</thead>
+            {renderHeader(headers)}
             <tbody className="text-sm">{renderData?.(data)}</tbody>
         </table>
     );

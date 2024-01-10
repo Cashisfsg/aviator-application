@@ -19,17 +19,22 @@ interface BetState {
 const SKIP = 0;
 const LIMIT = 6;
 
+const initialState = {
+    bets: [],
+    queryParams: { skip: SKIP, limit: LIMIT },
+    status: "init",
+    error: null,
+    hasNextPage: true
+} as BetState;
+
 const betSlice = createSlice({
     name: "bets",
-    initialState: () =>
-        ({
-            bets: [],
-            queryParams: { skip: SKIP, limit: LIMIT },
-            status: "init",
-            error: null,
-            hasNextPage: true
-        }) as BetState,
-    reducers: {},
+    initialState: () => initialState as BetState,
+    reducers: {
+        resetState: state => {
+            return { ...state, ...initialState };
+        }
+    },
     extraReducers: builder =>
         builder
             .addCase(fetchUserBetsThunk.pending, state => {
@@ -83,3 +88,5 @@ export const fetchUserBetsThunk = createAsyncThunk(
 );
 
 export const { reducer: betSliceReducer, actions: betSliceActions } = betSlice;
+
+export const { resetState } = betSlice.actions;
