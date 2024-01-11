@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { socket } from "@/components/socket/socket";
+import { useStateSelector, selectSocket } from "@/store";
+// import { socket } from "@/components/socket/socket";
 import "./chart.css";
 import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
@@ -11,6 +12,7 @@ export const Chart = () => {
     const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
+    const socket = useStateSelector(state => selectSocket(state));
 
     const [startScreen, setStartScreen] = useState(true);
 

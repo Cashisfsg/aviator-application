@@ -30,7 +30,7 @@ export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
 
             <div
                 ref={ref}
-                className="invisible h-1"
+                className="invisible h-3"
             />
         </div>
     );

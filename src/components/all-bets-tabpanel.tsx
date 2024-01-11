@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { socket } from "./socket/socket";
+// import { socket } from "./socket/socket";
+import { useStateSelector, selectSocket } from "@/store";
 import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
@@ -8,15 +9,23 @@ import Avatar from "@/assets/avatar-360w.webp";
 
 export const AllBetsTabpanel = () => {
     const [players, setPlayers] = useState<Player[]>([]);
+    const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
-        socket.on("currentPlayers", data => {
+        const updatePlayersList = (data: Player[]) => {
             setPlayers(data);
-        });
-        socket.on("crash", () => {
+        };
+        const clearPlayersList = () => {
             setPlayers([]);
-        });
-    }, []);
+        };
+        socket.on("currentPlayers", updatePlayersList);
+        socket.on("crash", clearPlayersList);
+
+        return () => {
+            socket.off("currentPlayers", updatePlayersList);
+            socket.off("currentPlayers", clearPlayersList);
+        };
+    }, [socket]);
 
     return (
         <>

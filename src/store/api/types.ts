@@ -55,18 +55,12 @@ export interface UserBalance {
     currency: string;
 }
 
-export interface UserBonus {
+export interface Promo {
     _id: string;
-    type: number;
-    promoCode: string;
-    currency: string;
-    bonus: number;
-    bonusPercent: number;
-    bonusCoeff: number;
-    maxUsedCount: number;
-    usedCount: number;
-    expiresIn: string;
-    users: string[];
+    type: "add_balance";
+    amount: number;
+    coef: number;
+    will_finish: "string";
 }
 
 export interface UserRequisite {

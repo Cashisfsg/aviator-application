@@ -47,7 +47,10 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                                     setDialogOpen={setDialogOpen}
                                 />
                                 {index !== deposits.length - 1 ? (
-                                    <hr className="h-2" />
+                                    <hr
+                                        key={index}
+                                        className="h-2"
+                                    />
                                 ) : null}
                             </>
                         ))
@@ -76,7 +79,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     setInitialFormState,
     setDialogOpen
 }) => {
-    const showReplenishmentDetails = () => {};
+    // const showReplenishmentDetails = () => {};
 
     return (
         <table className="w-full bg-slate-100 text-left text-sm">

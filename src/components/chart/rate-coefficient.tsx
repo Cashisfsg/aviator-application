@@ -1,3 +1,4 @@
+import { selectSocket, useStateSelector } from "@/store";
 import {
     useState,
     useEffect,
@@ -6,7 +7,7 @@ import {
     useImperativeHandle
 } from "react";
 
-import { socket } from "@/components/socket/socket";
+// import { socket } from "@/components/socket/socket";
 
 export interface RateElement extends React.SVGAttributes<SVGTextElement> {
     startAnimation: () => void;
@@ -15,8 +16,10 @@ export interface RateElement extends React.SVGAttributes<SVGTextElement> {
 }
 
 export const RateCoefficient = forwardRef<RateElement>(({ ...props }, ref) => {
+    const socket = useStateSelector(state => selectSocket(state));
+
     const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
-    const [value, setValue] = useState(1);
+    const [value, setValue] = useState<number | string>(1);
     const groupRef = useRef<SVGGElement>(null);
     const textRef = useRef<SVGTextElement>(null);
     const rateRef = useRef<SVGTextElement>(null);
@@ -32,10 +35,16 @@ export const RateCoefficient = forwardRef<RateElement>(({ ...props }, ref) => {
     // }, [isAnimationPlaying]);
 
     useEffect(() => {
-        socket.on("game", data => {
-            setValue(data.x.toFixed(2));
-        });
-    }, [isAnimationPlaying]);
+        const setRate = ({ x }: { x: number }) => {
+            setValue(x.toFixed(2));
+        };
+
+        socket.on("game", setRate);
+
+        return () => {
+            socket.off("game", setRate);
+        };
+    }, [isAnimationPlaying, socket]);
 
     useImperativeHandle(
         ref,

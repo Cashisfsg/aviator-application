@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
     User,
     UserBalance,
-    UserBonus,
+    Promo,
     UserRequisite,
     Token,
     SuccessResponse,
@@ -36,7 +36,7 @@ export const userApi = createApi({
             return headers;
         }
     }),
-    tagTypes: ["User", "Balance", "Bonus"],
+    tagTypes: ["User", "Balance", "Promo"],
     endpoints: builder => ({
         //! =================================================================
         getUser: builder.query<User, void>({
@@ -66,12 +66,15 @@ export const userApi = createApi({
             }),
             providesTags: ["Balance"]
         }),
-        getUserBonus: builder.query<UserBonus[], void>({
-            query: () => ({
-                url: "user/bonus"
-            }),
-            providesTags: ["Bonus"]
-        }),
+        getUserPromo: builder.query<Promo[], { type: "add_balance" | "promo" }>(
+            {
+                query: ({ type }) => ({
+                    url: "user/promos",
+                    params: { type }
+                }),
+                providesTags: ["Promo"]
+            }
+        ),
         getUserRequisites: builder.query<UserRequisite[], void>({
             query: () => ({
                 url: "user/requisites"
@@ -88,11 +91,11 @@ export const userApi = createApi({
             { promoCode: string }
         >({
             query: body => ({
-                url: "user/bonus",
+                url: "user/promos",
                 method: "POST",
                 body
             }),
-            invalidatesTags: ["Bonus"]
+            invalidatesTags: ["Promo"]
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,
@@ -183,8 +186,8 @@ export const {
     useLazyGetUserReferralByDaysQuery,
     useGetUserBalanceQuery,
     useLazyGetUserBalanceQuery,
-    useGetUserBonusQuery,
-    useLazyGetUserBonusQuery,
+    useGetUserPromoQuery,
+    useLazyGetUserPromoQuery,
     useGetUserRequisitesQuery,
     useLazyGetUserRequisitesQuery,
     useGetUserRecommendedRequisitesQuery,

@@ -35,7 +35,10 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                                     draw={draw}
                                 />
                                 {index !== draws.length - 1 ? (
-                                    <hr className="h-2" />
+                                    <hr
+                                        key={index}
+                                        className="h-2"
+                                    />
                                 ) : null}
                             </>
                         ))
@@ -125,16 +128,16 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 ) : null}
                 <tr>
                     <td className="px-1.5 py-0.5">ID 12345</td>
-                    {/* {draw?.status === "Ожидает оплаты" ? ( */}
-                    <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
-                        <button
-                            onClick={() => abortDraw(draw?._id)}
-                            className="text-right text-blue-500"
-                        >
-                            Отменить
-                        </button>
-                    </td>
-                    {/* ) : null} */}
+                    {draw?.status === "Ожидает оплаты" ? (
+                        <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
+                            <button
+                                onClick={() => abortDraw(draw?._id)}
+                                className="text-right text-blue-500"
+                            >
+                                Отменить
+                            </button>
+                        </td>
+                    ) : null}
                 </tr>
             </tbody>
         </table>

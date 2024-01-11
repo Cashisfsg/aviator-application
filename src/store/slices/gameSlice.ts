@@ -14,7 +14,13 @@ interface Bet {
     currentBet: number;
 }
 
-type Game = [Bet, Bet];
+interface Bonus {
+    bonusId: string | null;
+    bonusActive: boolean;
+    bonusQuantity: number | null;
+}
+
+type Game = [Bet & Bonus, Bet];
 
 const MIN_BET = 0.1;
 
@@ -25,7 +31,10 @@ const initialState = [
         balance: 300,
         currency: "USD",
         autoModeOn: false,
-        currentBet: 1
+        currentBet: 1,
+        bonusId: null,
+        bonusQuantity: null,
+        bonusActive: false
     },
     {
         betState: "init",
@@ -57,12 +66,20 @@ const gameSlice = createSlice({
         },
         setCurrentBet: (
             state,
-            action: PayloadAction<{
-                type: "input" | "increment" | "decrement";
-                betNumber: 1 | 2;
-                value: number;
-                inputRef: RefObject<HTMLInputElement>;
-            }>
+            action: PayloadAction<
+                | {
+                      type: "input";
+                      betNumber: 1 | 2;
+                      value: number;
+                      inputRef?: never;
+                  }
+                | {
+                      type: "increment" | "decrement";
+                      betNumber: 1 | 2;
+                      value: number;
+                      inputRef: RefObject<HTMLInputElement>;
+                  }
+            >
         ) => {
             switch (action.payload.type) {
                 case "input":
@@ -111,6 +128,19 @@ const gameSlice = createSlice({
                 default:
                     return state;
             }
+        },
+        activateBonus: (
+            state,
+            action: PayloadAction<{ bonusId: string; bonusQuantity: number }>
+        ) => {
+            state[0].bonusActive = true;
+            state[0].bonusId = action.payload.bonusId;
+            state[0].bonusQuantity = action.payload.bonusQuantity;
+        },
+        deactivateBonus: state => {
+            state[0].bonusActive = false;
+            state[0].bonusId = null;
+            state[0].bonusQuantity = null;
         }
     },
     extraReducers: builder => {
@@ -129,15 +159,32 @@ const gameSlice = createSlice({
 export const { reducer: gameSliceReducer, actions: gameSliceActions } =
     gameSlice;
 
-export const { setBetState, setCurrentBet, toggleAutoMode } = gameSlice.actions;
+export const {
+    setBetState,
+    setCurrentBet,
+    toggleAutoMode,
+    activateBonus,
+    deactivateBonus
+} = gameSlice.actions;
 
 const gameTab = (state: RootStore) => state.game;
 
 export const selectCurrentGameTab = createSelector(
     [gameTab, (gameTab, betNumber: 1 | 2) => betNumber],
     (gameTab, betNumber) => {
-        console.log(gameTab);
-
         return gameTab[betNumber - 1];
     }
+);
+
+const bonusId = (state: RootStore) => state.game[0].bonusId;
+const bonusActive = (state: RootStore) => state.game[0].bonusActive;
+const bonusQuantity = (state: RootStore) => state.game[0].bonusQuantity;
+
+export const selectBonus = createSelector(
+    [bonusId, bonusActive, bonusQuantity],
+    (bonusId, bonusActive, bonusQuantity) => ({
+        bonusId,
+        bonusActive,
+        bonusQuantity
+    })
 );

@@ -6,15 +6,20 @@ import {
     selectCurrentGameTab,
     setBetState,
     setCurrentBet,
-    toggleAutoMode
+    toggleAutoMode,
+    selectSocket,
+    selectBonus,
+    deactivateBonus
 } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { socket } from "./socket/socket";
+// import { socket } from "./socket/socket";
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
+
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 interface BetProps {
     betNumber: 1 | 2;
@@ -63,12 +68,14 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
+    const bonus = useStateSelector(state => selectBonus(state));
 
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
     const dispatch = useAppDispatch();
+    const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
         const onConnect = () => {
@@ -156,104 +163,126 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     data-state={currentGameTab.betState}
                     className="grid grid-cols-[68px_68px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
                 >
-                    <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
-                        <button
-                            type="button"
-                            disabled={currentGameTab.betState !== "init"}
-                            onPointerDown={() => {
-                                handlePointerDown("decrement", 0.1);
-                            }}
-                            onPointerUp={() => {
-                                resetInterval();
-                            }}
-                            onPointerLeave={() => {
-                                resetInterval();
-                            }}
-                            className="shrink-0"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                            >
-                                <g
-                                    fillRule="nonzero"
-                                    fill="none"
+                    {bonus.bonusActive ? (
+                        <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
+                            <span className="flex-auto text-center text-xl font-bold">
+                                {bonus.bonusQuantity}
+                            </span>
+                            <button onClick={() => dispatch(deactivateBonus())}>
+                                <IoIosCloseCircleOutline className="text-[#83878e]" />
+                                <span className="sr-only">Отменить бонус</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
+                                <button
+                                    type="button"
+                                    disabled={
+                                        currentGameTab.betState !== "init"
+                                    }
+                                    onPointerDown={() => {
+                                        handlePointerDown("decrement", 0.1);
+                                    }}
+                                    onPointerUp={() => {
+                                        resetInterval();
+                                    }}
+                                    onPointerLeave={() => {
+                                        resetInterval();
+                                    }}
+                                    className="shrink-0"
                                 >
-                                    <path
-                                        d="M9 1C4.6 1 1 4.6 1 9s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z"
-                                        stroke="#767B85"
-                                    />
-                                    <path
-                                        fill="#767B85"
-                                        d="M13 9.8H5V8.2h8z"
-                                    />
-                                </g>
-                            </svg>
-                        </button>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 18 18"
+                                    >
+                                        <g
+                                            fillRule="nonzero"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M9 1C4.6 1 1 4.6 1 9s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z"
+                                                stroke="#767B85"
+                                            />
+                                            <path
+                                                fill="#767B85"
+                                                d="M13 9.8H5V8.2h8z"
+                                            />
+                                        </g>
+                                    </svg>
+                                </button>
 
-                        <BetInput
-                            betNumber={betNumber}
-                            disabled={currentGameTab.betState !== "init"}
-                            ref={inputRef}
-                        />
+                                <BetInput
+                                    betNumber={betNumber}
+                                    disabled={
+                                        currentGameTab.betState !== "init"
+                                    }
+                                    ref={inputRef}
+                                />
 
-                        <button
-                            type="button"
-                            disabled={currentGameTab.betState !== "init"}
-                            onPointerDown={() => {
-                                handlePointerDown("increment", 0.1);
-                            }}
-                            onPointerUp={() => {
-                                resetInterval();
-                            }}
-                            onPointerLeave={() => {
-                                resetInterval();
-                            }}
-                            className="shrink-0"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                            >
-                                <g
-                                    fillRule="nonzero"
-                                    fill="none"
+                                <button
+                                    type="button"
+                                    disabled={
+                                        currentGameTab.betState !== "init"
+                                    }
+                                    onPointerDown={() => {
+                                        handlePointerDown("increment", 0.1);
+                                    }}
+                                    onPointerUp={() => {
+                                        resetInterval();
+                                    }}
+                                    onPointerLeave={() => {
+                                        resetInterval();
+                                    }}
+                                    className="shrink-0"
                                 >
-                                    <path
-                                        d="M9 1C4.6 1 1 4.6 1 9s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z"
-                                        stroke="#767B85"
-                                    />
-                                    <path
-                                        fill="#767B85"
-                                        d="M13 9.8H9.8V13H8.2V9.8H5V8.2h3.2V5h1.6v3.2H13z"
-                                    />
-                                </g>
-                            </svg>
-                        </button>
-                    </div>
-                    {[1, 2, 5, 10].map(number => (
-                        <button
-                            key={number}
-                            type="button"
-                            disabled={currentGameTab.betState !== "init"}
-                            onPointerDown={() =>
-                                handlePointerDown("increment", number)
-                            }
-                            onPointerUp={() => {
-                                resetInterval();
-                            }}
-                            onPointerLeave={() => {
-                                resetInterval();
-                            }}
-                            className="h-4.5 w-full select-none rounded-full border border-gray-50 bg-black-150 text-sm leading-none text-[#83878e] active:translate-y-[1px]"
-                        >
-                            {number}
-                        </button>
-                    ))}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 18 18"
+                                    >
+                                        <g
+                                            fillRule="nonzero"
+                                            fill="none"
+                                        >
+                                            <path
+                                                d="M9 1C4.6 1 1 4.6 1 9s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z"
+                                                stroke="#767B85"
+                                            />
+                                            <path
+                                                fill="#767B85"
+                                                d="M13 9.8H9.8V13H8.2V9.8H5V8.2h3.2V5h1.6v3.2H13z"
+                                            />
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+                            {[1, 2, 5, 10].map(number => (
+                                <button
+                                    key={number}
+                                    type="button"
+                                    disabled={
+                                        currentGameTab.betState !== "init"
+                                    }
+                                    onPointerDown={() =>
+                                        handlePointerDown("increment", number)
+                                    }
+                                    onPointerUp={() => {
+                                        resetInterval();
+                                    }}
+                                    onPointerLeave={() => {
+                                        resetInterval();
+                                    }}
+                                    className="h-4.5 w-full select-none rounded-full border border-gray-50 bg-black-150 text-sm leading-none text-[#83878e] active:translate-y-[1px]"
+                                >
+                                    {number}
+                                </button>
+                            ))}
+                        </>
+                    )}
                 </fieldset>
             </form>
 
@@ -327,6 +356,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
+    const socket = useStateSelector(state => selectSocket(state));
+
     const [gain, setGain] = useState(currentGameTab.currentBet);
 
     useEffect(() => {
@@ -435,10 +466,23 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
+    const socket = useStateSelector(state => selectSocket(state));
+
+    console.log("Socket: ", socket);
 
     useEffect(() => {
         const autoBet = ({ x }: { x: number }) => {
-            if (x < rate || !currentGameTab.autoModeOn) return;
+            if (
+                !currentGameTab.autoModeOn ||
+                currentGameTab.betState !== "cash"
+            ) {
+                socket.off("game", autoBet);
+                return;
+            }
+
+            console.log("autoBet");
+
+            if (x < rate) return;
 
             socket.emit("cash-out", {
                 betNumber

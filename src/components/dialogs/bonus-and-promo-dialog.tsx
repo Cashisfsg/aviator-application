@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useGetUserBonusQuery, useActivatePromoCodeMutation } from "@/store";
+import { useActivatePromoCodeMutation } from "@/store";
 
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
@@ -16,8 +16,6 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
     open,
     setOpen
 }) => {
-    const { data: bonuses } = useGetUserBonusQuery();
-
     return (
         <Dialog
             open={open}
@@ -43,14 +41,14 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
                         </div>
                     </header>
 
-                    <BonusTable bonuses={bonuses} />
+                    <BonusTable />
                 </section>
 
                 <section>
                     <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-center text-lg font-bold text-gray-300">
                         Бонусы на пополнение
                     </h2>
-                    <DepositBonusTable bonuses={bonuses} />
+                    <DepositBonusTable />
                 </section>
             </DialogContent>
         </Dialog>

@@ -1,24 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 import { authApi, userApi, User } from "../api";
-import { RootStore } from "..";
+import { RootStore } from "../types";
+import { io, Socket } from "socket.io-client";
 
 interface AuthorizedUser {
     token: string;
     isAuthenticated: true;
     user: User | null;
+    socket: Socket;
 }
 
 interface NonAuthorizedUser {
     token: null;
     isAuthenticated: false;
     user: Pick<User, "login" | "telegramId" | "profileImage"> | null;
+    socket: Socket;
 }
 // interface AuthState {
 //     token: string | null;
 //     isAuthenticated: boolean;
 //     user: User | Pick<User, "telegramId" | "profileImage"> | null;
 // }
+
+const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
 type AuthState = AuthorizedUser | NonAuthorizedUser;
 
@@ -28,13 +33,19 @@ const authSlice = createSlice({
         const storedData = localStorage.getItem("token");
 
         if (!storedData)
-            return { token: null, isAuthenticated: false, user: null };
+            return {
+                token: null,
+                isAuthenticated: false,
+                socket: io(BASE_URL),
+                user: null
+            };
 
         const { token } = JSON.parse(storedData);
 
         return {
             token,
             isAuthenticated: true,
+            socket: io(BASE_URL, { auth: { token } }),
             user: null
         } as AuthState;
     },
@@ -48,6 +59,7 @@ const authSlice = createSlice({
                 telegramId: state.user?.telegramId as number,
                 profileImage: state.user?.profileImage as string
             };
+            state.socket = io(BASE_URL);
             userApi.util.resetApiState();
         },
         setUndefinedUser: (
@@ -128,3 +140,7 @@ export const selectAuthenticationStatus = (state: RootStore) =>
     state.auth.isAuthenticated;
 
 export const { logout, setUndefinedUser } = authSlice.actions;
+
+const socket = (state: RootStore) => state.auth.socket;
+
+export const selectSocket = createSelector([socket], socket => socket);
