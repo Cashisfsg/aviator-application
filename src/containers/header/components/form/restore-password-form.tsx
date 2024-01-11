@@ -1,5 +1,5 @@
 import { useRef, useId } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,12 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/input";
 
+import { ImSpinner9 } from "react-icons/im";
+
 export const RestorePasswordForm = () => {
     const formRef = useRef<HTMLFormElement>(null);
     // const submit = useSubmit();
     const emailErrorId = useId();
-    const navigate = useNavigate();
-    const [sendConfirmationCode, { error, isError }] =
+    const [sendConfirmationCode, { error, isError, isLoading, isSuccess }] =
         useSendConfirmationCodeMutation();
 
     const email = sessionStorage.getItem("email");
@@ -35,13 +36,14 @@ export const RestorePasswordForm = () => {
     const onSubmit: SubmitHandler<EmailValidationFormSchema> = async ({
         email
     }) => {
-        const response = await sendConfirmationCode({ email });
-
-        if (response?.error) return;
+        await sendConfirmationCode({ email });
 
         sessionStorage.setItem("email", email);
-        navigate("/main/password/confirm-email");
     };
+
+    if (isSuccess) {
+        return <Navigate to="/main/password/confirm-email" />;
+    }
 
     return (
         <form
@@ -77,7 +79,16 @@ export const RestorePasswordForm = () => {
                     />
                 ) : null}
             </Label>
-            <Button variant="confirm">Восстановить</Button>
+            <Button
+                variant="confirm"
+                disabled={!isLoading}
+            >
+                {!isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                ) : (
+                    "Восстановить"
+                )}
+            </Button>
         </form>
     );
 };

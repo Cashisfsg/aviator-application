@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,9 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+import { ImSpinner9 } from "react-icons/im";
+
 export const ResetPasswordForm = () => {
-    const navigate = useNavigate();
-    const [changePassword] = useChangePasswordMutation();
+    const [changePassword, { isSuccess, isLoading }] =
+        useChangePasswordMutation();
     const { token } = useAuth();
 
     const form = useForm<FormSchema>({
@@ -33,16 +35,16 @@ export const ResetPasswordForm = () => {
     }) => {
         if (!token) return;
 
-        const response = await changePassword({
+        await changePassword({
             password,
             passwordConfirm,
             token
         });
-
-        if (response?.error) return;
-
-        navigate("/main/sign-in");
     };
+
+    if (isSuccess) {
+        return <Navigate to="/main/sign-in" />;
+    }
 
     return (
         <form
@@ -83,15 +85,15 @@ export const ResetPasswordForm = () => {
             </Label>
 
             <Button
+                disabled={isLoading}
                 variant="confirm"
-                // onClick={handleSubmit}
             >
-                Восстановить
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                ) : (
+                    "Восстановить"
+                )}
             </Button>
-            {/* <DialogClose
-                ref={closeRef}
-                hidden
-            ></DialogClose> */}
         </form>
     );
 };

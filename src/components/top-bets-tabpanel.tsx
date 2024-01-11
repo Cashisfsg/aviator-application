@@ -108,7 +108,7 @@ const TabDay = () => {
                                         <span
                                             className={
                                                 bet?.win && bet?.win !== 0
-                                                    ? "rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold"
+                                                    ? "rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold text-[#c017b4]"
                                                     : "px-3 py-0.5 text-sm font-bold"
                                             }
                                         >

@@ -24,7 +24,15 @@ export const authApi = createApi({
                 url: "auth/registration",
                 method: "POST",
                 body
-            })
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }),
         authenticateUser: builder.mutation<Token, UserAuthorizationData>({
             query: body => ({

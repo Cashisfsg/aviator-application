@@ -87,21 +87,35 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         };
 
         const makeBet = () => {
-            if (currentGameTab.betState === "bet") {
-                dispatch(setBetState({ betNumber, betState: "cash" }));
+            if (currentGameTab.betState !== "bet") return;
+
+            console.log("Socket token", socket.auth?.token);
+
+            if (bonus.bonusActive && betNumber === 1) {
+                socket.emit("bet", {
+                    currency: currentGameTab.currency,
+                    bet: bonus.bonusQuantity,
+                    bonusId: bonus.bonusId
+                });
+
+                dispatch(deactivateBonus());
+            } else {
+                console.log("User make bet");
 
                 socket.emit("bet", {
                     currency: currentGameTab.currency,
                     bet: currentGameTab.currentBet
                 });
             }
+
+            dispatch(setBetState({ betNumber, betState: "cash" }));
         };
 
         const loose = () => {
-            if (currentGameTab.betState === "cash") {
-                dispatch(setBetState({ betNumber, betState: "init" }));
-                dispatch(userApi.util.invalidateTags(["Balance"]));
-            }
+            if (currentGameTab.betState !== "cash") return;
+
+            dispatch(setBetState({ betNumber, betState: "init" }));
+            dispatch(userApi.util.invalidateTags(["Balance"]));
         };
 
         socket.on("connect", onConnect);
@@ -163,7 +177,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     data-state={currentGameTab.betState}
                     className="grid grid-cols-[68px_68px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
                 >
-                    {bonus.bonusActive ? (
+                    {betNumber === 1 && bonus.bonusActive ? (
                         <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
                             <span className="flex-auto text-center text-xl font-bold">
                                 {bonus.bonusQuantity}
@@ -357,13 +371,18 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         selectCurrentGameTab(state, betNumber)
     );
     const socket = useStateSelector(state => selectSocket(state));
+    const bonus = useStateSelector(state => selectBonus(state));
 
     const [gain, setGain] = useState(currentGameTab.currentBet);
 
     useEffect(() => {
         const winnings = ({ x }: { x: number }) => {
             if (currentGameTab.betState === "cash") {
-                setGain(x * currentGameTab.currentBet);
+                if (bonus.bonusActive && bonus.bonusQuantity) {
+                    setGain(x * bonus.bonusQuantity);
+                } else {
+                    setGain(x * currentGameTab.currentBet);
+                }
             }
         };
 
@@ -385,6 +404,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
     };
 
     const cashOut = () => {
+        console.log("User done cash out");
+
         socket.emit("cash-out", {
             betNumber
         });
@@ -411,7 +432,9 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                     <p className="text-xl">Ставка</p>
                     <p>
                         <span className="text-2xl">
-                            {currentGameTab.currentBet.toFixed(2)}
+                            {betNumber === 1 && bonus.bonusActive
+                                ? bonus.bonusQuantity
+                                : currentGameTab.currentBet.toFixed(2)}
                         </span>{" "}
                         <span className="text-lg">
                             {currentGameTab.currency}
@@ -517,7 +540,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
     const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
         if (!currentGameTab.balance) return;
 
-        const value = validateBet(event.target.value, 1.01, 100);
+        const value = validateBet(event.target.value, 1.1, 100);
         event.currentTarget.value = value.toFixed(2);
         setRate(value);
     };
@@ -540,7 +563,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
             <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none">
                 <input
                     disabled={!currentGameTab.autoModeOn}
-                    defaultValue={1}
+                    defaultValue={(1.1).toFixed(2)}
                     onChange={onChangeHandler}
                     onBlur={onBlurHandler}
                     className="h-full w-full bg-transparent font-bold focus-visible:outline-none disabled:opacity-50"

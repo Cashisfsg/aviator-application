@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import FadeLoader from "react-spinners/FadeLoader";
-
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,6 +23,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { CountDownTimer } from "../timer/count-down-timer";
+import { ImSpinner9 } from "react-icons/im";
 
 import { cn } from "@/utils";
 
@@ -68,8 +67,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
     const { data: requisites } = useGetUserRequisitesQuery();
     const [depositBalance, { isLoading: isReplenishmentRequestLoading }] =
         useAddReplenishmentMutation();
-    const [confirmReplenishment] = useConfirmReplenishmentByIdMutation();
-    const [cancelReplenishment] = useCancelReplenishmentByIdMutation();
+    const [
+        confirmReplenishment,
+        { isLoading: isPaymentConfirmRequestLoading }
+    ] = useConfirmReplenishmentByIdMutation();
+    const [cancelReplenishment, { isLoading: isPaymentCancelRequestLoading }] =
+        useCancelReplenishmentByIdMutation();
 
     const {
         register,
@@ -190,11 +193,13 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         </Label>
 
                         <button
-                            disabled={isLimitsLoading}
+                            disabled={
+                                isLimitsLoading || isReplenishmentRequestLoading
+                            }
                             className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
                         >
                             {isReplenishmentRequestLoading ? (
-                                <FadeLoader />
+                                <ImSpinner9 className="mx-auto animate-spin text-2xl" />
                             ) : (
                                 "Пополнить"
                             )}
@@ -266,9 +271,14 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                             onClick={() =>
                                 confirmPayment(currentReplenishment?._id)
                             }
-                            className="float-left w-24 bg-lime-500 py-2 text-white"
+                            disabled={isPaymentConfirmRequestLoading}
+                            className="float-left w-24 bg-lime-500 py-2 text-white disabled:pointer-events-none"
                         >
-                            Да
+                            {isPaymentConfirmRequestLoading ? (
+                                <ImSpinner9 className="mx-auto animate-spin text-xl" />
+                            ) : (
+                                "Да"
+                            )}
                         </button>
                         <button
                             onClick={() => {
@@ -321,9 +331,14 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                             onClick={() =>
                                 abortReplenishment(currentReplenishment?._id)
                             }
-                            className="float-left w-24 bg-red-500 py-2 text-white"
+                            disabled={isPaymentCancelRequestLoading}
+                            className="float-left w-24 bg-red-500 py-2 text-white disabled:pointer-events-none"
                         >
-                            Да
+                            {isPaymentCancelRequestLoading ? (
+                                <ImSpinner9 className="mx-auto animate-spin text-xl" />
+                            ) : (
+                                "Да"
+                            )}
                         </button>
                         <button
                             onClick={() => {

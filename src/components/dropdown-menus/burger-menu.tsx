@@ -1,7 +1,7 @@
 import { useState, useId } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth, useStateSelector } from "@/store";
+import { useAuth } from "@/store";
 import { useGetUserQuery, useChangeProfileImageMutation } from "@/store";
 
 import {
@@ -58,7 +58,9 @@ export const BurgerMenu = () => {
     const [securityPopoverOpen, setSecurityPopoverOpen] = useState(false);
 
     const { isAuthenticated } = useAuth();
-    const user = useStateSelector(state => state.auth.user);
+    const { data: user } = useGetUserQuery(undefined, {
+        skip: !isAuthenticated
+    });
     const [updateImage] = useChangeProfileImageMutation();
 
     return (

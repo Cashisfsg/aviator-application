@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -36,6 +37,7 @@ import { Input, ErrorMessage } from "@/components/ui/input";
 
 import { FaCheck } from "react-icons/fa6";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { ImSpinner9 } from "react-icons/im";
 
 import { cn } from "@/utils";
 
@@ -48,8 +50,9 @@ const currencies = [
 export const SignUpForm = () => {
     const [open, setOpen] = React.useState(false);
     const [promoOpen, setPromoOpen] = React.useState(false);
-    const [createNewUser, { isError, error }] =
+    const [createNewUser, { isLoading, isError, error }] =
         useCreateNewUserAccountMutation();
+    const navigate = useNavigate();
 
     const telegramId = useStateSelector(state => state.auth.user?.telegramId);
     const login = useStateSelector(state => state.auth.user?.login);
@@ -72,7 +75,11 @@ export const SignUpForm = () => {
         ...values
     }) => {
         console.log(values);
-        await createNewUser(values);
+        const response = await createNewUser(values);
+
+        if (response?.error) return;
+
+        navigate("/main");
     };
 
     return (
@@ -327,9 +334,14 @@ export const SignUpForm = () => {
 
                 <Button
                     type="submit"
-                    className="w-full bg-blue-500 py-2 text-xl font-bold text-white"
+                    variant="confirm"
+                    disabled={isLoading}
                 >
-                    Зарегистрироваться
+                    {isLoading ? (
+                        <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                    ) : (
+                        "Зарегистрироваться"
+                    )}
                 </Button>
             </form>
         </Form>

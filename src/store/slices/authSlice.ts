@@ -59,7 +59,7 @@ const authSlice = createSlice({
                 telegramId: state.user?.telegramId as number,
                 profileImage: state.user?.profileImage as string
             };
-            state.socket = io(BASE_URL);
+            state.socket.auth = () => {};
             userApi.util.resetApiState();
         },
         setUndefinedUser: (
@@ -86,6 +86,7 @@ const authSlice = createSlice({
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
+                    state.socket.auth = { token: payload.token };
                 }
             )
             .addMatcher(
@@ -103,6 +104,7 @@ const authSlice = createSlice({
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
+                    state.socket.auth = { token: payload.token };
                 }
             )
             .addMatcher(

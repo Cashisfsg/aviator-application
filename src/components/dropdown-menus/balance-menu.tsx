@@ -14,7 +14,9 @@ import {
 export const BalanceMenu = () => {
     const { isAuthenticated } = useAuth();
 
-    const { data } = useGetUserBalanceQuery();
+    const { data: balance } = useGetUserBalanceQuery(undefined, {
+        skip: !isAuthenticated
+    });
 
     return (
         <>
@@ -24,12 +26,13 @@ export const BalanceMenu = () => {
                         disabled={!isAuthenticated}
                         className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5"
                     >
-                        {data?.balance.toFixed(2) || "300"}{" "}
-                        {data?.currency || "$"}
+                        {balance?.balance.toFixed(2) || "300"}{" "}
+                        {balance?.currency || "$"}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuLabel>
-                            Баланс {data?.balance.toFixed(2)} {data?.currency}
+                            Баланс {balance?.balance.toFixed(2)}{" "}
+                            {balance?.currency}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>

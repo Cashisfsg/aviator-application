@@ -1,10 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useConfirmPasswordChangeMutation } from "@/store";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/input";
+
+import { ImSpinner9 } from "react-icons/im";
 
 // export const action = async () => {
 //     return redirect("/main/password/reset");
@@ -16,9 +18,8 @@ interface FormFields {
 
 export const ConfirmEmailForm = () => {
     const email = sessionStorage.getItem("email");
-    const navigate = useNavigate();
 
-    const [confirmChange, { isError, error }] =
+    const [confirmChange, { isLoading, isSuccess, isError, error }] =
         useConfirmPasswordChangeMutation();
 
     const handleSubmit: React.FormEventHandler<
@@ -28,12 +29,12 @@ export const ConfirmEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        const response = await confirmChange({ code: code.value });
-
-        if (response?.error) return;
-
-        navigate("/main/password/reset");
+        await confirmChange({ code: code.value });
     };
+
+    if (isSuccess) {
+        return <Navigate to="/main/password/reset" />;
+    }
 
     return (
         <form
@@ -57,7 +58,16 @@ export const ConfirmEmailForm = () => {
                     <ErrorMessage message={error?.data?.message} />
                 ) : null}
             </Label>
-            <Button variant="confirm">Восстановить</Button>
+            <Button
+                variant="confirm"
+                disabled={isLoading}
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                ) : (
+                    "Восстановить"
+                )}
+            </Button>
         </form>
     );
 };

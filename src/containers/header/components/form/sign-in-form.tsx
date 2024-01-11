@@ -11,13 +11,17 @@ import {
 import { useAuthenticateUserMutation } from "@/store";
 // import { useDialogContext } from "@/components/ui/dialog/use-dialog-context";
 
+import { Button } from "@/components/ui/button";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+import { ImSpinner9 } from "react-icons/im";
 
 export const SignInForm = () => {
     // const { dialogRef } = useDialogContext();
     const formId = useId();
-    const [authenticate, { isError, error }] = useAuthenticateUserMutation();
+    const [authenticate, { isLoading, isError, error }] =
+        useAuthenticateUserMutation();
     const navigate = useNavigate();
 
     const {
@@ -86,12 +90,17 @@ export const SignInForm = () => {
             <p className="text-right text-sm text-blue-500">
                 <Link to="/main/password/restore">Забыли пароль?</Link>
             </p>
-            <button
+            <Button
+                variant="confirm"
                 form={formId}
-                className="w-full bg-blue-500 py-2 text-xl font-bold text-white"
+                disabled={isLoading}
             >
-                Войти
-            </button>
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                ) : (
+                    "Войти"
+                )}
+            </Button>
         </>
     );
 };
