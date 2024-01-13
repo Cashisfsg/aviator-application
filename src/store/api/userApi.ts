@@ -95,7 +95,14 @@ export const userApi = createApi({
                 method: "POST",
                 body
             }),
-            invalidatesTags: ["Promo"]
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["Promo"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,

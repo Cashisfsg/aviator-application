@@ -5,8 +5,7 @@ import {
     AlertDialogContent,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger
+    AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import { useAppDispatch, userApi, replenishmentApi, logout } from "@/store";
 
@@ -26,7 +25,6 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
             open={open}
             onOpenChange={setOpen}
         >
-            <AlertDialogTrigger className="sr-only">Выйти</AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>

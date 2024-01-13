@@ -1,11 +1,12 @@
 import { useRef } from "react";
-import { useToast } from "@/components/ui/use-toast";
 
 import { useActivatePromoCodeMutation } from "@/store";
 
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-
+import { useToast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { BonusTable, DepositBonusTable } from "@/components/tables";
+
+import { ImSpinner9 } from "react-icons/im";
 
 interface BonusAndPromoDialogProps {
     open: boolean;
@@ -22,9 +23,6 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
             onOpenChange={setOpen}
             modal={false}
         >
-            <DialogTrigger className="sr-only">
-                Бонусы и промокоды
-            </DialogTrigger>
             <DialogContent
                 route={false}
                 // onInteractOutside={event => event.preventDefault()}
@@ -61,7 +59,8 @@ interface FormFields {
 
 const ActivationBonusForm = () => {
     const buttonRef = useRef<HTMLButtonElement>(null);
-    const [activatePromo] = useActivatePromoCodeMutation();
+
+    const [activatePromo, { isLoading }] = useActivatePromoCodeMutation();
 
     const { toast } = useToast();
 
@@ -106,7 +105,7 @@ const ActivationBonusForm = () => {
     return (
         <form
             onSubmit={onSubmitHandler}
-            className="group basis-32 space-y-1"
+            className="group flex basis-32 flex-col gap-1"
         >
             <input
                 type="button"
@@ -119,11 +118,15 @@ const ActivationBonusForm = () => {
             />
             <button
                 type="submit"
-                disabled
+                disabled={isLoading}
                 ref={buttonRef}
-                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white disabled:pointer-events-none disabled:hidden"
+                className="w-full rounded-full border-2 border-gray-50 bg-[#2c2d30] text-center text-[10px] text-white disabled:opacity-75 group-has-[input[type=button]]:pointer-events-none group-has-[input[type=button]]:hidden"
             >
-                Активировать
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[20px]" />
+                ) : (
+                    "Активировать"
+                )}
             </button>
         </form>
     );

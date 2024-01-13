@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import { useGetUserReferralQuery } from "@/store";
+import { useGetUserQuery, useGetUserReferralQuery } from "@/store";
 
 import {
     Popover,
@@ -24,6 +24,7 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     const telegramLinkRef = useRef<HTMLAnchorElement>(null);
 
     const { data: referral } = useGetUserReferralQuery();
+    const { data: user } = useGetUserQuery();
 
     const copyTelegramLinkToClipboard = async () => {
         const link = telegramLinkRef.current?.textContent;
@@ -42,7 +43,10 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
             open={open}
             onOpenChange={setPopoverOpen}
         >
-            <PopoverTrigger className="sr-only right-0">
+            <PopoverTrigger
+                tabIndex={-1}
+                className="sr-only right-0"
+            >
                 Реферальная программа
             </PopoverTrigger>
             <PopoverContent
@@ -56,19 +60,27 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                 </h3>
                 <p className="text-sm">
                     Приглашая людей, вы можете заработать до 40% от их ставок{" "}
-                    <a className="text-blue-600">Подробнее...</a>
+                    <a
+                        href="#"
+                        target="_blank"
+                        className="text-blue-600"
+                    >
+                        Подробнее...
+                    </a>
                 </p>
                 <p className="text-center text-sm font-bold text-white">
                     Ваша ссылка для приглашения
                 </p>
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
-                    <a
+                    <span
                         ref={telegramLinkRef}
-                        className="w-full overflow-hidden text-ellipsis text-blue-600"
+                        className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600"
                     >
-                        http://t.me/dadasdadafsdasdasddddddddddddasd
-                    </a>
+                        {`https://t.me/${
+                            import.meta.env.VITE_BOT_NAME
+                        }?start=${user?.telegramId}`}
+                    </span>
                     <button
                         onClick={copyTelegramLinkToClipboard}
                         className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"

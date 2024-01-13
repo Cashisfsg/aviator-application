@@ -3,7 +3,7 @@ import GridLoader from "react-spinners/GridLoader";
 
 import "./App.css";
 // import { ReactRouterProvider } from "@/router/provider";
-import { useAppDispatch, setUndefinedUser, TelegramClient } from "./store";
+import { useAppDispatch, setUserInitData, TelegramClient } from "./store";
 
 const ReactRouterProvider = lazy(async () =>
     import("@/router/provider").then(module => ({
@@ -23,10 +23,10 @@ export const App = () => {
 
         // console.log(tg?.initDataUnsafe?.user?.id);
         dispatch(
-            setUndefinedUser({
-                telegramId: 21,
+            setUserInitData({
+                telegramId: 456,
                 profileImage: "asdsd",
-                login: "Login"
+                login: "User login"
             })
         );
     }, [tg?.initDataUnsafe?.user?.id]);

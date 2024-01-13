@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -8,7 +8,11 @@ import {
     RegistrationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
-import { useStateSelector, useCreateNewUserAccountMutation } from "@/store";
+import {
+    useStateSelector,
+    selectInitData,
+    useCreateNewUserAccountMutation
+} from "@/store";
 
 import {
     Form,
@@ -50,12 +54,12 @@ const currencies = [
 export const SignUpForm = () => {
     const [open, setOpen] = React.useState(false);
     const [promoOpen, setPromoOpen] = React.useState(false);
-    const [createNewUser, { isLoading, isError, error }] =
+    const [createNewUser, { isSuccess, isLoading, isError, error }] =
         useCreateNewUserAccountMutation();
-    const navigate = useNavigate();
 
-    const telegramId = useStateSelector(state => state.auth.user?.telegramId);
-    const login = useStateSelector(state => state.auth.user?.login);
+    const { login, telegramId } = useStateSelector(state =>
+        selectInitData(state)
+    );
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -71,16 +75,28 @@ export const SignUpForm = () => {
     });
 
     const onSubmit: SubmitHandler<FormSchema> = async ({
-        accepted_terms,
-        ...values
+        currency,
+        login,
+        password,
+        passwordConfirm,
+        email,
+        from,
+        telegramId
     }) => {
-        console.log(values);
-        const response = await createNewUser(values);
-
-        if (response?.error) return;
-
-        navigate("/main");
+        await createNewUser({
+            currency,
+            login,
+            password,
+            passwordConfirm,
+            email,
+            from,
+            telegramId
+        });
     };
+
+    if (isSuccess) {
+        return <Navigate to="/main" />;
+    }
 
     return (
         <Form {...form}>

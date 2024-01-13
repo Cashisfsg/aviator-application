@@ -23,8 +23,8 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
             onOpenChange={setPopoverOpen}
         >
             <PopoverTrigger
-                className="sr-only right-0"
                 tabIndex={-1}
+                className="sr-only right-0"
             >
                 Trigger
             </PopoverTrigger>

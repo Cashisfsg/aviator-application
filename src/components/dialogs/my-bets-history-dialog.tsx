@@ -1,6 +1,5 @@
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
     DialogHeader,
     DialogTitle
@@ -23,9 +22,6 @@ export const MyBetsHistoryDialog: React.FC<MyBetsHistoryDialogProps> = ({
             onOpenChange={setOpen}
             modal={false}
         >
-            <DialogTrigger className="sr-only">
-                История моих ставок
-            </DialogTrigger>
             <DialogContent
                 route={false}
                 className="p-0"

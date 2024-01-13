@@ -2,7 +2,12 @@ import { useState, useId } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth } from "@/store";
-import { useGetUserQuery, useChangeProfileImageMutation } from "@/store";
+import {
+    useStateSelector,
+    selectInitData,
+    useGetUserQuery,
+    useChangeProfileImageMutation
+} from "@/store";
 
 import {
     MyBetsHistoryDialog,
@@ -13,10 +18,9 @@ import {
 
 import {
     GameLimitsPopover,
-    ReferralProgramPopover
+    ReferralProgramPopover,
+    SecurityPopover
 } from "@/components/popovers";
-
-import { SecurityPopover } from "../popovers/security-popover";
 
 import {
     DropdownMenu,
@@ -61,7 +65,18 @@ export const BurgerMenu = () => {
     const { data: user } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });
-    const [updateImage] = useChangeProfileImageMutation();
+    const userInitData = useStateSelector(state => selectInitData(state));
+    const [updateImage, { isLoading }] = useChangeProfileImageMutation();
+
+    const changeImageProfile: React.ChangeEventHandler<
+        HTMLInputElement
+    > = async event => {
+        if (!event.currentTarget.files) return;
+
+        const file = event.currentTarget.files[0];
+
+        await updateImage(file);
+    };
 
     return (
         <>
@@ -79,17 +94,26 @@ export const BurgerMenu = () => {
                         <div className="flex items-center justify-between gap-1.5 p-2.5">
                             <div className="grid w-max grid-cols-[auto_auto] grid-rows-2 items-center gap-x-2.5 leading-none">
                                 <img
-                                    src={user?.profileImage || Avatar}
+                                    src={
+                                        userInitData?.profileImage ||
+                                        user?.profileImage ||
+                                        Avatar
+                                    }
                                     alt="Profile image"
                                     width="40"
                                     height="40"
                                     className="row-span-2 rounded-full"
                                 />
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {user?.login || "Username"}
+                                    {userInitData?.login ||
+                                        user?.login ||
+                                        "Username"}
                                 </p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-                                    {`ID ${user?.telegramId}` || "user ID"}
+                                    {`ID ${
+                                        userInitData?.telegramId ||
+                                        user?.telegramId
+                                    }` || "user ID"}
                                 </p>
                             </div>
                             {isAuthenticated ? (
@@ -117,18 +141,9 @@ export const BurgerMenu = () => {
                                         type="file"
                                         accept="image/*"
                                         hidden
+                                        disabled={isLoading}
                                         multiple={false}
-                                        onChange={event => {
-                                            if (!event.currentTarget.files)
-                                                return;
-                                            const file =
-                                                event.currentTarget.files[0];
-
-                                            updateImage(file);
-                                            console.log(
-                                                "Image loaded successfully"
-                                            );
-                                        }}
+                                        onChange={changeImageProfile}
                                     />
                                 </label>
                             ) : null}

@@ -13,6 +13,7 @@ import {
     authReducer,
     userBetsSliceReducer,
     topBetsSliceReducer,
+    referralReducer,
     gameSliceReducer
 } from "./slices";
 
@@ -26,6 +27,7 @@ export const store = configureStore({
         auth: authReducer,
         bets: betReducer,
         game: gameSliceReducer,
+        referral: referralReducer,
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,

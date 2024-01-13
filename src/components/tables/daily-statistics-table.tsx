@@ -1,6 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { useGetUserReferralByDaysQuery } from "@/store";
+import {
+    // useGetUserReferralByDaysQuery
+    useStateSelector,
+    useAppDispatch,
+    useGetUserBalanceQuery,
+    fetchReferralByDays
+    // fetchReferralByDays
+} from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 import {
@@ -16,7 +23,14 @@ const MAX_ITEMS_BEFORE_EXPAND = 3;
 export const DailyStatisticsTable = () => {
     const [open, setOpen] = useState(false);
 
-    const { data: referral } = useGetUserReferralByDaysQuery();
+    const dispatch = useAppDispatch();
+    const { data: balance } = useGetUserBalanceQuery();
+    const { referrals, status } = useStateSelector(state => state.referral);
+
+    useEffect(() => {
+        dispatch(fetchReferralByDays());
+    }, []);
+    // const { data: referral } = useGetUserReferralByDaysQuery();
 
     return (
         <Collapsible
@@ -27,7 +41,7 @@ export const DailyStatisticsTable = () => {
                 <Table
                     className="px-1.5 text-center"
                     headers={["Дата", "Заработано"]}
-                    data={referral?.descendants || []}
+                    data={referrals || []}
                     renderData={descendants => (
                         <>
                             {descendants
@@ -35,14 +49,16 @@ export const DailyStatisticsTable = () => {
                                 .map(descendant => (
                                     <Row key={descendant?._id}>
                                         <Cell className="px-2 py-1 text-center leading-none text-white">
-                                            {formatDate(descendant?.updatedUt)}
+                                            <time dateTime={descendant?.date}>
+                                                {formatDate(descendant?.date)}
+                                            </time>
                                         </Cell>
 
                                         <Cell>
                                             {formatCurrency(
-                                                descendant?.earnings
+                                                descendant?.totalEarned
                                             )}{" "}
-                                            {referral?.currency}
+                                            {balance?.currency}
                                         </Cell>
                                     </Row>
                                 ))}
@@ -54,14 +70,14 @@ export const DailyStatisticsTable = () => {
                                             <Row key={descendant?._id}>
                                                 <Cell className="px-2 py-1 text-center leading-none text-white">
                                                     {formatDate(
-                                                        descendant?.updatedUt
+                                                        descendant?.date
                                                     )}
                                                 </Cell>
                                                 <Cell>
                                                     {formatCurrency(
-                                                        descendant?.earnings
+                                                        descendant?.totalEarned
                                                     )}{" "}
-                                                    {referral?.currency}
+                                                    {balance?.currency}
                                                 </Cell>
                                             </Row>
                                         ))}
@@ -70,13 +86,12 @@ export const DailyStatisticsTable = () => {
                         </>
                     )}
                 />
-                {!referral?.descendants ||
-                referral?.descendants.length === 0 ? (
+                {status === "fulfilled" &&
+                (!referrals || referrals.length === 0) ? (
                     <p className="py-2 text-center font-semibold">Пусто</p>
                 ) : null}
             </div>
-            {referral?.descendants &&
-            referral?.descendants.length > MAX_ITEMS_BEFORE_EXPAND ? (
+            {referrals && referrals.length > MAX_ITEMS_BEFORE_EXPAND ? (
                 <CollapsibleTrigger className="mt-4 w-full rounded-t-none bg-[#252528] py-2 focus-visible:outline-none focus-visible:ring-0">
                     {open ? "Скрыть" : "Показать ещё"}
                 </CollapsibleTrigger>

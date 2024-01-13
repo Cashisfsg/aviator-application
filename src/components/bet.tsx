@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import {
     useAppDispatch,
     useStateSelector,
@@ -89,20 +89,18 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         const makeBet = () => {
             if (currentGameTab.betState !== "bet") return;
 
-            console.log("Socket token", socket.auth?.token);
-
             if (bonus.bonusActive && betNumber === 1) {
                 socket.emit("bet", {
+                    betNumber: betNumber,
                     currency: currentGameTab.currency,
                     bet: bonus.bonusQuantity,
-                    bonusId: bonus.bonusId
+                    promoId: bonus.bonusId
                 });
 
                 dispatch(deactivateBonus());
             } else {
-                console.log("User make bet");
-
                 socket.emit("bet", {
+                    betNumber: betNumber,
                     currency: currentGameTab.currency,
                     bet: currentGameTab.currentBet
                 });
@@ -404,8 +402,6 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
     };
 
     const cashOut = () => {
-        console.log("User done cash out");
-
         socket.emit("cash-out", {
             betNumber
         });
@@ -490,8 +486,6 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
         selectCurrentGameTab(state, betNumber)
     );
     const socket = useStateSelector(state => selectSocket(state));
-
-    console.log("Socket: ", socket);
 
     useEffect(() => {
         const autoBet = ({ x }: { x: number }) => {

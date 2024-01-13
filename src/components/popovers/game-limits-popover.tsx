@@ -1,3 +1,5 @@
+import { useGetUserBalanceQuery } from "@/store";
+
 import {
     Popover,
     PopoverTrigger,
@@ -13,12 +15,19 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
     open,
     setOpen
 }) => {
+    const { data: balance } = useGetUserBalanceQuery();
+
     return (
         <Popover
             open={open}
             onOpenChange={setOpen}
         >
-            <PopoverTrigger className="sr-only right-0">das</PopoverTrigger>
+            <PopoverTrigger
+                tabIndex={-1}
+                className="sr-only right-0"
+            >
+                Игровые лимиты
+            </PopoverTrigger>
             <PopoverContent
                 side="bottom"
                 sideOffset={20}
@@ -28,15 +37,15 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
                 <h3 className="col-span-2 pb-2 text-center text-sm font-bold text-white">
                     Игровые лимиты
                 </h3>
-                <span className="self-center">Минимальная ставка (UZS)</span>
+                <span className="self-center">{`Минимальная ставка (${balance?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     1000
                 </span>
-                <span className="self-center">Максимальная ставка (UZS)</span>
+                <span className="self-center">{`Максимальная ставка (${balance?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     100000
                 </span>
-                <span>Максимальный выигрыш за одну ставку (UZS)</span>
+                <span>{`Максимальный выигрыш за одну ставку (${balance?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
                     1000000
                 </span>
