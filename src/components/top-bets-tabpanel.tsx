@@ -1,9 +1,9 @@
+import { useState } from "react";
 import {
-    useGetUserBalanceQuery,
-    useStateSelector,
-    useAppDispatch,
-    fetchTopBetsThunk,
-    resetTopBetsState
+    useGetTopBetsQuery,
+    useGetUserBalanceQuery
+    // topBetsSelector,
+    // topBetsAdapter
 } from "@/store";
 
 import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
@@ -11,7 +11,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { InfiniteScroll } from "./InfiniteScroll";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
-import { useEffect } from "react";
 
 export const TopBetsTabpanel = () => {
     return (
@@ -35,30 +34,63 @@ export const TopBetsTabpanel = () => {
 };
 
 const TabDay = () => {
-    const dispatch = useAppDispatch();
+    const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
-    const { data: balance } = useGetUserBalanceQuery();
-    const { bets, status, error, hasNextPage } = useStateSelector(
-        state => state.bets.top
+    const { data: balance, isSuccess } = useGetUserBalanceQuery();
+    const {
+        data: bets,
+        hasNextPage,
+        error,
+        isError
+    } = useGetTopBetsQuery(
+        {
+            skip: queryParams.skip,
+            limit: queryParams.limit
+        },
+        {
+            selectFromResult: ({ data }) => ({
+                data: data?.data,
+                hasNextPage: data?.hasNextPage
+            })
+        }
+        // {
+        //     selectFromResult: ({ data, ...otherParams }) => ({
+        //         data: topBetsSelector.selectAll(
+        //             data ?? topBetsAdapter.getInitialState()
+        //         ),
+        //         ...otherParams
+        //     })
+        // }
     );
 
-    useEffect(() => {
-        dispatch(resetTopBetsState());
-    }, []);
+    console.log("Bets selected: ", bets);
+    console.log("Has next in top bets: ", hasNextPage);
 
-    console.log("Top bets: ", bets);
+    // const { bets, status, error, hasNextPage } = useStateSelector(
+    //     state => state.bets.top
+    // );
+
+    // useEffect(() => {
+    //     dispatch(resetTopBetsState());
+    // }, []);
+
+    // console.log("Top bets: ", bets);
 
     return (
         <InfiniteScroll
             hasNextPage={hasNextPage}
             // isLoading={status === "pending"}
             callback={() => {
-                dispatch(fetchTopBetsThunk());
+                if (!hasNextPage) return;
+                setQueryParams(queryParams => ({
+                    ...queryParams,
+                    skip: queryParams.skip + 6
+                }));
             }}
             className="scrollbar max-h-64"
         >
-            {status === "rejected" && <pre>{error}</pre>}
-            {status !== "rejected" ? (
+            {isError && <pre>{error?.data?.message}</pre>}
+            {!isError ? (
                 <Table
                     className="px-1.5"
                     headers={[
@@ -130,7 +162,7 @@ const TabDay = () => {
                     )}
                 />
             ) : null}
-            {status === "fulfilled" && (!bets || bets.length === 0) ? (
+            {isSuccess && (!bets || bets.length === 0) ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
                 </p>

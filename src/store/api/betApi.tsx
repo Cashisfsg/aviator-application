@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Bet, PaginationParams } from "./types";
-import { RootStore } from "..";
+import { RootStore } from "../types";
 
 export const betApi = createApi({
     reducerPath: "betApi",
@@ -15,6 +15,7 @@ export const betApi = createApi({
         }
     }),
     tagTypes: ["My", "Top"],
+
     endpoints: builder => ({
         getTopBets: builder.query<Bet[], PaginationParams | void>({
             query: args => ({
@@ -22,7 +23,34 @@ export const betApi = createApi({
                 params: args
                     ? { limit: args.limit, skip: args.skip }
                     : undefined
-            })
+            }),
+            transformResponse: (response: Bet[], meta, args) => {
+                const hasNextPage = response.length === args?.limit;
+
+                console.log("Response hasNextPage", hasNextPage);
+
+                return { data: response, hasNextPage };
+            },
+            serializeQueryArgs: ({ endpointName }) => {
+                return endpointName;
+            },
+            forceRefetch: ({ currentArg, previousArg, endpointState }) => {
+                console.log("Is has next page", endpointState?.data);
+
+                return (
+                    endpointState?.data?.hasNextPage &&
+                    currentArg?.skip !== previousArg?.skip
+                );
+            },
+            merge: (currentCacheData, responseData) => {
+                currentCacheData.data.push(...responseData.data);
+            }
+            // merge: (currentCacheData, responseData) => {
+            //     topBetsAdapter.addMany(
+            //         currentCacheData,
+            //         topBetsSelector.selectAll(responseData)
+            //     );
+            // }
         }),
         getUserBets: builder.query<Bet[], PaginationParams | void>({
             query: args => ({

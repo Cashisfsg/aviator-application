@@ -130,7 +130,11 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                     </tr>
                 ) : null}
                 <tr>
-                    <td className="px-1.5 py-0.5 text-slate-500">ID 1234</td>
+                    <td className="px-1.5 py-0.5 align-middle">
+                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap align-middle text-slate-500">
+                            {`ID ${deposit?._id}`}
+                        </span>
+                    </td>
                     {deposit?.status === "Ожидает оплаты" ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
                             <button

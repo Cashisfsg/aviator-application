@@ -28,6 +28,9 @@ export const CountDownTimer: React.FC<TimerProps> = ({
                 ? new Date(targetDate).getTime() - currentTime
                 : 0;
 
+            console.log("Текущее время: ", currentTime);
+            console.log("Время окончания: ", timeDifference);
+
             if (timeDifference <= 0) {
                 clearInterval(timer);
                 setTime(time => ({ ...time, minutes: 0, seconds: 0 }));

@@ -95,8 +95,8 @@ export const BurgerMenu = () => {
                             <div className="grid w-max grid-cols-[auto_auto] grid-rows-2 items-center gap-x-2.5 leading-none">
                                 <img
                                     src={
-                                        userInitData?.profileImage ||
                                         user?.profileImage ||
+                                        userInitData?.profileImage ||
                                         Avatar
                                     }
                                     alt="Profile image"
@@ -105,14 +105,14 @@ export const BurgerMenu = () => {
                                     className="row-span-2 rounded-full"
                                 />
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {userInitData?.login ||
-                                        user?.login ||
+                                    {user?.login ||
+                                        userInitData?.login ||
                                         "Username"}
                                 </p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
                                     {`ID ${
-                                        userInitData?.telegramId ||
-                                        user?.telegramId
+                                        user?.telegramId ||
+                                        userInitData?.telegramId
                                     }` || "user ID"}
                                 </p>
                             </div>

@@ -17,51 +17,57 @@ export const Chart = () => {
     const [startScreen, setStartScreen] = useState(true);
 
     useEffect(() => {
-        socket.on("crash", () => {
-            gameOver();
-        });
-        socket.on("loading", data => {
-            console.log("Loading data: ", data);
+        const crash = () => {
+            if (!airplaneRef.current) return;
 
+            animationRef.current = airplaneRef.current.animate(
+                [
+                    {
+                        translate: "800px 0px"
+                    }
+                ],
+                { duration: 1000, iterations: 1, fill: "forwards" }
+            );
+            rateRef.current?.stopAnimation();
+            containerRef.current?.setAttribute("data-active", "false");
+        };
+
+        const startGame = () => {
+            if (!airplaneRef.current) return;
+
+            setStartScreen(true);
+        };
+
+        const restart = () => {
+            if (!airplaneRef.current) return;
+            rateRef.current?.resetAnimation();
+            airplaneRef.current.classList.remove("fly");
+            animationRef.current?.cancel();
+            containerRef.current?.setAttribute("data-active", "true");
+        };
+
+        const loading = () => {
             restart();
             startGame();
-        });
-        socket.on("game", () => {
+        };
+
+        const game = () => {
             airplaneRef.current?.classList.add("fly");
 
             rateRef.current?.startAnimation();
             setStartScreen(false);
-        });
-    }, []);
+        };
 
-    const startGame = () => {
-        if (!airplaneRef.current) return;
+        socket.on("crash", crash);
+        socket.on("loading", loading);
+        socket.on("game", game);
 
-        setStartScreen(true);
-    };
-
-    const gameOver = () => {
-        if (!airplaneRef.current) return;
-
-        animationRef.current = airplaneRef.current.animate(
-            [
-                {
-                    translate: "800px 0px"
-                }
-            ],
-            { duration: 1000, iterations: 1, fill: "forwards" }
-        );
-        rateRef.current?.stopAnimation();
-        containerRef.current?.setAttribute("data-active", "false");
-    };
-
-    const restart = () => {
-        if (!airplaneRef.current) return;
-        rateRef.current?.resetAnimation();
-        airplaneRef.current.classList.remove("fly");
-        animationRef.current?.cancel();
-        containerRef.current?.setAttribute("data-active", "true");
-    };
+        return () => {
+            socket.off("crash", crash);
+            socket.off("loading", loading);
+            socket.off("game", game);
+        };
+    }, [socket]);
 
     return (
         <section>

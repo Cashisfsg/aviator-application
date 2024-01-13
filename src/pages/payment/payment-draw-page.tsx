@@ -36,7 +36,7 @@ export const PaymentDrawPage = () => {
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
                     <p className="justify-self-start text-sm leading-5 text-slate-400">
-                        {user?.telegramId}
+                        {`ID ${user?.telegramId}`}
                     </p>
                     <div
                         ref={setRenderElement}

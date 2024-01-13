@@ -38,7 +38,7 @@ export const PaymentReplenishmentPage = () => {
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
                     <p className="justify-self-start text-sm leading-5 text-slate-400">
-                        {user?.telegramId}
+                        {`ID ${user?.telegramId}`}
                     </p>
                     <div
                         ref={setRenderElement}
@@ -61,32 +61,6 @@ export const PaymentReplenishmentPage = () => {
                                 </Popover.Content>
                             </Popover.Portal>
                         </Popover>
-                        {/* <button
-                            id="trigger"
-                            onClick={() => {
-                                dialogRef.current?.close();
-                            }}
-                        >
-                            История
-                        </button>
-                        <dialog
-                            ref={dialogRef}
-                            onClick={event => {
-                                const rect =
-                                    dialogRef.current?.getBoundingClientRect();
-                                const isInDialog =
-                                    rect.top <= event.clientY &&
-                                    event.clientY <= rect.bottom &&
-                                    rect.left <= event.clientX &&
-                                    event.clientX <= rect.left + rect.width;
-                                if (!isInDialog) {
-                                    dialogRef.current?.close();
-                                }
-                            }}
-                            className="absolute left-auto top-[calc(100%+0.25rem)] m-0 border border-red-400"
-                        >
-                            Popover
-                        </dialog> */}
                     </div>
                 </header>
                 <section>

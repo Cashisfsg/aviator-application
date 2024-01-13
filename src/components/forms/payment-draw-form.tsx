@@ -11,6 +11,8 @@ import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
+import { ImSpinner9 } from "react-icons/im";
+
 interface PaymentWithdrawFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     selectedRequisiteId: string | null;
@@ -20,7 +22,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
     setOpen,
     selectedRequisiteId
 }) => {
-    const [createDraw, { isError, error }] = useCreateDrawMutation();
+    const [createDraw, { isLoading, isError, error }] = useCreateDrawMutation();
     const { data: requisites } = useGetUserRequisitesQuery();
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
@@ -108,8 +110,15 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 ) : null}
             </Label>
 
-            <button className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5">
-                Подтвердить
+            <button
+                disabled={isLoading}
+                className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-2xl" />
+                ) : (
+                    "Подтвердить"
+                )}
             </button>
         </form>
     );

@@ -78,7 +78,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     };
 
     return (
-        <table className="w-full bg-white text-left text-sm ">
+        <table className="w-full bg-slate-100 text-left text-sm ">
             <tbody>
                 <tr>
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
@@ -127,7 +127,11 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     </tr>
                 ) : null}
                 <tr>
-                    <td className="px-1.5 py-0.5">ID 12345</td>
+                    <td className="px-1.5 py-0.5">
+                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap align-middle text-slate-500">
+                            {`ID ${draw?._id}`}
+                        </span>
+                    </td>
                     {draw?.status === "Ожидает оплаты" ? (
                         <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                             <button

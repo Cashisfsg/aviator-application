@@ -1,29 +1,38 @@
-import { useState } from "react";
+// import { useState } from "react";
 
-import { useGetUserBetsQuery, useGetUserBalanceQuery } from "@/store";
+import {
+    useAppDispatch,
+    useStateSelector,
+    fetchTopBetsThunk,
+    // useGetUserBetsQuery,
+    useGetUserBalanceQuery
+} from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
-import {
-    Collapsible,
-    CollapsibleTrigger,
-    CollapsibleContent
-} from "@/components/ui/collapsible";
+// import {
+//     Collapsible,
+//     CollapsibleTrigger,
+//     CollapsibleContent
+// } from "@/components/ui/collapsible";
 
 import { formatCurrency, formatDate, formatTime } from "@/utils/helpers";
 
-const MAX_ITEMS_BEFORE_EXPAND = 6;
+// const MAX_ITEMS_BEFORE_EXPAND = 6;
 
 export const MyBetsHistoryDialogTable = () => {
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
+    const dispatch = useAppDispatch();
+    const { bets } = useStateSelector(state => state.bets.top);
 
-    const { data: bets } = useGetUserBetsQuery();
+    // const { data: bets } = useGetUserBetsQuery();
     const { data: balance } = useGetUserBalanceQuery();
 
     return (
-        <Collapsible
-            open={open}
-            onOpenChange={setOpen}
-        >
+        // <Collapsible
+        //     open={open}
+        //     onOpenChange={setOpen}
+        // >
+        <>
             <div className="scrollbar max-h-[50dvh]">
                 <Table
                     className="px-1.5 text-center"
@@ -36,7 +45,7 @@ export const MyBetsHistoryDialogTable = () => {
                     data={bets || []}
                     renderData={data => (
                         <>
-                            {data.slice(0, MAX_ITEMS_BEFORE_EXPAND).map(bet => (
+                            {data.map(bet => (
                                 <Row key={bet?._id}>
                                     <Cell className="px-2 py-1 text-left text-[10px] leading-none">
                                         <time
@@ -61,7 +70,7 @@ export const MyBetsHistoryDialogTable = () => {
                                     <Cell>{formatCurrency(bet?.win)}</Cell>
                                 </Row>
                             ))}
-                            <CollapsibleContent asChild>
+                            {/* <CollapsibleContent asChild>
                                 <>
                                     {data
                                         .slice(MAX_ITEMS_BEFORE_EXPAND)
@@ -102,7 +111,7 @@ export const MyBetsHistoryDialogTable = () => {
                                             </Row>
                                         ))}
                                 </>
-                            </CollapsibleContent>
+                            </CollapsibleContent> */}
                         </>
                     )}
                 />
@@ -110,11 +119,14 @@ export const MyBetsHistoryDialogTable = () => {
                     <p className="py-2 text-center font-semibold">Пусто</p>
                 ) : null}
             </div>
-            {bets && bets.length > MAX_ITEMS_BEFORE_EXPAND ? (
-                <CollapsibleTrigger className="mt-4 w-full rounded-t-none bg-[#252528] py-2 focus-visible:outline-none focus-visible:ring-0">
-                    {open ? "Скрыть" : "Показать ещё"}
-                </CollapsibleTrigger>
-            ) : null}
-        </Collapsible>
+            {/* {bets && bets.length > MAX_ITEMS_BEFORE_EXPAND ? ( */}
+            {/* <CollapsibleTrigger className="mt-4 w-full rounded-t-none bg-[#252528] py-2 focus-visible:outline-none focus-visible:ring-0">
+                {open ? "Скрыть" : "Показать ещё"}
+            </CollapsibleTrigger> */}
+            <button onClick={() => dispatch(fetchTopBetsThunk())}>
+                Show more
+            </button>
+            {/* ) : null} */}
+        </>
     );
 };
