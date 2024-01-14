@@ -17,19 +17,15 @@ export const betApi = createApi({
     tagTypes: ["My", "Top"],
 
     endpoints: builder => ({
-        getTopBets: builder.query<Bet[], PaginationParams | void>({
-            query: args => ({
+        getTopBets: builder.query({
+            query: (args: PaginationParams | void) => ({
                 url: "bets/tops",
                 params: args
                     ? { limit: args.limit, skip: args.skip }
                     : undefined
             }),
-            transformResponse: (response: Bet[], meta, args) => {
-                const hasNextPage = response.length === args?.limit;
-
-                console.log("Response hasNextPage", hasNextPage);
-
-                return { data: response, hasNextPage };
+            transformResponse: (response: Bet[]) => {
+                return { data: response, hasNextPage: true } as const;
             },
             serializeQueryArgs: ({ endpointName }) => {
                 return endpointName;
@@ -42,8 +38,10 @@ export const betApi = createApi({
                     currentArg?.skip !== previousArg?.skip
                 );
             },
-            merge: (currentCacheData, responseData) => {
+            merge: (currentCacheData, responseData, { arg }) => {
                 currentCacheData.data.push(...responseData.data);
+                currentCacheData.hasNextPage =
+                    responseData.data.length === (arg?.limit ?? 0);
             }
             // merge: (currentCacheData, responseData) => {
             //     topBetsAdapter.addMany(

@@ -36,22 +36,26 @@ export const TopBetsTabpanel = () => {
 const TabDay = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
-    const { data: balance, isSuccess } = useGetUserBalanceQuery();
+    const { data: balance } = useGetUserBalanceQuery();
     const {
         data: bets,
         hasNextPage,
-        error,
-        isError
+        isSuccess,
+        isError,
+        error
     } = useGetTopBetsQuery(
         {
             skip: queryParams.skip,
             limit: queryParams.limit
         },
         {
-            selectFromResult: ({ data }) => ({
+            selectFromResult: ({ data, ...otherParams }) => ({
                 data: data?.data,
-                hasNextPage: data?.hasNextPage
+                hasNextPage: data?.hasNextPage,
+                ...otherParams
             })
+
+            // refetchOnMountOrArgChange: true
         }
         // {
         //     selectFromResult: ({ data, ...otherParams }) => ({
@@ -63,22 +67,9 @@ const TabDay = () => {
         // }
     );
 
-    console.log("Bets selected: ", bets);
-    console.log("Has next in top bets: ", hasNextPage);
-
-    // const { bets, status, error, hasNextPage } = useStateSelector(
-    //     state => state.bets.top
-    // );
-
-    // useEffect(() => {
-    //     dispatch(resetTopBetsState());
-    // }, []);
-
-    // console.log("Top bets: ", bets);
-
     return (
         <InfiniteScroll
-            hasNextPage={hasNextPage}
+            hasNextPage={hasNextPage || true}
             // isLoading={status === "pending"}
             callback={() => {
                 if (!hasNextPage) return;
