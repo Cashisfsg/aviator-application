@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import {
     useGetUserBetsQuery,
-    useGetTopBetsQuery,
+    // useGetTopBetsQuery,
     useGetUserBalanceQuery
 } from "@/store";
 
@@ -15,6 +15,7 @@ export const MyBetsHistoryDialogTable = () => {
     const [open, setOpen] = useState(false);
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
+    const { data: balance } = useGetUserBalanceQuery();
     const {
         data: bets,
         hasNextPage,
@@ -22,7 +23,7 @@ export const MyBetsHistoryDialogTable = () => {
         isLoading,
         isError,
         error
-    } = useGetTopBetsQuery(
+    } = useGetUserBetsQuery(
         {
             skip: queryParams.skip,
             limit: queryParams.limit
@@ -36,7 +37,6 @@ export const MyBetsHistoryDialogTable = () => {
             // refetchOnMountOrArgChange: true
         }
     );
-    const { data: balance } = useGetUserBalanceQuery();
 
     const renderData = open ? bets : bets?.slice(0, queryParams.limit);
 
@@ -130,7 +130,9 @@ export const MyBetsHistoryDialogTable = () => {
 
             {/* {bets && bets.length > queryParams?.limit ? ( */}
             <button
-                disabled={isLoading}
+                disabled={
+                    isLoading || (isSuccess && (!bets || bets.length === 0))
+                }
                 onClick={() => setOpen(open => !open)}
                 className="w-full rounded-t-none bg-[#252528] py-2 font-bold focus-visible:outline-none focus-visible:ring-0"
             >

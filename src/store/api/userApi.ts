@@ -50,16 +50,47 @@ export const userApi = createApi({
                 url: "/user/referral"
             })
         }),
-        getUserReferralByDays: builder.query<Referral, PaginationParams | void>(
+        getUserReferralByDays: builder.query<
             {
-                query: args => ({
-                    url: "/user/referral/by-days",
-                    params: args
-                        ? { limit: args.limit, skip: args.skip }
-                        : undefined
-                })
+                data: {
+                    _id: string;
+                    date: string;
+                    totalEarned: number;
+                }[];
+                hasNextPage: boolean;
+            },
+            PaginationParams | void
+        >({
+            query: args => ({
+                url: "/user/referral/by-days",
+                params: args
+                    ? { limit: args.limit, skip: args.skip }
+                    : undefined
+            }),
+            transformResponse: (
+                response: {
+                    _id: string;
+                    date: string;
+                    totalEarned: number;
+                }[]
+            ) => {
+                return { data: response, hasNextPage: true } as const;
+            },
+            serializeQueryArgs: ({ endpointName }) => {
+                return endpointName;
+            },
+            forceRefetch: ({ currentArg, previousArg, endpointState }) => {
+                return (
+                    endpointState?.data?.hasNextPage &&
+                    currentArg?.skip !== previousArg?.skip
+                );
+            },
+            merge: (currentCacheData, responseData, { arg }) => {
+                currentCacheData.data.push(...responseData.data);
+                currentCacheData.hasNextPage =
+                    responseData.data.length === (arg?.limit ?? 0);
             }
-        ),
+        }),
         getUserBalance: builder.query<UserBalance, void>({
             query: () => ({
                 url: "user/balance"
@@ -95,14 +126,15 @@ export const userApi = createApi({
                 method: "POST",
                 body
             }),
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    dispatch(userApi.util.invalidateTags(["Promo"]));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
+            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
+            //     try {
+            //         await queryFulfilled;
+            //         dispatch(userApi.util.invalidateTags(["Promo"]));
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // }
+            invalidatesTags: ["Promo"]
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,
@@ -172,14 +204,15 @@ export const userApi = createApi({
                     formData: true
                 };
             },
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    dispatch(userApi.util.invalidateTags(["User"]));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
+            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
+            //     try {
+            //         await queryFulfilled;
+            //         dispatch(userApi.util.invalidateTags(["User"]));
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // }
+            invalidatesTags: ["User"]
         })
     })
 });

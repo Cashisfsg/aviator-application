@@ -13,6 +13,8 @@ export const AllBetsTabpanel = () => {
 
     useEffect(() => {
         const updatePlayersList = (data: Player[]) => {
+            console.log("Players: ", data);
+
             setPlayers(data);
         };
 
@@ -71,7 +73,11 @@ export const AllBetsTabpanel = () => {
                         {data.map(player => (
                             <Row
                                 key={player?.playerLogin}
-                                className="[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                                className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
+                                    isNaN(player?.win as number)
+                                        ? ""
+                                        : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                                }`}
                             >
                                 <Cell className="flex items-center gap-x-2">
                                     <img

@@ -131,6 +131,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     currency: currentGameTab.currency,
                     bet: currentGameTab.currentBet
                 });
+                dispatch(userApi.util.invalidateTags(["Balance"]));
             }
 
             dispatch(setBetState({ betNumber, betState: "cash" }));
@@ -440,7 +441,6 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             )} ${currentGameTab.currency}`,
             duration: 5000
         });
-        dispatch(userApi.util.invalidateTags(["Balance"]));
         dispatch(setBetState({ betNumber, betState: "init" }));
     };
 
