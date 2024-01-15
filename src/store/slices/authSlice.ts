@@ -29,7 +29,7 @@ const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
 // type AuthState = AuthorizedUser | NonAuthorizedUser;
 
-const authSlice = createSlice({
+export const authSlice = createSlice({
     name: "auth",
     initialState: () => {
         const storedData = localStorage.getItem("token");

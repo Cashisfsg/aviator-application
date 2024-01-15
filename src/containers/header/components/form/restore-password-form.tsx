@@ -72,7 +72,8 @@ export const RestorePasswordForm = () => {
                         id={emailErrorId}
                         message={error?.data?.message}
                     />
-                ) : form.formState.errors.email ? (
+                ) : null}
+                {form.formState.errors.email ? (
                     <ErrorMessage
                         id={emailErrorId}
                         message={form.formState.errors.email?.message}
@@ -81,9 +82,9 @@ export const RestorePasswordForm = () => {
             </Label>
             <Button
                 variant="confirm"
-                disabled={!isLoading}
+                disabled={isLoading}
             >
-                {!isLoading ? (
+                {isLoading ? (
                     <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
                 ) : (
                     "Восстановить"

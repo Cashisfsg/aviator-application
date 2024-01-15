@@ -9,10 +9,11 @@ import { useGetUserQuery, useChangePasswordConfirmMutation } from "@/store";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImSpinner9 } from "react-icons/im";
 
 export const SecurityResetPasswordForm = () => {
     const { data: user } = useGetUserQuery();
-    const [changeOldPassword, { isSuccess, isError, error }] =
+    const [changeOldPassword, { isLoading, isSuccess, isError, error }] =
         useChangePasswordConfirmMutation();
     const {
         handleSubmit,
@@ -55,7 +56,8 @@ export const SecurityResetPasswordForm = () => {
                 />
                 {errors?.password ? (
                     <ErrorMessage message={errors?.password?.message} />
-                ) : isError ? (
+                ) : null}
+                {isError ? (
                     <ErrorMessage message={error?.data?.message} />
                 ) : null}
             </Label>
@@ -76,8 +78,15 @@ export const SecurityResetPasswordForm = () => {
             >
                 Сбросить через Email
             </Link>
-            <button className="mt-2 border border-gray-50 bg-[#2c2d30] py-2">
-                Сбросить
+            <button
+                disabled={isLoading}
+                className="mt-2 border border-gray-50 bg-[#2c2d30] py-2"
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-sm" />
+                ) : (
+                    "Сбросить"
+                )}
             </button>
         </form>
     );

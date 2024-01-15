@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, forwardRef } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+
 import {
+    useAuth,
     useAppDispatch,
     useStateSelector,
     userApi,
@@ -13,6 +16,7 @@ import {
 } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -26,37 +30,59 @@ interface BetProps {
 }
 
 export const Bet: React.FC<BetProps> = ({ betNumber }) => {
+    const [open, setOpen] = useState(false);
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const onClickHandler: React.MouseEventHandler<HTMLDivElement> = event => {
+        if (isAuthenticated) return;
+
+        event.stopPropagation();
+        setOpen(true);
+        navigate("/main/sign-in");
+    };
 
     return (
-        <Tabs
-            defaultValue="bet"
-            className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-6 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206]"
-        >
-            <TabsList className="has-[button:disabled]:pointer-events-none has-[button:disabled]:opacity-75">
-                <TabsTrigger
-                    value="bet"
-                    disabled={currentGameTab.autoModeOn}
-                >
-                    Ставка
-                </TabsTrigger>
-                <TabsTrigger
-                    value="auto"
-                    disabled={currentGameTab.autoModeOn}
-                >
-                    Авто
-                </TabsTrigger>
-            </TabsList>
-            <BetTab betNumber={betNumber} />
-            <TabsContent
-                value="auto"
-                className="flex items-center justify-around"
+        <>
+            <Tabs
+                defaultValue="bet"
+                onClickCapture={onClickHandler}
+                className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-6 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206]"
             >
-                <AutoBetTab betNumber={betNumber} />
-            </TabsContent>
-        </Tabs>
+                <TabsList className="has-[button:disabled]:pointer-events-none has-[button:disabled]:opacity-75">
+                    <TabsTrigger
+                        value="bet"
+                        disabled={currentGameTab.autoModeOn || !isAuthenticated}
+                    >
+                        Ставка
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="auto"
+                        disabled={currentGameTab.autoModeOn || !isAuthenticated}
+                    >
+                        Авто
+                    </TabsTrigger>
+                </TabsList>
+                <BetTab betNumber={betNumber} />
+                <TabsContent
+                    value="auto"
+                    className="flex items-center justify-around"
+                >
+                    <AutoBetTab betNumber={betNumber} />
+                </TabsContent>
+            </Tabs>
+            <Dialog
+                open={open}
+                onOpenChange={setOpen}
+            >
+                <DialogContent className="w-80">
+                    <Outlet />
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };
 
@@ -69,6 +95,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         selectCurrentGameTab(state, betNumber)
     );
     const bonus = useStateSelector(state => selectBonus(state));
+    const { isAuthenticated } = useAuth();
 
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -171,7 +198,9 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                 }}
             >
                 <fieldset
-                    disabled={currentGameTab.betState !== "init"}
+                    disabled={
+                        currentGameTab.betState !== "init" || !isAuthenticated
+                    }
                     data-state={currentGameTab.betState}
                     className="grid grid-cols-[68px_68px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
                 >
@@ -496,8 +525,6 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
                 socket.off("game", autoBet);
                 return;
             }
-
-            console.log("autoBet");
 
             if (x < rate) return;
 

@@ -8,7 +8,7 @@ import {
 } from "@/store";
 
 import { Table, Row, Cell } from "@/components/ui/table";
-import { InfiniteScroll } from "../InfiniteScroll";
+import { InfiniteScroll } from "../infinite-scroll";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
@@ -25,7 +25,7 @@ export const MyBetsHistoryTable = () => {
 
     return (
         <InfiniteScroll
-            hasNextPage={hasNextPage}
+            skip={hasNextPage}
             // isLoading={status === "pending"}
             callback={() => {
                 dispatch(fetchUserBetsThunk());

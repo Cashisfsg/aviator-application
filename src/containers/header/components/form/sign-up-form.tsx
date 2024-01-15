@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -22,6 +22,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
+import { DialogClose } from "@/components/ui/dialog";
 import {
     Command,
     CommandEmpty,
@@ -52,10 +53,13 @@ const currencies = [
 ];
 
 export const SignUpForm = () => {
-    const [open, setOpen] = React.useState(false);
-    const [promoOpen, setPromoOpen] = React.useState(false);
-    const [createNewUser, { isSuccess, isLoading, isError, error }] =
+    const [open, setOpen] = useState(false);
+    const [promoOpen, setPromoOpen] = useState(false);
+    const dialogCloseRef = useRef<HTMLButtonElement>(null);
+
+    const [createNewUser, { isLoading, isError, error }] =
         useCreateNewUserAccountMutation();
+    const navigate = useNavigate();
 
     const { login, telegramId } = useStateSelector(state =>
         selectInitData(state)
@@ -83,7 +87,7 @@ export const SignUpForm = () => {
         from,
         telegramId
     }) => {
-        await createNewUser({
+        const response = await createNewUser({
             currency,
             login,
             password,
@@ -92,11 +96,12 @@ export const SignUpForm = () => {
             from,
             telegramId
         });
-    };
 
-    if (isSuccess) {
-        return <Navigate to="/main" />;
-    }
+        if (response?.error) return;
+
+        navigate("/main");
+        dialogCloseRef?.current?.click();
+    };
 
     return (
         <Form {...form}>
@@ -359,6 +364,10 @@ export const SignUpForm = () => {
                         "Зарегистрироваться"
                     )}
                 </Button>
+                <DialogClose
+                    className="hidden"
+                    ref={dialogCloseRef}
+                />
             </form>
         </Form>
     );

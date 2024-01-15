@@ -5,13 +5,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImSpinner9 } from "react-icons/im";
 
 interface FormFields {
     code: HTMLInputElement;
 }
 
 export const SecurityConfirmBindingEmailForm = () => {
-    const [changeEmail, { isError, isSuccess }] = useChangeEmailMutation();
+    const [changeEmail, { isError, isSuccess, isLoading, error }] =
+        useChangeEmailMutation();
     const { toast } = useToast();
 
     const onSubmitHandler: React.FormEventHandler<
@@ -57,10 +59,19 @@ export const SecurityConfirmBindingEmailForm = () => {
                     aria-invalid={isError}
                     className="border-[#414148]"
                 />
-                {isError ? <ErrorMessage message="Неверный код" /> : null}
+                {isError ? (
+                    <ErrorMessage message={error?.data?.message} />
+                ) : null}
             </Label>
-            <button className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5">
-                Сохранить
+            <button
+                disabled={isLoading}
+                className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-sm" />
+                ) : (
+                    "Сохранить"
+                )}
             </button>
         </form>
     );

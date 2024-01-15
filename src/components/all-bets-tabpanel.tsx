@@ -15,9 +15,11 @@ export const AllBetsTabpanel = () => {
         const updatePlayersList = (data: Player[]) => {
             setPlayers(data);
         };
+
         const clearPlayersList = () => {
             setPlayers([]);
         };
+
         socket.on("currentPlayers", updatePlayersList);
         socket.on("crash", clearPlayersList);
 

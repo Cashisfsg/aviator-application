@@ -135,7 +135,9 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     {draw?.status === "Ожидает оплаты" ? (
                         <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                             <button
-                                onClick={() => abortDraw(draw?._id)}
+                                onClick={() => {
+                                    abortDraw(draw?._id);
+                                }}
                                 className="text-right text-blue-500"
                             >
                                 Отменить

@@ -2,20 +2,20 @@ import { useInView } from "react-intersection-observer";
 
 interface InfiniteScrollProps {
     className?: string;
-    hasNextPage: boolean;
+    skip: boolean;
     callback?: () => void;
     children: React.ReactNode;
 }
 
 export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
     className,
-    hasNextPage,
+    skip,
     callback,
     children
 }) => {
     const { ref } = useInView({
-        threshold: 1,
-        skip: !hasNextPage,
+        threshold: 0.75,
+        skip,
         initialInView: true,
         onChange(inView) {
             if (!inView) return;

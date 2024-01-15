@@ -1,5 +1,6 @@
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthenticateUserMutation } from "@/store";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -8,9 +9,9 @@ import {
     AuthorizationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
-import { useAuthenticateUserMutation } from "@/store";
 // import { useDialogContext } from "@/components/ui/dialog/use-dialog-context";
 
+import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ import { ImSpinner9 } from "react-icons/im";
 
 export const SignInForm = () => {
     // const { dialogRef } = useDialogContext();
+    const dialogCloseRef = useRef<HTMLButtonElement>(null);
     const formId = useId();
     const [authenticate, { isLoading, isError, error }] =
         useAuthenticateUserMutation();
@@ -48,7 +50,7 @@ export const SignInForm = () => {
 
         reset();
         navigate("/main");
-        // dialogRef?.current?.close();
+        dialogCloseRef?.current?.click();
     };
 
     return (
@@ -101,6 +103,10 @@ export const SignInForm = () => {
                     "Войти"
                 )}
             </Button>
+            <DialogClose
+                className="hidden"
+                ref={dialogCloseRef}
+            />
         </>
     );
 };

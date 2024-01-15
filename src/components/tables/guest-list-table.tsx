@@ -19,8 +19,8 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                 headers={["ID", "Дата регистрации", "Заработано"]}
                 data={referral?.descendants || []}
                 renderCaption={
-                    <Caption className="align-bottom ">
-                        <span className="float-left text-white">
+                    <Caption className="align-bottom">
+                        <span className="float-left leading-[18px] text-white">
                             Список приглашенных
                         </span>
                         <button

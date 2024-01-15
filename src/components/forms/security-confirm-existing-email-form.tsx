@@ -11,6 +11,7 @@ import {
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImSpinner9 } from "react-icons/im";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -20,7 +21,7 @@ export const SecurityConfirmExistingEmailForm = () => {
     const { data: user } = useGetUserQuery();
     const [sendConfirmationCodeOnExistingEmail] =
         useSendConfirmationCodeOnExistingEmailMutation();
-    const [confirmExistingEmail, { isSuccess, isError, error }] =
+    const [confirmExistingEmail, { isSuccess, isLoading, isError, error }] =
         useConfirmExistingEmailMutation();
 
     const location = useLocation();
@@ -74,8 +75,15 @@ export const SecurityConfirmExistingEmailForm = () => {
                     <ErrorMessage message={error?.data?.message} />
                 ) : null}
             </Label>
-            <button className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5">
-                Изменить
+            <button
+                disabled={isLoading}
+                className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-sm" />
+                ) : (
+                    "Изменить"
+                )}
             </button>
         </form>
     );

@@ -13,9 +13,10 @@ import { useAuth } from "@/store/hooks/useAuth";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImSpinner9 } from "react-icons/im";
 
 export const SecurityConfirmResetPasswordForm = () => {
-    const [changePassword, { isSuccess, isError, error }] =
+    const [changePassword, { isLoading, isSuccess, isError, error }] =
         useChangeUserPasswordMutation();
     const { token } = useAuth();
 
@@ -79,8 +80,15 @@ export const SecurityConfirmResetPasswordForm = () => {
                     <ErrorMessage message={error?.data?.message} />
                 ) : null}
             </Label>
-            <button className="mt-2 border border-gray-50 bg-[#2c2d30] py-2">
-                Сохранить
+            <button
+                disabled={isLoading}
+                className="mt-2 border border-gray-50 bg-[#2c2d30] py-2"
+            >
+                {isLoading ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-sm" />
+                ) : (
+                    "Сохранить"
+                )}
             </button>
         </form>
     );

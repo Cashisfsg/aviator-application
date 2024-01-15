@@ -1,6 +1,7 @@
 import { RefObject } from "react";
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { userApi } from "../api";
+import { authSlice } from "../slices";
 import { RootStore } from "../types";
 
 type BetState = "init" | "bet" | "cash";
@@ -144,15 +145,19 @@ const gameSlice = createSlice({
         }
     },
     extraReducers: builder => {
-        builder.addMatcher(
-            userApi.endpoints.getUserBalance.matchFulfilled,
-            (state, { payload }) => {
-                state[0].balance = payload.balance;
-                state[0].currency = payload.currency;
-                state[1].balance = payload.balance;
-                state[1].currency = payload.currency;
-            }
-        );
+        builder
+            .addCase(authSlice.actions.logout, () => {
+                return initialState;
+            })
+            .addMatcher(
+                userApi.endpoints.getUserBalance.matchFulfilled,
+                (state, { payload }) => {
+                    state[0].balance = payload.balance;
+                    state[0].currency = payload.currency;
+                    state[1].balance = payload.balance;
+                    state[1].currency = payload.currency;
+                }
+            );
     }
 });
 

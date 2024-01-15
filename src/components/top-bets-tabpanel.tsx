@@ -8,7 +8,7 @@ import {
 
 import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { InfiniteScroll } from "./InfiniteScroll";
+import { InfiniteScroll } from "./infinite-scroll";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
@@ -54,28 +54,22 @@ const TabDay = () => {
                 hasNextPage: data?.hasNextPage,
                 ...otherParams
             })
-
             // refetchOnMountOrArgChange: true
         }
-        // {
-        //     selectFromResult: ({ data, ...otherParams }) => ({
-        //         data: topBetsSelector.selectAll(
-        //             data ?? topBetsAdapter.getInitialState()
-        //         ),
-        //         ...otherParams
-        //     })
-        // }
     );
+
+    console.log("Bets", bets);
+    console.log(queryParams);
 
     return (
         <InfiniteScroll
-            hasNextPage={hasNextPage || true}
+            skip={!hasNextPage || false}
             // isLoading={status === "pending"}
             callback={() => {
                 if (!hasNextPage) return;
                 setQueryParams(queryParams => ({
                     ...queryParams,
-                    skip: queryParams.skip + 6
+                    skip: bets?.length ?? 0
                 }));
             }}
             className="scrollbar max-h-64"
@@ -91,7 +85,6 @@ const TabDay = () => {
                         `Выигрыш, ${balance?.currency}`
                     ]}
                     renderHeader={headers => (
-                        // <thead className="sticky -top-0.5">
                         <Row>
                             {headers.map(header => (
                                 <TableHeaderCell
@@ -102,7 +95,6 @@ const TabDay = () => {
                                 </TableHeaderCell>
                             ))}
                         </Row>
-                        // </thead>
                     )}
                     data={bets || []}
                     renderData={data => (
@@ -110,7 +102,11 @@ const TabDay = () => {
                             {data.map(bet => (
                                 <Row
                                     key={bet?._id}
-                                    className="[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white"
+                                    className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
+                                        isNaN(bet?.win)
+                                            ? ""
+                                            : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                                    }`}
                                 >
                                     <Cell className="px-2 py-1 text-left text-[10px] leading-none">
                                         <time
@@ -128,22 +124,29 @@ const TabDay = () => {
                                     </Cell>
                                     <Cell>{formatCurrency(bet?.bet)}</Cell>
                                     <Cell>
-                                        <span
+                                        {!isNaN(bet?.coeff) ? (
+                                            <span className="rounded-full bg-[#c017b4] px-3 py-0.5 text-xs font-bold">
+                                                {bet?.coeff}x
+                                            </span>
+                                        ) : (
+                                            "-"
+                                        )}
+                                        {/* <span
                                             className={
                                                 bet?.win && bet?.win !== 0
                                                     ? "rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold text-[#c017b4]"
                                                     : "px-3 py-0.5 text-sm font-bold"
                                             }
                                         >
-                                            {bet?.win && bet?.win !== 0
+                                            {!isNaN(bet?.coeff)
                                                 ? `${formatCurrency(
                                                       bet?.coeff
                                                   )}x`
                                                 : "-"}
-                                        </span>
+                                        </span> */}
                                     </Cell>
                                     <Cell>
-                                        {bet?.win && bet?.win !== 0
+                                        {!isNaN(bet?.win)
                                             ? formatCurrency(bet?.win)
                                             : "-"}
                                     </Cell>

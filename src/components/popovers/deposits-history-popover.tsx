@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
+import { usePopoverContext } from "@/components/ui/popover/use-popover-context";
 
 interface PaymentHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {
     setInitialFormState: React.Dispatch<
@@ -80,6 +81,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     setDialogOpen
 }) => {
     // const showReplenishmentDetails = () => {};
+    const { dialogRef } = usePopoverContext();
 
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
@@ -153,6 +155,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                                         }));
                                     }
                                     setDialogOpen?.(true);
+                                    dialogRef?.current?.close();
                                 }}
                                 className="text-right text-blue-500"
                             >
