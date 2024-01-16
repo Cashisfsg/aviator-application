@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-import { useGetUserBalanceQuery, useGetUserBetsQuery } from "@/store";
+import {
+    useGetUserBalanceQuery,
+    useGetUserBetsQuery,
+    userBetsEntityAdapter,
+    userBetsEntitySelector
+} from "@/store";
 
 import { Table, TableHeaderCell, Row, Cell } from "@/components/ui/table";
 import { InfiniteScroll } from "../infinite-scroll";
@@ -11,9 +16,29 @@ export const MyBetsHistoryTable = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
     const { data: balance } = useGetUserBalanceQuery();
+    // const {
+    //     data: bets,
+    //     hasNextPage,
+    //     isSuccess,
+    //     isError,
+    //     error
+    // } = useGetUserBetsQuery(
+    //     {
+    //         skip: queryParams.skip,
+    //         limit: queryParams.limit
+    //     },
+    //     {
+    //         selectFromResult: ({ data, ...otherParams }) => ({
+    //             data: data?.data,
+    //             hasNextPage: data?.hasNextPage,
+    //             ...otherParams
+    //         })
+    //         // refetchOnMountOrArgChange: true
+    //     }
+    // );
+
     const {
         data: bets,
-        hasNextPage,
         isSuccess,
         isError,
         error
@@ -24,20 +49,20 @@ export const MyBetsHistoryTable = () => {
         },
         {
             selectFromResult: ({ data, ...otherParams }) => ({
-                data: data?.data,
-                hasNextPage: data?.hasNextPage,
+                data: userBetsEntitySelector.selectAll(
+                    data ?? userBetsEntityAdapter.getInitialState()
+                ),
                 ...otherParams
             })
-            // refetchOnMountOrArgChange: true
         }
     );
 
     return (
         <InfiniteScroll
-            skip={!hasNextPage || false}
+            skip={queryParams.skip === bets.length || false}
             // isLoading={status === "pending"}
             callback={() => {
-                if (!hasNextPage) return;
+                // if (!hasNextPage) return;
                 setQueryParams(queryParams => ({
                     ...queryParams,
                     skip: bets?.length ?? 0

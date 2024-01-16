@@ -3,7 +3,9 @@ import { useState } from "react";
 import {
     useGetUserBetsQuery,
     // useGetTopBetsQuery,
-    useGetUserBalanceQuery
+    useGetUserBalanceQuery,
+    userBetsEntitySelector,
+    userBetsEntityAdapter
 } from "@/store";
 
 import { Table, TableHeaderCell, Row, Cell } from "@/components/ui/table";
@@ -18,9 +20,8 @@ export const MyBetsHistoryDialogTable = () => {
     const { data: balance } = useGetUserBalanceQuery();
     const {
         data: bets,
-        hasNextPage,
-        isSuccess,
         isLoading,
+        isSuccess,
         isError,
         error
     } = useGetUserBetsQuery(
@@ -30,11 +31,11 @@ export const MyBetsHistoryDialogTable = () => {
         },
         {
             selectFromResult: ({ data, ...otherParams }) => ({
-                data: data?.data,
-                hasNextPage: data?.hasNextPage,
+                data: userBetsEntitySelector.selectAll(
+                    data ?? userBetsEntityAdapter.getInitialState()
+                ),
                 ...otherParams
             })
-            // refetchOnMountOrArgChange: true
         }
     );
 
@@ -43,13 +44,13 @@ export const MyBetsHistoryDialogTable = () => {
     return (
         <>
             <InfiniteScroll
-                skip={!hasNextPage || !open}
+                skip={queryParams.skip === bets.length || !open}
                 callback={() => {
-                    if (!hasNextPage || !open) return;
+                    // if (!hasNextPage || !open) return;
 
                     setQueryParams(queryParams => ({
                         ...queryParams,
-                        skip: queryParams.skip + 6
+                        skip: bets?.length ?? 0
                     }));
                 }}
                 className="scrollbar max-h-[50dvh]"

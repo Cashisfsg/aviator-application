@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {
+    topBetsEntityAdapter,
+    topBetsEntitySelector,
     useGetTopBetsQuery,
     useGetUserBalanceQuery
     // topBetsSelector,
@@ -37,9 +39,29 @@ const TabDay = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
     const { data: balance } = useGetUserBalanceQuery();
+    // const {
+    //     data: bets,
+    //     hasNextPage,
+    //     isSuccess,
+    //     isError,
+    //     error
+    // } = useGetTopBetsQuery(
+    //     {
+    //         skip: queryParams.skip,
+    //         limit: queryParams.limit
+    //     },
+    //     {
+    //         selectFromResult: ({ data, ...otherParams }) => ({
+    //             data: data?.data,
+    //             hasNextPage: data?.hasNextPage,
+    //             ...otherParams
+    //         })
+    //         // refetchOnMountOrArgChange: true
+    //     }
+    // );
+
     const {
         data: bets,
-        hasNextPage,
         isSuccess,
         isError,
         error
@@ -50,23 +72,20 @@ const TabDay = () => {
         },
         {
             selectFromResult: ({ data, ...otherParams }) => ({
-                data: data?.data,
-                hasNextPage: data?.hasNextPage,
+                data: topBetsEntitySelector.selectAll(
+                    data ?? topBetsEntityAdapter.getInitialState()
+                ),
                 ...otherParams
             })
-            // refetchOnMountOrArgChange: true
         }
     );
 
-    console.log("Bets", bets);
-    console.log(queryParams);
-
     return (
         <InfiniteScroll
-            skip={!hasNextPage || false}
+            skip={queryParams.skip === bets.length || false}
             // isLoading={status === "pending"}
             callback={() => {
-                if (!hasNextPage) return;
+                // if (!hasNextPage) return;
                 setQueryParams(queryParams => ({
                     ...queryParams,
                     skip: bets?.length ?? 0

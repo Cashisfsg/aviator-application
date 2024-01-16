@@ -2,7 +2,9 @@ import { useState } from "react";
 
 import {
     useGetUserReferralByDaysQuery,
-    useGetUserBalanceQuery
+    useGetUserBalanceQuery,
+    referralEntitySelector,
+    referralEntityAdapter
     // fetchReferralByDays
 } from "@/store";
 
@@ -16,11 +18,32 @@ export const DailyStatisticsTable = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
     const { data: balance } = useGetUserBalanceQuery();
+    // const {
+    //     data: referrals,
+    //     hasNextPage,
+    //     isSuccess,
+    //     isLoading,
+    //     isError,
+    //     error
+    // } = useGetUserReferralByDaysQuery(
+    //     {
+    //         skip: queryParams.skip,
+    //         limit: queryParams.limit
+    //     },
+    //     {
+    //         selectFromResult: ({ data, ...otherParams }) => ({
+    //             data: data?.data,
+    //             hasNextPage: data?.hasNextPage,
+    //             ...otherParams
+    //         })
+    //         // refetchOnMountOrArgChange: true
+    //     }
+    // );
+
     const {
         data: referrals,
-        hasNextPage,
-        isSuccess,
         isLoading,
+        isSuccess,
         isError,
         error
     } = useGetUserReferralByDaysQuery(
@@ -30,11 +53,11 @@ export const DailyStatisticsTable = () => {
         },
         {
             selectFromResult: ({ data, ...otherParams }) => ({
-                data: data?.data,
-                hasNextPage: data?.hasNextPage,
+                data: referralEntitySelector.selectAll(
+                    data ?? referralEntityAdapter.getInitialState()
+                ),
                 ...otherParams
             })
-            // refetchOnMountOrArgChange: true
         }
     );
     const renderData = open
@@ -44,13 +67,13 @@ export const DailyStatisticsTable = () => {
     return (
         <>
             <InfiniteScroll
-                skip={!hasNextPage || !open}
+                skip={queryParams.skip === referrals.length || !open}
                 callback={() => {
-                    if (!hasNextPage || !open) return;
+                    // if (!hasNextPage || !open) return;
 
                     setQueryParams(queryParams => ({
                         ...queryParams,
-                        skip: queryParams.skip + 6
+                        skip: referrals?.length ?? 0
                     }));
                 }}
                 className="scrollbar max-h-[50dvh]"

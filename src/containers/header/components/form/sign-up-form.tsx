@@ -342,7 +342,7 @@ export const SignUpForm = () => {
                         <FormItem className="flex items-center gap-4 ">
                             <FormControl>
                                 <Input
-                                    // type="hidden"
+                                    type="hidden"
                                     {...field}
                                 />
                             </FormControl>

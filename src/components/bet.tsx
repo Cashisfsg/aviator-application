@@ -442,6 +442,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             duration: 5000
         });
         dispatch(setBetState({ betNumber, betState: "init" }));
+        dispatch(userApi.util.invalidateTags(["Balance"]));
     };
 
     switch (currentGameTab.betState) {

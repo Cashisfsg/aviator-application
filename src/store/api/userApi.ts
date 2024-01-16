@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { EntityState, createEntityAdapter } from "@reduxjs/toolkit";
+
 import {
     User,
     UserBalance,
@@ -23,6 +25,18 @@ export interface Descendant {
     updatedUt: string;
     earnings: number;
 }
+
+interface ReferralByDay {
+    _id: string;
+    date: string;
+    totalEarned: number;
+}
+
+export const referralEntityAdapter = createEntityAdapter({
+    selectId: (referral: ReferralByDay) => referral._id
+});
+
+export const referralEntitySelector = referralEntityAdapter.getSelectors();
 
 export const userApi = createApi({
     reducerPath: "userApi",
@@ -51,14 +65,7 @@ export const userApi = createApi({
             })
         }),
         getUserReferralByDays: builder.query<
-            {
-                data: {
-                    _id: string;
-                    date: string;
-                    totalEarned: number;
-                }[];
-                hasNextPage: boolean;
-            },
+            EntityState<ReferralByDay, string>,
             PaginationParams | void
         >({
             query: args => ({
@@ -67,28 +74,46 @@ export const userApi = createApi({
                     ? { limit: args.limit, skip: args.skip }
                     : undefined
             }),
-            transformResponse: (
-                response: {
-                    _id: string;
-                    date: string;
-                    totalEarned: number;
-                }[]
-            ) => {
-                return { data: response, hasNextPage: true } as const;
+            // transformResponse: (
+            //     response: {
+            //         _id: string;
+            //         date: string;
+            //         totalEarned: number;
+            //     }[]
+            // ) => {
+            //     return { data: response, hasNextPage: true } as const;
+            // },
+            // serializeQueryArgs: ({ endpointName }) => {
+            //     return endpointName;
+            // },
+            // forceRefetch: ({ currentArg, previousArg, endpointState }) => {
+            //     return (
+            //         endpointState?.data?.hasNextPage &&
+            //         currentArg?.skip !== previousArg?.skip
+            //     );
+            // },
+            // merge: (currentCacheData, responseData, { arg }) => {
+            //     currentCacheData.data.push(...responseData.data);
+            //     currentCacheData.hasNextPage =
+            //         responseData.data.length === (arg?.limit ?? 0);
+            // }
+            transformResponse: (response: ReferralByDay[]) => {
+                return referralEntityAdapter.addMany(
+                    referralEntityAdapter.getInitialState(),
+                    response
+                );
             },
             serializeQueryArgs: ({ endpointName }) => {
                 return endpointName;
             },
-            forceRefetch: ({ currentArg, previousArg, endpointState }) => {
-                return (
-                    endpointState?.data?.hasNextPage &&
-                    currentArg?.skip !== previousArg?.skip
-                );
+            forceRefetch: ({ currentArg, previousArg }) => {
+                return currentArg?.skip !== previousArg?.skip;
             },
-            merge: (currentCacheData, responseData, { arg }) => {
-                currentCacheData.data.push(...responseData.data);
-                currentCacheData.hasNextPage =
-                    responseData.data.length === (arg?.limit ?? 0);
+            merge: (currentCacheData, responseData) => {
+                referralEntityAdapter.addMany(
+                    currentCacheData,
+                    referralEntitySelector.selectAll(responseData)
+                );
             }
         }),
         getUserBalance: builder.query<UserBalance, void>({

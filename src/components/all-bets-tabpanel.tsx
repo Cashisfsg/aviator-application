@@ -88,12 +88,9 @@ export const AllBetsTabpanel = () => {
                                         className="rounded-full"
                                     />
                                     <span className="text-[#9ea0a3]">
-                                        {`${player?.playerLogin?.substring(
-                                            0,
-                                            1
-                                        )}***${player?.playerLogin?.substring(
-                                            player?.playerLogin?.length - 1
-                                        )}`}
+                                        {`${player?.playerLogin?.at(
+                                            0
+                                        )}***${player?.playerLogin?.at(-1)}`}
                                     </span>
                                 </Cell>
                                 <Cell>
