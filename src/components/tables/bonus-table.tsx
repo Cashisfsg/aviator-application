@@ -3,6 +3,8 @@ import { Table, Row, Cell } from "@/components/ui/table";
 import { formatDate, formatTime } from "@/utils/helpers";
 import {
     useAppDispatch,
+    useStateSelector,
+    selectCurrentGameTab,
     activateBonus,
     useGetUserPromoQuery,
     useGetUserBalanceQuery
@@ -12,12 +14,13 @@ export const BonusTable = () => {
     const { data: balance } = useGetUserBalanceQuery();
     const { data: promo } = useGetUserPromoQuery({ type: "promo" });
     const dispatch = useAppDispatch();
+    const bonusTab = useStateSelector(state => selectCurrentGameTab(state, 1));
 
     const onClickHandler = (
         id: string | undefined,
         quantity: number | undefined
     ) => {
-        if (!id || !quantity) return;
+        if (!id || !quantity || bonusTab.betState !== "init") return;
 
         dispatch(activateBonus({ bonusId: id, bonusQuantity: quantity }));
     };
@@ -64,7 +67,8 @@ export const BonusTable = () => {
                                                 promo?.amount
                                             )
                                         }
-                                        className="col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
+                                        disabled={bonusTab.betState !== "init"}
+                                        className="col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-50"
                                     >
                                         Активировать
                                     </button>

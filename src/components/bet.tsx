@@ -123,16 +123,14 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     bet: bonus.bonusQuantity,
                     promoId: bonus.bonusId
                 });
-
-                dispatch(deactivateBonus());
             } else {
                 socket.emit("bet", {
                     betNumber: betNumber,
                     currency: currentGameTab.currency,
                     bet: currentGameTab.currentBet
                 });
-                dispatch(userApi.util.invalidateTags(["Balance"]));
             }
+            dispatch(userApi.util.invalidateTags(["Balance"]));
 
             dispatch(setBetState({ betNumber, betState: "cash" }));
         };
@@ -140,7 +138,12 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         const loose = () => {
             if (currentGameTab.betState !== "cash") return;
 
+            if (bonus.bonusActive && betNumber === 1) {
+                dispatch(deactivateBonus());
+            }
+
             dispatch(setBetState({ betNumber, betState: "init" }));
+
             dispatch(userApi.util.invalidateTags(["Balance"]));
         };
 
@@ -155,7 +158,13 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
             socket.off("loading", makeBet);
             socket.off("crash", loose);
         };
-    }, [currentGameTab.currentBet, currentGameTab.betState]);
+    }, [
+        currentGameTab.currentBet,
+        currentGameTab.betState,
+        bonus.bonusActive,
+        bonus.bonusId,
+        bonus.bonusQuantity
+    ]);
 
     const handlePointerDown = (
         type: "increment" | "decrement",
@@ -190,6 +199,9 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         clearTimeout(timerRef.current);
         clearInterval(intervalRef.current);
     };
+
+    console.log("Bet number: ", betNumber);
+    console.log("Bonus active: ", bonus.bonusActive);
 
     return (
         <section className=" mx-auto mt-5 grid max-w-[400px] grid-cols-[auto,1fr] gap-x-1 text-lg">
@@ -401,16 +413,18 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
 
-    const [gain, setGain] = useState(currentGameTab.currentBet);
+    const [gain, setGain] = useState(
+        bonus?.bonusActive ? bonus?.bonusQuantity : currentGameTab.currentBet
+    );
 
     useEffect(() => {
         const winnings = ({ x }: { x: number }) => {
-            if (currentGameTab.betState === "cash") {
-                if (bonus.bonusActive && bonus.bonusQuantity) {
-                    setGain(x * bonus.bonusQuantity);
-                } else {
-                    setGain(x * currentGameTab.currentBet);
-                }
+            if (currentGameTab.betState !== "cash") return;
+
+            if (bonus.bonusActive && bonus.bonusQuantity) {
+                setGain(x * bonus.bonusQuantity);
+            } else {
+                setGain(x * currentGameTab.currentBet);
             }
         };
 
@@ -425,7 +439,12 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             socket.off("game", winnings);
             socket.off("crash", resetBet);
         };
-    }, [currentGameTab.currentBet, currentGameTab.betState]);
+    }, [
+        currentGameTab.currentBet,
+        currentGameTab.betState,
+        bonus.bonusActive,
+        bonus.bonusQuantity
+    ]);
 
     const abortBet = () => {
         dispatch(setBetState({ betNumber, betState: "init" }));
@@ -435,12 +454,23 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         socket.emit("cash-out", {
             betNumber
         });
-        toast({
-            title: `Вы выиграли ${(gain - currentGameTab.currentBet).toFixed(
-                2
-            )} ${currentGameTab.currency}`,
-            duration: 5000
-        });
+        if (bonus.bonusActive && betNumber === 1) {
+            dispatch(deactivateBonus());
+            toast({
+                title: `Вы выиграли ${(gain - bonus?.bonusQuantity).toFixed(
+                    2
+                )} ${currentGameTab.currency}`,
+                duration: 5000
+            });
+        } else {
+            toast({
+                title: `Вы выиграли ${(
+                    gain - currentGameTab.currentBet
+                ).toFixed(2)} ${currentGameTab.currency}`,
+                duration: 5000
+            });
+        }
+
         dispatch(setBetState({ betNumber, betState: "init" }));
         dispatch(userApi.util.invalidateTags(["Balance"]));
     };
@@ -507,9 +537,11 @@ interface AutoBetTabProps {
     betNumber: 1 | 2;
 }
 
+const MIN_RATE = 1.1;
+
 const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
-    const inputValidValue = useRef<string>(String(1));
-    const [rate, setRate] = useState(1);
+    const inputValidValue = useRef<string>(MIN_RATE.toFixed(2));
+    const [rate, setRate] = useState(MIN_RATE);
     const dispatch = useAppDispatch();
 
     const currentGameTab = useStateSelector(state =>
@@ -545,7 +577,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
         return () => {
             socket.off("game", autoBet);
         };
-    }, [rate, currentGameTab.autoModeOn, currentGameTab.betState]);
+    }, [rate, currentGameTab.autoModeOn, currentGameTab.betState, socket]);
 
     const onChangeHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -585,7 +617,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
             <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none">
                 <input
                     disabled={!currentGameTab.autoModeOn}
-                    defaultValue={(1.1).toFixed(2)}
+                    defaultValue={MIN_RATE.toFixed(2)}
                     onChange={onChangeHandler}
                     onBlur={onBlurHandler}
                     className="h-full w-full bg-transparent font-bold focus-visible:outline-none disabled:opacity-50"

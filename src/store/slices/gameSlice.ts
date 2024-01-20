@@ -4,7 +4,7 @@ import { userApi } from "../api";
 import { authSlice } from "../slices";
 import { RootStore } from "../types";
 
-type BetState = "init" | "bet" | "cash";
+type BetState = "init" | "preparation" | "bet" | "cash";
 
 interface Bet {
     betState: BetState;
@@ -15,11 +15,19 @@ interface Bet {
     currentBet: number;
 }
 
-interface Bonus {
-    bonusId: string | null;
-    bonusActive: boolean;
-    bonusQuantity: number | null;
+interface ActiveBonus {
+    bonusId: string;
+    bonusActive: true;
+    bonusQuantity: number;
 }
+
+interface UnActiveBonus {
+    bonusId: null;
+    bonusActive: false;
+    bonusQuantity: null;
+}
+
+type Bonus = ActiveBonus | UnActiveBonus;
 
 type Game = [Bet & Bonus, Bet];
 
