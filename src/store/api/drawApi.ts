@@ -34,7 +34,9 @@ export const drawApi = createApi({
             query: () => ({
                 url: "withdrawals"
             }),
-
+            transformResponse: (response: Draw[]) => {
+                return response.reverse();
+            },
             providesTags: ["Draw"]
         }),
         createDraw: builder.mutation<Draw, PaymentDrawRequest>({

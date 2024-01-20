@@ -39,7 +39,7 @@ export const SecurityConfirmExistingEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        await confirmExistingEmail({ code: code.value });
+        await confirmExistingEmail({ code: Number(code.value) });
     };
 
     if (isSuccess) {

@@ -29,7 +29,7 @@ export const ConfirmEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        await confirmChange({ code: code.value });
+        await confirmChange({ code: Number(code.value) });
     };
 
     if (isSuccess) {

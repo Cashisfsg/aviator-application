@@ -1,25 +1,43 @@
 import { useState, useEffect } from "react";
 // import { socket } from "./socket/socket";
-import { useStateSelector, selectSocket } from "@/store";
+import {
+    useGetUserBalanceQuery,
+    useStateSelector,
+    selectSocket
+} from "@/store";
 import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
+interface GameData {
+    betAmount: number;
+    winAmount: number;
+    currentPlayers: Player[];
+}
+
+const initialGameData = {
+    betAmount: 0,
+    winAmount: 0,
+    currentPlayers: []
+};
+
 export const AllBetsTabpanel = () => {
-    const [players, setPlayers] = useState<Player[]>([]);
+    const [gameData, setGameData] = useState<GameData>(initialGameData);
+
     const socket = useStateSelector(state => selectSocket(state));
+    const { data: balance } = useGetUserBalanceQuery();
 
     useEffect(() => {
-        const updatePlayersList = (data: Player[]) => {
+        const updatePlayersList = (data: GameData) => {
             console.log("Players: ", data);
 
-            setPlayers(data);
+            setGameData(currentData => ({ ...currentData, ...data }));
         };
 
         const clearPlayersList = () => {
-            setPlayers([]);
+            setGameData(initialGameData);
         };
 
         socket.on("currentPlayers", updatePlayersList);
@@ -51,13 +69,19 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Кол-во ставок", "Сумма ставок", "Сумма выигрыша"]}
-                data={[["2554", "5545 $", "1551 $"]]}
+                data={[
+                    [
+                        gameData.currentPlayers?.length,
+                        `${gameData?.betAmount} ${balance?.currency}`,
+                        `${gameData?.winAmount} ${balance?.currency}`
+                    ]
+                ]}
                 renderData={data => (
                     <>
                         {data.map((row, i) => (
                             <Row key={i}>
-                                {row.map(cell => (
-                                    <Cell key={cell}>{cell}</Cell>
+                                {row.map((cell, j) => (
+                                    <Cell key={j}>{cell}</Cell>
                                 ))}
                             </Row>
                         ))}
@@ -67,7 +91,7 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={players}
+                data={gameData.currentPlayers}
                 renderData={data => (
                     <>
                         {data.map(player => (
@@ -97,19 +121,25 @@ export const AllBetsTabpanel = () => {
                                     {player?.bet} {player?.currency}
                                 </Cell>
                                 <Cell>
-                                    <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
-                                        {player?.coeff}x
-                                    </span>
+                                    {!isNaN(player?.coeff as number) ? (
+                                        <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
+                                            {player?.coeff}x
+                                        </span>
+                                    ) : (
+                                        "-"
+                                    )}
                                 </Cell>
                                 <Cell>
-                                    {player?.win} {player?.currency}
+                                    {!isNaN(player?.win as number)
+                                        ? `${player?.win} ${player?.currency}`
+                                        : "-"}
                                 </Cell>
                             </Row>
                         ))}
                     </>
                 )}
             />
-            {!players || players.length === 0 ? (
+            {!gameData || gameData?.currentPlayers.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
                 </p>

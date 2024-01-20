@@ -38,7 +38,7 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                 }
             >
                 {isSuccess ? (
-                    deposits.length !== 0 ? (
+                    deposits && deposits.length !== 0 ? (
                         deposits.map((deposit, index) => (
                             <>
                                 <PaymentDetails

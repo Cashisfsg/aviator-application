@@ -27,7 +27,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                 className={draws && draws?.length >= 2 ? "h-64" : "h-auto"}
             >
                 {isSuccess ? (
-                    draws.length !== 0 ? (
+                    draws && draws.length !== 0 ? (
                         draws.map((draw, index) => (
                             <>
                                 <PaymentDetails

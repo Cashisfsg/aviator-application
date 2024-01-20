@@ -151,15 +151,15 @@ export const userApi = createApi({
                 method: "POST",
                 body
             }),
-            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
-            //     try {
-            //         await queryFulfilled;
-            //         dispatch(userApi.util.invalidateTags(["Promo"]));
-            //     } catch (error) {
-            //         console.error(error);
-            //     }
-            // }
-            invalidatesTags: ["Promo"]
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["Promo"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            // invalidatesTags: ["Promo"]
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,
@@ -172,7 +172,7 @@ export const userApi = createApi({
         }),
         confirmExistingEmail: builder.mutation<
             SuccessResponse,
-            { code: string }
+            { code: number }
         >({
             query: body => ({
                 url: "user/confirm-email",
@@ -191,7 +191,7 @@ export const userApi = createApi({
             })
         }),
         //! =================================================================
-        changeEmail: builder.mutation<{ message: string }, { code: string }>({
+        changeEmail: builder.mutation<{ message: string }, { code: number }>({
             query: body => ({
                 url: "user/change-email",
                 method: "PUT",
@@ -229,15 +229,15 @@ export const userApi = createApi({
                     formData: true
                 };
             },
-            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
-            //     try {
-            //         await queryFulfilled;
-            //         dispatch(userApi.util.invalidateTags(["User"]));
-            //     } catch (error) {
-            //         console.error(error);
-            //     }
-            // }
-            invalidatesTags: ["User"]
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["User"]));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            // invalidatesTags: ["User"]
         })
     })
 });

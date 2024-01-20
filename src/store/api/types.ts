@@ -28,7 +28,7 @@ export interface ForgotPasswordRequest {
 }
 
 export interface ChangePasswordConfirmRequest {
-    code: string;
+    code: number;
 }
 
 export interface ChangePasswordRequest {

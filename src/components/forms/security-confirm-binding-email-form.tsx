@@ -23,7 +23,7 @@ export const SecurityConfirmBindingEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        const response = await changeEmail({ code: code.value });
+        const response = await changeEmail({ code: Number(code.value) });
 
         if (response?.error) return;
 
