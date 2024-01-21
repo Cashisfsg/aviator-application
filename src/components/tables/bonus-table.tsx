@@ -1,6 +1,6 @@
 import { Table, Row, Cell } from "@/components/ui/table";
 
-import { formatDate, formatTime } from "@/utils/helpers";
+// import { formatDate, formatTime } from "@/utils/helpers";
 import {
     useAppDispatch,
     useStateSelector,
@@ -49,16 +49,16 @@ export const BonusTable = () => {
                                 </Cell>
                                 <Cell className="grid grid-cols-[1fr_auto] grid-rows-2 gap-x-2 px-2 py-1 text-left text-[10px] leading-none">
                                     <time
-                                        dateTime={promo?.will_finish}
+                                        dateTime={"00:00"}
                                         className="block"
                                     >
-                                        {formatTime(promo?.will_finish)}
+                                        {"00:00"}
                                     </time>
                                     <time
                                         dateTime={promo?.will_finish}
                                         className="block"
                                     >
-                                        {formatDate(promo?.will_finish)}
+                                        {promo?.will_finish}
                                     </time>
                                     <button
                                         onClick={() =>

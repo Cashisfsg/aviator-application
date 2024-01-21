@@ -76,7 +76,7 @@ export const MyBetsHistoryTable = () => {
                     className="px-1.5"
                     headers={[
                         "Время",
-                        `Ставка, ${balance?.currency}`,
+                        "Ставка, USD",
                         "Коэфф.",
                         `Выигрыш, ${balance?.currency}`
                     ]}

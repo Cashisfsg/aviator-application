@@ -1,7 +1,7 @@
 import {
     Toast,
     // ToastClose,
-    // ToastAction,
+    ToastAction,
     ToastDescription,
     ToastProvider,
     ToastTitle,
@@ -42,9 +42,9 @@ export function Toaster() {
                                 </ToastDescription>
                             )}
                         </div>
-                        {/* <ToastAction altText="Скрыть всплывающее окно">
+                        <ToastAction altText="Скрыть всплывающее окно">
                             Скрыть
-                        </ToastAction> */}
+                        </ToastAction>
                         {/* <ToastClosse /> */}
                     </Toast>
                 );

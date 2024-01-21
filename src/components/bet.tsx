@@ -6,6 +6,7 @@ import {
     useAppDispatch,
     useStateSelector,
     userApi,
+    betApi,
     selectCurrentGameTab,
     setBetState,
     setCurrentBet,
@@ -116,18 +117,20 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         const makeBet = () => {
             if (currentGameTab.betState !== "bet") return;
 
+            console.log("Betting: ", currentGameTab.currentBet);
+
             if (bonus.bonusActive && betNumber === 1) {
                 socket.emit("bet", {
                     betNumber: betNumber,
                     currency: currentGameTab.currency,
-                    bet: bonus.bonusQuantity,
+                    bet: Math.round(Number(bonus.bonusQuantity)),
                     promoId: bonus.bonusId
                 });
             } else {
                 socket.emit("bet", {
                     betNumber: betNumber,
                     currency: currentGameTab.currency,
-                    bet: currentGameTab.currentBet
+                    bet: Math.round(currentGameTab.currentBet)
                 });
             }
             dispatch(userApi.util.invalidateTags(["Balance"]));
@@ -145,6 +148,8 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
             dispatch(setBetState({ betNumber, betState: "init" }));
 
             dispatch(userApi.util.invalidateTags(["Balance"]));
+            dispatch(betApi.util.resetApiState());
+            dispatch(betApi.util.invalidateTags(["My"]));
         };
 
         socket.on("connect", onConnect);
@@ -392,7 +397,7 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
                 maxLength={7}
                 autoComplete="off"
                 inputMode="numeric"
-                defaultValue={currentGameTab.currentBet}
+                defaultValue={currentGameTab.currentBet.toFixed(2)}
                 onChange={onChangeHandler}
                 onBlur={onBlurHandler}
                 ref={ref}
@@ -413,15 +418,21 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
 
-    const [gain, setGain] = useState(
-        bonus?.bonusActive ? bonus?.bonusQuantity : currentGameTab.currentBet
-    );
+    const [gain, setGain] = useState(currentGameTab.currentBet);
+
+    useEffect(() => {
+        if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
+            setGain(bonus?.bonusQuantity);
+        } else {
+            currentGameTab.currentBet;
+        }
+    }, [bonus.bonusActive]);
 
     useEffect(() => {
         const winnings = ({ x }: { x: number }) => {
             if (currentGameTab.betState !== "cash") return;
 
-            if (bonus.bonusActive && bonus.bonusQuantity) {
+            if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
                 setGain(x * bonus.bonusQuantity);
             } else {
                 setGain(x * currentGameTab.currentBet);
@@ -429,7 +440,11 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         };
 
         const resetBet = () => {
-            setGain(currentGameTab.currentBet);
+            if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
+                setGain(bonus.bonusQuantity);
+            } else {
+                setGain(currentGameTab.currentBet);
+            }
         };
 
         socket.on("game", winnings);
@@ -457,9 +472,9 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         if (bonus.bonusActive && betNumber === 1) {
             dispatch(deactivateBonus());
             toast({
-                title: `Вы выиграли ${(gain - bonus?.bonusQuantity).toFixed(
-                    2
-                )} ${currentGameTab.currency}`,
+                title: `Вы выиграли ${(
+                    gain - (bonus?.bonusQuantity as number)
+                ).toFixed(2)} ${currentGameTab.currency}`,
                 duration: 5000
             });
         } else {
@@ -473,6 +488,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
 
         dispatch(setBetState({ betNumber, betState: "init" }));
         dispatch(userApi.util.invalidateTags(["Balance"]));
+        dispatch(betApi.util.resetApiState());
+        dispatch(betApi.util.invalidateTags(["My"]));
     };
 
     switch (currentGameTab.betState) {
@@ -565,6 +582,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
                 betNumber
             });
 
+            dispatch(userApi.util.invalidateTags(["Balance"]));
             dispatch(setBetState({ betNumber, betState: "init" }));
 
             console.log("Game over. Auto bet win", x * rate);

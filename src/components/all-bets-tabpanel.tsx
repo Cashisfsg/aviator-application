@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 // import { socket } from "./socket/socket";
-import {
-    useGetUserBalanceQuery,
-    useStateSelector,
-    selectSocket
-} from "@/store";
+import { useStateSelector, selectSocket } from "@/store";
 import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
@@ -27,7 +23,6 @@ export const AllBetsTabpanel = () => {
     const [gameData, setGameData] = useState<GameData>(initialGameData);
 
     const socket = useStateSelector(state => selectSocket(state));
-    const { data: balance } = useGetUserBalanceQuery();
 
     useEffect(() => {
         const updatePlayersList = (data: GameData) => {
@@ -37,7 +32,10 @@ export const AllBetsTabpanel = () => {
         };
 
         const clearPlayersList = () => {
-            setGameData(initialGameData);
+            setGameData(currentData => ({
+                ...currentData,
+                ...initialGameData
+            }));
         };
 
         socket.on("currentPlayers", updatePlayersList);
@@ -72,8 +70,8 @@ export const AllBetsTabpanel = () => {
                 data={[
                     [
                         gameData.currentPlayers?.length,
-                        `${gameData?.betAmount} ${balance?.currency}`,
-                        `${gameData?.winAmount} ${balance?.currency}`
+                        `${gameData?.betAmount?.toFixed(2)} ${"USD"}`,
+                        `${gameData?.winAmount?.toFixed(2) || "0.00"} ${"USD"}`
                     ]
                 ]}
                 renderData={data => (
@@ -117,9 +115,7 @@ export const AllBetsTabpanel = () => {
                                         )}***${player?.playerLogin?.at(-1)}`}
                                     </span>
                                 </Cell>
-                                <Cell>
-                                    {player?.bet} {player?.currency}
-                                </Cell>
+                                <Cell>{`${player?.bet.toFixed(2)} USD`}</Cell>
                                 <Cell>
                                     {!isNaN(player?.coeff as number) ? (
                                         <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
@@ -131,7 +127,7 @@ export const AllBetsTabpanel = () => {
                                 </Cell>
                                 <Cell>
                                     {!isNaN(player?.win as number)
-                                        ? `${player?.win} ${player?.currency}`
+                                        ? `${player?.win} USD`
                                         : "-"}
                                 </Cell>
                             </Row>
