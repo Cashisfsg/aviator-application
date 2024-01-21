@@ -32,6 +32,13 @@ interface ReferralByDay {
     totalEarned: number;
 }
 
+interface GameLimits {
+    min: number;
+    max: number;
+    maxWin: number;
+    currency: string;
+}
+
 export const referralEntityAdapter = createEntityAdapter({
     selectId: (referral: ReferralByDay) => referral._id
 });
@@ -58,6 +65,11 @@ export const userApi = createApi({
                 url: "user"
             }),
             providesTags: ["User"]
+        }),
+        getGameLimits: builder.query<GameLimits, void>({
+            query: () => ({
+                url: "/user/game-limits"
+            })
         }),
         getUserReferral: builder.query<Referral, void>({
             query: () => ({
@@ -245,6 +257,8 @@ export const userApi = createApi({
 export const {
     useGetUserQuery,
     useLazyGetUserQuery,
+    useGetGameLimitsQuery,
+    useLazyGetGameLimitsQuery,
     useGetUserReferralQuery,
     useLazyGetUserReferralQuery,
     useGetUserReferralByDaysQuery,

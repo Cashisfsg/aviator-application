@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import {
-    useGetUserBalanceQuery,
     useGetUserBetsQuery,
     userBetsEntityAdapter,
     userBetsEntitySelector
@@ -15,7 +14,6 @@ import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 export const MyBetsHistoryTable = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
-    const { data: balance } = useGetUserBalanceQuery();
     // const {
     //     data: bets,
     //     hasNextPage,
@@ -74,12 +72,7 @@ export const MyBetsHistoryTable = () => {
             {!isError ? (
                 <Table
                     className="px-1.5"
-                    headers={[
-                        "Время",
-                        "Ставка, USD",
-                        "Коэфф.",
-                        `Выигрыш, ${balance?.currency}`
-                    ]}
+                    headers={["Время", "Ставка, USD", "Коэфф.", "Выигрыш, USD"]}
                     data={bets || []}
                     renderHeader={headers => (
                         <Row>

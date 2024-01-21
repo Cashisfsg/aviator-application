@@ -164,6 +164,19 @@ export const betApi = createApi({
                 );
             },
             providesTags: ["My"]
+            // providesTags: (result, error, arg) => {
+            //     console.log(result);
+
+            //     return result
+            //         ? [
+            //               ...result.ids.map(() => ({
+            //                   type: "My" as const,
+            //                   page: arg?.skip / arg?.limit
+            //               })),
+            //               "My"
+            //           ]
+            //         : ["My"];
+            // }
         })
     })
 });

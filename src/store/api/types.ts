@@ -57,8 +57,12 @@ export interface UserBalance {
 
 export interface Promo {
     _id: string;
-    type: "add_balance";
+    type: "add_balance" | "promo";
+    name: string;
     amount: number;
+    currency: string;
+    max_count: number;
+    limit: number | null;
     coef: number;
     will_finish: "string";
 }

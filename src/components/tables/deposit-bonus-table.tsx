@@ -1,6 +1,6 @@
 import { Table, Caption, Row, Cell } from "@/components/ui/table";
 
-import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
+import { formatCurrency } from "@/utils/helpers";
 
 import { useGetUserBalanceQuery, useGetUserPromoQuery } from "@/store";
 
@@ -28,15 +28,17 @@ export const DepositBonusTable = () => {
                         {data.map(code => (
                             <Row key={code?._id}>
                                 <Cell className="text-white">
-                                    {formatCurrency(code?.amount)}
+                                    {formatCurrency(code?.limit ?? 0)}
                                 </Cell>
-                                <Cell className="text-white">{code?.coef}</Cell>
-                                <Cell className="px-2 py-1 text-left text-[10px] leading-none">
+                                <Cell className="text-white">
+                                    {code?.amount}
+                                </Cell>
+                                <Cell className="px-2 py-1 text-[10px] leading-none">
                                     <time dateTime={code?.will_finish}>
-                                        {formatTime(code?.will_finish)}
-                                    </time>
+                                        00:00
+                                    </time>{" "}
                                     <time dateTime={code?.will_finish}>
-                                        {formatDate(code?.will_finish)}
+                                        {code?.will_finish}
                                     </time>
                                 </Cell>
                             </Row>

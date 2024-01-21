@@ -1,51 +1,52 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 // import { socket } from "./socket/socket";
-import { useStateSelector, selectSocket } from "@/store";
-import { Player } from "./socket/types";
+import { useStateSelector, selectGameDetails } from "@/store";
+// import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
-interface GameData {
-    betAmount: number;
-    winAmount: number;
-    currentPlayers: Player[];
-}
+// interface GameData {
+//     betAmount: number;
+//     winAmount: number;
+//     currentPlayers: Player[];
+// }
 
-const initialGameData = {
-    betAmount: 0,
-    winAmount: 0,
-    currentPlayers: []
-};
+// const initialGameData = {
+//     betAmount: 0,
+//     winAmount: 0,
+//     currentPlayers: []
+// };
 
 export const AllBetsTabpanel = () => {
-    const [gameData, setGameData] = useState<GameData>(initialGameData);
+    // const [gameData, setGameData] = useState<GameData>(initialGameData);
 
-    const socket = useStateSelector(state => selectSocket(state));
+    const gameDetails = useStateSelector(state => selectGameDetails(state));
+    // const socket = useStateSelector(state => selectSocket(state));
 
-    useEffect(() => {
-        const updatePlayersList = (data: GameData) => {
-            console.log("Players: ", data);
+    // useEffect(() => {
+    //     const updatePlayersList = (data: GameData) => {
+    //         console.log("Players: ", data);
 
-            setGameData(currentData => ({ ...currentData, ...data }));
-        };
+    //         setGameData(currentData => ({ ...currentData, ...data }));
+    //     };
 
-        const clearPlayersList = () => {
-            setGameData(currentData => ({
-                ...currentData,
-                ...initialGameData
-            }));
-        };
+    //     const clearPlayersList = () => {
+    //         setGameData(currentData => ({
+    //             ...currentData,
+    //             ...initialGameData
+    //         }));
+    //     };
 
-        socket.on("currentPlayers", updatePlayersList);
-        socket.on("crash", clearPlayersList);
+    //     socket.on("currentPlayers", updatePlayersList);
+    //     socket.on("crash", clearPlayersList);
 
-        return () => {
-            socket.off("currentPlayers", updatePlayersList);
-            socket.off("currentPlayers", clearPlayersList);
-        };
-    }, [socket]);
+    //     return () => {
+    //         socket.off("currentPlayers", updatePlayersList);
+    //         socket.off("currentPlayers", clearPlayersList);
+    //     };
+    // }, [socket]);
 
     return (
         <>
@@ -69,9 +70,11 @@ export const AllBetsTabpanel = () => {
                 headers={["Кол-во ставок", "Сумма ставок", "Сумма выигрыша"]}
                 data={[
                     [
-                        gameData.currentPlayers?.length,
-                        `${gameData?.betAmount?.toFixed(2)} ${"USD"}`,
-                        `${gameData?.winAmount?.toFixed(2) || "0.00"} ${"USD"}`
+                        gameDetails.currentPlayers?.length,
+                        `${gameDetails?.betAmount?.toFixed(2)} USD`,
+                        `${
+                            gameDetails?.winAmount?.toFixed(2) || "0.00"
+                        } ${"USD"}`
                     ]
                 ]}
                 renderData={data => (
@@ -89,12 +92,12 @@ export const AllBetsTabpanel = () => {
 
             <Table
                 headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={gameData.currentPlayers}
+                data={gameDetails.currentPlayers}
                 renderData={data => (
                     <>
-                        {data.map(player => (
+                        {data.map((player, i) => (
                             <Row
-                                key={player?.playerLogin}
+                                key={i}
                                 className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
                                     isNaN(player?.win as number)
                                         ? ""
@@ -127,7 +130,7 @@ export const AllBetsTabpanel = () => {
                                 </Cell>
                                 <Cell>
                                     {!isNaN(player?.win as number)
-                                        ? `${player?.win} USD`
+                                        ? `${player?.win?.toFixed(2)} USD`
                                         : "-"}
                                 </Cell>
                             </Row>
@@ -135,7 +138,7 @@ export const AllBetsTabpanel = () => {
                     </>
                 )}
             />
-            {!gameData || gameData?.currentPlayers.length === 0 ? (
+            {!gameDetails || gameDetails?.currentPlayers.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
                 </p>

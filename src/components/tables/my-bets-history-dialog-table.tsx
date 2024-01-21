@@ -61,7 +61,7 @@ export const MyBetsHistoryDialogTable = () => {
                         className="px-1.5 text-center"
                         headers={[
                             "Время",
-                            `Ставка, ${balance?.currency}`,
+                            "Ставка, USD",
                             "Коэфф.",
                             `Выигрыш, ${balance?.currency}`
                         ]}

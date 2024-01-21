@@ -1,4 +1,4 @@
-import { useGetUserBalanceQuery } from "@/store";
+import { useGetGameLimitsQuery } from "@/store";
 
 import {
     Popover,
@@ -15,7 +15,7 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
     open,
     setOpen
 }) => {
-    const { data: balance } = useGetUserBalanceQuery();
+    const { data: limits } = useGetGameLimitsQuery();
 
     return (
         <Popover
@@ -37,17 +37,17 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
                 <h3 className="col-span-2 pb-2 text-center text-sm font-bold text-white">
                     Игровые лимиты
                 </h3>
-                <span className="self-center">{`Минимальная ставка (${balance?.currency})`}</span>
+                <span className="self-center">{`Минимальная ставка (${limits?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                    1000
+                    {Math.round(limits?.min ?? 0)}
                 </span>
-                <span className="self-center">{`Максимальная ставка (${balance?.currency})`}</span>
+                <span className="self-center">{`Максимальная ставка (${limits?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                    100000
+                    {Math.round(limits?.max ?? 100)}
                 </span>
-                <span>{`Максимальный выигрыш за одну ставку (${balance?.currency})`}</span>
+                <span>{`Максимальный выигрыш за одну ставку (${limits?.currency})`}</span>
                 <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                    1000000
+                    {Math.round(limits?.maxWin ?? 1000)}
                 </span>
             </PopoverContent>
         </Popover>

@@ -4,7 +4,7 @@ import { userApi } from "../api";
 import { authSlice } from "../slices";
 import { RootStore } from "../types";
 
-type BetState = "init" | "preparation" | "bet" | "cash";
+type BetState = "init" | "bet" | "cash";
 
 interface Bet {
     betState: BetState;
@@ -13,6 +13,8 @@ interface Bet {
     currency: string;
     autoModeOn: boolean;
     currentBet: number;
+    min: number;
+    max: number;
 }
 
 interface ActiveBonus {
@@ -27,33 +29,59 @@ interface UnActiveBonus {
     bonusQuantity: null;
 }
 
+interface Player {
+    playerLogin: string;
+    bet: number;
+    currency: string;
+    time: Date;
+    coeff?: number;
+    win?: number;
+}
+
+export interface GameDetails {
+    betAmount: number;
+    winAmount: number;
+    currentPlayers: Player[];
+}
+
 type Bonus = ActiveBonus | UnActiveBonus;
 
-type Game = [Bet & Bonus, Bet];
+type Game = { bets: [Bet, Bet]; bonus: Bonus; gameDetails: GameDetails };
 
-const MIN_BET = 0.1;
-
-const initialState = [
-    {
-        betState: "init",
-        betNumber: 1,
-        balance: 300,
-        currency: "USD",
-        autoModeOn: false,
-        currentBet: 1,
+const initialState = {
+    bets: [
+        {
+            betState: "init",
+            betNumber: 1,
+            balance: 300,
+            currency: "USD",
+            autoModeOn: false,
+            currentBet: 1,
+            min: 1,
+            max: 100
+        },
+        {
+            betState: "init",
+            betNumber: 2,
+            balance: 300,
+            currency: "USD",
+            autoModeOn: false,
+            currentBet: 1,
+            min: 1,
+            max: 100
+        }
+    ],
+    bonus: {
         bonusId: null,
         bonusQuantity: null,
         bonusActive: false
     },
-    {
-        betState: "init",
-        betNumber: 2,
-        balance: 300,
-        currency: "USD",
-        autoModeOn: false,
-        currentBet: 1
+    gameDetails: {
+        betAmount: 0,
+        winAmount: 0,
+        currentPlayers: []
     }
-] as Game;
+} as Game;
 
 const gameSlice = createSlice({
     name: "game",
@@ -63,15 +91,15 @@ const gameSlice = createSlice({
             state,
             action: PayloadAction<{ betNumber: 1 | 2; betState: BetState }>
         ) => {
-            state[action.payload.betNumber - 1].betState =
+            state.bets[action.payload.betNumber - 1].betState =
                 action.payload.betState;
         },
         toggleAutoMode: (
             state,
             action: PayloadAction<{ betNumber: 1 | 2 }>
         ) => {
-            state[action.payload.betNumber - 1].autoModeOn =
-                !state[action.payload.betNumber - 1].autoModeOn;
+            state.bets[action.payload.betNumber - 1].autoModeOn =
+                !state.bets[action.payload.betNumber - 1].autoModeOn;
         },
         setCurrentBet: (
             state,
@@ -92,45 +120,43 @@ const gameSlice = createSlice({
         ) => {
             switch (action.payload.type) {
                 case "input":
-                    state[action.payload.betNumber - 1].currentBet =
+                    state.bets[action.payload.betNumber - 1].currentBet =
                         action.payload.value;
                     break;
 
                 case "increment":
                     if (
-                        state[action.payload.betNumber - 1].currentBet +
+                        state.bets[action.payload.betNumber - 1].currentBet +
                             action.payload.value >
-                            state[action.payload.betNumber - 1].balance ||
+                            state.bets[action.payload.betNumber - 1].max ||
                         !action.payload.inputRef.current
                     )
                         return state;
 
-                    state[action.payload.betNumber - 1].currentBet += Number(
-                        action.payload.value.toFixed(2)
-                    );
+                    state.bets[action.payload.betNumber - 1].currentBet +=
+                        Number(action.payload.value.toFixed(2));
                     action.payload.inputRef.current.value =
-                        state[action.payload.betNumber - 1].currentBet.toFixed(
-                            2
-                        );
+                        state.bets[
+                            action.payload.betNumber - 1
+                        ].currentBet.toFixed(2);
 
                     break;
 
                 case "decrement":
                     if (
-                        state[action.payload.betNumber - 1].currentBet -
+                        state.bets[action.payload.betNumber - 1].currentBet -
                             action.payload.value <
-                            MIN_BET ||
+                            state.bets[action.payload.betNumber - 1].min ||
                         !action.payload.inputRef.current
                     )
                         return state;
 
-                    state[action.payload.betNumber - 1].currentBet -= Number(
-                        action.payload.value.toFixed(2)
-                    );
+                    state.bets[action.payload.betNumber - 1].currentBet -=
+                        Number(action.payload.value.toFixed(2));
                     action.payload.inputRef.current.value =
-                        state[action.payload.betNumber - 1].currentBet.toFixed(
-                            2
-                        );
+                        state.bets[
+                            action.payload.betNumber - 1
+                        ].currentBet.toFixed(2);
 
                     break;
 
@@ -142,14 +168,22 @@ const gameSlice = createSlice({
             state,
             action: PayloadAction<{ bonusId: string; bonusQuantity: number }>
         ) => {
-            state[0].bonusActive = true;
-            state[0].bonusId = action.payload.bonusId;
-            state[0].bonusQuantity = action.payload.bonusQuantity;
+            state.bonus.bonusActive = true;
+            state.bonus.bonusId = action.payload.bonusId;
+            state.bonus.bonusQuantity = action.payload.bonusQuantity;
         },
         deactivateBonus: state => {
-            state[0].bonusActive = false;
-            state[0].bonusId = null;
-            state[0].bonusQuantity = null;
+            state.bonus.bonusActive = false;
+            state.bonus.bonusId = null;
+            state.bonus.bonusQuantity = null;
+        },
+        setGameDetails: (state, action: PayloadAction<GameDetails>) => {
+            state.gameDetails.betAmount = action.payload.betAmount;
+            state.gameDetails.winAmount = action.payload.winAmount;
+            state.gameDetails.currentPlayers = action.payload.currentPlayers;
+        },
+        resetGameDetails: state => {
+            state.gameDetails = initialState.gameDetails;
         }
     },
     extraReducers: builder => {
@@ -160,10 +194,23 @@ const gameSlice = createSlice({
             .addMatcher(
                 userApi.endpoints.getUserBalance.matchFulfilled,
                 (state, { payload }) => {
-                    state[0].balance = payload.balance;
-                    state[0].currency = payload.currency;
-                    state[1].balance = payload.balance;
-                    state[1].currency = payload.currency;
+                    state.bets[0].balance = payload.balance;
+                    state.bets[0].currency = payload.currency;
+                    state.bets[1].balance = payload.balance;
+                    state.bets[1].currency = payload.currency;
+                }
+            )
+            .addMatcher(
+                userApi.endpoints.getGameLimits.matchFulfilled,
+                (state, { payload }) => {
+                    state.bets[0].currentBet =
+                        Math.round(payload.min * 100) / 100;
+                    state.bets[1].currentBet =
+                        Math.round(payload.min * 100) / 100;
+                    state.bets[0].min = Math.round(payload.min * 100) / 100;
+                    state.bets[0].max = Math.round(payload.max * 100) / 100;
+                    state.bets[1].min = Math.round(payload.min * 100) / 100;
+                    state.bets[1].max = Math.round(payload.max * 100) / 100;
                 }
             );
     }
@@ -175,6 +222,8 @@ export const { reducer: gameSliceReducer, actions: gameSliceActions } =
 export const {
     setBetState,
     setCurrentBet,
+    setGameDetails,
+    resetGameDetails,
     toggleAutoMode,
     activateBonus,
     deactivateBonus
@@ -185,13 +234,17 @@ const gameTab = (state: RootStore) => state.game;
 export const selectCurrentGameTab = createSelector(
     [gameTab, (gameTab, betNumber: 1 | 2) => betNumber],
     (gameTab, betNumber) => {
-        return gameTab[betNumber - 1];
+        return gameTab.bets[betNumber - 1];
     }
 );
 
-const bonusId = (state: RootStore) => state.game[0].bonusId;
-const bonusActive = (state: RootStore) => state.game[0].bonusActive;
-const bonusQuantity = (state: RootStore) => state.game[0].bonusQuantity;
+const bonusId = (state: RootStore) => state.game.bonus.bonusId;
+const bonusActive = (state: RootStore) => state.game.bonus.bonusActive;
+const bonusQuantity = (state: RootStore) => state.game.bonus.bonusQuantity;
+const betAmount = (state: RootStore) => state.game.gameDetails.betAmount;
+const winAmount = (state: RootStore) => state.game.gameDetails.winAmount;
+const currentPlayers = (state: RootStore) =>
+    state.game.gameDetails.currentPlayers;
 
 export const selectBonus = createSelector(
     [bonusId, bonusActive, bonusQuantity],
@@ -199,5 +252,14 @@ export const selectBonus = createSelector(
         bonusId,
         bonusActive,
         bonusQuantity
+    })
+);
+
+export const selectGameDetails = createSelector(
+    [betAmount, winAmount, currentPlayers],
+    (betAmount, winAmount, currentPlayers) => ({
+        betAmount,
+        winAmount,
+        currentPlayers
     })
 );
