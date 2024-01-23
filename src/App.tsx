@@ -3,7 +3,15 @@ import GridLoader from "react-spinners/GridLoader";
 
 import "./App.css";
 // import { ReactRouterProvider } from "@/router/provider";
-import { useAppDispatch, setUserInitData, TelegramClient } from "./store";
+import {
+    useAppDispatch,
+    setUserInitData,
+    TelegramClient
+    // useStateSelector,
+    // setGameDetails,
+    // GameDetails,
+    // selectSocket
+} from "./store";
 
 const ReactRouterProvider = lazy(async () =>
     import("@/router/provider").then(module => ({
@@ -17,6 +25,7 @@ export const App = () => {
     ).Telegram.WebApp;
 
     const dispatch = useAppDispatch();
+    // const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
         // if (!tg?.initDataUnsafe?.user?.id) return;
@@ -30,6 +39,18 @@ export const App = () => {
             })
         );
     }, [tg?.initDataUnsafe?.user?.id]);
+
+    // useEffect(() => {
+    //     const onGameDataUpdated = (data: GameDetails) => {
+    //         dispatch(setGameDetails(data));
+    //     };
+
+    //     socket.on("currentPlayers", onGameDataUpdated);
+
+    //     return () => {
+    //         socket.off("currentPlayers", onGameDataUpdated);
+    //     };
+    // }, [socket]);
 
     return (
         <Suspense

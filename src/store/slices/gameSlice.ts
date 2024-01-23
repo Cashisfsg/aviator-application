@@ -128,7 +128,13 @@ const gameSlice = createSlice({
                     if (
                         state.bets[action.payload.betNumber - 1].currentBet +
                             action.payload.value >
-                            state.bets[action.payload.betNumber - 1].max ||
+                            Math.min(
+                                state.bets[action.payload.betNumber - 1].max,
+                                state.bets[action.payload.betNumber - 1].balance
+                            ) ||
+                        // state.bets[action.payload.betNumber - 1].currentBet +
+                        //     action.payload.value >
+                        //     state.bets[action.payload.betNumber - 1].balance ||
                         !action.payload.inputRef.current
                     )
                         return state;

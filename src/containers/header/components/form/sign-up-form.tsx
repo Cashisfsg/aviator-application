@@ -339,7 +339,7 @@ export const SignUpForm = () => {
                     control={form.control}
                     name="telegramId"
                     render={({ field }) => (
-                        <FormItem className="flex items-center gap-4 ">
+                        <FormItem className="hidden">
                             <FormControl>
                                 <Input
                                     type="hidden"

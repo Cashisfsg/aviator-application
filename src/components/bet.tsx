@@ -158,8 +158,6 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         };
 
         const onGameDataUpdated = (data: GameDetails) => {
-            console.log("Game data: ", data);
-
             dispatch(setGameDetails(data));
         };
 
@@ -398,8 +396,8 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
 
             const value = validateBet(
                 event.target.value,
-                limits?.min as number,
-                limits?.max as number
+                currentGameTab.min,
+                Math.min(currentGameTab.max, currentGameTab.balance)
             );
             event.currentTarget.value = value.toFixed(2);
 

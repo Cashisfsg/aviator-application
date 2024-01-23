@@ -224,7 +224,9 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
-                        <span>ID 1234</span>
+                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
+                            {`ID ${currentReplenishment?._id}`}
+                        </span>
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
@@ -253,7 +255,9 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
-                        <span>ID 1234</span>
+                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
+                            {`ID ${currentReplenishment?._id}`}
+                        </span>
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
@@ -313,7 +317,9 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
-                        <span>ID 1234</span>
+                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
+                            {`ID ${currentReplenishment?._id}`}
+                        </span>
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer

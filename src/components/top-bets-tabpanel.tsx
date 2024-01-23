@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     topBetsEntityAdapter,
     topBetsEntitySelector,
@@ -23,19 +23,23 @@ export const TopBetsTabpanel = () => {
                 <TabsTrigger value="year">Год</TabsTrigger>
             </TabsList>
             <TabsContent value="day">
-                <TabDay />
+                <TopBetsTab dateSort="day" />
             </TabsContent>
             <TabsContent value="month">
-                <TabDay />
+                <TopBetsTab dateSort="month" />
             </TabsContent>
             <TabsContent value="year">
-                <TabDay />
+                <TopBetsTab dateSort="year" />
             </TabsContent>
         </Tabs>
     );
 };
 
-const TabDay = () => {
+interface TopBetsTabProps {
+    dateSort: "day" | "month" | "year";
+}
+
+const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
     const { data: balance } = useGetUserBalanceQuery();
@@ -68,7 +72,8 @@ const TabDay = () => {
     } = useGetTopBetsQuery(
         {
             skip: queryParams.skip,
-            limit: queryParams.limit
+            limit: queryParams.limit,
+            dateSort: dateSort
         },
         {
             selectFromResult: ({ data, ...otherParams }) => ({
@@ -183,24 +188,3 @@ const TabDay = () => {
         </InfiniteScroll>
     );
 };
-
-// const TabMonth = () => {
-//     const { data: bets } = useGetTopBetsQuery();
-
-//     console.log(bets);
-
-//     return (
-//         <>
-//             <Table
-//                 headers={["Куши", "Наибольшие выигрыши", "Коэфф."]}
-//                 data={[]}
-//                 renderData={() => <></>}
-//             />
-//             {!bets || bets.length === 0 ? (
-//                 <p className="py-2 text-center text-base font-semibold">
-//                     Пусто
-//                 </p>
-//             ) : null}
-//         </>
-//     );
-// };

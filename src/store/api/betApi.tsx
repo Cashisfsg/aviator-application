@@ -43,7 +43,9 @@ export const betApi = createApi({
         getTopBets: builder.query<
             // { data: Bet[]; hasNextPage: boolean },
             EntityState<Bet, string>,
-            PaginationParams | undefined
+            (PaginationParams | undefined) & {
+                dateSort: "day" | "month" | "year";
+            }
         >({
             // queryFn: async (arg, queryApi, extraOptions, baseQuery) => {
             //     const response = await baseQuery(
@@ -102,8 +104,8 @@ export const betApi = createApi({
                     response
                 );
             },
-            serializeQueryArgs: ({ endpointName }) => {
-                return endpointName;
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                return `${endpointName}-${queryArgs.dateSort}`;
             },
             forceRefetch: ({ currentArg, previousArg }) => {
                 return currentArg?.skip !== previousArg?.skip;
