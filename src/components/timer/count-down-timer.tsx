@@ -25,7 +25,9 @@ export const CountDownTimer: React.FC<TimerProps> = ({
         const timer = setInterval(() => {
             const currentTime = new Date().getTime();
             const timeDifference = targetDate
-                ? new Date(targetDate).getTime() - currentTime
+                ? new Date(targetDate).getTime() +
+                  30 * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND -
+                  currentTime
                 : 0;
 
             console.log("Текущее время: ", currentTime);

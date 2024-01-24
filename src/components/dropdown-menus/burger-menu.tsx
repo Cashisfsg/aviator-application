@@ -219,7 +219,7 @@ export const BurgerMenu = () => {
                             </li>
                         </ul> */}
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="h-3" />
+                    {/* <DropdownMenuSeparator className="h-3" /> */}
 
                     {isAuthenticated ? (
                         <DropdownMenuItem

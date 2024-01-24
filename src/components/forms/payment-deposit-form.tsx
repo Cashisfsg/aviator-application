@@ -230,7 +230,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
-                                targetDate={currentReplenishment?.completedDate}
+                                targetDate={currentReplenishment?.createdAt}
                             />
                         </span>
                     </p>
@@ -261,7 +261,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
-                                targetDate={currentReplenishment?.completedDate}
+                                targetDate={currentReplenishment?.createdAt}
                             />
                         </span>
                     </p>
@@ -323,7 +323,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
-                                targetDate={currentReplenishment?.completedDate}
+                                targetDate={currentReplenishment?.createdAt}
                             />
                         </span>
                     </p>

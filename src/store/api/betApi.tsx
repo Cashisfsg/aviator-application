@@ -92,10 +92,18 @@ export const betApi = createApi({
             // }
             // keepUnusedDataFor: 0,
 
-            query: (args: PaginationParams | void) => ({
+            query: (
+                args: (PaginationParams | undefined) & {
+                    dateSort: "day" | "month" | "year";
+                }
+            ) => ({
                 url: "bets/tops",
                 params: args
-                    ? { limit: args.limit, skip: args.skip }
+                    ? {
+                          limit: args.limit,
+                          skip: args.skip,
+                          dateSort: args.dateSort
+                      }
                     : undefined
             }),
             transformResponse: (response: Bet[]) => {
