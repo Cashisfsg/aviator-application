@@ -82,7 +82,10 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
             </Tabs>
             <Dialog
                 open={open}
-                onOpenChange={setOpen}
+                onOpenChange={() => {
+                    if (open) sessionStorage.removeItem("email");
+                    setOpen(open => !open);
+                }}
             >
                 <DialogContent className="w-80">
                     <Outlet />
@@ -410,7 +413,9 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
                 maxLength={7}
                 autoComplete="off"
                 inputMode="numeric"
-                defaultValue={limits?.min.toFixed(2)}
+                defaultValue={
+                    limits?.min ? Math.ceil(limits?.min).toFixed(2) : undefined
+                }
                 onChange={onChangeHandler}
                 onBlur={onBlurHandler}
                 ref={ref}

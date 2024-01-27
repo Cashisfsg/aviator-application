@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export const SignInButton = () => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Dialog>
+        <Dialog
+            open={open}
+            onOpenChange={() => {
+                if (open) sessionStorage.removeItem("email");
+                setOpen(open => !open);
+            }}
+        >
             <DialogTrigger asChild>
                 <Link
                     to="/main/sign-in"

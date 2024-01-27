@@ -28,17 +28,21 @@ export const App = () => {
     // const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
-        // if (!tg?.initDataUnsafe?.user?.id) return;
+        if (!tg?.initDataUnsafe?.user) return;
 
         // console.log(tg?.initDataUnsafe?.user?.id);
         dispatch(
             setUserInitData({
-                telegramId: 456,
-                profileImage: "asdsd",
-                login: "User login"
+                telegramId: tg?.initDataUnsafe?.user?.id,
+                profileImage: tg?.initDataUnsafe?.user?.photo_url,
+                login: tg?.initDataUnsafe?.user?.first_name
             })
         );
-    }, [tg?.initDataUnsafe?.user?.id]);
+    }, [
+        tg?.initDataUnsafe?.user?.id,
+        tg?.initDataUnsafe?.user?.photo_url,
+        tg?.initDataUnsafe?.user?.first_name
+    ]);
 
     // useEffect(() => {
     //     const onGameDataUpdated = (data: GameDetails) => {
@@ -56,7 +60,7 @@ export const App = () => {
         <Suspense
             fallback={
                 <GridLoader
-                    className="fixed left-1/2 top-1/2"
+                    className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                     color={"red"}
                 />
             }

@@ -20,7 +20,10 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
     return (
         <Popover
             open={open}
-            onOpenChange={setPopoverOpen}
+            onOpenChange={() => {
+                if (open) sessionStorage.removeItem("email");
+                setPopoverOpen(open => !open);
+            }}
         >
             <PopoverTrigger
                 tabIndex={-1}

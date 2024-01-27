@@ -5,6 +5,7 @@ import { useActivatePromoCodeMutation } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { BonusTable, DepositBonusTable } from "@/components/tables";
+// import { toast } from "sonner";
 
 import { ImSpinner9 } from "react-icons/im";
 
@@ -87,11 +88,27 @@ const ActivationBonusForm = () => {
                 title: response?.error?.data?.message,
                 duration: 5000
             });
+            // toast(response?.error?.data?.message, {
+            //     description: "Sunday, December 03, 2023 at 9:00 AM",
+            //     action: {
+            //         label: "Скрыть",
+            //         onClick: () => {}
+            //     }
+            // });
         } else {
             toast({
                 title: "Промокод успешно активирован",
                 duration: 5000
             });
+            // toast("Промокод успешно активирован", {
+            //     description: "Sunday, December 03, 2023 at 9:00 AM",
+            //     action: {
+            //         label: "Скрыть",
+            //         onClick: event => {
+            //             event.stopPropagation();
+            //         }
+            //     }
+            // });
         }
     };
 

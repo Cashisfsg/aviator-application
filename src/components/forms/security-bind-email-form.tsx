@@ -29,6 +29,7 @@ export const SecurityBindEmailForm = () => {
     });
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ email }) => {
+        sessionStorage.setItem("email", email);
         await sendChangeCode({ email });
     };
 

@@ -184,7 +184,7 @@ export const userApi = createApi({
         }),
         confirmExistingEmail: builder.mutation<
             SuccessResponse,
-            { code: number }
+            { code: number; email: string }
         >({
             query: body => ({
                 url: "user/confirm-email",
@@ -204,10 +204,13 @@ export const userApi = createApi({
         }),
         //! =================================================================
         changeEmail: builder.mutation<{ message: string }, { code: number }>({
-            query: body => ({
+            query: ({ code }) => ({
                 url: "user/change-email",
                 method: "PUT",
-                body
+                body: {
+                    code,
+                    email: sessionStorage.getItem("email")
+                }
             })
         }),
         changeUserPassword: builder.mutation<

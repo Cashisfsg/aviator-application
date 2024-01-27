@@ -209,14 +209,12 @@ const gameSlice = createSlice({
             .addMatcher(
                 userApi.endpoints.getGameLimits.matchFulfilled,
                 (state, { payload }) => {
-                    state.bets[0].currentBet =
-                        Math.round(payload.min * 100) / 100;
-                    state.bets[1].currentBet =
-                        Math.round(payload.min * 100) / 100;
-                    state.bets[0].min = Math.round(payload.min * 100) / 100;
-                    state.bets[0].max = Math.round(payload.max * 100) / 100;
-                    state.bets[1].min = Math.round(payload.min * 100) / 100;
-                    state.bets[1].max = Math.round(payload.max * 100) / 100;
+                    state.bets[0].currentBet = Math.ceil(payload.min);
+                    state.bets[1].currentBet = Math.ceil(payload.min);
+                    state.bets[0].min = Math.ceil(payload.min);
+                    state.bets[0].max = Math.floor(payload.max);
+                    state.bets[1].min = Math.ceil(payload.min);
+                    state.bets[1].max = Math.floor(payload.max);
                 }
             );
     }

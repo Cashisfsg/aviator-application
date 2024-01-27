@@ -63,10 +63,13 @@ export const authApi = createApi({
             Token,
             ChangePasswordConfirmRequest
         >({
-            query: body => ({
+            query: ({ code }) => ({
                 url: "auth/forgot/confirm-code",
                 method: "POST",
-                body
+                body: {
+                    code,
+                    email: sessionStorage.getItem("email")
+                }
             })
         }),
         changePassword: builder.mutation<

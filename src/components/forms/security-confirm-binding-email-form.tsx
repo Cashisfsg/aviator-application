@@ -23,10 +23,13 @@ export const SecurityConfirmBindingEmailForm = () => {
 
         const { code } = event.currentTarget;
 
-        const response = await changeEmail({ code: Number(code.value) });
+        const response = await changeEmail({
+            code: Number(code.value)
+        });
 
         if (response?.error) return;
 
+        sessionStorage.removeItem("email");
         toast({
             description: "Email был успешно изменён",
             duration: 5000
@@ -48,6 +51,7 @@ export const SecurityConfirmBindingEmailForm = () => {
                 <span>На ваш Email отправлен код</span>
                 <Input
                     readOnly
+                    value={sessionStorage.getItem("email") || ""}
                     className="border-[#414148] focus-visible:outline-transparent"
                 />
             </Label>
