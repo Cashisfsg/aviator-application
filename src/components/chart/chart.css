@@ -1,6 +1,5 @@
 figure {
-    background: url("https://thumbs.dreamstime.com/b/вращение-синего-и-белого-солнцезащитного-круга-движение-фон-228680277.jpg")
-        center/cover no-repeat;
+    background: url("@/assets/rainbow.png") center/cover no-repeat;
 }
 
 .svg-container {
