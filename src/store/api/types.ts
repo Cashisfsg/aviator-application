@@ -5,8 +5,8 @@ export interface UserRegistrationCredentials {
     login: string;
     password: string;
     passwordConfirm: string;
-    email: string;
-    telegramId: number;
+    email?: string;
+    telegramId?: number;
     from?: string;
 }
 

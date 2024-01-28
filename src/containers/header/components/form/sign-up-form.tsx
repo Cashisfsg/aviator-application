@@ -47,7 +47,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { cn } from "@/utils";
 
 const currencies = [
-    { id: 1, label: "Казахский тенге", value: "KZT" },
+    { id: 1, label: "Казахстанский тенге", value: "KZT" },
     { id: 2, label: "Российский рубль", value: "RUB" },
     { id: 3, label: "Узбекистанский сум", value: "UZS" }
 ];
@@ -61,17 +61,15 @@ export const SignUpForm = () => {
         useCreateNewUserAccountMutation();
     const navigate = useNavigate();
 
-    const { login, telegramId } = useStateSelector(state =>
-        selectInitData(state)
-    );
+    const { telegramId } = useStateSelector(state => selectInitData(state));
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: login,
+            login: "",
             password: "",
             passwordConfirm: "",
-            email: "",
+            email: undefined,
             from: "",
             telegramId,
             accepted_terms: undefined
@@ -209,7 +207,9 @@ export const SignUpForm = () => {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>
+                                Введите Email (не обязательно)
+                            </FormLabel>
                             <FormControl>
                                 <Input
                                     type="email"

@@ -19,7 +19,8 @@ export const registrationCredentialsSchema = z
                 message: "Поле должно содержать не менее 2 символов"
             })
             .max(20, {
-                message: "Превышено максимально допустимое количество символов"
+                message:
+                    "Превышено максимально допустимое количество символов (20)"
             }),
         password: z
             .string()
@@ -33,7 +34,8 @@ export const registrationCredentialsSchema = z
                 message: "Поле должно содержать не менее 8 символов"
             })
             .max(30, {
-                message: "Превышено максимально допустимое количество символов"
+                message:
+                    "Превышено максимально допустимое количество символов (30)"
             }),
         passwordConfirm: z
             .string()
@@ -47,18 +49,28 @@ export const registrationCredentialsSchema = z
                 message: "Поле должно содержать не менее 8 символов"
             })
             .max(30, {
-                message: "Превышено максимально допустимое количество символов"
+                message:
+                    "Превышено максимально допустимое количество символов (30)"
             }),
         email: z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .email({ message: "Укажите корректный адрес электронной почты" }),
+            .union([
+                z.literal(""),
+                z
+                    .string()
+                    .email({
+                        message: "Укажите корректный адрес электронной почты"
+                    })
+                    .max(60, {
+                        message:
+                            "Превышено максимально допустимое количество символов (60)"
+                    })
+            ])
+            .optional()
+            .transform(e => (e === "" ? undefined : e))
+
+            .optional(),
         from: z.string().optional(),
-        telegramId: z.coerce.number({
-            required_error: "Поле обязательно для заполнения"
-        }),
+        telegramId: z.number().optional(),
         accepted_terms: z.literal(true)
     })
     .refine(data => data.password === data.passwordConfirm, {
