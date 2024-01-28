@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth } from "@/store";
@@ -31,8 +31,8 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-// import { Switch } from "@/components/ui/switch";
-// import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 import { FiMenu } from "react-icons/fi";
 import { BiSupport } from "react-icons/bi";
@@ -45,9 +45,9 @@ import { BsStars } from "react-icons/bs";
 import Avatar from "@/assets/avatar-360w.webp";
 
 export const BurgerMenu = () => {
-    // const soundId = useId();
-    // const musicId = useId();
-    // const animationId = useId();
+    const soundId = useId();
+    const musicId = useId();
+    const animationId = useId();
 
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [myBetsHistoryDialogOpen, setMyBetsHistoryDialogOpen] =
@@ -148,7 +148,7 @@ export const BurgerMenu = () => {
                                 </label>
                             ) : null}
                         </div>
-                        {/* <ul>
+                        <ul>
                             <li className="flex justify-between bg-[#1b1c1d] px-2.5 py-2">
                                 <Label
                                     htmlFor={soundId}
@@ -217,9 +217,9 @@ export const BurgerMenu = () => {
                                 </Label>
                                 <Switch id={animationId} />
                             </li>
-                        </ul> */}
+                        </ul>
                     </DropdownMenuLabel>
-                    {/* <DropdownMenuSeparator className="h-3" /> */}
+                    <DropdownMenuSeparator className="h-3" />
 
                     {isAuthenticated ? (
                         <DropdownMenuItem

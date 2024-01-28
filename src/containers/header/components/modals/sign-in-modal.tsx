@@ -18,7 +18,7 @@ export const SignInModal = () => {
             </DialogHeader>
             <SignInForm />
             <p className="text-center text-sm">
-                <span className="text-xs">Ещё нет аккаунта</span>
+                <span className="text-xs">Ещё нет аккаунта?</span>
                 <br />
                 <Link
                     to="/main/sign-up"

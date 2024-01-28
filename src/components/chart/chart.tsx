@@ -6,12 +6,15 @@ import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
 import { Slider } from "./slider";
 import { RateCoefficient, RateElement } from "./rate-coefficient";
+import { useAuth } from "@/store";
 
 export const Chart = () => {
     const airplaneRef = useRef<SVGUseElement>(null);
     const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
+
+    const { isAuthenticated } = useAuth();
     const socket = useStateSelector(state => selectSocket(state));
 
     const [startScreen, setStartScreen] = useState(true);
@@ -71,11 +74,17 @@ export const Chart = () => {
 
     return (
         <section>
-            <h2 className="rounded-t-2.5xl bg-[#e59407cc] text-xl font-bold uppercase">
-                Fun mode
-            </h2>
+            {!isAuthenticated ? (
+                <h2 className="rounded-t-2.5xl bg-[#e59407cc] text-xl font-bold uppercase">
+                    Fun mode
+                </h2>
+            ) : null}
 
-            <figure className="rounded-b-2.5xl">
+            <figure
+                className={
+                    isAuthenticated ? "rounded-2.5xl" : "rounded-b-2.5xl"
+                }
+            >
                 <svg
                     width="100%"
                     viewBox="0 0 557 253"
@@ -83,7 +92,9 @@ export const Chart = () => {
                     fill="none"
                     ref={containerRef}
                     data-active={true}
-                    className="svg-container aspect-video rounded-b-2.5xl border border-gray-50"
+                    className={`svg-container aspect-video ${
+                        isAuthenticated ? "rounded-2.5xl" : "rounded-b-2.5xl"
+                    } border border-gray-50`}
                 >
                     <defs>
                         <Propeller />

@@ -61,7 +61,7 @@ export const SignInForm = () => {
                 onSubmit={handleSubmit(onSubmitHandler)}
             >
                 <Label>
-                    <span>Логин</span>
+                    <span>Логин или Email</span>
                     <Input
                         type="text"
                         aria-invalid={

@@ -607,7 +607,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
                 dispatch(deactivateBonus());
                 toast({
                     title: `Вы выиграли ${(
-                        (x - 1) *
+                        (rate - 1) *
                         (bonus?.bonusQuantity as number)
                     ).toFixed(2)} ${currentGameTab.currency}`,
                     duration: 5000
@@ -615,7 +615,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber }) => {
             } else {
                 toast({
                     title: `Вы выиграли ${(
-                        (x - 1) *
+                        (rate - 1) *
                         currentGameTab.currentBet
                     ).toFixed(2)} ${currentGameTab.currency}`,
                     duration: 5000
