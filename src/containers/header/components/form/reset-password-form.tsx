@@ -43,7 +43,12 @@ export const ResetPasswordForm = () => {
     };
 
     if (isSuccess) {
-        return <Navigate to="/main/sign-in" />;
+        return (
+            <Navigate
+                to="/main/sign-in"
+                state={{ password: form.getValues().password }}
+            />
+        );
     }
 
     return (

@@ -66,9 +66,8 @@ export const registrationCredentialsSchema = z
                     })
             ])
             .optional()
-            .transform(e => (e === "" ? undefined : e))
+            .transform(e => (e === "" ? undefined : e)),
 
-            .optional(),
         from: z.string().optional(),
         telegramId: z.number().optional(),
         accepted_terms: z.literal(true)

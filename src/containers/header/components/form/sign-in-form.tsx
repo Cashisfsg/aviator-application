@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useId, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthenticateUserMutation } from "@/store";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,7 @@ export const SignInForm = () => {
     const [authenticate, { isLoading, isError, error }] =
         useAuthenticateUserMutation();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         register,
@@ -39,10 +40,6 @@ export const SignInForm = () => {
         }
     });
 
-    useEffect(() => {
-        sessionStorage.removeItem("email");
-    }, []);
-
     const onSubmitHandler: SubmitHandler<FormSchema> = async data => {
         const response = await authenticate(data);
 
@@ -50,6 +47,7 @@ export const SignInForm = () => {
 
         reset();
         navigate("/main");
+        sessionStorage.removeItem("email");
         dialogCloseRef?.current?.click();
     };
 
@@ -64,6 +62,9 @@ export const SignInForm = () => {
                     <span>Логин или Email</span>
                     <Input
                         type="text"
+                        defaultValue={
+                            sessionStorage.getItem("email") || undefined
+                        }
                         aria-invalid={
                             isError || errors.login ? "true" : "false"
                         }
@@ -77,6 +78,7 @@ export const SignInForm = () => {
                     <span>Пароль</span>
                     <Input
                         type="password"
+                        defaultValue={location?.state?.password}
                         aria-invalid={
                             isError || errors.password ? "true" : "false"
                         }

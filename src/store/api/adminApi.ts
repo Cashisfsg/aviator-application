@@ -6,11 +6,19 @@ import {
     Requisite,
     Replenishment
 } from "./types";
+import { RootStore } from "../types";
 
 export const adminApi = createApi({
     reducerPath: "adminApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL
+        baseUrl: import.meta.env.VITE_API_BASE_URL,
+        prepareHeaders: (headers, { getState }) => {
+            const token = (getState() as RootStore).adminAuth.token;
+            if (token) {
+                headers.set("authorization", `Bearer ${token}`);
+            }
+            return headers;
+        }
     }),
     endpoints: builder => ({
         //! =================================================================
