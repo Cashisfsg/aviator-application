@@ -222,18 +222,20 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator className="h-3" />
 
                     {isAuthenticated ? (
-                        <DropdownMenuItem
-                            onPointerUp={() =>
-                                setTimeout(() => {
-                                    setBonusAndPromoDialogOpen(true);
-                                }, 200)
-                            }
-                        >
-                            <BsStars className="text-base text-[#767b85]" />
-                            <span>Бонусы и промокоды</span>
-                        </DropdownMenuItem>
+                        <>
+                            <DropdownMenuItem
+                                onPointerUp={() =>
+                                    setTimeout(() => {
+                                        setBonusAndPromoDialogOpen(true);
+                                    }, 200)
+                                }
+                            >
+                                <BsStars className="text-base text-[#767b85]" />
+                                <span>Бонусы и промокоды</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                        </>
                     ) : null}
-                    <DropdownMenuSeparator />
 
                     <DropdownMenuItem>
                         <BiSupport className="text-base text-[#767b85]" />
@@ -262,56 +264,60 @@ export const BurgerMenu = () => {
                     <DropdownMenuSeparator />
 
                     {isAuthenticated ? (
-                        <DropdownMenuItem
-                            onPointerUp={() =>
-                                setTimeout(() => {
-                                    setMyBetsHistoryDialogOpen(true);
-                                }, 200)
-                            }
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="15"
-                                height="14"
-                                viewBox="0 0 15 14"
+                        <>
+                            <DropdownMenuItem
+                                onPointerUp={() =>
+                                    setTimeout(() => {
+                                        setMyBetsHistoryDialogOpen(true);
+                                    }, 200)
+                                }
                             >
-                                <path
-                                    fill="#767B85"
-                                    fillRule="nonzero"
-                                    d="M7.993.669c-2.45 0-4.62 1.33-5.74 3.36l-1.61-1.61v4.55h4.55l-1.96-1.96c.91-1.75 2.66-2.94 4.76-2.94 2.87 0 5.25 2.38 5.25 5.25s-2.38 5.25-5.25 5.25c-2.31 0-4.2-1.47-4.97-3.5h-1.47c.77 2.8 3.36 4.9 6.44 4.9 3.71 0 6.65-3.01 6.65-6.65 0-3.64-3.01-6.65-6.65-6.65zm-1.05 3.5v3.57l3.29 1.96.56-.91-2.8-1.68v-2.94h-1.05z"
-                                />
-                            </svg>
-                            <span>История моих ставок</span>
-                        </DropdownMenuItem>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="15"
+                                    height="14"
+                                    viewBox="0 0 15 14"
+                                >
+                                    <path
+                                        fill="#767B85"
+                                        fillRule="nonzero"
+                                        d="M7.993.669c-2.45 0-4.62 1.33-5.74 3.36l-1.61-1.61v4.55h4.55l-1.96-1.96c.91-1.75 2.66-2.94 4.76-2.94 2.87 0 5.25 2.38 5.25 5.25s-2.38 5.25-5.25 5.25c-2.31 0-4.2-1.47-4.97-3.5h-1.47c.77 2.8 3.36 4.9 6.44 4.9 3.71 0 6.65-3.01 6.65-6.65 0-3.64-3.01-6.65-6.65-6.65zm-1.05 3.5v3.57l3.29 1.96.56-.91-2.8-1.68v-2.94h-1.05z"
+                                    />
+                                </svg>
+                                <span>История моих ставок</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                        </>
                     ) : null}
-                    <DropdownMenuSeparator />
 
                     {isAuthenticated ? (
-                        <DropdownMenuItem
-                            onPointerUp={() =>
-                                setTimeout(() => {
-                                    setGameLimitsPopoverOpen(true);
-                                }, 200)
-                            }
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="10"
-                                viewBox="0 0 16 10"
+                        <>
+                            <DropdownMenuItem
+                                onPointerUp={() =>
+                                    setTimeout(() => {
+                                        setGameLimitsPopoverOpen(true);
+                                    }, 200)
+                                }
                             >
-                                <g
-                                    fill="#767B85"
-                                    fillRule="nonzero"
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="10"
+                                    viewBox="0 0 16 10"
                                 >
-                                    <path d="M14.796.027H1.204C.54.027 0 .567 0 1.23v7.226C0 9.12.54 9.66 1.204 9.66h13.592c.664 0 1.204-.54 1.204-1.204V1.23c0-.664-.54-1.204-1.204-1.204zm.172 8.43a.174.174 0 0 1-.172.172H1.204a.174.174 0 0 1-.172-.172V1.23c0-.093.08-.172.172-.172h13.592c.093 0 .172.079.172.172v7.226z" />
-                                    <path d="M1.824.37v.775a.68.68 0 0 1-.689.688H.38v1.032h.756c.95 0 1.72-.772 1.72-1.72V.37H1.825zM14.882 1.833a.68.68 0 0 1-.688-.688V.37H13.16v.774c0 .948.772 1.72 1.72 1.72h.775V1.833h-.774zM1.153 6.822H.379v1.032h.774a.68.68 0 0 1 .688.689v.774h1.032v-.774c0-.949-.772-1.72-1.72-1.72zM14.882 6.822c-.949 0-1.72.772-1.72 1.72v.775h1.032v-.774a.68.68 0 0 1 .688-.688h.774V6.822h-.774zM10.137 2.793a2.88 2.88 0 0 0-2.051-.848 2.88 2.88 0 0 0-2.05.848 2.88 2.88 0 0 0-.849 2.05c0 .777.301 1.505.848 2.052a2.88 2.88 0 0 0 2.051.848 2.88 2.88 0 0 0 2.05-.848 2.88 2.88 0 0 0 .85-2.051 2.88 2.88 0 0 0-.85-2.051zm-.73 3.372a1.856 1.856 0 0 1-1.321.546c-.5 0-.97-.194-1.321-.546a1.855 1.855 0 0 1-.546-1.321c0-.5.194-.97.546-1.321a1.855 1.855 0 0 1 1.321-.546c.5 0 .97.194 1.321.546.352.352.546.82.546 1.32 0 .5-.194.97-.546 1.322z" />
-                                </g>
-                            </svg>
-                            <span>Игровые лимиты</span>
-                        </DropdownMenuItem>
+                                    <g
+                                        fill="#767B85"
+                                        fillRule="nonzero"
+                                    >
+                                        <path d="M14.796.027H1.204C.54.027 0 .567 0 1.23v7.226C0 9.12.54 9.66 1.204 9.66h13.592c.664 0 1.204-.54 1.204-1.204V1.23c0-.664-.54-1.204-1.204-1.204zm.172 8.43a.174.174 0 0 1-.172.172H1.204a.174.174 0 0 1-.172-.172V1.23c0-.093.08-.172.172-.172h13.592c.093 0 .172.079.172.172v7.226z" />
+                                        <path d="M1.824.37v.775a.68.68 0 0 1-.689.688H.38v1.032h.756c.95 0 1.72-.772 1.72-1.72V.37H1.825zM14.882 1.833a.68.68 0 0 1-.688-.688V.37H13.16v.774c0 .948.772 1.72 1.72 1.72h.775V1.833h-.774zM1.153 6.822H.379v1.032h.774a.68.68 0 0 1 .688.689v.774h1.032v-.774c0-.949-.772-1.72-1.72-1.72zM14.882 6.822c-.949 0-1.72.772-1.72 1.72v.775h1.032v-.774a.68.68 0 0 1 .688-.688h.774V6.822h-.774zM10.137 2.793a2.88 2.88 0 0 0-2.051-.848 2.88 2.88 0 0 0-2.05.848 2.88 2.88 0 0 0-.849 2.05c0 .777.301 1.505.848 2.052a2.88 2.88 0 0 0 2.051.848 2.88 2.88 0 0 0 2.05-.848 2.88 2.88 0 0 0 .85-2.051 2.88 2.88 0 0 0-.85-2.051zm-.73 3.372a1.856 1.856 0 0 1-1.321.546c-.5 0-.97-.194-1.321-.546a1.855 1.855 0 0 1-.546-1.321c0-.5.194-.97.546-1.321a1.855 1.855 0 0 1 1.321-.546c.5 0 .97.194 1.321.546.352.352.546.82.546 1.32 0 .5-.194.97-.546 1.322z" />
+                                    </g>
+                                </svg>
+                                <span>Игровые лимиты</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                        </>
                     ) : null}
-                    <DropdownMenuSeparator />
 
                     <DropdownMenuItem>
                         <ImNewspaper className="text-base text-[#767B85]" />

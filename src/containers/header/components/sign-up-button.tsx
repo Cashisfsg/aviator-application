@@ -7,7 +7,8 @@ export const SignUpButton = () => {
             <DialogTrigger asChild>
                 <Link
                     to="/main/sign-up"
-                    className="rounded-lg bg-red-400 px-4 py-3 font-bold"
+                    className="w-7/12 rounded-lg bg-[linear-gradient(70deg,#31bc69_-8%,#089e4e_96%)] px-4 py-1.5 font-bold transition-all duration-300 hover:opacity-80"
+                    // className="rounded-lg bg-[linear-gradient(70deg,#31bc69_-8%,#089e4e_96%)] px-4 py-1.5 font-bold transition-all duration-300 hover:opacity-80"
                 >
                     Регистрация
                 </Link>

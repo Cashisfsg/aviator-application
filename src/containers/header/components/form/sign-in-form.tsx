@@ -35,8 +35,8 @@ export const SignInForm = () => {
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: "",
-            password: ""
+            login: sessionStorage.getItem("email") || undefined,
+            password: location?.state?.password
         }
     });
 
@@ -62,9 +62,10 @@ export const SignInForm = () => {
                     <span>Логин или Email</span>
                     <Input
                         type="text"
-                        defaultValue={
-                            sessionStorage.getItem("email") || undefined
-                        }
+                        // defaultValue={
+                        //     sessionStorage.getItem("email") || undefined
+                        // }
+                        // defaultValue={"dasdas"}
                         aria-invalid={
                             isError || errors.login ? "true" : "false"
                         }
@@ -78,12 +79,13 @@ export const SignInForm = () => {
                     <span>Пароль</span>
                     <Input
                         type="password"
-                        defaultValue={location?.state?.password}
+                        // defaultValue={123456789}
                         aria-invalid={
                             isError || errors.password ? "true" : "false"
                         }
                         {...register("password")}
                     />
+                    {/* <span>{location?.state?.password}</span> */}
                     {errors?.password ? (
                         <ErrorMessage message={errors?.password?.message} />
                     ) : isError ? (

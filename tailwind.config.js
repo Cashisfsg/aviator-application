@@ -28,6 +28,7 @@ export default {
             padding: {
                 0.25: "1px"
             },
+            // opacity: { 80: "0.8" },
 
             translate: {
                 4.5: "18px"
@@ -85,6 +86,10 @@ export default {
                 rotate: {
                     0: { transform: "rotate(0deg)" },
                     100: { transform: "rotate(360deg)" }
+                },
+                "left-appearance": {
+                    from: { translate: "-100% 0%" },
+                    to: { translate: "0% 0%" }
                 }
             },
             animation: {
@@ -92,7 +97,8 @@ export default {
                 "accordion-up": "accordion-up 3s ease-out",
                 airplane:
                     "airplane 10s cubic-bezier(0.25, 0.99, 0.65, 1) infinite",
-                rotate: "rotate 3s linear infinite"
+                rotate: "rotate 3s linear infinite",
+                "left-appearance": "left-appearance 1s linear"
             }
         }
     },

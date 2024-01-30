@@ -30,7 +30,7 @@ export const SecurityConfirmExistingEmailForm = () => {
         (async () => {
             await sendConfirmationCodeOnExistingEmail();
         })();
-    }, [sendConfirmationCodeOnExistingEmail]);
+    }, []);
 
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields

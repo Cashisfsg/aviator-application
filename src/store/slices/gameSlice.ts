@@ -44,9 +44,20 @@ export interface GameDetails {
     currentPlayers: Player[];
 }
 
+interface Settings {
+    animationEnabled: boolean;
+    musicEnabled: boolean;
+    soundEnabled: boolean;
+}
+
 type Bonus = ActiveBonus | UnActiveBonus;
 
-type Game = { bets: [Bet, Bet]; bonus: Bonus; gameDetails: GameDetails };
+type Game = {
+    bets: [Bet, Bet];
+    bonus: Bonus;
+    gameDetails: GameDetails;
+    settings: Settings;
+};
 
 const initialState = {
     bets: [
@@ -80,6 +91,11 @@ const initialState = {
         betAmount: 0,
         winAmount: 0,
         currentPlayers: []
+    },
+    settings: {
+        animationEnabled: false,
+        soundEnabled: false,
+        musicEnabled: false
     }
 } as Game;
 
@@ -190,6 +206,15 @@ const gameSlice = createSlice({
         },
         resetGameDetails: state => {
             state.gameDetails = initialState.gameDetails;
+        },
+        toggleAnimation: state => {
+            state.settings.animationEnabled = !state.settings.animationEnabled;
+        },
+        toggleSound: state => {
+            state.settings.soundEnabled = !state.settings.soundEnabled;
+        },
+        toggleMusic: state => {
+            state.settings.musicEnabled = !state.settings.musicEnabled;
         }
     },
     extraReducers: builder => {
@@ -230,7 +255,10 @@ export const {
     resetGameDetails,
     toggleAutoMode,
     activateBonus,
-    deactivateBonus
+    deactivateBonus,
+    toggleAnimation,
+    toggleMusic,
+    toggleSound
 } = gameSlice.actions;
 
 const gameTab = (state: RootStore) => state.game;

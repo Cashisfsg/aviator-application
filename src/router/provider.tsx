@@ -31,8 +31,8 @@ import {
     SecurityResetPasswordForm
 } from "@/components/forms";
 
-import { ReplenishmentPage } from "@/pages/admin/replenishment-page";
-import { AdminLoginForm } from "@/pages/admin/login-form";
+// import { ReplenishmentPage } from "@/pages/admin/replenishment-page";
+// import { AdminLoginForm } from "@/pages/admin/login-form";
 
 // const MainPage = lazy(async () =>
 //     import("@/pages/main-page").then(module => ({ default: module.MainPage }))
@@ -44,11 +44,11 @@ const PaymentLayout = lazy(async () =>
     }))
 );
 
-const AdminDashboardLayout = lazy(async () =>
-    import("@/pages/admin/components/layout").then(module => ({
-        default: module.Layout
-    }))
-);
+// const AdminDashboardLayout = lazy(async () =>
+//     import("@/pages/admin/components/layout").then(module => ({
+//         default: module.Layout
+//     }))
+// );
 
 // const SignInModal = lazy(async () =>
 //     import("@/containers/header/components/modals/sign-in-modal").then(
@@ -254,37 +254,37 @@ const router = createBrowserRouter([
             }
         ]
     },
-    {
-        path: "admin",
-        children: [
-            {
-                path: "login",
-                element: <AdminLoginForm />
-            },
-            {
-                path: "dashboard",
-                element: <AdminDashboardLayout />,
-                children: [
-                    {
-                        path: "replenishments",
-                        element: <ReplenishmentPage />
-                    },
-                    {
-                        path: "withdrawals",
-                        element: <div>Выводы</div>
-                    },
-                    {
-                        path: "balance",
-                        element: <div>Пополнить баланс</div>
-                    },
-                    {
-                        path: "requisites",
-                        element: <div>Реквизиты</div>
-                    }
-                ]
-            }
-        ]
-    },
+    // {
+    //     path: "admin",
+    //     children: [
+    //         {
+    //             path: "login",
+    //             element: <AdminLoginForm />
+    //         },
+    //         {
+    //             path: "dashboard",
+    //             element: <AdminDashboardLayout />,
+    //             children: [
+    //                 {
+    //                     path: "replenishments",
+    //                     element: <ReplenishmentPage />
+    //                 },
+    //                 {
+    //                     path: "withdrawals",
+    //                     element: <div>Выводы</div>
+    //                 },
+    //                 {
+    //                     path: "balance",
+    //                     element: <div>Пополнить баланс</div>
+    //                 },
+    //                 {
+    //                     path: "requisites",
+    //                     element: <div>Реквизиты</div>
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    // },
     {
         path: "*",
         element: (
