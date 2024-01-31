@@ -93,7 +93,7 @@ const initialState = {
         currentPlayers: []
     },
     settings: {
-        animationEnabled: false,
+        animationEnabled: true,
         soundEnabled: false,
         musicEnabled: false
     }
@@ -278,6 +278,11 @@ const winAmount = (state: RootStore) => state.game.gameDetails.winAmount;
 const currentPlayers = (state: RootStore) =>
     state.game.gameDetails.currentPlayers;
 
+const animationEnabled = (state: RootStore) =>
+    state.game.settings.animationEnabled;
+const musicEnabled = (state: RootStore) => state.game.settings.musicEnabled;
+const soundEnabled = (state: RootStore) => state.game.settings.soundEnabled;
+
 export const selectBonus = createSelector(
     [bonusId, bonusActive, bonusQuantity],
     (bonusId, bonusActive, bonusQuantity) => ({
@@ -293,5 +298,14 @@ export const selectGameDetails = createSelector(
         betAmount,
         winAmount,
         currentPlayers
+    })
+);
+
+export const selectSettings = createSelector(
+    [animationEnabled, musicEnabled, soundEnabled],
+    (animationEnabled, musicEnabled, soundEnabled) => ({
+        animationEnabled,
+        musicEnabled,
+        soundEnabled
     })
 );

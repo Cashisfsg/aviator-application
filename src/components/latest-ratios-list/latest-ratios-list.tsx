@@ -1,36 +1,56 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
+    const [key, setKey] = useState(0);
     const [coef, setCoef] = useState(
         Array(30)
             .fill(0)
             .map(_ => Math.random() * 11)
     );
 
-    const addCoef = () => {
+    const dropdownMenuId = useId();
+
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = event => {
+        const ariaExpanded =
+            event.currentTarget.getAttribute("aria-expanded") === "true";
+
+        event.currentTarget.setAttribute(
+            "aria-expanded",
+            String(!ariaExpanded)
+        );
+    };
+
+    const add = () => {
+        setKey(key => key + 1);
         setCoef(coef => {
-            return [Math.random() * 11, ...coef];
+            const newArray = coef.slice(0, -1);
+            return [Math.random() * 15, ...newArray];
         });
     };
 
     return (
-        <div className="my-2.5 flex items-center gap-2">
-            <div className="animate-left-appearance flex gap-2 overflow-x-hidden">
-                {coef.map((e, i) => (
+        <div className="relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">
+            <div className="flex gap-2 overflow-x-hidden">
+                {coef.slice(0, 12).map((e, i) => (
                     <Badge
-                        key={i}
+                        key={`${e} - ${key}`}
                         value={e}
                         className={`shrink-0 ${generateClassName(
                             i
-                        )}  hover:opacity-100`}
+                        )}  animate-left-appearance hover:opacity-100`}
                     />
                 ))}
             </div>
             <button
-                onClick={addCoef}
-                className="flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539]"
+                aria-controls={dropdownMenuId}
+                aria-haspopup={true}
+                aria-expanded={false}
+                onClick={onClickHandler}
+                className="group peer flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539] aria-expanded:z-10 aria-expanded:text-[#e50539]"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -51,6 +71,7 @@ export const LatestRatiosList = () => {
                     height="8px"
                     viewBox="0 0 10 8"
                     version="1.1"
+                    className="duration-300 group-aria-expanded:rotate-180"
                 >
                     <g
                         id="Page-2"
@@ -74,6 +95,24 @@ export const LatestRatiosList = () => {
                     </g>
                 </svg>
             </button>
+            <section
+                id={dropdownMenuId}
+                className="absolute left-0 top-0 hidden w-full overflow-hidden rounded-2xl bg-[#1f2128] pt-2.5 peer-aria-expanded:z-[5] peer-aria-expanded:block"
+            >
+                <h2 className="px-2.5 pb-2.5 text-left font-bold uppercase">
+                    История раундов
+                </h2>
+                <div className="flex flex-wrap gap-2 bg-[#262830] p-1.5">
+                    {coef.map((e, i) => (
+                        <Badge
+                            key={i}
+                            value={e}
+                            className=""
+                        />
+                    ))}
+                </div>
+            </section>
+            {/* <button onClick={add}>dadas</button> */}
         </div>
     );
 };

@@ -35,7 +35,7 @@ export const SignInForm = () => {
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: sessionStorage.getItem("email") || undefined,
+            login: location?.state?.email,
             password: location?.state?.password
         }
     });
@@ -47,7 +47,7 @@ export const SignInForm = () => {
 
         reset();
         navigate("/main");
-        sessionStorage.removeItem("email");
+        // sessionStorage.removeItem("email");
         dialogCloseRef?.current?.click();
     };
 

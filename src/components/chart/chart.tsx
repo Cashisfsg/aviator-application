@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import { useStateSelector, selectSocket } from "@/store";
+import {
+    useAuth,
+    useStateSelector,
+    selectSocket,
+    selectSettings
+} from "@/store";
 // import { socket } from "@/components/socket/socket";
 import "./chart.css";
 import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
 import { Slider } from "./slider";
 import { RateCoefficient, RateElement } from "./rate-coefficient";
-import { useAuth } from "@/store";
+import { SoundEffects } from "../sound-effects/sound-effects";
 
 export const Chart = () => {
     const airplaneRef = useRef<SVGUseElement>(null);
@@ -16,6 +21,9 @@ export const Chart = () => {
 
     const { isAuthenticated } = useAuth();
     const socket = useStateSelector(state => selectSocket(state));
+    const { animationEnabled } = useStateSelector(state =>
+        selectSettings(state)
+    );
 
     const [startScreen, setStartScreen] = useState(true);
 
@@ -101,6 +109,7 @@ export const Chart = () => {
                         <Slider />
                         <Airplane />
                     </defs>
+
                     <use
                         id="use-airplane"
                         width="170"
@@ -109,6 +118,7 @@ export const Chart = () => {
                         className="airplane origin-top-left"
                         ref={airplaneRef}
                     />
+
                     {startScreen ? (
                         <g
                             onTransitionEnd={event => {
@@ -161,19 +171,26 @@ export const Chart = () => {
                             .map((_, i) => (
                                 <g key={i}>
                                     <circle
-                                        cx="10"
+                                        cx={
+                                            animationEnabled
+                                                ? "10"
+                                                : `${(i + 1) * 10}%`
+                                        }
                                         cy="0"
                                         r="2"
                                         fill="white"
                                     >
-                                        <animate
-                                            attributeName="cx"
-                                            values={`${(i + 1) * 10}%; ${
-                                                i * 10
-                                            }%`}
-                                            dur="10s"
-                                            repeatCount="indefinite"
-                                        />
+                                        {animationEnabled ? (
+                                            <animate
+                                                attributeName="cx"
+                                                values={`${(i + 1) * 10}%; ${
+                                                    i * 10
+                                                }%`}
+                                                dur="10s"
+                                                begin="0s"
+                                                repeatCount="indefinite"
+                                            />
+                                        ) : null}
                                     </circle>
                                 </g>
                             ))}
@@ -189,24 +206,32 @@ export const Chart = () => {
                                 <g key={i}>
                                     <circle
                                         cx="10"
-                                        cy="0"
+                                        cy={
+                                            animationEnabled
+                                                ? "0"
+                                                : `${(i + 0.5) * 10}%`
+                                        }
                                         r="2"
                                         fill="red"
                                     >
-                                        <animate
-                                            attributeName="cy"
-                                            values={`${i * 10}%; ${
-                                                (i + 1) * 10
-                                            }%`}
-                                            dur="10s"
-                                            repeatCount="indefinite"
-                                        />
+                                        {animationEnabled ? (
+                                            <animate
+                                                attributeName="cy"
+                                                values={`${i * 10}%; ${
+                                                    (i + 1) * 10
+                                                }%`}
+                                                dur="10s"
+                                                begin="0s"
+                                                repeatCount="indefinite"
+                                            />
+                                        ) : null}
                                     </circle>
                                 </g>
                             ))}
                     </svg>
                 </svg>
             </figure>
+            <SoundEffects />
             {/* <button
                 onClick={() => {
                     if (!airplaneRef.current) return;

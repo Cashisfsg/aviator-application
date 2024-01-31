@@ -43,10 +43,13 @@ export const ResetPasswordForm = () => {
     };
 
     if (isSuccess) {
+        const email = sessionStorage.getItem("email");
+        sessionStorage.removeItem("email");
+
         return (
             <Navigate
                 to="/main/sign-in"
-                state={{ password: form.getValues().password }}
+                state={{ password: form.getValues().password, email }}
             />
         );
     }

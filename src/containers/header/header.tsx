@@ -11,7 +11,7 @@ export const Header = () => {
 
     return (
         <header>
-            <div className="flex items-center justify-between rounded-sm bg-[#1b1c1d]">
+            <div className="flex items-center justify-between rounded-sm bg-[#1b1c1d] px-2.5">
                 <div className="flex items-center justify-between gap-4">
                     <Logo />
                     {isAuthenticated ? (

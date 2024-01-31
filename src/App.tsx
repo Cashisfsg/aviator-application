@@ -1,13 +1,15 @@
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useRef, lazy, Suspense } from "react";
 import GridLoader from "react-spinners/GridLoader";
+import BackgroundMusic from "./assets/sound/background_music.mp3";
 
 import "./App.css";
 // import { ReactRouterProvider } from "@/router/provider";
 import {
     useAppDispatch,
     setUserInitData,
-    TelegramClient
-    // useStateSelector,
+    TelegramClient,
+    useStateSelector,
+    selectSettings
     // setGameDetails,
     // GameDetails,
     // selectSocket
@@ -24,7 +26,9 @@ export const App = () => {
         window as Window & typeof globalThis & { Telegram: TelegramClient }
     ).Telegram.WebApp;
 
+    const audioRef = useRef<HTMLAudioElement>(null);
     const dispatch = useAppDispatch();
+    const { musicEnabled } = useStateSelector(state => selectSettings(state));
     // const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
@@ -44,28 +48,37 @@ export const App = () => {
         tg?.initDataUnsafe?.user?.first_name
     ]);
 
-    // useEffect(() => {
-    //     const onGameDataUpdated = (data: GameDetails) => {
-    //         dispatch(setGameDetails(data));
-    //     };
-
-    //     socket.on("currentPlayers", onGameDataUpdated);
-
-    //     return () => {
-    //         socket.off("currentPlayers", onGameDataUpdated);
-    //     };
-    // }, [socket]);
+    useEffect(() => {
+        if (musicEnabled) {
+            audioRef.current?.play();
+        } else {
+            audioRef.current?.pause();
+        }
+    }, [musicEnabled]);
 
     return (
-        <Suspense
-            fallback={
-                <GridLoader
-                    className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                    color={"red"}
+        <>
+            <Suspense
+                fallback={
+                    <GridLoader
+                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                        color={"red"}
+                    />
+                }
+            >
+                <ReactRouterProvider />
+            </Suspense>
+            <audio
+                loop
+                preload="auto"
+                ref={audioRef}
+            >
+                <source
+                    src={BackgroundMusic}
+                    type="audio/mpeg"
                 />
-            }
-        >
-            <ReactRouterProvider />
-        </Suspense>
+                Ваш браузер не поддерживает элемент <code>audio</code>.
+            </audio>
+        </>
     );
 };

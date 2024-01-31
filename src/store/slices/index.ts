@@ -1,3 +1,4 @@
+export * from "./adminSlice";
 export * from "./authSlice";
 export * from "./authAdminSlice";
 export * from "./gameSlice";
