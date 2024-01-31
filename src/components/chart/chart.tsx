@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
-    useAuth,
+    // useAuth,
     useStateSelector,
     selectSocket,
     selectSettings
@@ -19,7 +19,7 @@ export const Chart = () => {
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
 
-    const { isAuthenticated } = useAuth();
+    // const { isAuthenticated } = useAuth();
     const socket = useStateSelector(state => selectSocket(state));
     const { animationEnabled } = useStateSelector(state =>
         selectSettings(state)
@@ -82,17 +82,13 @@ export const Chart = () => {
 
     return (
         <section>
-            {!isAuthenticated ? (
+            {/* {!isAuthenticated ? (
                 <h2 className="rounded-t-2.5xl bg-[#e59407cc] text-xl font-bold uppercase">
                     Fun mode
                 </h2>
-            ) : null}
+            ) : null} */}
 
-            <figure
-                className={
-                    isAuthenticated ? "rounded-2.5xl" : "rounded-b-2.5xl"
-                }
-            >
+            <figure className="rounded-2.5xl">
                 <svg
                     width="100%"
                     viewBox="0 0 557 253"
@@ -100,9 +96,7 @@ export const Chart = () => {
                     fill="none"
                     ref={containerRef}
                     data-active={true}
-                    className={`svg-container aspect-video ${
-                        isAuthenticated ? "rounded-2.5xl" : "rounded-b-2.5xl"
-                    } border border-gray-50`}
+                    className="svg-container aspect-video rounded-2.5xl border border-gray-50"
                 >
                     <defs>
                         <Propeller />
