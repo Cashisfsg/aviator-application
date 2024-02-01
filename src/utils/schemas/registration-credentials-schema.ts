@@ -70,10 +70,8 @@ export const registrationCredentialsSchema = z
             .transform(e => (e === "" ? undefined : e)),
 
         from: z.string().optional(),
-        telegramId: z
-            .number()
-            .optional()
-            .transform(e => e.trim()),
+        telegramId: z.coerce.number().optional(),
+        // .transform(e => e?.trim()),
         accepted_terms: z.literal(true)
     })
     .refine(data => data.password === data.passwordConfirm, {

@@ -289,7 +289,7 @@ export const SignUpForm = () => {
                                             form.setValue("from", code);
                                             setPromoOpen(false);
                                         }}
-                                        className="relative "
+                                        className="relative"
                                     >
                                         <Input
                                             name="code"

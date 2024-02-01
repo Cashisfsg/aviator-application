@@ -390,8 +390,6 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
             }
         };
 
-        console.log("Input rerender: ", currentGameTab.currentBet);
-
         const onBlurHandler: React.FocusEventHandler<
             HTMLInputElement
         > = event => {

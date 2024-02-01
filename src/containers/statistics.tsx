@@ -9,40 +9,38 @@ export const Statistics = () => {
     const { isAuthenticated } = useAuth();
 
     return (
-        <>
-            <Tabs
-                defaultValue="all"
-                className="rounded-2.5xl pb-8"
-            >
-                <TabsList>
-                    <TabsTrigger value="all">Все ставки</TabsTrigger>
-                    {isAuthenticated ? (
-                        <TabsTrigger value="my">Мои</TabsTrigger>
-                    ) : null}
-
-                    <TabsTrigger value="top">Топ</TabsTrigger>
-                </TabsList>
-                <TabsContent
-                    value="all"
-                    className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
-                >
-                    <AllBetsTabpanel />
-                </TabsContent>
+        <Tabs
+            defaultValue="all"
+            className="rounded-2.5xl pb-8"
+        >
+            <TabsList>
+                <TabsTrigger value="all">Все ставки</TabsTrigger>
                 {isAuthenticated ? (
-                    <TabsContent
-                        value="my"
-                        className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
-                    >
-                        <MyBetsTabpanel />
-                    </TabsContent>
+                    <TabsTrigger value="my">Мои</TabsTrigger>
                 ) : null}
+
+                <TabsTrigger value="top">Топ</TabsTrigger>
+            </TabsList>
+            <TabsContent
+                value="all"
+                className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
+            >
+                <AllBetsTabpanel />
+            </TabsContent>
+            {isAuthenticated ? (
                 <TabsContent
-                    value="top"
+                    value="my"
                     className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
                 >
-                    <TopBetsTabpanel />
+                    <MyBetsTabpanel />
                 </TabsContent>
-            </Tabs>
-        </>
+            ) : null}
+            <TabsContent
+                value="top"
+                className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
+            >
+                <TopBetsTabpanel />
+            </TabsContent>
+        </Tabs>
     );
 };

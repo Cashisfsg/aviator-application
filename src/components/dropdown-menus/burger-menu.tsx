@@ -104,10 +104,12 @@ export const BurgerMenu = () => {
                                         "Username"}
                                 </p>
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-                                    {`ID ${
-                                        user?.telegramId ||
-                                        userInitData?.telegramId
-                                    }` || "user ID"}
+                                    {user?._id || userInitData?.telegramId
+                                        ? `ID ${
+                                              user?._id ||
+                                              userInitData?.telegramId
+                                          }`
+                                        : "user ID"}
                                 </p>
                             </div>
                             {isAuthenticated ? (
