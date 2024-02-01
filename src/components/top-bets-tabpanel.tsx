@@ -104,9 +104,9 @@ const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
                     className="px-1.5"
                     headers={[
                         "Время",
-                        `Ставка, ${balance?.currency}`,
+                        `Ставка, ${balance?.currency || "USD"}`,
                         "Коэфф.",
-                        `Выигрыш, ${balance?.currency}`
+                        `Выигрыш, ${balance?.currency || "USD"}`
                     ]}
                     renderHeader={headers => (
                         <Row>

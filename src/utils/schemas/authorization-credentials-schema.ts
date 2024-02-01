@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
+const alphanumericRegex = /^\s?[A-Za-z0-9]+\s?$/;
 
 export const authorizationCredentialsSchema = z.object({
     login: z.union([
@@ -18,7 +18,8 @@ export const authorizationCredentialsSchema = z.object({
             .max(20, {
                 message:
                     "Превышено максимально допустимое количество символов (20)"
-            }),
+            })
+            .transform(e => e.trim()),
         z
             .string()
             .email({

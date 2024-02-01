@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
+const alphanumericRegex = /^\s?[A-Za-z0-9]+\s?$/;
 
 export const registrationCredentialsSchema = z
     .object({
@@ -21,7 +21,8 @@ export const registrationCredentialsSchema = z
             .max(20, {
                 message:
                     "Превышено максимально допустимое количество символов (20)"
-            }),
+            })
+            .transform(e => e.trim()),
         password: z
             .string()
             .min(1, {
@@ -69,7 +70,10 @@ export const registrationCredentialsSchema = z
             .transform(e => (e === "" ? undefined : e)),
 
         from: z.string().optional(),
-        telegramId: z.number().optional(),
+        telegramId: z
+            .number()
+            .optional()
+            .transform(e => e.trim()),
         accepted_terms: z.literal(true)
     })
     .refine(data => data.password === data.passwordConfirm, {
