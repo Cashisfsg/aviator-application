@@ -4,7 +4,7 @@ import { userApi } from "../api";
 import { authSlice } from "../slices";
 import { RootStore } from "../types";
 
-type BetState = "init" | "bet" | "cash";
+type BetState = "init" | "start" | "bet" | "cash";
 
 interface Bet {
     betState: BetState;

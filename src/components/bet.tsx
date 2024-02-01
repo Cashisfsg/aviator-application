@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef } from "react";
+import { useState, useReducer, useEffect, useRef, forwardRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import {
@@ -113,35 +113,27 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
     const socket = useStateSelector(state => selectSocket(state));
 
     useEffect(() => {
-        const onConnect = () => {
-            console.log("Connect to server");
-        };
+        // const makeBet = () => {
+        //     if (currentGameTab.betState !== "bet") return;
 
-        const onDisconnect = () => {
-            console.log("Disconnect from server");
-        };
+        //     if (bonus.bonusActive && betNumber === 1) {
+        //         socket.emit("bet", {
+        //             betNumber: betNumber,
+        //             currency: currentGameTab.currency,
+        //             bet: Math.round(Number(bonus.bonusQuantity)),
+        //             promoId: bonus.bonusId
+        //         });
+        //     } else {
+        //         socket.emit("bet", {
+        //             betNumber: betNumber,
+        //             currency: currentGameTab.currency,
+        //             bet: Math.round(currentGameTab.currentBet)
+        //         });
+        //     }
+        //     dispatch(userApi.util.invalidateTags(["Balance"]));
 
-        const makeBet = () => {
-            if (currentGameTab.betState !== "bet") return;
-
-            if (bonus.bonusActive && betNumber === 1) {
-                socket.emit("bet", {
-                    betNumber: betNumber,
-                    currency: currentGameTab.currency,
-                    bet: Math.round(Number(bonus.bonusQuantity)),
-                    promoId: bonus.bonusId
-                });
-            } else {
-                socket.emit("bet", {
-                    betNumber: betNumber,
-                    currency: currentGameTab.currency,
-                    bet: Math.round(currentGameTab.currentBet)
-                });
-            }
-            dispatch(userApi.util.invalidateTags(["Balance"]));
-
-            dispatch(setBetState({ betNumber, betState: "cash" }));
-        };
+        //     dispatch(setBetState({ betNumber, betState: "cash" }));
+        // };
 
         const loose = () => {
             dispatch(resetGameDetails());
@@ -165,17 +157,13 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
         };
 
         socket.on("currentPlayers", onGameDataUpdated);
-        socket.on("connect", onConnect);
-        socket.on("disconnect", onDisconnect);
-        socket.on("loading", makeBet);
+        // socket.on("loading", makeBet);
         socket.on("crash", loose);
 
         return () => {
             socket.off("currentPlayers", onGameDataUpdated);
 
-            socket.off("connect", onConnect);
-            socket.off("disconnect", onDisconnect);
-            socket.off("loading", makeBet);
+            // socket.off("loading", makeBet);
             socket.off("crash", loose);
         };
     }, [
@@ -426,6 +414,7 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
 interface BetButtonProps extends Pick<BetProps, "betNumber"> {}
 
 const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
+    const [newRoundBegin, toggleRoundState] = useReducer(state => !state, true);
     const dispatch = useAppDispatch();
     const { toast } = useToast();
     const currentGameTab = useStateSelector(state =>
@@ -455,6 +444,54 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             }
         };
 
+        const cancelBetBeforeGameStart = () => {
+            toggleRoundState();
+
+            if (currentGameTab.betState !== "bet") {
+                // socket.off("loading", cancelBetBeforeGameStart);
+                return;
+            }
+
+            dispatch(setBetState({ betNumber, betState: "start" }));
+        };
+
+        const startNewRound = () => {
+            if (newRoundBegin) {
+                socket.off("game", startNewRound);
+                return;
+            }
+
+            toggleRoundState();
+            console.log("New round started");
+        };
+
+        const makeBet = () => {
+            if (currentGameTab.betState !== "start") {
+                socket.off("game", makeBet);
+                return;
+            }
+
+            if (bonus.bonusActive && betNumber === 1) {
+                socket.emit("bet", {
+                    betNumber: betNumber,
+                    currency: currentGameTab.currency,
+                    bet: Math.round(Number(bonus.bonusQuantity)),
+                    promoId: bonus.bonusId
+                });
+            } else {
+                socket.emit("bet", {
+                    betNumber: betNumber,
+                    currency: currentGameTab.currency,
+                    bet: Math.round(currentGameTab.currentBet)
+                });
+            }
+            dispatch(userApi.util.invalidateTags(["Balance"]));
+
+            dispatch(setBetState({ betNumber, betState: "cash" }));
+
+            socket.off("game", makeBet);
+        };
+
         const resetBet = () => {
             if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
                 setGain(bonus.bonusQuantity);
@@ -464,13 +501,20 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         };
 
         socket.on("game", winnings);
+        socket.on("game", startNewRound);
+        socket.on("game", makeBet);
+        socket.on("loading", cancelBetBeforeGameStart);
         socket.on("crash", resetBet);
 
         return () => {
             socket.off("game", winnings);
+            socket.off("game", startNewRound);
+            socket.off("game", makeBet);
+            socket.off("loading", cancelBetBeforeGameStart);
             socket.off("crash", resetBet);
         };
     }, [
+        newRoundBegin,
         currentGameTab.currentBet,
         currentGameTab.betState,
         bonus.bonusActive,
@@ -515,7 +559,15 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                 <button
                     style={{ textShadow: "0 1px 2px rgba(0, 0, 0, .5)" }}
                     onClick={() => {
-                        dispatch(setBetState({ betNumber, betState: "bet" }));
+                        if (newRoundBegin)
+                            dispatch(
+                                setBetState({ betNumber, betState: "bet" })
+                            );
+                        else {
+                            dispatch(
+                                setBetState({ betNumber, betState: "start" })
+                            );
+                        }
                     }}
                     className="rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
                 >
@@ -530,6 +582,15 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                             {currentGameTab.currency}
                         </span>
                     </p>
+                </button>
+            );
+        case "start":
+            return (
+                <button
+                    onClick={abortBet}
+                    className="h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f7001f] active:translate-y-[1px] active:border-[#b21f2d]"
+                >
+                    Отмена
                 </button>
             );
         case "bet":
