@@ -27,9 +27,9 @@ export const adminApi = createApi({
                 url: "admin/requisites"
             })
         }),
-        getAdminReplenishments: builder.query<Replenishment[], void>({
+        getAllReplenishmentsListForAdmin: builder.query<Replenishment[], void>({
             query: () => ({
-                url: "admin/requisites"
+                url: "admin/replenishments"
             })
         }),
         //! =================================================================
@@ -62,7 +62,8 @@ export const adminApi = createApi({
 
 export const {
     useGetAdminRequisitesQuery,
-    useLazyGetAdminRequisitesQuery,
+    useGetAllReplenishmentsListForAdminQuery,
+    useLazyGetAllReplenishmentsListForAdminQuery,
     useAdminLoginMutation,
     useAddAdminRequisiteMutation,
     useConfirmAdminReplenishmentByIdMutation

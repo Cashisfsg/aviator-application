@@ -10,6 +10,7 @@ import {
 import {
     useStateSelector,
     // useAppDispatch,
+    useGetAllReplenishmentsListForAdminQuery,
     selectAllFilters,
     Replenishment
 } from "@/store";
@@ -19,54 +20,9 @@ import { TableRowsPerPageSelector } from "./components/table-rows-per-page-selec
 import { Paginator } from "./components/paginator";
 import { PageNavigation } from "./components/page-navigation";
 
-import { formatDate, formatTime } from "@/utils/helpers";
+import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 import { IoSearchSharp } from "react-icons/io5";
-
-const replenishments: Replenishment[] = [
-    {
-        _id: "1",
-        user: "user1",
-        amount: 100,
-        currency: "USD",
-        deduction: 10,
-        status: "Ожидает оплаты",
-        statusMessage: "Waiting for confirmation",
-        isPayConfirmed: false,
-        requisite: {
-            _id: "r1",
-            requisite: "123456789",
-            name: "John Doe",
-            currency: "USD",
-            img: "img1.jpg",
-            commission: 5,
-            status: "active"
-        },
-        createdAt: "2022-01-01T12:00:00",
-        completedDate: ""
-    },
-    {
-        _id: "2",
-        user: "user2",
-        amount: 150,
-        currency: "EUR",
-        deduction: 15,
-        status: "Отменена",
-        statusMessage: "Payment completed successfully",
-        isPayConfirmed: true,
-        requisite: {
-            _id: "r2",
-            requisite: "987654321",
-            name: "Jane Doe",
-            currency: "EUR",
-            img: "img2.jpg",
-            commission: 8,
-            status: "active"
-        },
-        createdAt: "2022-01-02T14:30:00",
-        completedDate: "2022-01-02T15:00:00"
-    }
-];
 
 const columns = [
     {
@@ -75,25 +31,27 @@ const columns = [
         accessorKey: "_id"
     },
     {
+        id: "amount",
         header: "Сумма",
-        accessorKey: "amount"
+        accessorFn: (row: Replenishment) =>
+            `${formatCurrency(row.amount)} ${row.currency}`
     },
     {
         id: "debit",
         header: "Сумма списания",
-        accessorFn: (row: Replenishment) => `${row.deduction} ${row.currency}`
+        accessorFn: (row: Replenishment) =>
+            `${formatCurrency(row.deduction)} ${row.currency}`
     },
     {
         id: "status",
         header: "Статус",
         accessorKey: "status"
     },
-
     {
         id: "requisite",
         header: "Реквизиты",
         accessorFn: (row: Replenishment) =>
-            `*${row.requisite.requisite.slice(-4)}`
+            `*${row?.requisite?.requisite?.slice(-4)}`
     },
     {
         id: "date",
@@ -101,12 +59,24 @@ const columns = [
         cell: cell => {
             return (
                 <>
-                    <div>{`Создано: ${formatDate(
+                    <time
+                        dateTime={cell.row.original?.createdAt}
+                    >{`Создано: ${formatDate(
                         cell.row.original.createdAt
-                    )}`}</div>
-                    <div>{`Завершено: ${formatDate(
-                        cell.row.original.completedDate
-                    )}`}</div>
+                    )} ${formatTime(
+                        cell.row.original.createdAt,
+                        "%H:%M:%S"
+                    )}`}</time>
+                    {cell.row.original?.completedDate ? (
+                        <time
+                            dateTime={cell.row.original?.completedDate}
+                        >{`Завершено: ${formatDate(
+                            cell.row.original?.completedDate
+                        )} ${formatTime(
+                            cell.row.original?.createdAt,
+                            "%H:%M:%S"
+                        )}`}</time>
+                    ) : null}
                 </>
             );
         }
@@ -123,8 +93,13 @@ const columns = [
 ];
 
 export const AdminReplenishmentPage = () => {
+    const { data: replenishments, isSuccess } =
+        useGetAllReplenishmentsListForAdminQuery();
+
+    console.log("Data: ", replenishments);
+
     return (
-        <article className="bg-slate-200 py-8 text-black">
+        <article className="rounded-xl bg-slate-200 px-2 py-6 text-black">
             <header className="flex items-center justify-between leading-none">
                 <h1 className="text-2xl leading-none">
                     Выберите заявку на пополнение
@@ -134,15 +109,16 @@ export const AdminReplenishmentPage = () => {
                     <a className="ml-3 cursor-pointer text-blue-500">Выйти</a>
                 </span>
             </header>
-            <section className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto]">
-                <header>
-                    <IoSearchSharp />
-                    <input type="text" />
+            <section className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] gap-x-3">
+                <header className="rounded-lg bg-white px-3 py-2">
+                    <Search />
                 </header>
-                <ReplenishmentsTable
-                    data={replenishments}
-                    columns={columns}
-                />
+                {isSuccess ? (
+                    <ReplenishmentsTable
+                        data={replenishments}
+                        columns={columns}
+                    />
+                ) : null}
                 <StatusBar />
             </section>
         </article>
@@ -177,12 +153,13 @@ const ReplenishmentsTable: React.FC<TableProps> = ({ data, columns }) => {
 
     return (
         <>
-            <table>
+            <table className="table-fixed overflow-hidden rounded-lg">
                 <thead className="min-w-full border-b-4 border-double border-b-gray-400 bg-gray-300 text-xl font-medium uppercase text-gray-700">
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr
                             key={headerGroup.id}
-                            className="min-w-full text-base [&>*:nth-child(1)]:w-[72px] [&>*:nth-child(2)]:w-fit [&>*:nth-child(3)]:w-2/12 [&>*:nth-child(4)]:w-[250px] [&>*:nth-child(5)]:w-[150px] [&>*:nth-child(6)]:w-max [&>*:nth-child(7)]:w-[150px] [&>*:nth-child(8)]:w-max [&>*:nth-child(9)]:w-max"
+                            // className="min-w-full text-base [&>*:nth-child(1)]:w-[72px] [&>*:nth-child(2)]:w-fit [&>*:nth-child(3)]:w-2/12 [&>*:nth-child(4)]:w-[250px] [&>*:nth-child(5)]:w-[150px] [&>*:nth-child(6)]:w-max [&>*:nth-child(7)]:w-[150px] [&>*:nth-child(8)]:w-max [&>*:nth-child(9)]:w-max"
+                            className="text-base"
                         >
                             {headerGroup.headers.map(header => (
                                 <th
@@ -204,7 +181,7 @@ const ReplenishmentsTable: React.FC<TableProps> = ({ data, columns }) => {
                     {table.getRowModel().rows.map(row => (
                         <tr
                             key={row.id}
-                            className="border-b border-b-gray-400"
+                            className="border-b border-b-gray-400 text-xs leading-none"
                         >
                             {row.getVisibleCells().map(cell => (
                                 <td
@@ -246,5 +223,26 @@ const ReplenishmentsTable: React.FC<TableProps> = ({ data, columns }) => {
                 />
             </div>
         </>
+    );
+};
+
+const Search = () => {
+    return (
+        <div className="flex h-10 w-5/12 ">
+            <div className="flex h-full basis-full items-center gap-x-3 rounded-l-full border-2 border-slate-300 has-[input:focus]:border-blue-300">
+                <div className="pl-4">
+                    <IoSearchSharp className="text-xl" />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Введите запрос"
+                    className="h-full flex-auto focus-visible:outline-transparent"
+                />
+            </div>
+            <button className="flex w-16 items-center justify-center rounded-none rounded-r-full border-2 border-l-0 border-slate-300 bg-slate-200">
+                <IoSearchSharp className="text-xl" />
+                <span className="sr-only">Поиск</span>
+            </button>
+        </div>
     );
 };

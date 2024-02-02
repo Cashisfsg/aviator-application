@@ -62,16 +62,16 @@ button:focus-visible {
 
 .content-wrapper {
     /* height: 100%; */
-    width: min(1024px, 100% - 4rem);
+    width: min(768px, 100% - 2rem);
 
     margin-inline: auto;
 }
 
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
     .content-wrapper {
         width: min(767px, 100% - 2rem);
     }
-}
+} */
 
 @media (max-width: 420px) {
     .content-wrapper {

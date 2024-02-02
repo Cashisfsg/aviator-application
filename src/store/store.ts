@@ -1,7 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
 import {
-    // adminApi,
+    adminApi,
     authApi,
     betApi,
     drawApi,
@@ -32,7 +32,7 @@ export const store = configureStore({
         bets: betReducer,
         game: gameSliceReducer,
         referral: referralReducer,
-        // [adminApi.reducerPath]: adminApi.reducer,
+        [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
         [drawApi.reducerPath]: drawApi.reducer,
@@ -42,7 +42,7 @@ export const store = configureStore({
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
-            // .concat(adminApi.middleware)
+            .concat(adminApi.middleware)
             .concat(authApi.middleware)
             .concat(betApi.middleware)
             .concat(drawApi.middleware)

@@ -33,6 +33,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 <MdKeyboardDoubleArrowLeft className="m-auto block" />
             </button>
             <button
+                title="Предыдущая страница"
                 disabled={hasPreviousPage}
                 onClick={goToThePreviousPage}
                 className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
@@ -40,6 +41,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 <MdKeyboardArrowLeft className="m-auto block" />
             </button>
             <button
+                title="Следующая страница"
                 disabled={hasNextPage}
                 onClick={goToTheNextPage}
                 className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
@@ -47,6 +49,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 <MdKeyboardArrowRight className="m-auto block" />
             </button>
             <button
+                title="Последняя страница"
                 disabled={hasNextPage}
                 onClick={goToTheLastPage}
                 className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"

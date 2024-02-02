@@ -1,7 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootStore } from "../types";
 
-type StatusFiltersValues =
+export type StatusFiltersValues =
     | ""
     | "Ожидает оплаты"
     | "Успешно завершена"
