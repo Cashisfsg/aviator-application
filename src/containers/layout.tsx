@@ -12,7 +12,7 @@ export const Layout = () => {
     return (
         <>
             {/* <Header /> */}
-            <main className="flex flex-auto flex-col">
+            <main className="content-wrapper flex flex-auto flex-col">
                 <Outlet />
             </main>
             <Toaster />

@@ -10,7 +10,7 @@ export const MainPage = () => {
         <>
             <Header />
 
-            <main className="flex flex-auto flex-col gap-y-4">
+            <main className="content-wrapper flex flex-auto flex-col gap-y-4">
                 <Chart />
                 <BettingZone />
                 <Statistics />

@@ -35,13 +35,11 @@ export const LatestRatiosList = () => {
     return (
         <div className="relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">
             <div className="flex gap-2 overflow-x-hidden">
-                {coef.slice(0, 12).map((e, i) => (
+                {coef.slice(0, 16).map((e, i) => (
                     <Badge
                         key={`${e} - ${key}`}
                         value={e}
-                        className={`shrink-0 ${generateClassName(
-                            i
-                        )} animate-left-appearance hover:opacity-100`}
+                        className={generateClassName(i)}
                     />
                 ))}
             </div>
@@ -118,11 +116,34 @@ export const LatestRatiosList = () => {
 };
 
 const generateClassName = (index: number): string => {
-    const className = Array.from(
-        { length: 12 },
-        (_, index) =>
-            `opacity-${Math.ceil((100 - Number(index + 1) * 5 + 1) / 10) * 10}`
-    );
+    const _ = "opacity-80";
+    const baseClassName = "shrink-0 animate-left-appearance hover:opacity-100 ";
 
-    return className[index];
+    // const className = Array.from(
+    //     { length: 16 },
+    //     (_, index) =>
+    //         `opacity-${Math.ceil((100 - Number(index + 1) * 5 + 1) / 10) * 10}`
+    // );
+    const className = [
+        "opacity-100",
+        "opacity-100",
+        "opacity-90",
+        "opacity-90",
+        "opacity-80",
+        "opacity-80",
+        "opacity-70",
+        "opacity-70",
+        "opacity-60",
+        "opacity-60",
+        "opacity-50",
+        "opacity-50",
+        "opacity-40",
+        "opacity-40",
+        "opacity-30",
+        "opacity-30",
+        "opacity-20",
+        "opacity-20"
+    ];
+
+    return baseClassName + className[index];
 };
