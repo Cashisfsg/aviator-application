@@ -445,6 +445,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         };
 
         const cancelBetBeforeGameStart = () => {
+            console.log("Loading event");
+
             toggleRoundState();
 
             if (currentGameTab.betState !== "bet") {

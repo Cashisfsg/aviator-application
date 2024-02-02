@@ -41,7 +41,7 @@ export const LatestRatiosList = () => {
                         value={e}
                         className={`shrink-0 ${generateClassName(
                             i
-                        )}  animate-left-appearance hover:opacity-100`}
+                        )} animate-left-appearance hover:opacity-100`}
                     />
                 ))}
             </div>
@@ -120,8 +120,9 @@ export const LatestRatiosList = () => {
 const generateClassName = (index: number): string => {
     const className = Array.from(
         { length: 12 },
-        (_, index) => Math.ceil((100 - Number(index + 1) * 5 + 1) / 10) * 10
+        (_, index) =>
+            `opacity-${Math.ceil((100 - Number(index + 1) * 5 + 1) / 10) * 10}`
     );
 
-    return `opacity-${className[index]}`;
+    return className[index];
 };

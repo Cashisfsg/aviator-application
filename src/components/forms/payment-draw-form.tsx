@@ -35,7 +35,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            amount: 0,
+            amount: undefined,
             userRequisite: ""
         }
     });
@@ -82,9 +82,10 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 <span className="text-left ">Введите реквизиты для вывода</span>
                 <Input
                     inputMode="numeric"
+                    placeholder="XXXX-XXXX-XXXX-XXXX"
                     {...register("userRequisite")}
                     aria-invalid={errors?.userRequisite ? "true" : "false"}
-                    className="border-transparent bg-slate-300/70 text-center leading-none text-black shadow-md focus-visible:outline-slate-400/70"
+                    className="border-transparent bg-slate-300/70 text-center leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                 />
                 {errors?.userRequisite ? (
                     <ErrorMessage message={errors?.userRequisite?.message} />
@@ -96,9 +97,11 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 </span>
                 <Input
                     inputMode="numeric"
+                    // placeholder="0"
                     {...register("amount")}
+                    placeholder="0"
                     aria-invalid={errors?.amount ? "true" : "false"}
-                    className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus-visible:outline-slate-400/70"
+                    className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                 />
                 {errors?.amount ? (
                     <ErrorMessage

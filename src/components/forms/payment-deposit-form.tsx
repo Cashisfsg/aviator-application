@@ -56,6 +56,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         isSuccess: isLimitsSuccessResponse,
         isLoading: isLimitsLoading
     } = useGetReplenishmentLimitsQuery();
+
     const [currentReplenishment, setCurrentReplenishment] = useState<
         Replenishment | undefined
     >(() => {
@@ -64,6 +65,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                 replenishment?._id === initialFormState.replenishmentId
         );
     });
+
     const { data: requisites } = useGetUserRequisitesQuery();
     const [depositBalance, { isLoading: isReplenishmentRequestLoading }] =
         useAddReplenishmentMutation();
@@ -87,7 +89,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             )
         ),
         defaultValues: {
-            amount: 0
+            amount: undefined
         }
     });
     const { toast } = useToast();
@@ -173,7 +175,8 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                                 inputMode="numeric"
                                 aria-invalid={errors?.amount ? "true" : "false"}
                                 {...register("amount")}
-                                className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus-visible:outline-slate-400/70"
+                                placeholder="0"
+                                className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                             />
                             {errors?.amount ? (
                                 <ErrorMessage
