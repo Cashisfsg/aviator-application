@@ -100,7 +100,7 @@ export const LatestRatiosList = () => {
                 <h2 className="px-2.5 pb-2.5 text-left font-bold uppercase">
                     История раундов
                 </h2>
-                <div className="flex flex-wrap justify-center gap-2 bg-[#262830] p-1.5">
+                <div className="flex flex-wrap gap-2 bg-[#262830] px-7 py-1.5">
                     {coef.map((e, i) => (
                         <Badge
                             key={i}
