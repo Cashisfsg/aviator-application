@@ -127,8 +127,7 @@ export const Chart = () => {
                             <use
                                 id="use-propeller"
                                 href="#propeller"
-                                transform="translate(-24, -24)"
-                                className="origin-center "
+                                className="origin-center -translate-x-6 -translate-y-6"
                                 x="50%"
                                 y="50%"
                                 onAnimationEnd={event => {

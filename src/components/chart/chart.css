@@ -171,6 +171,7 @@ figure {
 
 #use-propeller {
     animation: rotate 4.55s linear;
+    /* transform-origin: center -50% center; */
 }
 
 @keyframes rotate {

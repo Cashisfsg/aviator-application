@@ -3,7 +3,8 @@ export const Logo = () => {
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 60 15"
-            height="1em"
+            height="16px"
+            width="64px"
         >
             <path
                 fill="#E50539"
