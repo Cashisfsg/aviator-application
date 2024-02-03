@@ -10,13 +10,13 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default: "",
-                destructive: "bg-red-500 text-slate-50 hover:bg-red-500/90",
+                destructive: "bg-red-500 text-slate-50 mh:hover:bg-red-500/90",
                 outline:
-                    "border border-slate-800 bg-white hover:bg-slate-100 text-slate-900",
+                    "border border-slate-800 bg-white mh:hover:bg-slate-100 text-slate-900",
                 secondary:
-                    "text-inherit hover:bg-slate-600/70 hover:text-white border border-slate-700 bg-black-150",
-                ghost: "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
-                link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
+                    "text-inherit mh:hover:bg-slate-600/70 mh:hover:text-white border border-slate-700 bg-black-150",
+                ghost: "hover:bg-slate-100 mh:hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
+                link: "text-slate-900 underline-offset-4 mh:hover:underline dark:text-slate-50",
                 confirm: "text-white w-full bg-blue-500 p-2 text-xl font-bold"
             },
             size: {

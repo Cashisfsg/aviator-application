@@ -12,7 +12,7 @@ export const PreviousRouteLink = ({ className }: { className?: string }) => {
             to=""
             onClick={() => navigate(-1)}
             className={cn(
-                "absolute -top-0.5 p-0 text-base text-white-50 transition-colors hover:text-slate-300",
+                "mh:hover:text-slate-300 absolute -top-0.5 p-0 text-base text-white-50 transition-colors",
                 className
             )}
         >

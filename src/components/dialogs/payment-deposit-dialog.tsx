@@ -32,7 +32,7 @@ export const PaymentDepositDialog: React.FC<PaymentDialogProps> = ({
                         initialFormState={initialFormState}
                         selectedRequisiteId={selectedRequisiteId}
                     />
-                    <Dialog.Close className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-slate-100 data-[state=open]:text-slate-500">
+                    <Dialog.Close className="mh:hover:opacity-100 absolute right-2 top-2 rounded-sm opacity-70 ring-offset-white transition-opacity focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-slate-100 data-[state=open]:text-slate-500">
                         <X className="h-4 w-4" />
                         <span className="sr-only">Close</span>
                     </Dialog.Close>

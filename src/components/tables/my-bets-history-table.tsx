@@ -9,6 +9,7 @@ import {
 
 import { Table, TableHeaderCell, Row, Cell } from "@/components/ui/table";
 import { InfiniteScroll } from "../infinite-scroll";
+import { Badge } from "@/components/ui/badge";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
@@ -79,7 +80,7 @@ export const MyBetsHistoryTable = () => {
                         "Время",
                         `Ставка, ${balance?.currency || "USD"}`,
                         "Коэфф.",
-                        "Выигрыш, USD"
+                        `Выигрыш, ${balance?.currency || "USD"}`
                     ]}
                     data={bets || []}
                     renderHeader={headers => (
@@ -121,13 +122,7 @@ export const MyBetsHistoryTable = () => {
                                     </Cell>
                                     <Cell>{formatCurrency(bet?.bet)}</Cell>
                                     <Cell>
-                                        {!isNaN(bet?.coeff) ? (
-                                            <span className="rounded-full bg-[#c017b4] px-3 py-0.5 text-xs font-bold">
-                                                {bet?.coeff}x
-                                            </span>
-                                        ) : (
-                                            "-"
-                                        )}
+                                        <Badge value={bet?.coeff} />
                                     </Cell>
                                     <Cell>
                                         {!isNaN(bet?.win)

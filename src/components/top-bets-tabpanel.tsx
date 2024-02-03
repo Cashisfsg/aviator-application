@@ -11,6 +11,7 @@ import {
 import { Table, TableHeaderCell, Row, Cell } from "./ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { InfiniteScroll } from "./infinite-scroll";
+import { Badge } from "@/components/ui/badge";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
@@ -148,26 +149,7 @@ const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
                                     </Cell>
                                     <Cell>{formatCurrency(bet?.bet)}</Cell>
                                     <Cell>
-                                        {!isNaN(bet?.coeff) ? (
-                                            <span className="rounded-full bg-[#c017b4] px-3 py-0.5 text-xs font-bold">
-                                                {bet?.coeff}x
-                                            </span>
-                                        ) : (
-                                            "-"
-                                        )}
-                                        {/* <span
-                                            className={
-                                                bet?.win && bet?.win !== 0
-                                                    ? "rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold text-[#c017b4]"
-                                                    : "px-3 py-0.5 text-sm font-bold"
-                                            }
-                                        >
-                                            {!isNaN(bet?.coeff)
-                                                ? `${formatCurrency(
-                                                      bet?.coeff
-                                                  )}x`
-                                                : "-"}
-                                        </span> */}
+                                        <Badge value={bet?.coeff} />
                                     </Cell>
                                     <Cell>
                                         {!isNaN(bet?.win)

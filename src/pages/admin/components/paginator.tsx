@@ -28,7 +28,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 title="Первая страница"
                 disabled={hasPreviousPage}
                 onClick={goToTheFirstPage}
-                className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
+                className="mh:hover:bg-neutral-100 aspect-square w-12 rounded-full bg-white active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
             >
                 <MdKeyboardDoubleArrowLeft className="m-auto block" />
             </button>
@@ -36,7 +36,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 title="Предыдущая страница"
                 disabled={hasPreviousPage}
                 onClick={goToThePreviousPage}
-                className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
+                className="mh:hover:bg-neutral-100 aspect-square w-12 rounded-full bg-white active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
             >
                 <MdKeyboardArrowLeft className="m-auto block" />
             </button>
@@ -44,7 +44,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 title="Следующая страница"
                 disabled={hasNextPage}
                 onClick={goToTheNextPage}
-                className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
+                className="mh:hover:bg-neutral-100 aspect-square w-12 rounded-full bg-white active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
             >
                 <MdKeyboardArrowRight className="m-auto block" />
             </button>
@@ -52,7 +52,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
                 title="Последняя страница"
                 disabled={hasNextPage}
                 onClick={goToTheLastPage}
-                className="aspect-square w-12 rounded-full bg-white hover:bg-neutral-100 active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
+                className="mh:hover:bg-neutral-100 aspect-square w-12 rounded-full bg-white active:bg-neutral-300 disabled:pointer-events-none disabled:text-neutral-400"
             >
                 <MdKeyboardDoubleArrowRight className="m-auto block" />
             </button>

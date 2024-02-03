@@ -17,8 +17,8 @@ export const SignInButton = () => {
                 <Link
                     to="/main/sign-in"
                     style={{ textShadow: "0 4px 8px rgba(0, 0, 0, .1)" }}
-                    className="w-5/12 rounded-lg bg-[linear-gradient(90.77deg,#0095ff_.96%,#0855c4_99.87%)] px-4 py-1.5 font-bold shadow-[0_6px_18px_#1178df4d] transition-all duration-300 hover:opacity-80"
-                    // className="rounded-lg bg-[linear-gradient(90.77deg,#0095ff_.96%,#0855c4_99.87%)] px-4 py-1.5 font-bold shadow-[0_6px_18px_#1178df4d] transition-all duration-300 hover:opacity-80"
+                    className="mh:hover:opacity-80 w-5/12 rounded-lg bg-[linear-gradient(90.77deg,#0095ff_.96%,#0855c4_99.87%)] px-4 py-1.5 font-bold shadow-[0_6px_18px_#1178df4d] transition-all duration-300"
+                    // className="rounded-lg bg-[linear-gradient(90.77deg,#0095ff_.96%,#0855c4_99.87%)] px-4 py-1.5 font-bold shadow-[0_6px_18px_#1178df4d] transition-all duration-300 mh:hover:opacity-80"
                 >
                     Вход
                 </Link>

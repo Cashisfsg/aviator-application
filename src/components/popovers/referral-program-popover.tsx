@@ -83,7 +83,7 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                     </span>
                     <button
                         onClick={copyTelegramLinkToClipboard}
-                        className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
+                        className="mh:hover:bg-green-350 rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430]"
                     >
                         Скопировать
                     </button>

@@ -43,7 +43,7 @@ export const PaymentDrawPage = () => {
                         className="relative col-start-2 col-end-3 row-start-1 row-end-3 inline-block justify-self-end"
                     >
                         <Popover>
-                            <Popover.Trigger className="bg-slate-300/70 px-3 py-1.5 leading-none transition-colors duration-300 hover:bg-slate-300/60">
+                            <Popover.Trigger className="mh:hover:bg-slate-300/60 bg-slate-300/70 px-3 py-1.5 leading-none transition-colors duration-300">
                                 История
                             </Popover.Trigger>
                             <Popover.Portal renderElement={renderElement}>

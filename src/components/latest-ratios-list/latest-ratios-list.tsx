@@ -48,7 +48,7 @@ export const LatestRatiosList = () => {
                 aria-haspopup={true}
                 aria-expanded={false}
                 onClick={onClickHandler}
-                className="group peer flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] hover:text-[#e50539] aria-expanded:z-10 aria-expanded:text-[#e50539]"
+                className="mh:hover:text-[#e50539] group peer flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] aria-expanded:z-10 aria-expanded:text-[#e50539]"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +100,7 @@ export const LatestRatiosList = () => {
                 <h2 className="px-2.5 pb-2.5 text-left font-bold uppercase">
                     История раундов
                 </h2>
-                <div className="flex flex-wrap gap-2 bg-[#262830] py-1.5 pl-4 pr-8">
+                <div className="flex flex-wrap gap-2 bg-[#262830] px-1.5 py-1.5">
                     {coef.map((e, i) => (
                         <Badge
                             key={i}
@@ -117,7 +117,8 @@ export const LatestRatiosList = () => {
 
 const generateClassName = (index: number): string => {
     const _ = "opacity-80";
-    const baseClassName = "shrink-0 animate-left-appearance hover:opacity-100 ";
+    const baseClassName =
+        "shrink-0 animate-left-appearance mh:hover:opacity-100 ";
 
     // const className = Array.from(
     //     { length: 16 },

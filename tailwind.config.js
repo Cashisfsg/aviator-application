@@ -69,7 +69,7 @@ export default {
             borderRadius: {
                 "2.5xl": "20px"
             },
-            screens: { xs: "360px" },
+            screens: { xs: "360px", mh: { raw: "(hover: hover)" } },
             keyframes: {
                 "accordion-down": {
                     from: { height: 0 },

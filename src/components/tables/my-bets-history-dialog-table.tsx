@@ -10,6 +10,7 @@ import {
 
 import { Table, TableHeaderCell, Row, Cell } from "@/components/ui/table";
 import { InfiniteScroll } from "@/components/infinite-scroll";
+import { Badge } from "@/components/ui/badge";
 
 import { formatCurrency, formatDate, formatTime } from "@/utils/helpers";
 
@@ -105,13 +106,7 @@ export const MyBetsHistoryDialogTable = () => {
                                         </Cell>
                                         <Cell>{formatCurrency(bet?.bet)}</Cell>
                                         <Cell>
-                                            {!isNaN(bet?.coeff) ? (
-                                                <span className="rounded-full bg-[#c017b4] px-3 py-0.5 text-xs font-bold">
-                                                    {bet?.coeff}x
-                                                </span>
-                                            ) : (
-                                                "-"
-                                            )}
+                                            <Badge value={bet?.coeff} />
                                         </Cell>
                                         <Cell>
                                             {!isNaN(bet?.win)

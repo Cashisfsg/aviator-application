@@ -68,7 +68,7 @@ export const BonusTable = () => {
                                             )
                                         }
                                         disabled={bonusTab.betState !== "init"}
-                                        className="col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-50"
+                                        className="mh:hover:bg-green-350 col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-50"
                                     >
                                         Активировать
                                     </button>

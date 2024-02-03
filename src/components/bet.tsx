@@ -571,7 +571,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                             );
                         }
                     }}
-                    className="rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-green-350 active:translate-y-[1px] active:border-[#1c7430]"
+                    className="mh:hover:bg-green-350 rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430]"
                 >
                     <p className="text-xl">Ставка</p>
                     <p>
@@ -590,7 +590,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             return (
                 <button
                     onClick={abortBet}
-                    className="h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f7001f] active:translate-y-[1px] active:border-[#b21f2d]"
+                    className="mh:hover:bg-[#f7001f] h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d]"
                 >
                     Отмена
                 </button>
@@ -603,7 +603,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                     </p>
                     <button
                         onClick={abortBet}
-                        className="h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f7001f] active:translate-y-[1px] active:border-[#b21f2d]"
+                        className="mh:hover:bg-[#f7001f] h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d]"
                     >
                         Отмена
                     </button>
@@ -613,7 +613,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             return (
                 <button
                     onClick={cashOut}
-                    className="rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 hover:bg-[#f58708] active:translate-y-[1px] active:border-[#c69500]"
+                    className="mh:hover:bg-[#f58708] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500]"
                 >
                     <p>Вывести</p>
                     <p className="text-2xl">

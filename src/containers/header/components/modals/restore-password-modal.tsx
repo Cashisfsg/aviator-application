@@ -20,7 +20,7 @@ export const RestorePasswordModal = () => {
                     <Button
                         // to=""
                         onClick={() => navigate(-1)}
-                        className="absolute left-4 top-4 p-0 text-2xl text-white-50 transition-colors hover:text-slate-300"
+                        className="mh:hover:text-slate-300 absolute left-4 top-4 p-0 text-2xl text-white-50 transition-colors"
                     >
                         <IoMdArrowRoundBack />
                     </Button>

@@ -22,7 +22,7 @@ const generateClassName = (value: number | undefined): string | undefined => {
     if (value === undefined) return;
 
     const baseClassName =
-        "rounded-full w-[52px] py-0.5 text-xs font-bold bg-black-250 select-none";
+        "rounded-full min-w-[52px] py-0.5 px-3 text-xs font-bold bg-black-250 select-none";
 
     if (value < 2) return baseClassName + " text-[#34b4ff]";
     else if (value < 10) return baseClassName + " text-[#913ef8]";
