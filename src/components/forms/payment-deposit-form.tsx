@@ -227,12 +227,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         case "second":
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
-                    <p className="flex justify-between text-xs text-slate-400">
-                        <span className="justify-self-start text-sm leading-5 text-slate-400 ">
-                            <pre>ID</pre>{" "}
+                    <p className="flex items-center justify-between text-xs text-slate-400">
+                        <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
+                            <span>ID</span>{" "}
                             <ClipboardCopy
                                 textToCopy={currentReplenishment?._id}
-                                className="inline-block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                                className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
                                 {currentReplenishment?._id || ""}
                             </ClipboardCopy>
@@ -264,9 +264,15 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         case "confirm":
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
-                    <p className="flex justify-between text-xs text-slate-400">
-                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
-                            {`ID ${currentReplenishment?._id}`}
+                    <p className="flex items-center justify-between text-xs text-slate-400">
+                        <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
+                            <span>ID</span>{" "}
+                            <ClipboardCopy
+                                textToCopy={currentReplenishment?._id}
+                                className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                            >
+                                {currentReplenishment?._id || ""}
+                            </ClipboardCopy>
                         </span>
                         <span>
                             Время на оплату{" "}
@@ -326,9 +332,15 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         case "reject":
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
-                    <p className="flex justify-between text-xs text-slate-400">
-                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
-                            {`ID ${currentReplenishment?._id}`}
+                    <p className="flex items-center justify-between text-xs text-slate-400">
+                        <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
+                            <span>ID</span>{" "}
+                            <ClipboardCopy
+                                textToCopy={currentReplenishment?._id}
+                                className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                            >
+                                {currentReplenishment?._id || ""}
+                            </ClipboardCopy>
                         </span>
                         <span>
                             Время на оплату{" "}
@@ -434,10 +446,20 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 </span>
             </p>
 
-            <Field
+            {/* <Field
                 label={"Реквизиты для пополнения"}
                 value={currentDeposit?.requisite?.requisite || ""}
-            />
+            /> */}
+
+            <div className="grid gap-y-1 space-y-0 text-sm text-slate-400">
+                <p>Реквизиты для пополнения</p>
+                <ClipboardCopy
+                    textToCopy={currentDeposit?.requisite?.requisite}
+                    className="rounded-lg border-none bg-slate-300/70 px-4 py-2 text-black shadow-md transition-colors focus-visible:outline-slate-400/70 mh:hover:text-slate-600"
+                >
+                    {currentDeposit?.requisite?.requisite || ""}
+                </ClipboardCopy>
+            </div>
 
             <Field
                 label={"Сумма депозита"}
