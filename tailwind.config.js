@@ -88,8 +88,8 @@ export default {
                     100: { transform: "rotate(360deg)" }
                 },
                 "left-appearance": {
-                    from: { translate: "-100% 0%" },
-                    to: { translate: "0% 0%" }
+                    from: { translate: "-52px 0px" },
+                    to: { translate: "0px 0px" }
                 }
             },
             animation: {

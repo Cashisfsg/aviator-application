@@ -1,16 +1,66 @@
-import { useState, useId } from "react";
+import { useState, useEffect, useId } from "react";
+
+import {
+    useStateSelector,
+    // useAppDispatch,
+    selectSocket,
+    // betApi,
+    // useGetLastThirtyCoefficientsQuery,
+    Coefficient,
+    useLazyGetLastThirtyCoefficientsQuery
+} from "@/store";
 
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
     const [key, setKey] = useState(0);
-    const [coef, setCoef] = useState(
-        Array(30)
-            .fill(0)
-            .map(_ => Math.random() * 11)
-    );
 
+    const socket = useStateSelector(state => selectSocket(state));
+    const [coefficients, setCoefficients] = useState<Coefficient[]>([]);
     const dropdownMenuId = useId();
+
+    // const dispatch = useAppDispatch();
+    // const { data: coefficients, isSuccess } =
+    //     useGetLastThirtyCoefficientsQuery();
+    const [fetchCoefficients, { isSuccess }] =
+        useLazyGetLastThirtyCoefficientsQuery();
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const { data } = await fetchCoefficients();
+
+                if (data === undefined) return;
+
+                setCoefficients(data);
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+    }, [fetchCoefficients]);
+
+    useEffect(() => {
+        const addCoefficient = async () => {
+            (async () => {
+                try {
+                    const { data } = await fetchCoefficients();
+
+                    if (data === undefined) return;
+
+                    setCoefficients(data);
+                    setKey(key => key + 1);
+                } catch (error) {
+                    console.error(error);
+                }
+            })();
+        };
+
+        socket.on("crash", addCoefficient);
+
+        return () => {
+            socket.on("crash", addCoefficient);
+        };
+    }, [socket, fetchCoefficients]);
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
@@ -24,31 +74,33 @@ export const LatestRatiosList = () => {
         );
     };
 
-    const add = () => {
-        setKey(key => key + 1);
-        setCoef(coef => {
-            const newArray = coef.slice(0, -1);
-            return [Math.random() * 15, ...newArray];
-        });
-    };
+    // const add = () => {
+    //     setKey(key => key + 1);
+    //     setCoef(coef => {
+    //         const newArray = coef.slice(0, -1);
+    //         return [Math.random() * 15, ...newArray];
+    //     });
+    // };
 
     return (
         <div className="relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">
-            <div className="flex gap-2 overflow-x-hidden">
-                {coef.slice(0, 16).map((e, i) => (
-                    <Badge
-                        key={`${e} - ${key}`}
-                        value={e}
-                        className={generateClassName(i)}
-                    />
-                ))}
-            </div>
+            {isSuccess ? (
+                <div className="flex flex-auto gap-2 overflow-x-hidden">
+                    {coefficients?.slice(0, 16)?.map((coefficient, i) => (
+                        <Badge
+                            key={`${coefficient?._id} - ${key}`}
+                            value={coefficient?.coeff}
+                            className={generateClassName(i)}
+                        />
+                    ))}
+                </div>
+            ) : null}
             <button
                 aria-controls={dropdownMenuId}
                 aria-haspopup={true}
                 aria-expanded={false}
                 onClick={onClickHandler}
-                className="mh:hover:text-[#e50539] group peer flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] aria-expanded:z-10 aria-expanded:text-[#e50539]"
+                className="group peer flex shrink-0 items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] aria-expanded:z-10 aria-expanded:text-[#e50539] mh:hover:text-[#e50539]"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -93,6 +145,7 @@ export const LatestRatiosList = () => {
                     </g>
                 </svg>
             </button>
+
             <section
                 id={dropdownMenuId}
                 className="absolute left-0 top-0 hidden w-full overflow-hidden rounded-2xl bg-[#1f2128] pt-2.5 peer-aria-expanded:z-[5] peer-aria-expanded:block"
@@ -101,10 +154,10 @@ export const LatestRatiosList = () => {
                     История раундов
                 </h2>
                 <div className="flex flex-wrap gap-2 bg-[#262830] px-1.5 py-1.5">
-                    {coef.map((e, i) => (
+                    {coefficients?.map((coefficient, i) => (
                         <Badge
                             key={i}
-                            value={e}
+                            value={coefficient?.coeff}
                             className=""
                         />
                     ))}

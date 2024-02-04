@@ -3,6 +3,12 @@ import { EntityState, createEntityAdapter } from "@reduxjs/toolkit";
 import { Bet, PaginationParams } from "./types";
 import { RootStore } from "../types";
 
+export interface Coefficient {
+    _id: string;
+    coeff: number;
+    createdAt: string;
+}
+
 export const topBetsEntityAdapter = createEntityAdapter({
     selectId: (bet: Bet) => bet._id
     // sortComparer: (a, b) => {
@@ -37,7 +43,7 @@ export const betApi = createApi({
         }
     }),
 
-    tagTypes: ["My", "Top"],
+    tagTypes: ["My", "Top", "Coefficients"],
 
     endpoints: builder => ({
         getTopBets: builder.query<
@@ -187,6 +193,12 @@ export const betApi = createApi({
             //           ]
             //         : ["My"];
             // }
+        }),
+        getLastThirtyCoefficients: builder.query<Coefficient[], void>({
+            query: () => ({
+                url: "bets/coeffs"
+            }),
+            providesTags: ["Coefficients"]
         })
     })
 });
@@ -195,5 +207,7 @@ export const {
     useGetTopBetsQuery,
     useLazyGetTopBetsQuery,
     useGetUserBetsQuery,
-    useLazyGetUserBetsQuery
+    useLazyGetUserBetsQuery,
+    useGetLastThirtyCoefficientsQuery,
+    useLazyGetLastThirtyCoefficientsQuery
 } = betApi;

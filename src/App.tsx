@@ -34,7 +34,6 @@ export const App = () => {
     useEffect(() => {
         if (!tg?.initDataUnsafe?.user) return;
 
-        // console.log(tg?.initDataUnsafe?.user?.id);
         dispatch(
             setUserInitData({
                 telegramId: tg?.initDataUnsafe?.user?.id,
