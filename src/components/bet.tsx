@@ -9,13 +9,14 @@ import {
     useGetGameLimitsQuery,
     userApi,
     betApi,
-    selectCurrentGameTab,
     setBetState,
     setGameDetails,
     setCurrentBet,
     toggleAutoMode,
     selectSocket,
     selectBonus,
+    selectCurrentGameTab,
+    selectSettings,
     deactivateBonus,
     resetGameDetails,
     GameDetails
@@ -30,6 +31,7 @@ import { Switch } from "@/components/ui/switch";
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
 
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import WinSound from "@/assets/sound/win.mp3";
 
 interface BetProps {
     betNumber: 1 | 2;
@@ -104,6 +106,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
     const bonus = useStateSelector(state => selectBonus(state));
     const { isAuthenticated } = useAuth();
 
+    const audioRef = useRef<HTMLAudioElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -111,6 +114,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
 
     const dispatch = useAppDispatch();
     const socket = useStateSelector(state => selectSocket(state));
+    const { soundEnabled } = useStateSelector(state => selectSettings(state));
 
     useEffect(() => {
         // const makeBet = () => {
@@ -345,8 +349,25 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber }) => {
                     )}
                 </fieldset>
             </form>
+            <audio
+                preload="auto"
+                ref={audioRef}
+            >
+                <source
+                    src={WinSound}
+                    type="audio/mpeg"
+                />
+                Ваш браузер не поддерживает элемент <code>audio</code>.
+            </audio>
+            <BetButton
+                betNumber={betNumber}
+                onClick={() => {
+                    if (!audioRef.current || !soundEnabled) return;
 
-            <BetButton betNumber={betNumber} />
+                    audioRef.current.currentTime = 0.25;
+                    audioRef.current?.play();
+                }}
+            />
         </section>
     );
 };
@@ -413,9 +434,11 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
     }
 );
 
-interface BetButtonProps extends Pick<BetProps, "betNumber"> {}
+interface BetButtonProps extends Pick<BetProps, "betNumber"> {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
 
-const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
+const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const [newRoundBegin, toggleRoundState] = useReducer(state => !state, true);
     const dispatch = useAppDispatch();
     const { toast } = useToast();
@@ -529,7 +552,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         dispatch(setBetState({ betNumber, betState: "init" }));
     };
 
-    const cashOut = () => {
+    const cashOut: React.MouseEventHandler<HTMLButtonElement> = event => {
         socket.emit("cash-out", {
             betNumber
         });
@@ -555,6 +578,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
         dispatch(userApi.util.invalidateTags(["Balance"]));
         dispatch(betApi.util.resetApiState());
         dispatch(betApi.util.invalidateTags(["My"]));
+        onClick?.(event);
     };
 
     switch (currentGameTab.betState) {
