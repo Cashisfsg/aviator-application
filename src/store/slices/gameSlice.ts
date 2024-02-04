@@ -94,8 +94,8 @@ const initialState = {
     },
     settings: {
         animationEnabled: true,
-        soundEnabled: false,
-        musicEnabled: false
+        soundEnabled: true,
+        musicEnabled: true
     }
 } as Game;
 

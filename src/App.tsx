@@ -70,6 +70,7 @@ export const App = () => {
             </Suspense>
             <audio
                 loop
+                autoPlay
                 preload="auto"
                 ref={audioRef}
             >

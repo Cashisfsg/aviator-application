@@ -27,6 +27,15 @@ export const SignInForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    console.log(
+        "Email: ",
+        location?.state?.email,
+        " password: ",
+        location?.state?.password
+    );
+
+    console.log("Location: ", location);
+
     const {
         register,
         handleSubmit,
@@ -35,7 +44,7 @@ export const SignInForm = () => {
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            login: location?.state?.email,
+            login: sessionStorage.getItem("email") || undefined,
             password: location?.state?.password
         }
     });

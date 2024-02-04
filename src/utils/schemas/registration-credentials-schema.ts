@@ -15,8 +15,8 @@ export const registrationCredentialsSchema = z
             .regex(alphanumericRegex, {
                 message: "Поле может содержать только символы A-Z и цифры"
             })
-            .min(2, {
-                message: "Поле должно содержать не менее 2 символов"
+            .min(5, {
+                message: "Поле должно содержать не менее 5 символов"
             })
             .max(20, {
                 message:

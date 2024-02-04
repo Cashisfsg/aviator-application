@@ -4,6 +4,7 @@ import { formatDate, formatTime } from "@/utils/helpers";
 import {
     useAppDispatch,
     useStateSelector,
+    userApi,
     selectCurrentGameTab,
     activateBonus,
     useGetUserPromoQuery,
@@ -25,6 +26,7 @@ export const BonusTable = () => {
         if (!id || !quantity || bonusTab.betState !== "init") return;
 
         dispatch(activateBonus({ bonusId: id, bonusQuantity: quantity }));
+        dispatch(userApi.util.invalidateTags(["Promo"]));
 
         toast({
             title: "Промокод на одноразовую ставку успешно активирован",
