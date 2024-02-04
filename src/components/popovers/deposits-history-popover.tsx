@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
 import { usePopoverContext } from "@/components/ui/popover/use-popover-context";
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
 interface PaymentHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {
     setInitialFormState: React.Dispatch<
@@ -133,9 +134,15 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 ) : null}
                 <tr>
                     <td className="px-1.5 py-0.5 align-middle">
-                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap align-middle text-slate-500">
-                            {`ID ${deposit?._id || ""}`}
-                        </span>
+                        <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
+                            <span>ID</span>{" "}
+                            <ClipboardCopy
+                                textToCopy={deposit?._id}
+                                className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                            >
+                                {deposit?._id || ""}
+                            </ClipboardCopy>
+                        </p>
                     </td>
                     {deposit?.status === "Ожидает оплаты" ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">

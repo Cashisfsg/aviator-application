@@ -85,7 +85,7 @@ Popover.Content = ({ className, children, ...props }) => {
             {...props}
             ref={dialogRef}
             className={cn(
-                "absolute left-auto top-[calc(100%+0.25rem)] isolate z-[1] m-0 w-72",
+                "absolute left-auto top-[calc(100%+0.25rem)] isolate z-[1] m-0 min-w-72",
                 className
             )}
         >

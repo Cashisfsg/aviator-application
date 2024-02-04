@@ -10,6 +10,7 @@ import {
     useGetUserRecommendedRequisitesQuery
 } from "@/store";
 
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { PaymentMethod, TechnicalSupport } from "./components";
 
 export const PaymentDrawPage = () => {
@@ -35,8 +36,14 @@ export const PaymentDrawPage = () => {
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
-                    <p className="inline-block max-w-32 justify-self-start overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-5 text-slate-400">
-                        {`ID ${user?._id || ""}`}
+                    <p className="justify-self-start text-sm leading-5 text-slate-400 ">
+                        <span>ID</span>{" "}
+                        <ClipboardCopy
+                            textToCopy={user?._id}
+                            className="inline-block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                        >
+                            {user?._id || ""}
+                        </ClipboardCopy>
                     </p>
                     <div
                         ref={setRenderElement}

@@ -23,6 +23,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { CountDownTimer } from "../timer/count-down-timer";
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { ImSpinner9 } from "react-icons/im";
 
 import { cn } from "@/utils";
@@ -227,8 +228,14 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             return (
                 <PaymentDetails currentDeposit={currentReplenishment}>
                     <p className="flex justify-between text-xs text-slate-400">
-                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap">
-                            {`ID ${currentReplenishment?._id}`}
+                        <span className="justify-self-start text-sm leading-5 text-slate-400 ">
+                            <pre>ID</pre>{" "}
+                            <ClipboardCopy
+                                textToCopy={currentReplenishment?._id}
+                                className="inline-block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                            >
+                                {currentReplenishment?._id || ""}
+                            </ClipboardCopy>
                         </span>
                         <span>
                             Время на оплату{" "}

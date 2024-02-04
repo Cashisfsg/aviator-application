@@ -3,6 +3,7 @@ import { useGetAllDrawsQuery, useCancelDrawMutation, Draw } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
 import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
@@ -19,7 +20,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
         <section
             {...props}
             className={cn(
-                "w-72 rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md",
+                "rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md",
                 className
             )}
         >
@@ -115,7 +116,12 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Реквизит</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.userRequisite}
+                        <ClipboardCopy
+                            textToCopy={draw?.userRequisite}
+                            className="transition-colors mh:hover:text-slate-600"
+                        >
+                            {draw?.userRequisite}
+                        </ClipboardCopy>
                     </td>
                 </tr>
                 <tr>
@@ -132,9 +138,15 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 ) : null}
                 <tr>
                     <td className="px-1.5 py-0.5">
-                        <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap align-middle text-slate-500">
-                            {`ID ${draw?._id || ""}`}
-                        </span>
+                        <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
+                            <span>ID</span>{" "}
+                            <ClipboardCopy
+                                textToCopy={draw?._id}
+                                className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
+                            >
+                                {draw?._id || ""}
+                            </ClipboardCopy>
+                        </p>
                     </td>
                     {draw?.status === "Ожидает оплаты" ? (
                         <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">

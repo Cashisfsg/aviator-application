@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 import { useGetUserQuery, useGetUserReferralQuery } from "@/store";
 
 import {
@@ -9,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 
 import { GuestListTable } from "../tables";
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
 interface ReferralProgramPopoverProps {
     open: boolean;
@@ -21,22 +20,12 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     setPopoverOpen,
     setDailyStatisticsDialogOpen
 }) => {
-    const telegramLinkRef = useRef<HTMLAnchorElement>(null);
-
     const { data: referral } = useGetUserReferralQuery();
     const { data: user } = useGetUserQuery();
 
-    const copyTelegramLinkToClipboard = async () => {
-        const link = telegramLinkRef.current?.textContent;
-
-        if (!link) return;
-
-        try {
-            await navigator.clipboard.writeText(link);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const telegramLink = `https://t.me/${
+        import.meta.env.VITE_BOT_NAME
+    }?start=${user?.telegramId}`;
 
     return (
         <Popover
@@ -73,20 +62,15 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                 </p>
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
-                    <span
-                        ref={telegramLinkRef}
-                        className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600"
-                    >
-                        {`https://t.me/${
-                            import.meta.env.VITE_BOT_NAME
-                        }?start=${user?.telegramId}`}
+                    <span className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600">
+                        {telegramLink}
                     </span>
-                    <button
-                        onClick={copyTelegramLinkToClipboard}
-                        className="mh:hover:bg-green-350 rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430]"
+                    <ClipboardCopy
+                        textToCopy={telegramLink}
+                        className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
                     >
                         Скопировать
-                    </button>
+                    </ClipboardCopy>
 
                     <span>Количество приглашённых</span>
                     <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-xs text-white shadow-[inset_0_1px_1px_#ffffff80]">
