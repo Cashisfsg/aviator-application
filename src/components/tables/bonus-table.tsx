@@ -1,6 +1,6 @@
 import { Table, Row, Cell } from "@/components/ui/table";
 
-// import { formatDate, formatTime } from "@/utils/helpers";
+import { formatDate, formatTime } from "@/utils/helpers";
 import {
     useAppDispatch,
     useStateSelector,
@@ -9,12 +9,14 @@ import {
     useGetUserPromoQuery,
     useGetUserBalanceQuery
 } from "@/store";
+import { useToast } from "@/components/ui/use-toast";
 
 export const BonusTable = () => {
     const { data: balance } = useGetUserBalanceQuery();
     const { data: promo } = useGetUserPromoQuery({ type: "promo" });
     const dispatch = useAppDispatch();
     const bonusTab = useStateSelector(state => selectCurrentGameTab(state, 1));
+    const { toast } = useToast();
 
     const onClickHandler = (
         id: string | undefined,
@@ -23,6 +25,11 @@ export const BonusTable = () => {
         if (!id || !quantity || bonusTab.betState !== "init") return;
 
         dispatch(activateBonus({ bonusId: id, bonusQuantity: quantity }));
+
+        toast({
+            title: "Промокод на одноразовую ставку успешно активирован",
+            duration: 5000
+        });
     };
 
     return (
@@ -49,16 +56,16 @@ export const BonusTable = () => {
                                 </Cell>
                                 <Cell className="grid grid-cols-[1fr_auto] grid-rows-2 gap-x-2 px-2 py-1 text-left text-[10px] leading-none">
                                     <time
-                                        dateTime={"00:00"}
+                                        dateTime={promo?.will_finish}
                                         className="block"
                                     >
-                                        {"00:00"}
+                                        {formatTime(promo?.will_finish)}
                                     </time>
                                     <time
                                         dateTime={promo?.will_finish}
                                         className="block"
                                     >
-                                        {promo?.will_finish}
+                                        {formatDate(promo?.will_finish)}
                                     </time>
                                     <button
                                         onClick={() =>
@@ -68,7 +75,7 @@ export const BonusTable = () => {
                                             )
                                         }
                                         disabled={bonusTab.betState !== "init"}
-                                        className="mh:hover:bg-green-350 col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-50"
+                                        className="col-start-2 col-end-3 row-start-1 row-end-3 w-full rounded border border-green-50 bg-green-450 px-1.5 py-1 text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-50 mh:hover:bg-green-350"
                                     >
                                         Активировать
                                     </button>
