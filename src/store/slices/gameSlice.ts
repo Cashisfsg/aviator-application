@@ -192,7 +192,7 @@ const gameSlice = createSlice({
         ) => {
             state.bonus.bonusActive = true;
             state.bonus.bonusId = action.payload.bonusId;
-            state.bonus.bonusQuantity = action.payload.bonusQuantity;
+            state.bonus.bonusQuantity = Number(action.payload.bonusQuantity);
         },
         deactivateBonus: state => {
             state.bonus.bonusActive = false;

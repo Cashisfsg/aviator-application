@@ -8,8 +8,6 @@ export const DepositBonusTable = () => {
     const { data: balance } = useGetUserBalanceQuery();
     const { data: promo } = useGetUserPromoQuery({ type: "add_balance" });
 
-    console.log("Add balance: ", promo);
-
     return (
         <div className="scrollbar max-h-[25dvh]">
             <Table

@@ -3,6 +3,8 @@ import * as z from "zod";
 export const validateBet = (bet: string | number, min: number, max: number) => {
     let result;
 
+    if (Number(bet) >= min) return min;
+
     try {
         result = z.coerce.number().gte(min).parse(bet);
     } catch (error) {

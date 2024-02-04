@@ -56,7 +56,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
             <Tabs
                 defaultValue="bet"
                 onClickCapture={onClickHandler}
-                className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-1.5 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206] xs:px-3 sm:px-6"
+                className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-1.5 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206] sm:px-6 xs:px-3"
             >
                 <TabsList className="has-[button:disabled]:pointer-events-none has-[button:disabled]:opacity-75">
                     <TabsTrigger
@@ -381,7 +381,9 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
         const onBlurHandler: React.FocusEventHandler<
             HTMLInputElement
         > = event => {
-            if (!currentGameTab.balance) return;
+            if (currentGameTab.balance === undefined) return;
+
+            console.log("Min bet: " + currentGameTab.min);
 
             const value = validateBet(
                 event.target.value,
@@ -560,6 +562,11 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             return (
                 <button
                     style={{ textShadow: "0 1px 2px rgba(0, 0, 0, .5)" }}
+                    disabled={
+                        betNumber === 1 && bonus.bonusActive
+                            ? false
+                            : currentGameTab.currentBet > currentGameTab.balance
+                    }
                     onClick={() => {
                         if (newRoundBegin)
                             dispatch(
@@ -571,7 +578,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                             );
                         }
                     }}
-                    className="mh:hover:bg-green-350 rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430]"
+                    className="min-h-[86px] rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
                 >
                     <p className="text-xl">Ставка</p>
                     <p>
@@ -590,7 +597,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             return (
                 <button
                     onClick={abortBet}
-                    className="mh:hover:bg-[#f7001f] h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d]"
+                    className="h-full min-h-[86px] w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d] mh:hover:bg-[#f7001f]"
                 >
                     Отмена
                 </button>
@@ -603,7 +610,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
                     </p>
                     <button
                         onClick={abortBet}
-                        className="mh:hover:bg-[#f7001f] h-full w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d]"
+                        className="h-full min-h-[58px] w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d] mh:hover:bg-[#f7001f]"
                     >
                         Отмена
                     </button>
@@ -613,11 +620,11 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber }) => {
             return (
                 <button
                     onClick={cashOut}
-                    className="mh:hover:bg-[#f58708] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500]"
+                    className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] mh:hover:bg-[#f58708]"
                 >
                     <p>Вывести</p>
                     <p className="text-2xl">
-                        <span className="text-2xl">{gain.toFixed(2)}</span>{" "}
+                        <span className="text-2xl">{gain?.toFixed(2)}</span>{" "}
                         <span className="text-lg">
                             {currentGameTab.currency}
                         </span>
