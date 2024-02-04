@@ -83,17 +83,21 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
-                        {`${formatDate(draw?.createdAt)} ${formatTime(
-                            draw?.createdAt
-                        )}`}
+                        {draw?.createdAt
+                            ? `${formatDate(draw?.createdAt)} ${formatTime(
+                                  draw?.createdAt
+                              )}`
+                            : ""}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {`${formatDate(draw?.completedDate)} ${formatTime(
-                            draw?.completedDate
-                        )}`}
+                        {draw?.completedDate
+                            ? `${formatDate(draw?.completedDate)} ${formatTime(
+                                  draw?.completedDate
+                              )}`
+                            : ""}
                     </td>
                 </tr>
                 <tr>
@@ -129,7 +133,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">
                         <span className="inline-block max-w-32 overflow-hidden text-ellipsis text-nowrap align-middle text-slate-500">
-                            {`ID ${draw?._id}`}
+                            {`ID ${draw?._id || ""}`}
                         </span>
                     </td>
                     {draw?.status === "Ожидает оплаты" ? (
