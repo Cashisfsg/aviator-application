@@ -244,15 +244,15 @@ export const userApi = createApi({
                     formData: true
                 };
             },
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    dispatch(userApi.util.invalidateTags(["User"]));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-            // invalidatesTags: ["User"]
+            // async onQueryStarted(_, { dispatch, queryFulfilled }) {
+            //     try {
+            //         await queryFulfilled;
+            //         dispatch(userApi.util.invalidateTags(["User"]));
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // }
+            invalidatesTags: ["User"]
         })
     })
 });

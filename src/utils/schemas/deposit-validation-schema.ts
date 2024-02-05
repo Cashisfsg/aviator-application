@@ -12,8 +12,14 @@ export const depositValidationSchema = (
                 invalid_type_error: "Поле может содержать только цифры"
             })
             .int({ message: "Введенное значение должно быть целым числом" })
-            .gte(min, `Минимальная сумма пополнения ${min} ${currency}`)
-            .lte(max, `Максимальная сумма пополнения ${max} ${currency}`)
+            .gte(
+                min,
+                `Минимальная сумма пополнения ${min.toFixed(2)} ${currency}`
+            )
+            .lte(
+                max,
+                `Максимальная сумма пополнения ${max.toFixed(2)} ${currency}`
+            )
     });
 };
 

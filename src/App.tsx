@@ -55,6 +55,18 @@ export const App = () => {
         }
     }, [musicEnabled]);
 
+    useEffect(() => {
+        window.addEventListener(
+            "click",
+            () => {
+                if (musicEnabled) {
+                    audioRef.current?.play();
+                }
+            },
+            { once: true }
+        );
+    }, []);
+
     return (
         <>
             <Suspense

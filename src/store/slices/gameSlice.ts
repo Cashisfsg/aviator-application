@@ -94,14 +94,22 @@ const initialState = {
     },
     settings: {
         animationEnabled: true,
-        soundEnabled: true,
-        musicEnabled: true
+        soundEnabled: false,
+        musicEnabled: false
     }
 } as Game;
 
 const gameSlice = createSlice({
     name: "game",
-    initialState,
+    initialState: () => {
+        const storedData = sessionStorage.getItem("settings");
+
+        if (!storedData) return initialState;
+
+        const settings = JSON.parse(storedData);
+
+        return { ...initialState, settings };
+    },
     reducers: {
         setBetState: (
             state,
@@ -209,12 +217,15 @@ const gameSlice = createSlice({
         },
         toggleAnimation: state => {
             state.settings.animationEnabled = !state.settings.animationEnabled;
+            sessionStorage.setItem("settings", JSON.stringify(state.settings));
         },
         toggleSound: state => {
             state.settings.soundEnabled = !state.settings.soundEnabled;
+            sessionStorage.setItem("settings", JSON.stringify(state.settings));
         },
         toggleMusic: state => {
             state.settings.musicEnabled = !state.settings.musicEnabled;
+            sessionStorage.setItem("settings", JSON.stringify(state.settings));
         }
     },
     extraReducers: builder => {

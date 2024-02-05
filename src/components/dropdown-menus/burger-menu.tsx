@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth } from "@/store";
 import {
+    useAuth,
     useStateSelector,
     selectInitData,
     useGetUserQuery,
@@ -31,6 +31,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+
+import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
 import { FiMenu } from "react-icons/fi";
 import { BiSupport } from "react-icons/bi";
@@ -103,14 +105,12 @@ export const BurgerMenu = () => {
                                         userInitData?.login ||
                                         "Username"}
                                 </p>
-                                <p className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-xs">
-                                    {user?._id || userInitData?.telegramId
-                                        ? `ID ${
-                                              user?._id ||
-                                              userInitData?.telegramId
-                                          }`
-                                        : "user ID"}
-                                </p>
+                                <ClipboardCopy
+                                    textToCopy={user?._id}
+                                    className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-xs"
+                                >
+                                    {user?._id ? `ID ${user?._id}` : "user ID"}
+                                </ClipboardCopy>
                             </div>
                             {isAuthenticated ? (
                                 <label className="flex cursor-pointer items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2.5 py-1.5 text-[#83878e]">
