@@ -1,6 +1,5 @@
+import { toast } from "sonner";
 import { useGetAllDrawsQuery, useCancelDrawMutation, Draw } from "@/store";
-
-import { useToast } from "@/components/ui/use-toast";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
@@ -58,7 +57,6 @@ interface DrawDetailsProps {
 
 const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     const [cancelDraw] = useCancelDrawMutation();
-    const { toast } = useToast();
 
     const abortDraw = async (id: string | undefined) => {
         if (!id) return;
@@ -66,14 +64,20 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
         const response = await cancelDraw({ id });
 
         if (response?.error) {
-            toast({
-                title: response?.error?.data?.message,
-                duration: 5000
+            toast(response?.error?.data?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
             });
         } else {
-            toast({
-                title: response?.data?.message,
-                duration: 5000
+            toast(response?.data?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
             });
         }
     };
@@ -118,7 +122,8 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         <ClipboardCopy
                             textToCopy={draw?.userRequisite}
-                            className="transition-colors mh:hover:text-slate-600"
+                            toastMessage="Реквизиты скопированы в буфер обмена"
+                            className="text-nowrap transition-colors mh:hover:text-slate-600"
                         >
                             {draw?.userRequisite}
                         </ClipboardCopy>

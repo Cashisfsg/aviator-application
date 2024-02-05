@@ -2,7 +2,7 @@ import * as z from "zod";
 
 import { PaymentDrawRequest } from "@/store";
 
-const alphanumericRegex = /^[A-Za-z0-9]+$/;
+const alphanumericRegex = /^[0-9\s]+$/;
 
 export const withdrawValidationSchema: z.ZodType<
     Pick<PaymentDrawRequest, "amount" | "userRequisite">
@@ -26,8 +26,9 @@ export const withdrawValidationSchema: z.ZodType<
             message: "Поле должно содержать не менее 10 символов"
         })
         .max(20, {
-            message: "Превышено максимально допустимое количество символов"
+            message: "Превышено максимально допустимое количество символов (20)"
         })
+        .transform(e => e.replace(/\s/g, ""))
 });
 
 export type WithdrawValidationSchema = z.infer<typeof withdrawValidationSchema>;

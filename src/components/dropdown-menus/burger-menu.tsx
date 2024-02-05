@@ -103,7 +103,7 @@ export const BurgerMenu = () => {
                                         userInitData?.login ||
                                         "Username"}
                                 </p>
-                                <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+                                <p className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-xs">
                                     {user?._id || userInitData?.telegramId
                                         ? `ID ${
                                               user?._id ||
@@ -119,6 +119,7 @@ export const BurgerMenu = () => {
                                         width="20"
                                         height="20"
                                         viewBox="0 0 20 20"
+                                        className="h-5 w-5 shrink-0"
                                     >
                                         <g
                                             fill="#767b85"

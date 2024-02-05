@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Popover } from "@/components/ui/popover/popover";
 import { PaymentDepositDialog } from "@/components/dialogs";
@@ -35,6 +36,7 @@ export const PaymentReplenishmentPage = () => {
     return (
         <>
             <h1 className="text-2xl font-bold">Пополнение</h1>
+
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>

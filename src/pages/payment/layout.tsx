@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "./components";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
+
+// import { Toaster } from "@/components/ui/toaster";
 
 export const Layout = () => {
     return (

@@ -23,6 +23,7 @@ export const AllBetsTabpanel = () => {
     // const [gameData, setGameData] = useState<GameData>(initialGameData);
 
     const gameDetails = useStateSelector(state => selectGameDetails(state));
+
     // const socket = useStateSelector(state => selectSocket(state));
 
     // useEffect(() => {
@@ -50,7 +51,7 @@ export const AllBetsTabpanel = () => {
 
     return (
         <>
-            <button className="mh:hover:text-[#e50539] ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85]">
+            <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] mh:hover:text-[#e50539]">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"

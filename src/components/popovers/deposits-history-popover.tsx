@@ -41,9 +41,8 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                 {isSuccess ? (
                     deposits && deposits.length !== 0 ? (
                         deposits.map((deposit, index) => (
-                            <>
+                            <div key={deposit?._id}>
                                 <PaymentDetails
-                                    key={deposit?.createdAt}
                                     deposit={deposit}
                                     setInitialFormState={setInitialFormState}
                                     setDialogOpen={setDialogOpen}
@@ -54,7 +53,7 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                                         className="h-2"
                                     />
                                 ) : null}
-                            </>
+                            </div>
                         ))
                     ) : (
                         <PaymentDetails />

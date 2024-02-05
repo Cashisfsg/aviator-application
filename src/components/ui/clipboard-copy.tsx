@@ -1,19 +1,21 @@
+import { toast } from "sonner";
+
 interface ClipboardCopyProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     textToCopy: string | null | undefined;
+    toastMessage?: string;
 }
 
 export const ClipboardCopy: React.FC<ClipboardCopyProps> = ({
     children,
     onClick,
     textToCopy,
+    toastMessage = "ID скопирован в буфер обмена",
     ...props
 }) => {
     const copyToClipboard: React.MouseEventHandler<
         HTMLButtonElement
     > = async () => {
-        console.log("Text to copy: ", textToCopy);
-
         if (!textToCopy) return;
 
         try {
@@ -21,6 +23,14 @@ export const ClipboardCopy: React.FC<ClipboardCopyProps> = ({
         } catch (error) {
             console.error(error);
         }
+
+        toast(toastMessage, {
+            position: "top-center",
+            action: {
+                label: "Скрыть",
+                onClick: () => {}
+            }
+        });
     };
 
     return (

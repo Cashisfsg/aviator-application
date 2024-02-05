@@ -1,15 +1,19 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
     withdrawValidationSchema as formSchema,
     WithdrawValidationSchema as FormSchema
 } from "@/utils/schemas";
 
-import { useCreateDrawMutation, useGetUserRequisitesQuery } from "@/store";
+import {
+    useGetUserBalanceQuery,
+    useCreateDrawMutation,
+    useGetUserRequisitesQuery
+} from "@/store";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 
 import { ImSpinner9 } from "react-icons/im";
 
@@ -24,6 +28,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 }) => {
     const [createDraw, { isLoading, isError, error }] = useCreateDrawMutation();
     const { data: requisites } = useGetUserRequisitesQuery();
+    const { data: balance } = useGetUserBalanceQuery();
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
         .find(requisite => requisite._id === selectedRequisiteId);
@@ -40,8 +45,6 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
         }
     });
 
-    const { toast } = useToast();
-
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         amount,
         userRequisite
@@ -57,9 +60,12 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 
         setOpen(false);
 
-        toast({
-            title: "Заявка на вывод успешно создана",
-            duration: 5000
+        toast("Заявка на вывод успешно создана", {
+            position: "top-center",
+            action: {
+                label: "Скрыть",
+                onClick: () => {}
+            }
         });
     };
 
@@ -92,9 +98,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 ) : null}
             </Label>
             <Label className="text-sm text-slate-400">
-                <span className="">
-                    Введите сумму в {selectedRequisite?.currency}
-                </span>
+                <span className="">Введите сумму в {balance?.currency}</span>
                 <Input
                     inputMode="numeric"
                     // placeholder="0"

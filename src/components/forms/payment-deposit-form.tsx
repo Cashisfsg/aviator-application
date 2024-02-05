@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,12 +20,12 @@ import {
 } from "@/store";
 
 import { DialogClose } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { CountDownTimer } from "../timer/count-down-timer";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { ImSpinner9 } from "react-icons/im";
+import { PiWarningFill } from "react-icons/pi";
 
 import { cn } from "@/utils";
 
@@ -93,7 +94,6 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             amount: undefined
         }
     });
-    const { toast } = useToast();
 
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
@@ -106,7 +106,20 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
             requisite: selectedRequisite?._id as string
         });
 
-        if (response?.error) return;
+        if (response?.error) {
+            toast.error(response?.error?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                },
+                icon: (
+                    <PiWarningFill className="text-4xl leading-none text-red-500" />
+                )
+            });
+
+            return;
+        }
 
         setCurrentReplenishment(response?.data);
         setFormState("second");
@@ -118,14 +131,23 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         const response = await confirmReplenishment({ id });
 
         if (response?.error) {
-            toast({
-                title: response?.error?.message,
-                duration: 5000
+            toast.error(response?.error?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                },
+                icon: (
+                    <PiWarningFill className="text-4xl leading-none text-red-500" />
+                )
             });
         } else {
-            toast({
-                title: response?.data?.message,
-                duration: 5000
+            toast(response?.data?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
             });
         }
 
@@ -138,14 +160,23 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         const response = await cancelReplenishment({ id });
 
         if (response?.error) {
-            toast({
-                title: response?.error?.message,
-                duration: 5000
+            toast.error(response?.error?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                },
+                icon: (
+                    <PiWarningFill className="text-4xl leading-none text-red-500" />
+                )
             });
         } else {
-            toast({
-                title: response?.data?.message,
-                duration: 5000
+            toast(response?.data?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
             });
             setFormState("rejected");
         }
@@ -455,6 +486,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 <p>Реквизиты для пополнения</p>
                 <ClipboardCopy
                     textToCopy={currentDeposit?.requisite?.requisite}
+                    toastMessage="Реквизиты скопированы в буфер обмена"
                     className="rounded-lg border-none bg-slate-300/70 px-4 py-2 text-black shadow-md transition-colors focus-visible:outline-slate-400/70 mh:hover:text-slate-600"
                 >
                     {currentDeposit?.requisite?.requisite || ""}
