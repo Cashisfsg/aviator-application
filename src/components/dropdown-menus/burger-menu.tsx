@@ -45,6 +45,7 @@ import { BsStars } from "react-icons/bs";
 import Avatar from "@/assets/avatar-360w.webp";
 
 export const BurgerMenu = () => {
+    const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [myBetsHistoryDialogOpen, setMyBetsHistoryDialogOpen] =
         useState(false);
@@ -76,7 +77,11 @@ export const BurgerMenu = () => {
 
     return (
         <>
-            <DropdownMenu modal={false}>
+            <DropdownMenu
+                modal={false}
+                open={burgerMenuOpen}
+                onOpenChange={setBurgerMenuOpen}
+            >
                 <DropdownMenuTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
                     <FiMenu />
                 </DropdownMenuTrigger>
@@ -337,6 +342,7 @@ export const BurgerMenu = () => {
                     <GameLimitsPopover
                         open={gameLimitsPopoverOpen}
                         setOpen={setGameLimitsPopoverOpen}
+                        setBurgerMenuOpen={setBurgerMenuOpen}
                     />
                     <ReferralProgramPopover
                         open={referralProgramPopoverOpen}
@@ -344,10 +350,12 @@ export const BurgerMenu = () => {
                         setDailyStatisticsDialogOpen={
                             setDailyStatisticsDialogOpen
                         }
+                        setBurgerMenuOpen={setBurgerMenuOpen}
                     />
                     <SecurityPopover
                         open={securityPopoverOpen}
                         setPopoverOpen={setSecurityPopoverOpen}
+                        setBurgerMenuOpen={setBurgerMenuOpen}
                     />
                 </>
             ) : null}

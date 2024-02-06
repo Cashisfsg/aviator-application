@@ -1,3 +1,5 @@
+import { PopoverClose } from "@radix-ui/react-popover";
+
 import { useGetGameLimitsQuery } from "@/store";
 
 import {
@@ -6,16 +8,26 @@ import {
     PopoverContent
 } from "@/components/ui/popover";
 
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 interface GameLimitsPopoverProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setBurgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
     open,
-    setOpen
+    setOpen,
+    setBurgerMenuOpen
 }) => {
     const { data: limits } = useGetGameLimitsQuery();
+
+    const onClickHandler = () => {
+        setTimeout(() => {
+            setBurgerMenuOpen(true);
+        }, 200);
+    };
 
     return (
         <Popover
@@ -34,7 +46,13 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
                 align="end"
                 className="grid select-none grid-cols-[3fr_1fr] items-start gap-x-1 gap-y-1.5 border-gray-50 bg-[#1b1c1d] text-xs leading-none text-[#83878e]"
             >
-                <h3 className="col-span-2 pb-2 text-center text-sm font-bold text-white">
+                <h3 className="relative col-span-2 pb-2 text-center text-sm font-bold text-white">
+                    <PopoverClose
+                        className="absolute left-0 top-0.5 p-0 text-base text-white-50 transition-colors mh:hover:text-slate-300"
+                        onClick={onClickHandler}
+                    >
+                        <IoMdArrowRoundBack />
+                    </PopoverClose>
                     Игровые лимиты
                 </h3>
                 <span className="self-center">{`Минимальная ставка (${limits?.currency})`}</span>

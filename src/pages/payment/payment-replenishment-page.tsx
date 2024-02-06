@@ -36,7 +36,10 @@ export const PaymentReplenishmentPage = () => {
     return (
         <>
             <h1 className="relative text-2xl font-bold">
-                <PreviousRouteLink className="absolute left-2.5 top-1/2 -translate-y-1/2 text-2xl" />
+                <PreviousRouteLink
+                    to="/main"
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-2xl"
+                />
                 Пополнение
             </h1>
 

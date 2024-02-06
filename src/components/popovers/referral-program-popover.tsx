@@ -1,3 +1,4 @@
+import { PopoverClose } from "@radix-ui/react-popover";
 import { useGetUserQuery, useGetUserReferralQuery } from "@/store";
 
 import {
@@ -9,16 +10,20 @@ import {
 import { GuestListTable } from "../tables";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 interface ReferralProgramPopoverProps {
     open: boolean;
     setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setDailyStatisticsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setBurgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     open,
     setPopoverOpen,
-    setDailyStatisticsDialogOpen
+    setDailyStatisticsDialogOpen,
+    setBurgerMenuOpen
 }) => {
     const { data: referral } = useGetUserReferralQuery();
     const { data: user } = useGetUserQuery();
@@ -26,6 +31,12 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     const telegramLink = `https://t.me/${
         import.meta.env.VITE_BOT_NAME
     }?start=${user?.telegramId}`;
+
+    const onClickHandler = () => {
+        setTimeout(() => {
+            setBurgerMenuOpen(true);
+        }, 200);
+    };
 
     return (
         <Popover
@@ -44,7 +55,13 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                 align="end"
                 className="space-y-2 border-gray-50 bg-[#1b1c1d] leading-none text-[#83878e]"
             >
-                <h3 className="col-span-2 text-center text-base font-bold text-white">
+                <h3 className="relative col-span-2 text-center text-base font-bold text-white">
+                    <PopoverClose
+                        className="absolute left-0 top-[3px] p-0 text-base text-white-50 transition-colors mh:hover:text-slate-300"
+                        onClick={onClickHandler}
+                    >
+                        <IoMdArrowRoundBack />
+                    </PopoverClose>
                     Реферальная программа
                 </h3>
                 <p className="text-sm">

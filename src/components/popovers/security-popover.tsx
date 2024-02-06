@@ -1,4 +1,5 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 import {
     Popover,
@@ -6,16 +7,27 @@ import {
     PopoverContent
 } from "@/components/ui/popover";
 
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 interface SecurityPopoverProps {
     open: boolean;
     setPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setBurgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
     open,
-    setPopoverOpen
+    setPopoverOpen,
+    setBurgerMenuOpen
 }) => {
     const navigate = useNavigate();
+    const { pathname } = useLocation();
+
+    const onClickHandler = () => {
+        setTimeout(() => {
+            setBurgerMenuOpen(true);
+        }, 200);
+    };
 
     return (
         <Popover
@@ -36,9 +48,19 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
                 sideOffset={20}
                 align="end"
                 onPointerDownOutside={() => navigate("/main")}
-                className="w-60  border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
+                className="w-60 border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
             >
-                <Outlet />
+                <>
+                    {pathname === "/main/security" ? (
+                        <PopoverClose
+                            className="absolute left-[17px] top-[15px] p-0 text-base text-white-50 transition-colors mh:hover:text-slate-300"
+                            onClick={onClickHandler}
+                        >
+                            <IoMdArrowRoundBack />
+                        </PopoverClose>
+                    ) : null}
+                    <Outlet />
+                </>
             </PopoverContent>
         </Popover>
     );

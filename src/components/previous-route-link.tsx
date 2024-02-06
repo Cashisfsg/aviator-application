@@ -4,15 +4,27 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 
 import { cn } from "@/utils";
 
-export const PreviousRouteLink = ({ className }: { className?: string }) => {
+export const PreviousRouteLink = ({
+    className,
+    to
+}: {
+    className?: string;
+    to?: string;
+}) => {
     const navigate = useNavigate();
+
+    const onClickHandler = () => {
+        if (to !== undefined) return;
+
+        navigate(-1);
+    };
 
     return (
         <Link
-            to=""
-            onClick={() => navigate(-1)}
+            to={to || ""}
+            onClick={onClickHandler}
             className={cn(
-                "mh:hover:text-slate-300 absolute -top-0.5 p-0 text-base text-white-50 transition-colors",
+                "absolute -top-0.5 p-0 text-base text-white-50 transition-colors mh:hover:text-slate-300",
                 className
             )}
         >

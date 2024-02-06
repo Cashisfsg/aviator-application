@@ -34,7 +34,10 @@ export const PaymentDrawPage = () => {
     return (
         <>
             <h1 className="relative text-2xl font-bold">
-                <PreviousRouteLink className="absolute left-2.5 top-1/2 -translate-y-1/2 text-2xl" />
+                <PreviousRouteLink
+                    to="/main"
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-2xl"
+                />
                 Вывод
             </h1>
             <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
