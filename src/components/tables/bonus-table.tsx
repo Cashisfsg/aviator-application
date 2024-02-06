@@ -40,7 +40,7 @@ export const BonusTable = () => {
                 className="px-1.5 text-center"
                 headers={[
                     `Сумма бонуса, ${balance?.currency}`,
-                    "Коэфф., при котором можно заработать выигрыш",
+                    "Коэфф., при котором можно забрать выигрыш",
                     "Срок действия"
                 ]}
                 data={promo || []}

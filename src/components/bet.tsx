@@ -60,7 +60,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
             <Tabs
                 defaultValue="bet"
                 onClickCapture={onClickHandler}
-                className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-1.5 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206] sm:px-6 xs:px-3"
+                className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-1.5 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206] has-[fieldset[data-state=start]:disabled]:border-[#cb011a] sm:px-6 xs:px-3"
             >
                 <TabsList className="has-[button:disabled]:pointer-events-none has-[button:disabled]:opacity-75">
                     <TabsTrigger
