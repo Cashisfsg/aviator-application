@@ -1,11 +1,15 @@
 import { useReducer } from "react";
 
+import { useStateSelector, selectCurrentGameTab } from "@/store";
 import { Bet } from "@/components/bet";
 
 export const BettingZone = () => {
     const [multiBetEnabled, toggleMultiBetState] = useReducer(
         state => !state,
         true
+    );
+    const secondGameTab = useStateSelector(state =>
+        selectCurrentGameTab(state, 2)
     );
 
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
@@ -22,9 +26,13 @@ export const BettingZone = () => {
             {multiBetEnabled ? <Bet betNumber={2} /> : null}
             <button
                 style={{ textShadow: "0 1px 2px rgba(0,0,0,.5)" }}
+                disabled={
+                    secondGameTab.betState === "start" ||
+                    secondGameTab.betState === "cash"
+                }
                 onClick={onClickHandler}
                 aria-pressed={multiBetEnabled}
-                className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full shadow-[inset_0_1px_1px_#ffffff80] transition-colors aria-[pressed=false]:bg-[#427f00] mh:aria-[pressed=false]:hover:bg-[#28a909]"
+                className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full shadow-[inset_0_1px_1px_#ffffff80] transition-colors disabled:pointer-events-none aria-[pressed=false]:bg-[#427f00] mh:aria-[pressed=false]:hover:bg-[#28a909]"
             >
                 {multiBetEnabled ? (
                     <svg
