@@ -229,14 +229,14 @@ const ReplenishmentsTable: React.FC<TableProps> = ({ data, columns }) => {
 const Search = () => {
     return (
         <div className="flex h-10 w-5/12 ">
-            <div className="flex h-full basis-full items-center gap-x-3 rounded-l-full border-2 border-slate-300 has-[input:focus]:border-blue-300">
-                <div className="pl-4">
+            <div className="group flex h-full basis-full items-center overflow-hidden rounded-l-full border-2 border-slate-300 has-[input:focus]:border-blue-300">
+                <div className="hidden pl-4 group-has-[input:focus]:block">
                     <IoSearchSharp className="text-xl" />
                 </div>
                 <input
                     type="text"
                     placeholder="Введите запрос"
-                    className="h-full flex-auto focus-visible:outline-transparent"
+                    className="h-full flex-auto pl-4 focus-visible:outline-transparent"
                 />
             </div>
             <button className="flex w-16 items-center justify-center rounded-none rounded-r-full border-2 border-l-0 border-slate-300 bg-slate-200">
