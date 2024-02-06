@@ -27,7 +27,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-// import { socket } from "./socket/socket";
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
 
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -267,7 +266,10 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                                         currentGameTab.betState !== "init"
                                     }
                                     onPointerDown={() => {
-                                        handlePointerDown("decrement", 0.1);
+                                        handlePointerDown(
+                                            "decrement",
+                                            currentGameTab.min
+                                        );
                                     }}
                                     onPointerUp={() => {
                                         resetInterval();
@@ -313,7 +315,10 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                                         currentGameTab.betState !== "init"
                                     }
                                     onPointerDown={() => {
-                                        handlePointerDown("increment", 0.1);
+                                        handlePointerDown(
+                                            "increment",
+                                            currentGameTab.min
+                                        );
                                     }}
                                     onPointerUp={() => {
                                         resetInterval();
@@ -452,6 +457,7 @@ interface BetButtonProps extends Pick<BetProps, "betNumber"> {
 
 const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const [newRoundBegin, toggleRoundState] = useReducer(state => !state, true);
+    const [bonusCashOutEnabled, setBonusCashOutEnabled] = useState(false);
 
     const dispatch = useAppDispatch();
     const { toast } = useToast();
@@ -476,8 +482,16 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
         const winnings = ({ x }: { x: number }) => {
             if (currentGameTab.betState !== "cash") return;
 
-            if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
+            if (
+                betNumber === 1 &&
+                bonus.bonusActive &&
+                bonus.bonusQuantity &&
+                bonus.bonusCoefficient
+            ) {
                 setGain(x * bonus.bonusQuantity);
+                if (x >= bonus.bonusCoefficient) {
+                    setBonusCashOutEnabled(true);
+                }
             } else {
                 setGain(x * currentGameTab.currentBet);
             }
@@ -536,6 +550,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
         const resetBet = () => {
             if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
                 setGain(bonus.bonusQuantity);
+                setBonusCashOutEnabled(false);
             } else {
                 setGain(currentGameTab.currentBet);
             }
@@ -659,7 +674,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
             return (
                 <button
                     onClick={cashOut}
-                    className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] mh:hover:bg-[#f58708]"
+                    disabled={bonusCashOutEnabled}
+                    className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] disabled:opacity-80 mh:hover:enabled:bg-[#f58708] mh:disabled:hover:cursor-not-allowed"
                 >
                     <p>Вывести</p>
                     <p className="text-2xl">
@@ -684,8 +700,6 @@ interface AutoBetTabProps {
 const MIN_RATE = 1.1;
 
 const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
-    const inputValidValue = useRef<string>(MIN_RATE.toFixed(2));
-    const [rate, setRate] = useState(MIN_RATE);
     const dispatch = useAppDispatch();
     const { toast } = useToast();
 
@@ -694,6 +708,15 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
     );
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
+
+    const inputValidValue = useRef<string>(
+        bonus.bonusActive
+            ? (bonus.bonusCoefficient as number).toFixed(2)
+            : MIN_RATE.toFixed(2)
+    );
+    const [rate, setRate] = useState(
+        bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE
+    );
 
     useEffect(() => {
         const autoBet = ({ x }: { x: number }) => {
@@ -764,7 +787,11 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
     const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
         if (!currentGameTab.balance) return;
 
-        const value = validateBet(event.target.value, 1.1, 100);
+        const value = validateBet(
+            event.target.value,
+            bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE,
+            100
+        );
         event.currentTarget.value = value.toFixed(2);
         setRate(value);
     };

@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import { formatDate, formatTime } from "@/utils/helpers";
@@ -10,28 +12,48 @@ import {
     useGetUserPromoQuery,
     useGetUserBalanceQuery
 } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 
-export const BonusTable = () => {
+interface BonusTableProps {
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const BonusTable: React.FC<BonusTableProps> = ({ setOpen }) => {
     const { data: balance } = useGetUserBalanceQuery();
     const { data: promo } = useGetUserPromoQuery({ type: "promo" });
     const dispatch = useAppDispatch();
     const bonusTab = useStateSelector(state => selectCurrentGameTab(state, 1));
-    const { toast } = useToast();
 
     const onClickHandler = (
-        id: string | undefined,
-        quantity: number | undefined
+        bonusId: string | undefined,
+        bonusQuantity: number | undefined,
+        bonusCoefficient: number | undefined
     ) => {
-        if (!id || !quantity || bonusTab.betState !== "init") return;
+        if (
+            bonusId === undefined ||
+            bonusQuantity === undefined ||
+            bonusCoefficient === undefined ||
+            bonusTab.betState !== "init"
+        )
+            return;
 
-        dispatch(activateBonus({ bonusId: id, bonusQuantity: quantity }));
+        dispatch(
+            activateBonus({
+                bonusId,
+                bonusQuantity,
+                bonusCoefficient
+            })
+        );
         dispatch(userApi.util.invalidateTags(["Promo"]));
 
-        toast({
-            title: "Промокод на одноразовую ставку успешно активирован",
-            duration: 5000
+        toast("Промокод на одноразовую ставку успешно активирован", {
+            position: "top-center",
+            action: {
+                label: "Скрыть",
+                onClick: () => {}
+            }
         });
+
+        setOpen(false);
     };
 
     return (
@@ -73,7 +95,8 @@ export const BonusTable = () => {
                                         onClick={() =>
                                             onClickHandler(
                                                 promo?._id,
-                                                promo?.amount
+                                                promo?.amount,
+                                                promo?.coef
                                             )
                                         }
                                         disabled={bonusTab.betState !== "init"}

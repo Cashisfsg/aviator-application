@@ -21,12 +21,14 @@ interface ActiveBonus {
     bonusId: string;
     bonusActive: true;
     bonusQuantity: number;
+    bonusCoefficient: number;
 }
 
 interface UnActiveBonus {
     bonusId: null;
     bonusActive: false;
     bonusQuantity: null;
+    bonusCoefficient: null;
 }
 
 interface Player {
@@ -85,7 +87,8 @@ const initialState = {
     bonus: {
         bonusId: null,
         bonusQuantity: null,
-        bonusActive: false
+        bonusActive: false,
+        bonusCoefficient: null
     },
     gameDetails: {
         betAmount: 0,
@@ -196,16 +199,24 @@ const gameSlice = createSlice({
         },
         activateBonus: (
             state,
-            action: PayloadAction<{ bonusId: string; bonusQuantity: number }>
+            action: PayloadAction<{
+                bonusId: string;
+                bonusQuantity: number;
+                bonusCoefficient: number;
+            }>
         ) => {
             state.bonus.bonusActive = true;
             state.bonus.bonusId = action.payload.bonusId;
             state.bonus.bonusQuantity = Number(action.payload.bonusQuantity);
+            state.bonus.bonusCoefficient = Number(
+                action.payload.bonusCoefficient
+            );
         },
         deactivateBonus: state => {
             state.bonus.bonusActive = false;
             state.bonus.bonusId = null;
             state.bonus.bonusQuantity = null;
+            state.bonus.bonusCoefficient = null;
         },
         setGameDetails: (state, action: PayloadAction<GameDetails>) => {
             state.gameDetails.betAmount = action.payload.betAmount;
@@ -284,24 +295,23 @@ export const selectCurrentGameTab = createSelector(
 const bonusId = (state: RootStore) => state.game.bonus.bonusId;
 const bonusActive = (state: RootStore) => state.game.bonus.bonusActive;
 const bonusQuantity = (state: RootStore) => state.game.bonus.bonusQuantity;
+const bonusCoefficient = (state: RootStore) =>
+    state.game.bonus.bonusCoefficient;
+
+export const selectBonus = createSelector(
+    [bonusId, bonusActive, bonusQuantity, bonusCoefficient],
+    (bonusId, bonusActive, bonusQuantity, bonusCoefficient) => ({
+        bonusId,
+        bonusActive,
+        bonusQuantity,
+        bonusCoefficient
+    })
+);
+
 const betAmount = (state: RootStore) => state.game.gameDetails.betAmount;
 const winAmount = (state: RootStore) => state.game.gameDetails.winAmount;
 const currentPlayers = (state: RootStore) =>
     state.game.gameDetails.currentPlayers;
-
-const animationEnabled = (state: RootStore) =>
-    state.game.settings.animationEnabled;
-const musicEnabled = (state: RootStore) => state.game.settings.musicEnabled;
-const soundEnabled = (state: RootStore) => state.game.settings.soundEnabled;
-
-export const selectBonus = createSelector(
-    [bonusId, bonusActive, bonusQuantity],
-    (bonusId, bonusActive, bonusQuantity) => ({
-        bonusId,
-        bonusActive,
-        bonusQuantity
-    })
-);
 
 export const selectGameDetails = createSelector(
     [betAmount, winAmount, currentPlayers],
@@ -311,6 +321,11 @@ export const selectGameDetails = createSelector(
         currentPlayers
     })
 );
+
+const animationEnabled = (state: RootStore) =>
+    state.game.settings.animationEnabled;
+const musicEnabled = (state: RootStore) => state.game.settings.musicEnabled;
+const soundEnabled = (state: RootStore) => state.game.settings.soundEnabled;
 
 export const selectSettings = createSelector(
     [animationEnabled, musicEnabled, soundEnabled],

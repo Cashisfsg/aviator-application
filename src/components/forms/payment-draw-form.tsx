@@ -58,8 +58,6 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 
         if (response?.error) return;
 
-        setOpen(false);
-
         toast("Заявка на вывод успешно создана", {
             position: "top-center",
             action: {
@@ -67,6 +65,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 onClick: () => {}
             }
         });
+        setOpen(false);
     };
 
     return (

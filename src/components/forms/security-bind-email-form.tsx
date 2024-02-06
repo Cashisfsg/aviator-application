@@ -45,7 +45,7 @@ export const SecurityBindEmailForm = () => {
             <PreviousRouteLink />
             <h3 className="text-center">Привязать Email</h3>
             <Label>
-                <span>Email</span>
+                {/* <span>Email</span> */}
                 <Input
                     placeholder="Введите email"
                     {...register("email")}

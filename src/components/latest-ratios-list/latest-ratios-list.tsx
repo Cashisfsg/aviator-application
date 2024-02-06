@@ -37,7 +37,7 @@ export const LatestRatiosList = () => {
                 console.error(error);
             }
         })();
-    }, [fetchCoefficients]);
+    }, []);
 
     useEffect(() => {
         const addCoefficient = async () => {

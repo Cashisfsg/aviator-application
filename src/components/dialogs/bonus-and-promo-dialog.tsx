@@ -1,13 +1,13 @@
 import { useRef } from "react";
 
+import { toast } from "sonner";
 import { useActivatePromoCodeMutation } from "@/store";
 
-import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { BonusTable, DepositBonusTable } from "@/components/tables";
-// import { toast } from "sonner";
 
 import { ImSpinner9 } from "react-icons/im";
+import { PiWarningFill } from "react-icons/pi";
 
 interface BonusAndPromoDialogProps {
     open: boolean;
@@ -26,7 +26,6 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
         >
             <DialogContent
                 route={false}
-                // onInteractOutside={event => event.preventDefault()}
                 className="p-0 pb-4"
             >
                 <section>
@@ -40,7 +39,7 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
                         </div>
                     </header>
 
-                    <BonusTable />
+                    <BonusTable setOpen={setOpen} />
                 </section>
 
                 <section>
@@ -63,8 +62,6 @@ const ActivationBonusForm = () => {
 
     const [activatePromo, { isLoading }] = useActivatePromoCodeMutation();
 
-    const { toast } = useToast();
-
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
     > = async event => {
@@ -73,42 +70,30 @@ const ActivationBonusForm = () => {
         const { promoCode } = event.currentTarget;
         const promo = promoCode.value;
 
-        // if (promo.trim() === "") {
-        //     promoCode.setAttribute("value", "Ввести промокод");
-        //     return;
-        // }
-
         const response = await activatePromo({ promoCode: promo });
 
         promoCode.setAttribute("type", "button");
         buttonRef.current?.setAttribute("disabled", "");
 
         if (response?.error) {
-            toast({
-                title: response?.error?.data?.message,
-                duration: 5000
+            toast.error(response?.error?.data?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                },
+                icon: (
+                    <PiWarningFill className="text-4xl leading-none text-red-500" />
+                )
             });
-            // toast(response?.error?.data?.message, {
-            //     description: "Sunday, December 03, 2023 at 9:00 AM",
-            //     action: {
-            //         label: "Скрыть",
-            //         onClick: () => {}
-            //     }
-            // });
         } else {
-            toast({
-                title: "Промокод успешно активирован",
-                duration: 5000
+            toast("Промокод успешно активирован", {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
             });
-            // toast("Промокод успешно активирован", {
-            //     description: "Sunday, December 03, 2023 at 9:00 AM",
-            //     action: {
-            //         label: "Скрыть",
-            //         onClick: event => {
-            //             event.stopPropagation();
-            //         }
-            //     }
-            // });
         }
     };
 

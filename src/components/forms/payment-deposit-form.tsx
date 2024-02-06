@@ -107,7 +107,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         });
 
         if (response?.error) {
-            toast.error(response?.error?.message, {
+            toast.error(response?.error?.data?.message, {
                 position: "top-center",
                 action: {
                     label: "Скрыть",
@@ -131,7 +131,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         const response = await confirmReplenishment({ id });
 
         if (response?.error) {
-            toast.error(response?.error?.message, {
+            toast.error(response?.error?.data?.message, {
                 position: "top-center",
                 action: {
                     label: "Скрыть",
@@ -160,7 +160,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         const response = await cancelReplenishment({ id });
 
         if (response?.error) {
-            toast.error(response?.error?.message, {
+            toast.error(response?.error?.data?.message, {
                 position: "top-center",
                 action: {
                     label: "Скрыть",
