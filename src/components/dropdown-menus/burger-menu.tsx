@@ -99,14 +99,20 @@ export const BurgerMenu = () => {
                                 <img
                                     src={
                                         user?.profileImage ||
-                                        userInitData?.profileImage ||
-                                        Avatar
+                                        userInitData?.profileImage
                                     }
                                     alt="Profile image"
                                     width="40"
                                     height="40"
+                                    onError={event => {
+                                        event.currentTarget.setAttribute(
+                                            "src",
+                                            Avatar
+                                        );
+                                    }}
                                     className="row-span-2 rounded-full"
                                 />
+
                                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                     {user?.login ||
                                         userInitData?.login ||
