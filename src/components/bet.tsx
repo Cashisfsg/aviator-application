@@ -28,6 +28,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
+import { formatCurrency } from "@/utils/helpers";
 
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import WinSound from "@/assets/sound/win.mp3";
@@ -114,6 +115,12 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
             </Dialog>
         </>
     );
+};
+
+const raiseBets = {
+    RUB: [250, 500, 1000, 2000],
+    UZS: [50000, 100000, 200000, 500000],
+    KZT: [1000, 2500, 5000, 10000]
 };
 
 interface BetTabProps extends Pick<BetProps, "betNumber"> {
@@ -357,27 +364,32 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                                     </svg>
                                 </button>
                             </div>
-                            {[1, 2, 5, 10].map(number => (
-                                <button
-                                    key={number}
-                                    type="button"
-                                    disabled={
-                                        currentGameTab.betState !== "init"
-                                    }
-                                    onPointerDown={() =>
-                                        handlePointerDown("increment", number)
-                                    }
-                                    onPointerUp={() => {
-                                        resetInterval();
-                                    }}
-                                    onPointerLeave={() => {
-                                        resetInterval();
-                                    }}
-                                    className="h-4.5 w-full select-none rounded-full border border-gray-50 bg-black-150 text-sm leading-none text-[#83878e] active:translate-y-[1px]"
-                                >
-                                    {number}
-                                </button>
-                            ))}
+                            {raiseBets?.[balance?.currency || "RUB"]?.map(
+                                number => (
+                                    <button
+                                        key={number}
+                                        type="button"
+                                        disabled={
+                                            currentGameTab.betState !== "init"
+                                        }
+                                        onPointerDown={() =>
+                                            handlePointerDown(
+                                                "increment",
+                                                number
+                                            )
+                                        }
+                                        onPointerUp={() => {
+                                            resetInterval();
+                                        }}
+                                        onPointerLeave={() => {
+                                            resetInterval();
+                                        }}
+                                        className="h-4.5 w-full select-none rounded-full border border-gray-50 bg-black-150 text-sm leading-none text-[#83878e] active:translate-y-[1px]"
+                                    >
+                                        {formatCurrency(number, 0)}
+                                    </button>
+                                )
+                            )}
                         </>
                     )}
                 </fieldset>
@@ -473,6 +485,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     );
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
+
     // const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const [gain, setGain] = useState(currentGameTab.currentBet);

@@ -41,7 +41,7 @@ export interface ChangePasswordRequest {
 
 //! ================= User types ================= //
 
-export type Currency = "USD" | "RUB" | "UZS" | "KZS";
+export type Currency = "USD" | "RUB" | "UZS" | "KZT";
 
 export interface User {
     _id: string;

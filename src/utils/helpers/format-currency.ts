@@ -1,8 +1,11 @@
-export const formatCurrency = (currency: number) => {
+export const formatCurrency = (
+    currency: number,
+    minFractionDigits: number = 2
+) => {
     const formatterUSD = new Intl.NumberFormat("ru-RU", {
         style: "decimal",
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2
+        minimumFractionDigits: minFractionDigits,
+        maximumFractionDigits: 2
     });
 
     return formatterUSD.format(currency);
