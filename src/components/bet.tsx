@@ -19,7 +19,6 @@ import {
     selectSettings,
     deactivateBonus,
     resetGameDetails,
-    GameDetails,
     useGetUserBalanceQuery
 } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
@@ -179,14 +178,6 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
         };
 
         const onGameDataUpdated = data => {
-            console.log(data);
-
-            console.log(
-                data.betAmount[balance?.currency],
-                data.winAmount[balance?.currency],
-                data.currentPlayers
-            );
-
             dispatch(
                 setGameDetails({
                     betAmount: data.betAmount[balance?.currency],
@@ -724,6 +715,7 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
     );
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
+    const { soundEnabled } = useStateSelector(state => selectSettings(state));
 
     const inputValidValue = useRef<string>(
         bonus.bonusActive
@@ -776,7 +768,8 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
 
             socket.off("game", autoBet);
 
-            if (!audioRef.current) return;
+            if (!audioRef.current || !soundEnabled) return;
+
             audioRef.current.currentTime = 0.25;
             audioRef.current?.play();
         };

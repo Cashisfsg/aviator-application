@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { userApi } from "../api";
+import { userApi, Currency } from "../api";
 import { authSlice } from "../slices";
 import { RootStore } from "../types";
 
@@ -33,7 +33,7 @@ interface UnActiveBonus {
 
 interface Player {
     playerLogin: string;
-    bet: number;
+    bet: Record<Currency, number>;
     currency: string;
     time: Date;
     coeff?: number;

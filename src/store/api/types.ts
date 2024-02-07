@@ -1,5 +1,7 @@
 //! ================= Authentication types ================= //
 
+import { Currency } from "lucide-react";
+
 export interface UserRegistrationCredentials {
     currency: string;
     login: string;
@@ -39,6 +41,8 @@ export interface ChangePasswordRequest {
 
 //! ================= User types ================= //
 
+export type Currency = "USD" | "RUB" | "UZS" | "KZS";
+
 export interface User {
     _id: string;
     telegramId: number;
@@ -52,7 +56,7 @@ export interface User {
 
 export interface UserBalance {
     balance: number;
-    currency: string;
+    currency: Currency;
 }
 
 export interface Promo {

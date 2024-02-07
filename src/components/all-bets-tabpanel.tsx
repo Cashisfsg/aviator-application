@@ -26,7 +26,7 @@ import Avatar from "@/assets/avatar-360w.webp";
 export const AllBetsTabpanel = () => {
     // const [gameData, setGameData] = useState<GameData>(initialGameData);
 
-    const { data: balance } = useGetUserBalanceQuery();
+    const { data: balance, isSuccess } = useGetUserBalanceQuery();
     const gameDetails = useStateSelector(state => selectGameDetails(state));
 
     // const socket = useStateSelector(state => selectSocket(state));
@@ -77,10 +77,12 @@ export const AllBetsTabpanel = () => {
                 data={[
                     [
                         gameDetails.currentPlayers?.length,
-                        `${gameDetails?.betAmount?.toFixed(2)} USD`,
-                        `${
-                            gameDetails?.winAmount?.toFixed(2) || "0.00"
-                        } ${"USD"}`
+                        `${gameDetails?.betAmount?.toFixed(2) || "0.00"} ${
+                            balance?.currency || "USD"
+                        }`,
+                        `${gameDetails?.winAmount?.toFixed(2) || "0.00"} ${
+                            balance?.currency || "USD"
+                        }`
                     ]
                 ]}
                 renderData={data => (
@@ -95,57 +97,60 @@ export const AllBetsTabpanel = () => {
                     </>
                 )}
             />
-
-            <Table
-                headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                data={gameDetails.currentPlayers}
-                renderData={data => (
-                    <>
-                        {data.map((player, i) => (
-                            <Row
-                                key={i}
-                                className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
-                                    isNaN(player?.win as number)
-                                        ? ""
-                                        : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
-                                }`}
-                            >
-                                <Cell className="flex items-center gap-x-2">
-                                    <img
-                                        src={Avatar}
-                                        alt="User avatar image"
-                                        height="30"
-                                        width="30"
-                                        className="rounded-full"
-                                    />
-                                    <span className="text-[#9ea0a3]">
-                                        {`${player?.playerLogin?.at(
-                                            0
-                                        )}***${player?.playerLogin?.at(-1)}`}
-                                    </span>
-                                </Cell>
-                                <Cell>{`${player?.bet[
-                                    balance?.currency
-                                ].toFixed(2)} USD`}</Cell>
-                                <Cell>
-                                    {!isNaN(player?.coeff as number) ? (
-                                        <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
-                                            {player?.coeff}x
+            {isSuccess ? (
+                <Table
+                    headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
+                    data={gameDetails.currentPlayers}
+                    renderData={data => (
+                        <>
+                            {data.map((player, i) => (
+                                <Row
+                                    key={i}
+                                    className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
+                                        isNaN(player?.win as number)
+                                            ? ""
+                                            : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                                    }`}
+                                >
+                                    <Cell className="flex items-center gap-x-2">
+                                        <img
+                                            src={Avatar}
+                                            alt="User avatar image"
+                                            height="30"
+                                            width="30"
+                                            className="rounded-full"
+                                        />
+                                        <span className="text-[#9ea0a3]">
+                                            {`${player?.playerLogin?.at(
+                                                0
+                                            )}***${player?.playerLogin?.at(
+                                                -1
+                                            )}`}
                                         </span>
-                                    ) : (
-                                        "-"
-                                    )}
-                                </Cell>
-                                <Cell>
-                                    {!isNaN(player?.win as number)
-                                        ? `${player?.win?.toFixed(2)} USD`
-                                        : "-"}
-                                </Cell>
-                            </Row>
-                        ))}
-                    </>
-                )}
-            />
+                                    </Cell>
+                                    <Cell>{`${player?.bet[
+                                        balance?.currency
+                                    ].toFixed(2)} USD`}</Cell>
+                                    <Cell>
+                                        {!isNaN(player?.coeff as number) ? (
+                                            <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
+                                                {player?.coeff}x
+                                            </span>
+                                        ) : (
+                                            "-"
+                                        )}
+                                    </Cell>
+                                    <Cell>
+                                        {!isNaN(player?.win as number)
+                                            ? `${player?.win?.toFixed(2)} USD`
+                                            : "-"}
+                                    </Cell>
+                                </Row>
+                            ))}
+                        </>
+                    )}
+                />
+            ) : null}
             {!gameDetails || gameDetails?.currentPlayers.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
