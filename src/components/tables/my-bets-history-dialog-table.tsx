@@ -62,9 +62,9 @@ export const MyBetsHistoryDialogTable = () => {
                         className="px-1.5 text-center"
                         headers={[
                             "Время",
-                            "Ставка, USD",
+                            `Ставка, ${balance?.currency || "USD"}`,
                             "Коэфф.",
-                            `Выигрыш, ${balance?.currency}`
+                            `Выигрыш, ${balance?.currency || "USD"}`
                         ]}
                         data={renderData || []}
                         renderHeader={headers => (
@@ -85,7 +85,7 @@ export const MyBetsHistoryDialogTable = () => {
                                     <Row
                                         key={bet?._id}
                                         className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
-                                            isNaN(bet?.win)
+                                            isNaN(bet?.win?.[balance?.currency])
                                                 ? ""
                                                 : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
                                         }`}
@@ -104,13 +104,23 @@ export const MyBetsHistoryDialogTable = () => {
                                                 {formatDate(bet?.time)}
                                             </time>
                                         </Cell>
-                                        <Cell>{formatCurrency(bet?.bet)}</Cell>
+                                        <Cell>
+                                            {formatCurrency(
+                                                bet?.bet?.[balance?.currency]
+                                            )}
+                                        </Cell>
                                         <Cell>
                                             <Badge value={bet?.coeff} />
                                         </Cell>
                                         <Cell>
-                                            {!isNaN(bet?.win)
-                                                ? formatCurrency(bet?.win)
+                                            {!isNaN(
+                                                bet?.win?.[balance?.currency]
+                                            )
+                                                ? formatCurrency(
+                                                      bet?.win?.[
+                                                          balance?.currency
+                                                      ]
+                                                  )
                                                 : "-"}
                                         </Cell>
                                     </Row>

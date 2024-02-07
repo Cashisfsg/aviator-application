@@ -1,66 +1,101 @@
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useId, useRef } from "react";
 
 import {
     useStateSelector,
-    // useAppDispatch,
+    useAppDispatch,
     selectSocket,
-    // betApi,
-    // useGetLastThirtyCoefficientsQuery,
-    Coefficient,
-    useLazyGetLastThirtyCoefficientsQuery
+    betApi,
+    useGetLastThirtyCoefficientsQuery
+    // Coefficient,
+    // useLazyGetLastThirtyCoefficientsQuery
 } from "@/store";
 
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
     const [key, setKey] = useState(0);
+    const coefficient = useRef(1);
 
     const socket = useStateSelector(state => selectSocket(state));
-    const [coefficients, setCoefficients] = useState<Coefficient[]>([]);
+    // const [coefficients, setCoefficients] = useState<Coefficient[]>([]);
     const dropdownMenuId = useId();
 
-    // const dispatch = useAppDispatch();
-    // const { data: coefficients, isSuccess } =
-    //     useGetLastThirtyCoefficientsQuery();
-    const [fetchCoefficients, { isSuccess }] =
-        useLazyGetLastThirtyCoefficientsQuery();
+    const dispatch = useAppDispatch();
+    const { data: coefficients, isSuccess } =
+        useGetLastThirtyCoefficientsQuery();
+    // const [fetchCoefficients, { isSuccess }] =
+    //     useLazyGetLastThirtyCoefficientsQuery();
 
     useEffect(() => {
-        (async () => {
-            try {
-                const { data } = await fetchCoefficients();
-
-                if (data === undefined) return;
-
-                setCoefficients(data);
-            } catch (error) {
-                console.error(error);
-            }
-        })();
-    }, []);
-
-    useEffect(() => {
-        const addCoefficient = async () => {
-            (async () => {
-                try {
-                    const { data } = await fetchCoefficients();
-
-                    if (data === undefined) return;
-
-                    setCoefficients(data);
-                    setKey(key => key + 1);
-                } catch (error) {
-                    console.error(error);
-                }
-            })();
+        const setCoefficient = ({ x }: { x: number }) => {
+            coefficient.current = x;
         };
 
-        socket.on("crash", addCoefficient);
+        const updateCoefficients = () => {
+            dispatch(
+                betApi.util.updateQueryData(
+                    "getLastThirtyCoefficients",
+                    undefined,
+                    draftPosts => {
+                        draftPosts.length = draftPosts.length - 1;
+                        draftPosts.unshift({
+                            _id: new Date().toISOString(),
+                            coeff: coefficient.current,
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                )
+            );
+
+            coefficient.current = 1;
+            setKey(key => key + 1);
+        };
+
+        socket.on("game", setCoefficient);
+        socket.on("crash", updateCoefficients);
 
         return () => {
-            socket.on("crash", addCoefficient);
+            socket.off("game", setCoefficient);
+            socket.off("crash", updateCoefficients);
         };
-    }, [socket, fetchCoefficients]);
+    }, [socket]);
+
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             const { data } = await fetchCoefficients();
+
+    //             if (data === undefined) return;
+
+    //             setCoefficients(data);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     })();
+    // }, []);
+
+    // useEffect(() => {
+    //     const addCoefficient = async () => {
+    //         (async () => {
+    //             try {
+    //                 const { data } = await fetchCoefficients();
+
+    //                 if (data === undefined) return;
+
+    //                 setCoefficients(data);
+    //                 setKey(key => key + 1);
+    //             } catch (error) {
+    //                 console.error(error);
+    //             }
+    //         })();
+    //     };
+
+    //     socket.on("crash", addCoefficient);
+
+    //     return () => {
+    //         socket.on("crash", addCoefficient);
+    //     };
+    // }, [socket, fetchCoefficients]);
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
@@ -173,11 +208,6 @@ const generateClassName = (index: number): string => {
     const baseClassName =
         "shrink-0 animate-left-appearance mh:hover:opacity-100 ";
 
-    // const className = Array.from(
-    //     { length: 16 },
-    //     (_, index) =>
-    //         `opacity-${Math.ceil((100 - Number(index + 1) * 5 + 1) / 10) * 10}`
-    // );
     const className = [
         "opacity-100",
         "opacity-100",

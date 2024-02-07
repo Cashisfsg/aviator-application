@@ -128,7 +128,11 @@ const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
                                 <Row
                                     key={bet?._id}
                                     className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
-                                        isNaN(bet?.win?.[balance?.currency])
+                                        isNaN(
+                                            bet?.win?.[
+                                                balance?.currency || "USD"
+                                            ]
+                                        )
                                             ? ""
                                             : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
                                     }`}
@@ -149,16 +153,24 @@ const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
                                     </Cell>
                                     <Cell>
                                         {formatCurrency(
-                                            bet?.bet?.[balance?.currency]
+                                            bet?.bet?.[
+                                                balance?.currency || "USD"
+                                            ]
                                         )}
                                     </Cell>
                                     <Cell>
                                         <Badge value={bet?.coeff} />
                                     </Cell>
                                     <Cell>
-                                        {!isNaN(bet?.win?.[balance?.currency])
+                                        {!isNaN(
+                                            bet?.win?.[
+                                                balance?.currency || "USD"
+                                            ]
+                                        )
                                             ? formatCurrency(
-                                                  bet?.win?.[balance?.currency]
+                                                  bet?.win?.[
+                                                      balance?.currency || "USD"
+                                                  ]
                                               )
                                             : "-"}
                                     </Cell>

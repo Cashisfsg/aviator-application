@@ -6,6 +6,7 @@ import {
     useStateSelector,
     selectInitData,
     useGetUserQuery,
+    useGetSupportServiceLinkQuery,
     useChangeProfileImageMutation
 } from "@/store";
 import { GameSettings } from "@/components/game-settings";
@@ -62,6 +63,7 @@ export const BurgerMenu = () => {
     const { data: user } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });
+    const { data: support } = useGetSupportServiceLinkQuery();
     const userInitData = useStateSelector(state => selectInitData(state));
     const [updateImage, { isLoading }] = useChangeProfileImageMutation();
 
@@ -112,7 +114,7 @@ export const BurgerMenu = () => {
                                 </p>
                                 <ClipboardCopy
                                     textToCopy={user?._id}
-                                    className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-xs"
+                                    className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-left text-xs"
                                 >
                                     {user?._id ? `ID ${user?._id}` : "user ID"}
                                 </ClipboardCopy>
@@ -121,8 +123,6 @@ export const BurgerMenu = () => {
                                 <label className="flex cursor-pointer items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2.5 py-1.5 text-[#83878e]">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="20"
-                                        height="20"
                                         viewBox="0 0 20 20"
                                         className="h-5 w-5 shrink-0"
                                     >
@@ -170,9 +170,14 @@ export const BurgerMenu = () => {
                         </>
                     ) : null}
 
-                    <DropdownMenuItem>
-                        <BiSupport className="text-base text-[#767b85]" />
-                        <span>Поддержка</span>
+                    <DropdownMenuItem asChild>
+                        <a
+                            href={support?.link}
+                            target="_blank"
+                        >
+                            <BiSupport className="text-base text-[#767b85]" />
+                            <span>Поддержка</span>
+                        </a>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
 

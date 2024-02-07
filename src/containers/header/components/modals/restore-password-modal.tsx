@@ -1,5 +1,7 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
+import { useGetSupportServiceLinkQuery } from "@/store";
+
 import {
     DialogDescription,
     DialogHeader,
@@ -13,6 +15,8 @@ import { Button } from "@/components/ui/button";
 export const RestorePasswordModal = () => {
     const navigate = useNavigate();
 
+    const { data } = useGetSupportServiceLinkQuery();
+
     return (
         <>
             <DialogHeader>
@@ -20,7 +24,7 @@ export const RestorePasswordModal = () => {
                     <Button
                         // to=""
                         onClick={() => navigate(-1)}
-                        className="mh:hover:text-slate-300 absolute left-4 top-4 p-0 text-2xl text-white-50 transition-colors"
+                        className="absolute left-4 top-4 p-0 text-2xl text-white-50 transition-colors mh:hover:text-slate-300"
                     >
                         <IoMdArrowRoundBack />
                     </Button>
@@ -47,12 +51,13 @@ export const RestorePasswordModal = () => {
                 <p className="text-center text-sm">
                     <span className="text-xs">Не привязана почта?</span>
                     <br />
-                    <Link
-                        to="/main/sign-up"
+                    <a
+                        href={data?.link}
+                        target="_blank"
                         className="text-xs text-blue-500"
                     >
                         Восстановить без почты
-                    </Link>
+                    </a>
                 </p>
             </DialogFooter>
         </>

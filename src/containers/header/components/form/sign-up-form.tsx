@@ -327,7 +327,7 @@ export const SignUpForm = () => {
                                 <a
                                     href=""
                                     target="_blank"
-                                    className="mh:hover:underline cursor-pointer text-blue-500 underline-offset-2"
+                                    className="cursor-pointer text-blue-500 underline-offset-2 mh:hover:underline"
                                 >
                                     Условиями пользовательского соглашения
                                 </a>
