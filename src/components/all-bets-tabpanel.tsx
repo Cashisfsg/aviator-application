@@ -1,6 +1,10 @@
 // import { useState, useEffect } from "react";
 // import { socket } from "./socket/socket";
-import { useStateSelector, selectGameDetails } from "@/store";
+import {
+    useGetUserBalanceQuery,
+    useStateSelector,
+    selectGameDetails
+} from "@/store";
 // import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
@@ -22,6 +26,7 @@ import Avatar from "@/assets/avatar-360w.webp";
 export const AllBetsTabpanel = () => {
     // const [gameData, setGameData] = useState<GameData>(initialGameData);
 
+    const { data: balance } = useGetUserBalanceQuery();
     const gameDetails = useStateSelector(state => selectGameDetails(state));
 
     // const socket = useStateSelector(state => selectSocket(state));
@@ -119,7 +124,9 @@ export const AllBetsTabpanel = () => {
                                         )}***${player?.playerLogin?.at(-1)}`}
                                     </span>
                                 </Cell>
-                                <Cell>{`${player?.bet.toFixed(2)} USD`}</Cell>
+                                <Cell>{`${player?.bet[
+                                    balance?.currency
+                                ].toFixed(2)} USD`}</Cell>
                                 <Cell>
                                     {!isNaN(player?.coeff as number) ? (
                                         <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">

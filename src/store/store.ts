@@ -49,4 +49,13 @@ export const store = configureStore({
             .concat(replenishmentApi.middleware)
             // .concat(socketApi.middleware)
             .concat(userApi.middleware)
+    // .concat({
+    //     async onError(error, { dispatch, getState }) {
+    //         // Перехватываем ошибку Unauthorized
+    //         if (error.status === 401) {
+    //             // Выполните здесь действия для перенаправления на страницу регистрации
+    //             console.log("Unauthorized! Redirect to login page.");
+    //         }
+    //     }
+    // })
 });
