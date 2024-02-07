@@ -44,12 +44,16 @@ import { FaCheck } from "react-icons/fa6";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { ImSpinner9 } from "react-icons/im";
 
+import KZIcon from "@/assets/kz-flag.png";
+import RUIcon from "@/assets/ru-flag.png";
+import UZIcon from "@/assets/uz-flag.png";
+
 import { cn } from "@/utils";
 
 const currencies = [
-    { id: 1, label: "Казахстанский тенге", value: "KZT" },
-    { id: 2, label: "Российский рубль", value: "RUB" },
-    { id: 3, label: "Узбекистанский сум", value: "UZS" }
+    { id: 1, label: "Казахстанский тенге", value: "KZT", icon: KZIcon },
+    { id: 2, label: "Российский рубль", value: "RUB", icon: RUIcon },
+    { id: 3, label: "Узбекистанский сум", value: "UZS", icon: UZIcon }
 ];
 
 export const SignUpForm = () => {
@@ -166,7 +170,7 @@ export const SignUpForm = () => {
                                                         setOpen(false);
                                                     }}
                                                 >
-                                                    <Check
+                                                    {/* <Check
                                                         className={cn(
                                                             "mr-2 h-4 w-4",
                                                             currency.value ===
@@ -174,7 +178,12 @@ export const SignUpForm = () => {
                                                                 ? "opacity-100"
                                                                 : "opacity-0"
                                                         )}
-                                                    />
+                                                    /> */}
+                                                    <img
+                                                        src={currency.icon}
+                                                        alt={currency.label}
+                                                        className="mr-2 h-6 w-6"
+                                                    />{" "}
                                                     {currency.label}
                                                 </CommandItem>
                                             ))}
