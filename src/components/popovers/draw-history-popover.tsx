@@ -1,5 +1,11 @@
 import { toast } from "sonner";
-import { useGetAllDrawsQuery, useCancelDrawMutation, Draw } from "@/store";
+import {
+    useAppDispatch,
+    userApi,
+    useGetAllDrawsQuery,
+    useCancelDrawMutation,
+    Draw
+} from "@/store";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
@@ -57,6 +63,7 @@ interface DrawDetailsProps {
 
 const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     const [cancelDraw] = useCancelDrawMutation();
+    const dispatch = useAppDispatch();
 
     const abortDraw = async (id: string | undefined) => {
         if (!id) return;
@@ -79,6 +86,8 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     onClick: () => {}
                 }
             });
+
+            dispatch(userApi.util.invalidateTags(["Balance"]));
         }
     };
 
