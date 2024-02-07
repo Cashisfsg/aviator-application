@@ -7,6 +7,8 @@ import {
 } from "@/utils/schemas";
 
 import {
+    userApi,
+    useAppDispatch,
     useGetUserBalanceQuery,
     useCreateDrawMutation,
     useGetUserRequisitesQuery
@@ -32,6 +34,8 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
         .find(requisite => requisite._id === selectedRequisiteId);
+
+    const dispatch = useAppDispatch();
 
     const {
         register,
@@ -65,6 +69,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 onClick: () => {}
             }
         });
+        dispatch(userApi.util.invalidateTags(["Balance"]));
         setOpen(false);
     };
 
