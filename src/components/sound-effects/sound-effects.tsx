@@ -21,7 +21,7 @@ export const SoundEffects = () => {
                 return;
             }
 
-            if (x <= 1) return;
+            if (x !== 1) return;
 
             if (gameStarted) {
                 socket.off("game", playStartRoundSound);

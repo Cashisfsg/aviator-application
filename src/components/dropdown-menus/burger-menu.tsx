@@ -84,7 +84,13 @@ export const BurgerMenu = () => {
                 open={burgerMenuOpen}
                 onOpenChange={setBurgerMenuOpen}
             >
-                <DropdownMenuTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
+                <DropdownMenuTrigger
+                    // onClick={() => {
+                    //     if (burgerMenuOpen) setBurgerMenuOpen(false);
+                    //     else setBurgerMenuOpen(true);
+                    // }}
+                    className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5"
+                >
                     <FiMenu />
                 </DropdownMenuTrigger>
 
