@@ -10,20 +10,17 @@ export interface Coefficient {
 }
 
 export const topBetsEntityAdapter = createEntityAdapter({
-    selectId: (bet: Bet) => bet._id
-    // sortComparer: (a, b) => {
-    //     if (a.bet < b.bet) {
-    //         return 1;
-    //     }
-    //     if (a.bet > b.bet) {
-    //         return -1;
-    //     }
-    //     return 0;
-    // }
+    selectId: (bet: Bet) => bet._id,
+    sortComparer: (a, b) => {
+        return new Date(b.time).getTime() - new Date(a.time).getTime();
+    }
 });
 
 export const userBetsEntityAdapter = createEntityAdapter({
-    selectId: (bet: Bet) => bet._id
+    selectId: (bet: Bet) => bet._id,
+    sortComparer: (a, b) => {
+        return new Date(b.time).getTime() - new Date(a.time).getTime();
+    }
 });
 
 export const topBetsEntitySelector = topBetsEntityAdapter.getSelectors();

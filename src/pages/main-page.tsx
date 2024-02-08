@@ -1,3 +1,5 @@
+// import { Suspense, lazy } from "react";
+
 import { BettingZone } from "@/containers/betting-zone";
 import { Statistics } from "@/containers/statistics";
 import { Chart } from "@/components/chart/chart";
@@ -5,6 +7,12 @@ import { Header } from "@/containers/header/header";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 // import { toast } from "sonner";
+
+// const Statistics = lazy(() =>
+//     import("@/containers/statistics").then(module => ({
+//         default: module.Statistics
+//     }))
+// );
 
 export const MainPage = () => {
     return (
@@ -14,7 +22,11 @@ export const MainPage = () => {
             <main className="content-wrapper flex flex-auto flex-col gap-y-4">
                 <Chart />
                 <BettingZone />
+                {/* {inView ? (
+                    <Suspense fallback={<pre>Loading...</pre>}> */}
                 <Statistics />
+                {/* </Suspense>
+                ) : null} */}
             </main>
 
             {/* <button

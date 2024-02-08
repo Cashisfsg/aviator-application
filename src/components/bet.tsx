@@ -138,7 +138,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
-    useGetUserBetsQuery({ skip: 0, limit: 6 });
+    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const dispatch = useAppDispatch();
     const socket = useStateSelector(state => selectSocket(state));
@@ -179,9 +179,9 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
             dispatch(setBetState({ betNumber, betState: "init" }));
 
             // dispatch(userApi.util.invalidateTags(["Balance"]));
-            // refetch();
-            dispatch(betApi.util.resetApiState());
-            dispatch(betApi.util.invalidateTags(["My"]));
+            refetch();
+            // dispatch(betApi.util.resetApiState());
+            // dispatch(betApi.util.invalidateTags(["My"]));
         };
 
         const onGameDataUpdated = data => {
@@ -440,8 +440,6 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
         > = event => {
             if (currentGameTab.balance === undefined) return;
 
-            console.log("Min bet: " + currentGameTab.min);
-
             const value = validateBet(
                 event.target.value,
                 currentGameTab.min,
@@ -486,7 +484,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
 
-    // const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
+    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const [gain, setGain] = useState(currentGameTab.currentBet);
 
@@ -625,9 +623,9 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
         dispatch(setBetState({ betNumber, betState: "init" }));
         dispatch(userApi.util.invalidateTags(["Balance"]));
-        dispatch(betApi.util.resetApiState());
-        dispatch(betApi.util.invalidateTags(["My"]));
-        // refetch();
+        // dispatch(betApi.util.resetApiState());
+        // dispatch(betApi.util.invalidateTags(["My"]));
+        refetch();
         onClick?.(event);
     };
 
@@ -726,6 +724,8 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
+    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
+
     const socket = useStateSelector(state => selectSocket(state));
     const bonus = useStateSelector(state => selectBonus(state));
     const { soundEnabled } = useStateSelector(state => selectSettings(state));
@@ -775,8 +775,9 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
             }
 
             dispatch(userApi.util.invalidateTags(["Balance"]));
-            dispatch(betApi.util.resetApiState());
-            dispatch(betApi.util.invalidateTags(["My"]));
+            // dispatch(betApi.util.resetApiState());
+            // dispatch(betApi.util.invalidateTags(["My"]));
+            refetch();
             dispatch(setBetState({ betNumber, betState: "init" }));
 
             socket.off("game", autoBet);
