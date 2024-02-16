@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import {
     useAppDispatch,
     userApi,
+    useGetUserBalanceQuery,
     useGetAllDrawsQuery,
     useCancelDrawMutation,
     Draw
@@ -35,18 +36,15 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
                 {isSuccess ? (
                     draws && draws.length !== 0 ? (
                         draws.map((draw, index) => (
-                            <>
-                                <PaymentDetails
-                                    key={draw?._id}
-                                    draw={draw}
-                                />
+                            <div key={draw?._id}>
+                                <PaymentDetails draw={draw} />
                                 {index !== draws.length - 1 ? (
                                     <hr
                                         key={index}
                                         className="h-2"
                                     />
                                 ) : null}
-                            </>
+                            </div>
                         ))
                     ) : (
                         <PaymentDetails />
@@ -62,6 +60,7 @@ interface DrawDetailsProps {
 }
 
 const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
+    const { data: balance } = useGetUserBalanceQuery();
     const [cancelDraw] = useCancelDrawMutation();
     const dispatch = useAppDispatch();
 
@@ -123,7 +122,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.amount} {draw?.currency}
+                        {draw?.amount.toFixed(2)} {balance?.currency}
                     </td>
                 </tr>
                 <tr>

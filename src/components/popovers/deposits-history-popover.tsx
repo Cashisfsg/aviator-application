@@ -120,8 +120,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.amount?.[balance?.currency]}{" "}
-                        {deposit?.currency}
+                        {deposit?.amount?.[balance?.currency].toFixed(2)}{" "}
+                        {balance?.currency}
                     </td>
                 </tr>
                 <tr>
