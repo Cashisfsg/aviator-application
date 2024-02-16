@@ -11,6 +11,7 @@ import {
 
 import {
     useGetUserRequisitesQuery,
+    useGetUserBalanceQuery,
     useGetReplenishmentLimitsQuery,
     useAddReplenishmentMutation,
     useGetAllDepositsQuery,
@@ -464,6 +465,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     currentDeposit,
     children
 }) => {
+    const { data: balance } = useGetUserBalanceQuery();
+
     return (
         <div className="grid gap-y-4">
             <p className="flex h-10 items-center rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
@@ -495,19 +498,24 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 
             <Field
                 label={"Сумма депозита"}
-                value={`${currentDeposit?.amount} ${currentDeposit?.currency}`}
+                value={`${currentDeposit?.amount?.[balance?.currency].toFixed(
+                    2
+                )} ${balance?.currency}`}
             />
 
             <Field
                 label={"Комиссия"}
-                value={`${currentDeposit?.requisite?.commission} ${currentDeposit?.requisite?.currency}`}
+                value={`${(
+                    currentDeposit?.deduction?.[balance?.currency] -
+                    currentDeposit?.amount?.[balance?.currency]
+                ).toFixed(2)} ${balance?.currency}`}
             />
 
             <Field
                 label={"К оплате"}
-                value={`${currentDeposit?.deduction.toFixed(
-                    2
-                )} ${currentDeposit?.currency}`}
+                value={`${currentDeposit?.deduction?.[
+                    balance?.currency
+                ].toFixed(2)} ${balance?.currency}`}
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
 

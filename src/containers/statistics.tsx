@@ -30,7 +30,7 @@ export const Statistics = () => {
     const { ref, inView } = useInView({
         triggerOnce: true,
         fallbackInView: true,
-        threshold: 1
+        threshold: 0
     });
 
     return (

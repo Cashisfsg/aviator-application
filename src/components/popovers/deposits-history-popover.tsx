@@ -1,4 +1,8 @@
-import { useGetAllDepositsQuery, Replenishment } from "@/store";
+import {
+    useGetAllDepositsQuery,
+    useGetUserBalanceQuery,
+    Replenishment
+} from "@/store";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -82,6 +86,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 }) => {
     // const showReplenishmentDetails = () => {};
     const { dialogRef } = usePopoverContext();
+    const { data: balance } = useGetUserBalanceQuery();
 
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
@@ -115,7 +120,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.amount} {deposit?.currency}
+                        {deposit?.amount?.[balance?.currency]}{" "}
+                        {deposit?.currency}
                     </td>
                 </tr>
                 <tr>

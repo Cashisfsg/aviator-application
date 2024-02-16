@@ -128,9 +128,9 @@ export const AllBetsTabpanel = () => {
                                             )}`}
                                         </span>
                                     </Cell>
-                                    <Cell>{`${player?.bet[
+                                    <Cell>{`${player?.bet?.[
                                         balance?.currency
-                                    ].toFixed(2)} USD`}</Cell>
+                                    ].toFixed(2)} ${balance?.currency}`}</Cell>
                                     <Cell>
                                         {!isNaN(player?.coeff as number) ? (
                                             <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
@@ -142,7 +142,9 @@ export const AllBetsTabpanel = () => {
                                     </Cell>
                                     <Cell>
                                         {!isNaN(player?.win as number)
-                                            ? `${player?.win?.toFixed(2)} USD`
+                                            ? `${player?.win?.toFixed(
+                                                  2
+                                              )} ${balance?.currency}`
                                             : "-"}
                                     </Cell>
                                 </Row>
