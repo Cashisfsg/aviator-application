@@ -122,7 +122,11 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.amount.toFixed(2)} {balance?.currency}
+                        {draw?.amount
+                            ? `${draw?.amount?.[balance?.currency].toFixed(
+                                  2
+                              )} ${balance?.currency}`
+                            : null}
                     </td>
                 </tr>
                 <tr>
