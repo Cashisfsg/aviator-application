@@ -41,6 +41,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
     return (
         <output
             {...props}
+            role="alert"
             className={cn("block text-xs text-red-750", className)}
         >
             <IoWarningOutline className="mt-[1.5px] inline align-top" />{" "}

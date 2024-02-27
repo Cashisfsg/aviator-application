@@ -87,7 +87,7 @@ export const BurgerMenu = () => {
                 open={burgerMenuOpen}
                 onOpenChange={setBurgerMenuOpen}
             >
-                <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
+                <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5 transition-colors duration-150 aria-expanded:text-[#e50539] mh:hover:text-[#e50539]">
                     <FiMenu />
                 </PopoverTrigger>
 

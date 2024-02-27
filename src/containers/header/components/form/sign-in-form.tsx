@@ -21,43 +21,54 @@ import { ImSpinner9 } from "react-icons/im";
 export const SignInForm = () => {
     // const { dialogRef } = useDialogContext();
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
+
     const formId = useId();
-    const [authenticate, { isLoading, isError, error }] =
-        useAuthenticateUserMutation();
+    const loginId = useId();
+    const passwordId = useId();
+    const loginErrorId = useId();
+    const passwordErrorId = useId();
+    const serverErrorId = useId();
+    const [authenticate, { isLoading }] = useAuthenticateUserMutation();
     const navigate = useNavigate();
     const location = useLocation();
-
-    console.log(
-        "Email: ",
-        location?.state?.email,
-        " password: ",
-        location?.state?.password
-    );
-
-    console.log("Location: ", location);
 
     const {
         register,
         handleSubmit,
         reset,
+        clearErrors,
+        setError,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             login: sessionStorage.getItem("email") || undefined,
             password: location?.state?.password
-        }
+        },
+        shouldFocusError: false,
+        mode: "onSubmit",
+        reValidateMode: "onSubmit"
     });
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async data => {
         const response = await authenticate(data);
 
-        if (response?.error) return;
+        if (response?.error) {
+            setError("root", {
+                type: "manual",
+                message: response?.error?.data?.message
+            });
+            return;
+        }
 
         reset();
         navigate("/main");
         // sessionStorage.removeItem("email");
         dialogCloseRef?.current?.click();
+    };
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        clearErrors();
     };
 
     return (
@@ -70,35 +81,64 @@ export const SignInForm = () => {
                 <Label>
                     <span>Логин или Email</span>
                     <Input
+                        id={loginId}
                         type="text"
-                        // defaultValue={
-                        //     sessionStorage.getItem("email") || undefined
-                        // }
-                        // defaultValue={"dasdas"}
                         aria-invalid={
-                            isError || errors.login ? "true" : "false"
+                            errors?.root || errors?.password || errors.login
+                                ? "true"
+                                : "false"
                         }
+                        aria-errormessage={
+                            errors.login
+                                ? loginErrorId
+                                : errors.password
+                                  ? passwordErrorId
+                                  : errors.root
+                                    ? serverErrorId
+                                    : undefined
+                        }
+                        onFocus={onFocusHandler}
                         {...register("login")}
                     />
                     {errors?.login ? (
-                        <ErrorMessage message={errors?.login?.message} />
+                        <ErrorMessage
+                            id={loginErrorId}
+                            htmlFor={loginId}
+                            message={errors?.login?.message}
+                        />
                     ) : null}
                 </Label>
                 <Label>
                     <span>Пароль</span>
                     <Input
+                        id={passwordId}
                         type="password"
-                        // defaultValue={123456789}
-                        aria-invalid={
-                            isError || errors.password ? "true" : "false"
-                        }
                         {...register("password")}
+                        aria-invalid={
+                            errors?.root || errors.password ? "true" : "false"
+                        }
+                        aria-errormessage={
+                            errors.password
+                                ? passwordErrorId
+                                : errors.root
+                                  ? serverErrorId
+                                  : undefined
+                        }
+                        onFocus={onFocusHandler}
                     />
                     {/* <span>{location?.state?.password}</span> */}
                     {errors?.password ? (
-                        <ErrorMessage message={errors?.password?.message} />
-                    ) : isError ? (
-                        <ErrorMessage message={error?.data?.message} />
+                        <ErrorMessage
+                            id={passwordErrorId}
+                            htmlFor={passwordId}
+                            message={errors?.password?.message}
+                        />
+                    ) : errors?.root ? (
+                        <ErrorMessage
+                            id={serverErrorId}
+                            htmlFor={passwordId}
+                            message={errors?.root?.message}
+                        />
                     ) : null}
                 </Label>
             </form>
@@ -109,6 +149,7 @@ export const SignInForm = () => {
                 variant="confirm"
                 form={formId}
                 disabled={isLoading}
+                className="disabled:cursor-wait"
             >
                 {isLoading ? (
                     <ImSpinner9 className="mx-auto animate-spin text-[28px]" />

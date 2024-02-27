@@ -2,49 +2,105 @@ import * as z from "zod";
 
 const alphanumericRegex = /^\s?[A-Za-z0-9]+\s?$/;
 
-export const authorizationCredentialsSchema = z.object({
-    login: z.union([
-        z
-            .string()
-            .min(1, {
-                message: "Поле обязательно для заполнения"
-            })
-            .regex(alphanumericRegex, {
-                message: "Поле может содержать только символы A-Z и цифры"
-            })
-            .min(5, {
-                message: "Логин должен содержать не менее 5 символов"
-            })
-            .max(20, {
-                message:
-                    "Превышено максимально допустимое количество символов (20)"
-            })
-            .transform(e => e.trim()),
-        z
-            .string()
-            .email({
-                message: "Укажите корректный адрес электронной почты"
-            })
-            .max(60, {
-                message:
-                    "Превышено максимально допустимое количество символов (60)"
-            })
-    ]),
-    password: z
-        .string()
-        .min(1, {
+export const authorizationCredentialsSchema = z
+    .object({
+        // login: z.union([
+        //     z
+        //         .string()
+        //         .min(1, {
+        //             message: "Поле обязательно для заполнения"
+        //         })
+        //         .regex(alphanumericRegex)
+        //         .min(5)
+        //         .max(20)
+        //         .transform(e => e.trim()),
+        //     z.string().email().max(60)
+        // ]),
+        login: z.string().min(1, {
+            message: "Поле обязательно для заполнения"
+        }),
+        password: z.string().min(1, {
             message: "Поле обязательно для заполнения"
         })
-        .regex(alphanumericRegex, {
-            message: "Поле может содержать только символы A-Z и цифры"
-        })
-        .min(8, {
-            message: "Пароль должен содержать не менее 8 символов"
-        })
-        .max(30, {
-            message: "Превышено максимально допустимое количество символов (20)"
-        })
-});
+        // .regex(alphanumericRegex)
+        // .min(8)
+        // .max(30)
+    })
+    // .superRefine(({ login, password }, ctx) => {
+    //     try {
+    //         z.string()
+    //             .regex(alphanumericRegex)
+    //             .min(5)
+    //             .max(20)
+    //             .transform(e => e.trim())
+    //             .parse(login);
+    //         z.string().regex(alphanumericRegex).min(8).max(30).parse(password);
+    //     } catch (error) {
+    //         ctx.addIssue({
+    //             code: z.ZodIssueCode.custom,
+    //             path: ["login"],
+    //             fatal: true,
+    //             message: "Неверное имя пользователя или пароль"
+    //         });
+    //         ctx.addIssue({
+    //             code: z.ZodIssueCode.custom,
+    //             path: ["password"],
+    //             fatal: true,
+    //             message: "Неверное имя пользователя или пароль"
+    //         });
+    //     }
+    // });
+    // .refine(
+    //     ({ login, password }) => {
+    //         try {
+    //             z.string().regex(alphanumericRegex).min(5).max(20).parse(login);
+    //             z.string()
+    //                 .regex(alphanumericRegex)
+    //                 .min(8)
+    //                 .max(30)
+    //                 .parse(password);
+    //             return true;
+    //         } catch (error) {
+    //             return false;
+    //         }
+    //         // z.string().regex(alphanumericRegex).min(5).max(20).parse(login);
+    //     },
+    //     {
+    //         message: "Неверное имя пользователя или пароль",
+    //         path: ["login"]
+    //     }
+    // )
+    .refine(
+        ({ login, password }) => {
+            try {
+                z.union([
+                    z
+                        .string()
+                        .regex(alphanumericRegex)
+                        .min(5)
+                        .max(20)
+                        .transform(e => e.trim()),
+                    z
+                        .string()
+                        .email()
+                        .max(60)
+                        .transform(e => e.trim())
+                ]).parse(login);
+                z.string()
+                    .regex(alphanumericRegex)
+                    .min(8)
+                    .max(30)
+                    .parse(password);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        },
+        {
+            message: "Неверное имя пользователя или пароль",
+            path: ["password"]
+        }
+    );
 
 export type AuthorizationCredentialsFormSchema = z.infer<
     typeof authorizationCredentialsSchema
