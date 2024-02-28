@@ -9,6 +9,7 @@ import {
 } from "@/utils/schemas";
 
 import { useSendConfirmationCodeMutation } from "@/store";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,14 +20,20 @@ import { ImSpinner9 } from "react-icons/im";
 
 export const RestorePasswordForm = () => {
     const formRef = useRef<HTMLFormElement>(null);
-    // const submit = useSubmit();
+    const emailId = useId();
     const emailErrorId = useId();
-    const [sendConfirmationCode, { error, isError, isLoading, isSuccess }] =
+    const [sendConfirmationCode, { isLoading, isSuccess }] =
         useSendConfirmationCodeMutation();
 
     const email = sessionStorage.getItem("email");
 
-    const form = useForm<EmailValidationFormSchema>({
+    const {
+        register,
+        handleSubmit,
+        setError,
+        clearErrors,
+        formState: { errors }
+    } = useForm<EmailValidationFormSchema>({
         resolver: zodResolver(emailValidationSchema),
         defaultValues: {
             email: email || ""
@@ -36,9 +43,31 @@ export const RestorePasswordForm = () => {
     const onSubmit: SubmitHandler<EmailValidationFormSchema> = async ({
         email
     }) => {
-        await sendConfirmationCode({ email });
+        try {
+            await sendConfirmationCode({ email }).unwrap();
+            sessionStorage.setItem("email", email);
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setError("root", {
+                    type: "manual",
+                    message: errorMessage
+                });
+            } else if (isErrorWithMessage(error)) {
+                setError("root", {
+                    type: "manual",
+                    message: error.message
+                });
+            }
+        }
+    };
 
-        sessionStorage.setItem("email", email);
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        clearErrors();
     };
 
     if (isSuccess) {
@@ -48,7 +77,7 @@ export const RestorePasswordForm = () => {
     return (
         <form
             className="space-y-8"
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             ref={formRef}
         >
             <Label>
@@ -56,27 +85,27 @@ export const RestorePasswordForm = () => {
                     Введите email привязанный к аккаунту
                 </span>
                 <Input
-                    {...form.register("email")}
+                    id={emailId}
+                    {...register("email")}
                     aria-invalid={
-                        form.formState.errors.email
-                            ? "true"
-                            : isError
-                              ? "true"
-                              : "false"
+                        errors?.email || errors?.root ? "true" : "false"
                     }
-                    aria-errormessage={emailErrorId}
+                    aria-errormessage={
+                        errors?.email || errors?.root ? emailErrorId : undefined
+                    }
                     autoComplete="off"
+                    onFocus={onFocusHandler}
                 />
-                {isError ? (
+
+                {errors?.root ? (
                     <ErrorMessage
                         id={emailErrorId}
-                        message={error?.data?.message}
+                        message={errors?.root?.message}
                     />
-                ) : null}
-                {form.formState.errors.email ? (
+                ) : errors?.email ? (
                     <ErrorMessage
                         id={emailErrorId}
-                        message={form.formState.errors.email?.message}
+                        message={errors?.email?.message}
                     />
                 ) : null}
             </Label>

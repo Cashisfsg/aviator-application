@@ -37,7 +37,7 @@ interface Player {
     currency: string;
     time: Date;
     coeff?: number;
-    win?: number;
+    win?: Record<Currency, number>;
 }
 
 export interface GameDetails {

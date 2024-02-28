@@ -19,7 +19,7 @@ export const MainPage = () => {
         <>
             <Header />
 
-            <main className="content-wrapper flex flex-auto flex-col gap-y-4">
+            <main className="content-wrapper flex flex-auto flex-col gap-y-4 pb-8">
                 <Chart />
                 <BettingZone />
                 {/* {inView ? (

@@ -1,62 +1,77 @@
-// import { useState, useEffect } from "react";
-// import { socket } from "./socket/socket";
+import { useState, useEffect } from "react";
 import {
     useGetUserBalanceQuery,
+    useLazyGetPreviousRoundInfoQuery,
     useStateSelector,
-    selectGameDetails
+    selectGameDetails,
+    selectSocket,
+    PreviousRoundInfoResponse
 } from "@/store";
-// import { Player } from "./socket/types";
 
 import { Table, Row, Cell } from "@/components/ui/table";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
-// interface GameData {
-//     betAmount: number;
-//     winAmount: number;
-//     currentPlayers: Player[];
-// }
-
-// const initialGameData = {
-//     betAmount: 0,
-//     winAmount: 0,
-//     currentPlayers: []
-// };
+interface PreviousRoundData {
+    data: PreviousRoundInfoResponse[];
+    enabled: boolean;
+}
 
 export const AllBetsTabpanel = () => {
-    // const [gameData, setGameData] = useState<GameData>(initialGameData);
-
+    const [previousRoundData, setPreviousRoundData] =
+        useState<PreviousRoundData>({
+            data: [],
+            enabled: false
+        });
     const { data: balance, isSuccess } = useGetUserBalanceQuery();
     const gameDetails = useStateSelector(state => selectGameDetails(state));
+    const socket = useStateSelector(state => selectSocket(state));
+    const [getPreviousRoundInfo] = useLazyGetPreviousRoundInfoQuery();
 
-    // const socket = useStateSelector(state => selectSocket(state));
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        if (previousRoundData.enabled) {
+            setPreviousRoundData(previousData => ({
+                ...previousData,
+                enabled: false
+            }));
+            return;
+        }
 
-    // useEffect(() => {
-    //     const updatePlayersList = (data: GameData) => {
-    //         console.log("Players: ", data);
+        const response = await getPreviousRoundInfo();
 
-    //         setGameData(currentData => ({ ...currentData, ...data }));
-    //     };
+        if (response?.error) return;
 
-    //     const clearPlayersList = () => {
-    //         setGameData(currentData => ({
-    //             ...currentData,
-    //             ...initialGameData
-    //         }));
-    //     };
+        // setPreviousRoundData(previousData => ({
+        //     ...previousData,
+        //     data: response.data,
+        //     enabled: true
+        // }));
+    };
 
-    //     socket.on("currentPlayers", updatePlayersList);
-    //     socket.on("crash", clearPlayersList);
+    console.log(gameDetails);
 
-    //     return () => {
-    //         socket.off("currentPlayers", updatePlayersList);
-    //         socket.off("currentPlayers", clearPlayersList);
-    //     };
-    // }, [socket]);
+    useEffect(() => {
+        const roundEndHandler = () => {
+            setPreviousRoundData(previousData => ({
+                ...previousData,
+                data: [],
+                enabled: false
+            }));
+        };
+
+        socket.on("crash", roundEndHandler);
+
+        return () => socket.off("crash", roundEndHandler);
+    }, []);
 
     return (
         <>
-            <button className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] mh:hover:text-[#e50539]">
+            <button
+                onClick={onClickHandler}
+                className="ml-auto flex items-center gap-x-1.5 rounded-full border border-[#414148] bg-[#252528] px-2 py-1 text-xs leading-none text-[#767b85] mh:hover:text-[#e50539]"
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"
@@ -100,14 +115,22 @@ export const AllBetsTabpanel = () => {
             {isSuccess ? (
                 <Table
                     headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
-                    data={gameDetails.currentPlayers}
+                    data={
+                        previousRoundData.enabled
+                            ? previousRoundData.data
+                            : gameDetails.currentPlayers
+                    }
                     renderData={data => (
                         <>
                             {data.map((player, i) => (
                                 <Row
                                     key={i}
                                     className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
-                                        isNaN(player?.win as number)
+                                        isNaN(
+                                            player?.win?.[
+                                                balance?.currency
+                                            ] as number
+                                        )
                                             ? ""
                                             : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
                                     }`}
@@ -141,8 +164,14 @@ export const AllBetsTabpanel = () => {
                                         )}
                                     </Cell>
                                     <Cell>
-                                        {!isNaN(player?.win as number)
-                                            ? `${player?.win?.toFixed(
+                                        {!isNaN(
+                                            player?.win?.[
+                                                balance?.currency
+                                            ] as number
+                                        )
+                                            ? `${player?.win?.[
+                                                  balance?.currency
+                                              ].toFixed(
                                                   2
                                               )} ${balance?.currency}`
                                             : "-"}

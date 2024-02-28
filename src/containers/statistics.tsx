@@ -36,7 +36,7 @@ export const Statistics = () => {
     return (
         <Tabs
             defaultValue="all"
-            className="rounded-2.5xl pb-8"
+            className="min-h-3 rounded-2.5xl"
             ref={ref}
         >
             {inView ? (

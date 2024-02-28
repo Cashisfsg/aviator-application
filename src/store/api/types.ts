@@ -1,7 +1,5 @@
 //! ================= Authentication types ================= //
 
-import { Currency } from "lucide-react";
-
 export interface UserRegistrationCredentials {
     currency: string;
     login: string;
@@ -43,10 +41,12 @@ export interface ChangePasswordRequest {
 
 export type Currency = "USD" | "RUB" | "UZS" | "KZT";
 
+export type CurrencyRecord = Record<Currency, number>;
+
 export interface User {
     _id: string;
     telegramId: number;
-    currency: string;
+    currency: Currency;
     login: string;
     email: string;
     balance: number;
@@ -64,7 +64,7 @@ export interface Promo {
     type: "add_balance" | "promo";
     name: string;
     amount: number;
-    currency: string;
+    currency: Currency;
     max_count: number;
     limit: number | null;
     coef: number;
@@ -81,7 +81,7 @@ export interface UserRequisite {
 export interface Bet {
     _id: string;
     bet: number;
-    currency: string;
+    currency: Currency;
     time: string;
     coeff: number;
     win: number;
@@ -92,6 +92,16 @@ export interface Bet {
 export interface PaginationParams {
     skip: number;
     limit: number;
+}
+
+export interface PreviousRoundInfoResponse {
+    bet: CurrencyRecord;
+    time: string;
+    coeff: number;
+    win: CurrencyRecord;
+    playerId: string;
+    playerLogin: string;
+    profileImage: string;
 }
 
 //! ================= Admin types ================= //

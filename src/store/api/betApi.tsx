@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { EntityState, createEntityAdapter } from "@reduxjs/toolkit";
-import { Bet, PaginationParams } from "./types";
+import { Bet, PaginationParams, PreviousRoundInfoResponse } from "./types";
 import { RootStore } from "../types";
 
 export interface Coefficient {
@@ -196,6 +196,11 @@ export const betApi = createApi({
                 url: "bets/coeffs"
             }),
             providesTags: ["Coefficients"]
+        }),
+        getPreviousRoundInfo: builder.query<PreviousRoundInfoResponse[], void>({
+            query: () => ({
+                url: "/bets/last-game"
+            })
         })
     })
 });
@@ -206,5 +211,7 @@ export const {
     useGetUserBetsQuery,
     useLazyGetUserBetsQuery,
     useGetLastThirtyCoefficientsQuery,
-    useLazyGetLastThirtyCoefficientsQuery
+    useLazyGetLastThirtyCoefficientsQuery,
+    useGetPreviousRoundInfoQuery,
+    useLazyGetPreviousRoundInfoQuery
 } = betApi;

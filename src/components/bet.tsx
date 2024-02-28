@@ -8,7 +8,6 @@ import {
     useGetUserBetsQuery,
     useGetGameLimitsQuery,
     userApi,
-    betApi,
     setBetState,
     setGameDetails,
     setCurrentBet,
@@ -19,7 +18,8 @@ import {
     selectSettings,
     deactivateBonus,
     resetGameDetails,
-    useGetUserBalanceQuery
+    useGetUserBalanceQuery,
+    GameDetails
 } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -118,6 +118,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
 };
 
 const raiseBets = {
+    USD: [1, 2, 5, 10],
     RUB: [250, 500, 1000, 2000],
     UZS: [50000, 100000, 200000, 500000],
     KZT: [1000, 2500, 5000, 10000]
@@ -184,11 +185,11 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
             // dispatch(betApi.util.invalidateTags(["My"]));
         };
 
-        const onGameDataUpdated = data => {
+        const onGameDataUpdated = (data: GameDetails) => {
             dispatch(
                 setGameDetails({
-                    betAmount: data.betAmount[balance?.currency],
-                    winAmount: data.winAmount[balance?.currency],
+                    betAmount: data.betAmount?.[balance?.currency],
+                    winAmount: data.winAmount?.[balance?.currency],
                     currentPlayers: data.currentPlayers
                 })
             );
@@ -364,7 +365,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                                     </svg>
                                 </button>
                             </div>
-                            {raiseBets?.[balance?.currency || "RUB"]?.map(
+                            {raiseBets?.[balance?.currency || "USD"]?.map(
                                 number => (
                                     <button
                                         key={number}
@@ -834,16 +835,16 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
                     onClick={() => dispatch(toggleAutoMode({ betNumber }))}
                 />
             </Label>
-            <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none">
-                <input
-                    disabled={!currentGameTab.autoModeOn}
-                    defaultValue={MIN_RATE.toFixed(2)}
-                    onChange={onChangeHandler}
-                    onBlur={onBlurHandler}
-                    className="h-full w-full bg-transparent font-bold focus-visible:outline-none disabled:opacity-50"
-                />
-                <span>x</span>
-            </div>
+            {/* <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none"> */}
+            <input
+                disabled={!currentGameTab.autoModeOn}
+                defaultValue={MIN_RATE.toFixed(2)}
+                onChange={onChangeHandler}
+                onBlur={onBlurHandler}
+                className="h-8 w-full rounded-full border border-gray-50 bg-black-250 px-3 text-center font-bold leading-none focus-visible:outline-none disabled:opacity-50"
+            />
+
+            {/* </div> */}
         </fieldset>
     );
 };

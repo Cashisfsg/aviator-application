@@ -65,7 +65,7 @@ export const BalanceMenu = () => {
     const [open, setOpen] = useState(false);
     const { isAuthenticated } = useAuth();
 
-    const { data: balance } = useGetUserBalanceQuery(undefined, {
+    const { data: balance, isLoading } = useGetUserBalanceQuery(undefined, {
         skip: !isAuthenticated
     });
 
@@ -78,10 +78,14 @@ export const BalanceMenu = () => {
             open={open}
             onOpenChange={setOpen}
         >
-            <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
-                {balance?.balance.toFixed(2) || "300"}{" "}
-                {balance?.currency || "$"}
-            </PopoverTrigger>
+            {isLoading ? (
+                <span className="h-[30px] w-20 animate-pulse rounded-full border border-[#414148] bg-slate-700" />
+            ) : (
+                <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
+                    {balance?.balance.toFixed(2) || "300"}{" "}
+                    {balance?.currency || "$"}
+                </PopoverTrigger>
+            )}
 
             {isAuthenticated ? (
                 <PopoverContent
