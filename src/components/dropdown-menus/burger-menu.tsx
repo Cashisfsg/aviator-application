@@ -1,15 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import {
-    useAuth,
-    useStateSelector,
-    selectInitData,
-    useGetUserQuery,
-    useGetSupportServiceLinkQuery
-} from "@/store";
+import { useAuth, useGetSupportServiceLinkQuery } from "@/store";
 import { GameSettings } from "@/components/game-settings";
-import { UploadImage } from "@/components/upload-image";
 
 import {
     MyBetsHistoryDialog,
@@ -35,6 +28,8 @@ import {
     DropDownMenuSeparator
 } from "@/components/ui/drop-down-list";
 
+import { UserProfileDetails } from "../user-profile-details";
+
 // import {
 //     DropdownMenu,
 //     DropdownMenuContent,
@@ -44,8 +39,6 @@ import {
 //     DropdownMenuTrigger
 // } from "@/components/ui/dropdown-menu";
 
-import { ClipboardCopy } from "@/components/ui/clipboard-copy";
-
 import { FiMenu } from "react-icons/fi";
 import { BiSupport } from "react-icons/bi";
 import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
@@ -53,8 +46,6 @@ import { ImNewspaper } from "react-icons/im";
 import { SlPeople } from "react-icons/sl";
 import { IoExitOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
-
-import Avatar from "@/assets/avatar-360w.webp";
 
 export const BurgerMenu = () => {
     const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
@@ -71,11 +62,8 @@ export const BurgerMenu = () => {
     const [securityPopoverOpen, setSecurityPopoverOpen] = useState(false);
 
     const { isAuthenticated } = useAuth();
-    const { data: user } = useGetUserQuery(undefined, {
-        skip: !isAuthenticated
-    });
+
     const { data: support } = useGetSupportServiceLinkQuery();
-    const userInitData = useStateSelector(state => selectInitData(state));
 
     const onClickHandler = () => {
         setBurgerMenuOpen(false);
@@ -97,37 +85,7 @@ export const BurgerMenu = () => {
                     className="z-10 w-72 border-none bg-[#2c2d30] p-0 text-white"
                 >
                     <div className="p-0 text-sm">
-                        <div className="flex items-center justify-between gap-1.5 p-2.5">
-                            <div className="grid w-max grid-cols-[auto_auto] grid-rows-2 items-center gap-x-2.5 leading-none">
-                                <img
-                                    src={
-                                        user?.profileImage ||
-                                        userInitData?.profileImage ||
-                                        Avatar
-                                    }
-                                    alt="Аватар профиля"
-                                    width="40"
-                                    height="40"
-                                    onError={event => {
-                                        event.currentTarget.src = Avatar;
-                                    }}
-                                    className="row-span-2 rounded-full"
-                                />
-
-                                <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {user?.login ||
-                                        userInitData?.login ||
-                                        "Username"}
-                                </p>
-                                <ClipboardCopy
-                                    textToCopy={user?._id}
-                                    className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-left text-xs"
-                                >
-                                    {user?._id ? `ID ${user?._id}` : "user ID"}
-                                </ClipboardCopy>
-                            </div>
-                            {isAuthenticated ? <UploadImage /> : null}
-                        </div>
+                        <UserProfileDetails />
                         <GameSettings />
                     </div>
                     <DropDownMenuSeparator className="h-3" />
