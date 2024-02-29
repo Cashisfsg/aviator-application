@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -9,6 +10,7 @@ import {
 
 import { useChangePasswordMutation } from "@/store";
 import { useAuth } from "@/store/hooks/useAuth";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { Label } from "@/components/ui/label";
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -21,7 +23,20 @@ export const ResetPasswordForm = () => {
         useChangePasswordMutation();
     const { token } = useAuth();
 
-    const form = useForm<FormSchema>({
+    const passwordId = useId();
+    const passwordConfirmId = useId();
+    const passwordErrorId = useId();
+    const passwordConfirmErrorId = useId();
+    const serverErrorId = useId();
+
+    const {
+        handleSubmit,
+        register,
+        getValues,
+        setError,
+        clearErrors,
+        formState: { errors }
+    } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             password: "",
@@ -35,11 +50,36 @@ export const ResetPasswordForm = () => {
     }) => {
         if (!token) return;
 
-        await changePassword({
-            password,
-            passwordConfirm,
-            token
-        });
+        try {
+            await changePassword({
+                password,
+                passwordConfirm,
+                token
+            }).unwrap();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setError("root", {
+                    type: "manual",
+                    message: errorMessage
+                });
+            } else if (isErrorWithMessage(error)) {
+                setError("root", {
+                    type: "manual",
+                    message: error.message
+                });
+            }
+        }
+    };
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        if (!errors?.root) return;
+
+        clearErrors();
     };
 
     if (isSuccess) {
@@ -47,7 +87,7 @@ export const ResetPasswordForm = () => {
             <Navigate
                 to="/main/sign-in"
                 state={{
-                    password: form.getValues().password
+                    password: getValues().password
                 }}
             />
         );
@@ -56,37 +96,52 @@ export const ResetPasswordForm = () => {
     return (
         <form
             className="grid gap-y-8"
-            onSubmit={form.handleSubmit(onSubmitHandler)}
+            onSubmit={handleSubmit(onSubmitHandler)}
         >
             <Label>
                 <span className="text-xs">
                     Придумайте новый пароль (мин. 8 символов)
                 </span>
                 <Input
-                    {...form.register("password")}
-                    aria-invalid={
-                        form.formState.errors.password ? "true" : "false"
+                    id={passwordId}
+                    {...register("password")}
+                    aria-invalid={errors?.password ? "true" : "false"}
+                    aria-errormessage={
+                        errors.password ? passwordErrorId : undefined
                     }
-                    autoComplete="off"
+                    onFocus={onFocusHandler}
                 />
-                {form.formState.errors.password ? (
+                {errors.password ? (
                     <ErrorMessage
-                        message={form.formState.errors.password?.message}
+                        id={passwordErrorId}
+                        htmlFor={passwordId}
+                        message={errors.password?.message}
                     />
                 ) : null}
             </Label>
             <Label>
                 <span className="text-sm">Повторите пароль</span>
                 <Input
-                    {...form.register("passwordConfirm")}
-                    aria-invalid={
-                        form.formState.errors.passwordConfirm ? "true" : "false"
+                    id={passwordConfirmId}
+                    {...register("passwordConfirm")}
+                    aria-invalid={errors.passwordConfirm ? "true" : "false"}
+                    aria-errormessage={
+                        errors.passwordConfirm
+                            ? passwordConfirmErrorId
+                            : undefined
                     }
-                    autoComplete="off"
+                    onFocus={onFocusHandler}
                 />
-                {form.formState.errors.passwordConfirm ? (
+                {errors?.root ? (
                     <ErrorMessage
-                        message={form.formState.errors.passwordConfirm?.message}
+                        id={serverErrorId}
+                        message={errors.root?.message}
+                    />
+                ) : errors.passwordConfirm ? (
+                    <ErrorMessage
+                        id={passwordConfirmErrorId}
+                        htmlFor={passwordConfirmId}
+                        message={errors.passwordConfirm?.message}
                     />
                 ) : null}
             </Label>

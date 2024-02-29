@@ -1,4 +1,3 @@
-import { combineReducers } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
 import {
     adminApi,
@@ -9,29 +8,12 @@ import {
     // socketApi,
     userApi
 } from "./api";
-import {
-    authReducer,
-    adminSliceReducer,
-    adminAuthReducer,
-    userBetsSliceReducer,
-    topBetsSliceReducer,
-    referralReducer,
-    gameSliceReducer
-} from "./slices";
-
-const betReducer = combineReducers({
-    my: userBetsSliceReducer,
-    top: topBetsSliceReducer
-});
+import { authReducer, gameSliceReducer } from "./slices";
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        admin: adminSliceReducer,
-        adminAuth: adminAuthReducer,
-        bets: betReducer,
         game: gameSliceReducer,
-        referral: referralReducer,
         [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
@@ -49,13 +31,4 @@ export const store = configureStore({
             .concat(replenishmentApi.middleware)
             // .concat(socketApi.middleware)
             .concat(userApi.middleware)
-    // .concat({
-    //     async onError(error, { dispatch, getState }) {
-    //         // Перехватываем ошибку Unauthorized
-    //         if (error.status === 401) {
-    //             // Выполните здесь действия для перенаправления на страницу регистрации
-    //             console.log("Unauthorized! Redirect to login page.");
-    //         }
-    //     }
-    // })
 });

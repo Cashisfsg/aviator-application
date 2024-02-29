@@ -1,5 +1,7 @@
+import { useState, useId } from "react";
 import { Navigate } from "react-router-dom";
 import { useConfirmPasswordChangeMutation } from "@/store";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,18 +10,21 @@ import { ErrorMessage } from "@/components/ui/input";
 
 import { ImSpinner9 } from "react-icons/im";
 
-// export const action = async () => {
-//     return redirect("/main/password/reset");
-// };
-
 interface FormFields {
     code: HTMLInputElement;
 }
 
 export const ConfirmEmailForm = () => {
+    const [errorState, setErrorState] = useState({
+        message: "",
+        isError: false
+    });
+
+    const codeId = useId();
+    const codeErrorId = useId();
     const email = sessionStorage.getItem("email");
 
-    const [confirmChange, { isLoading, isSuccess, isError, error }] =
+    const [confirmChange, { isLoading, isSuccess }] =
         useConfirmPasswordChangeMutation();
 
     const handleSubmit: React.FormEventHandler<
@@ -27,14 +32,43 @@ export const ConfirmEmailForm = () => {
     > = async event => {
         event.preventDefault();
 
-        const { code } = event.currentTarget;
+        try {
+            const { code } = event.currentTarget;
 
-        await confirmChange({ code: Number(code.value) });
+            await confirmChange({ code: Number(code.value) }).unwrap();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setErrorState(err => ({
+                    ...err,
+                    message: errorMessage,
+                    isError: true
+                }));
+            } else if (isErrorWithMessage(error)) {
+                setErrorState(err => ({
+                    ...err,
+                    message: error.message,
+                    isError: true
+                }));
+            }
+        }
     };
 
     if (isSuccess) {
         return <Navigate to="/main/password/reset" />;
     }
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        setErrorState(err => ({
+            ...err,
+            message: "",
+            isError: false
+        }));
+    };
 
     return (
         <form
@@ -53,9 +87,21 @@ export const ConfirmEmailForm = () => {
             </Label>
             <Label direction="column">
                 <span className="text-sm">Введите код</span>
-                <Input name="code" />
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
+                <Input
+                    id={codeId}
+                    name="code"
+                    aria-invalid={errorState.isError}
+                    aria-errormessage={
+                        errorState.isError ? codeErrorId : undefined
+                    }
+                    onFocus={onFocusHandler}
+                />
+                {errorState.isError ? (
+                    <ErrorMessage
+                        id={codeErrorId}
+                        htmlFor={codeId}
+                        message={errorState.message}
+                    />
                 ) : null}
             </Label>
             <Button

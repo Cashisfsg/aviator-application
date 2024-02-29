@@ -102,16 +102,14 @@ export const BurgerMenu = () => {
                                 <img
                                     src={
                                         user?.profileImage ||
-                                        userInitData?.profileImage
+                                        userInitData?.profileImage ||
+                                        Avatar
                                     }
-                                    alt="Profile image"
+                                    alt="Аватар профиля"
                                     width="40"
                                     height="40"
                                     onError={event => {
-                                        event.currentTarget.setAttribute(
-                                            "src",
-                                            Avatar
-                                        );
+                                        event.currentTarget.src = Avatar;
                                     }}
                                     className="row-span-2 rounded-full"
                                 />

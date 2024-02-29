@@ -67,6 +67,8 @@ export const RestorePasswordForm = () => {
     };
 
     const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        if (!errors?.root) return;
+
         clearErrors();
     };
 

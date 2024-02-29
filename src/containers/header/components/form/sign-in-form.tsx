@@ -1,6 +1,7 @@
 import { useId, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthenticateUserMutation } from "@/store";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -8,8 +9,6 @@ import {
     authorizationCredentialsSchema as formSchema,
     AuthorizationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
-
-// import { useDialogContext } from "@/components/ui/dialog/use-dialog-context";
 
 import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,10 @@ import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
 
 export const SignInForm = () => {
-    // const { dialogRef } = useDialogContext();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [authenticate, { isLoading }] = useAuthenticateUserMutation();
+
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
     const formId = useId();
@@ -28,9 +30,6 @@ export const SignInForm = () => {
     const loginErrorId = useId();
     const passwordErrorId = useId();
     const serverErrorId = useId();
-    const [authenticate, { isLoading }] = useAuthenticateUserMutation();
-    const navigate = useNavigate();
-    const location = useLocation();
 
     const {
         register,
@@ -51,20 +50,30 @@ export const SignInForm = () => {
     });
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async data => {
-        const response = await authenticate(data);
-
-        if (response?.error) {
-            setError("root", {
-                type: "manual",
-                message: response?.error?.data?.message
-            });
-            return;
+        try {
+            await authenticate(data).unwrap();
+            reset();
+            navigate("/main");
+            // sessionStorage.removeItem("email");
+            dialogCloseRef?.current?.click();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setError("root", {
+                    type: "manual",
+                    message: errorMessage
+                });
+            } else if (isErrorWithMessage(error)) {
+                setError("root", {
+                    type: "manual",
+                    message: error.message
+                });
+            }
         }
-
-        reset();
-        navigate("/main");
-        // sessionStorage.removeItem("email");
-        dialogCloseRef?.current?.click();
     };
 
     const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
