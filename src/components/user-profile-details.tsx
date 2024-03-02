@@ -58,7 +58,7 @@ export const UserProfileDetails = () => {
                     </>
                 )}
             </div>
-            {!isAuthenticated ? <UploadImage /> : null}
+            {isAuthenticated ? <UploadImage /> : null}
         </div>
     );
 };

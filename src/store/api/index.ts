@@ -1,7 +1,7 @@
 export * from "./adminApi";
 export * from "./authApi";
 export * from "./betApi";
-export * from "./drawApi";
+export * from "./withdrawal";
 export * from "./replenishmentApi";
 // export * from "./socketApi";
 export * from "./userApi";

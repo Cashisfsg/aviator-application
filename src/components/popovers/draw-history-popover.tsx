@@ -1,12 +1,15 @@
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import {
-    useAppDispatch,
-    userApi,
-    useGetUserBalanceQuery,
-    useGetAllDrawsQuery,
-    useCancelDrawMutation,
-    Draw
-} from "@/store";
+    // useAppDispatch,
+    // userApi,
+    useGetUserBalanceQuery
+} from "@/store/api/userApi";
+
+import {
+    useFetchAllWithdrawsQuery,
+    useCancelWithdrawByIdMutation,
+    Withdraw
+} from "@/api/withdraw";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
@@ -20,7 +23,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
     className,
     ...props
 }) => {
-    const { data: draws, isSuccess } = useGetAllDrawsQuery();
+    const { data: draws, isSuccess } = useFetchAllWithdrawsQuery();
 
     return (
         <section
@@ -56,38 +59,39 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
 };
 
 interface DrawDetailsProps {
-    draw?: Draw;
+    draw?: Withdraw;
 }
 
 const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     const { data: balance } = useGetUserBalanceQuery();
-    const [cancelDraw] = useCancelDrawMutation();
-    const dispatch = useAppDispatch();
+    const [cancelDraw] = useCancelWithdrawByIdMutation();
+    // const dispatch = useAppDispatch();
 
     const abortDraw = async (id: string | undefined) => {
         if (!id) return;
 
-        const response = await cancelDraw({ id });
+        // const response = await cancelDraw({ id });
+        await cancelDraw({ id });
 
-        if (response?.error) {
-            toast(response?.error?.data?.message, {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
-        } else {
-            toast(response?.data?.message, {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
+        // if (response?.error) {
+        //     toast(response?.error?.data?.message, {
+        //         position: "top-center",
+        //         action: {
+        //             label: "Скрыть",
+        //             onClick: () => {}
+        //         }
+        //     });
+        // } else {
+        //     toast(response?.data?.message, {
+        //         position: "top-center",
+        //         action: {
+        //             label: "Скрыть",
+        //             onClick: () => {}
+        //         }
+        //     });
 
-            dispatch(userApi.util.invalidateTags(["Balance"]));
-        }
+        //     dispatch(userApi.util.invalidateTags(["Balance"]));
+        // }
     };
 
     return (
@@ -122,10 +126,10 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.amount?.[balance?.currency]
-                            ? `${draw?.amount?.[balance?.currency].toFixed(
-                                  2
-                              )} ${balance?.currency}`
+                        {draw?.amount?.[balance?.currency || "USD"]
+                            ? `${draw?.amount?.[
+                                  balance?.currency || "USD"
+                              ].toFixed(2)} ${balance?.currency}`
                             : null}
                     </td>
                 </tr>

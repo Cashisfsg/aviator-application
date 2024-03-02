@@ -1,34 +1,79 @@
-import { useEffect } from "react";
-
+import { useState, useEffect, useId } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 import {
     useGetUserQuery,
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation
 } from "@/store";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
+import { PiWarningFill } from "react-icons/pi";
 
 interface FormFields {
     code: HTMLInputElement;
 }
 
 export const SecurityConfirmExistingEmailForm = () => {
+    const [errorState, setErrorState] = useState({
+        message: "",
+        isError: false
+    });
+
+    const codeId = useId();
+    const codeErrorId = useId();
+
     const { data: user } = useGetUserQuery();
     const [sendConfirmationCodeOnExistingEmail] =
         useSendConfirmationCodeOnExistingEmailMutation();
-    const [confirmExistingEmail, { isSuccess, isLoading, isError, error }] =
+    const [confirmExistingEmail, { isSuccess, isLoading }] =
         useConfirmExistingEmailMutation();
 
     const location = useLocation();
 
     useEffect(() => {
         (async () => {
-            await sendConfirmationCodeOnExistingEmail();
+            try {
+                await sendConfirmationCodeOnExistingEmail().unwrap();
+            } catch (error) {
+                if (isFetchBaseQueryError(error)) {
+                    const errorMessage =
+                        "error" in error
+                            ? error.error
+                            : (
+                                  error.data as {
+                                      status: number;
+                                      message: string;
+                                  }
+                              ).message;
+                    toast.error(errorMessage, {
+                        position: "top-center",
+                        action: {
+                            label: "Скрыть",
+                            onClick: () => {}
+                        },
+                        icon: (
+                            <PiWarningFill className="text-4xl leading-none text-red-500" />
+                        )
+                    });
+                } else if (isErrorWithMessage(error)) {
+                    toast.error(error.message, {
+                        position: "top-center",
+                        action: {
+                            label: "Скрыть",
+                            onClick: () => {}
+                        },
+                        icon: (
+                            <PiWarningFill className="text-4xl leading-none text-red-500" />
+                        )
+                    });
+                }
+            }
         })();
     }, []);
 
@@ -37,12 +82,37 @@ export const SecurityConfirmExistingEmailForm = () => {
     > = async event => {
         event.preventDefault();
 
-        const { code } = event.currentTarget;
+        try {
+            const { code } = event.currentTarget;
 
-        await confirmExistingEmail({
-            code: Number(code.value),
-            email: user?.email as string
-        });
+            await confirmExistingEmail({
+                code: Number(code.value),
+                email: user?.email as string
+            }).unwrap();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setErrorState(err => ({
+                    ...err,
+                    message: errorMessage,
+                    isError: true
+                }));
+            } else if (isErrorWithMessage(error)) {
+                setErrorState(err => ({
+                    ...err,
+                    message: error.message,
+                    isError: true
+                }));
+            }
+        }
+    };
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        setErrorState(state => ({ ...state, isError: false, message: "" }));
     };
 
     if (isSuccess) {
@@ -68,14 +138,23 @@ export const SecurityConfirmExistingEmailForm = () => {
             <Label>
                 <span>Код</span>
                 <Input
+                    id={codeId}
                     placeholder="Введите код"
-                    required
-                    aria-invalid={isError}
                     name="code"
+                    required
+                    aria-invalid={errorState.isError}
+                    aria-errormessage={
+                        errorState.isError ? codeErrorId : undefined
+                    }
+                    onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
+                {errorState.isError ? (
+                    <ErrorMessage
+                        id={codeErrorId}
+                        htmlFor={codeId}
+                        message={errorState.message}
+                    />
                 ) : null}
             </Label>
             <button

@@ -1,12 +1,16 @@
+import { useId } from "react";
 import { Navigate } from "react-router-dom";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useSendEmailChangeCodeMutation } from "@/store/api/userApi";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+
 import {
     emailValidationSchema as formSchema,
     EmailValidationFormSchema as FormSchema
 } from "@/utils/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
-
-import { useSendEmailChangeCodeMutation } from "@/store";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -14,12 +18,18 @@ import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
 
 export const SecurityBindEmailForm = () => {
-    const [sendChangeCode, { isLoading, isSuccess, isError, error }] =
+    const emailId = useId();
+    const emailErrorId = useId();
+    const serverErrorId = useId();
+
+    const [sendChangeCode, { isLoading, isSuccess }] =
         useSendEmailChangeCodeMutation();
 
     const {
         handleSubmit,
         register,
+        setError,
+        clearErrors,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -30,7 +40,32 @@ export const SecurityBindEmailForm = () => {
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ email }) => {
         sessionStorage.setItem("email", email);
-        await sendChangeCode({ email });
+        try {
+            await sendChangeCode({ email }).unwrap();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setError("root", {
+                    type: "manual",
+                    message: errorMessage
+                });
+            } else if (isErrorWithMessage(error)) {
+                setError("root", {
+                    type: "manual",
+                    message: error.message
+                });
+            }
+        }
+    };
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        if (!errors?.root) return;
+
+        clearErrors("root");
     };
 
     if (isSuccess) {
@@ -47,16 +82,34 @@ export const SecurityBindEmailForm = () => {
             <Label>
                 {/* <span>Email</span> */}
                 <Input
+                    id={emailId}
                     placeholder="Введите email"
                     {...register("email")}
-                    aria-invalid={errors?.email ? "true" : "false"}
+                    aria-invalid={
+                        errors?.email || errors?.root ? "true" : "false"
+                    }
+                    aria-errormessage={
+                        errors?.root
+                            ? serverErrorId
+                            : errors?.email
+                              ? emailErrorId
+                              : undefined
+                    }
+                    onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
-                {errors?.email ? (
-                    <ErrorMessage message={errors?.email?.message} />
-                ) : null}
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
+                {errors?.root ? (
+                    <ErrorMessage
+                        id={emailErrorId}
+                        htmlFor={emailId}
+                        message={errors?.root?.message}
+                    />
+                ) : errors?.email ? (
+                    <ErrorMessage
+                        id={serverErrorId}
+                        htmlFor={emailId}
+                        message={errors?.email?.message}
+                    />
                 ) : null}
             </Label>
             <button

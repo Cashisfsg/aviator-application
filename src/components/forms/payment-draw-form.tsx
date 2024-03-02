@@ -10,9 +10,10 @@ import {
     userApi,
     useAppDispatch,
     useGetUserBalanceQuery,
-    useCreateDrawMutation,
     useGetUserRequisitesQuery
 } from "@/store";
+
+import { useCreateWithdrawMutation } from "@/api/withdraw";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +29,8 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
     setOpen,
     selectedRequisiteId
 }) => {
-    const [createDraw, { isLoading, isError, error }] = useCreateDrawMutation();
+    const [createDraw, { isLoading, isError, error }] =
+        useCreateWithdrawMutation();
     const { data: requisites } = useGetUserRequisitesQuery();
     const { data: balance } = useGetUserBalanceQuery();
     const selectedRequisite = requisites

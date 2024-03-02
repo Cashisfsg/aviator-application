@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 
-import { useGetUserQuery } from "@/store";
+import { useGetUserQuery } from "@/store/api/userApi";
+import { useAuth } from "@/store/hooks/useAuth";
 
 export const SecurityForm = () => {
-    const { data: user } = useGetUserQuery();
+    const { isAuthenticated } = useAuth();
+    const { data: user } = useGetUserQuery(undefined, {
+        skip: !isAuthenticated
+    });
 
     return (
         <div className="grid gap-y-4">

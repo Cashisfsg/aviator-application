@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
-    adminApi,
+    // adminApi,
     authApi,
     betApi,
-    drawApi,
+    baseWithdrawApi,
     replenishmentApi,
     // socketApi,
     userApi
@@ -14,20 +14,20 @@ export const store = configureStore({
     reducer: {
         auth: authReducer,
         game: gameSliceReducer,
-        [adminApi.reducerPath]: adminApi.reducer,
+        // [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
-        [drawApi.reducerPath]: drawApi.reducer,
+        [baseWithdrawApi.reducerPath]: baseWithdrawApi.reducer,
         [replenishmentApi.reducerPath]: replenishmentApi.reducer,
         // [socketApi.reducerPath]: socketApi.reducer,
         [userApi.reducerPath]: userApi.reducer
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
-            .concat(adminApi.middleware)
+            // .concat(adminApi.middleware)
             .concat(authApi.middleware)
             .concat(betApi.middleware)
-            .concat(drawApi.middleware)
+            .concat(baseWithdrawApi.middleware)
             .concat(replenishmentApi.middleware)
             // .concat(socketApi.middleware)
             .concat(userApi.middleware)

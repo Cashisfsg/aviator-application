@@ -13,6 +13,8 @@ import {
     PaginationParams
 } from "./types";
 import { RootStore } from "..";
+// import { toast } from "sonner";
+// import { isErrorWithMessage, isFetchBaseQueryError } from "../services";
 
 interface Referral {
     currency: string;
@@ -163,14 +165,61 @@ export const userApi = createApi({
                 method: "POST",
                 body
             }),
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    dispatch(userApi.util.invalidateTags(["Promo"]));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
+            // async onQueryStarted(_, { queryFulfilled }) {
+            //     try {
+            //         const { data } = await queryFulfilled;
+            //         toast("Промокод успешно активирован", {
+            //             position: "top-center",
+            //             action: {
+            //                 label: "Скрыть",
+            //                 onClick: () => {}
+            //             }
+            //         });
+            //     } catch {
+            //         toast(data, {
+            //             position: "top-center",
+            //             action: {
+            //                 label: "Скрыть",
+            //                 onClick: () => {}
+            //             }
+            //         });
+            //         if (isFetchBaseQueryError(error)) {
+            //             const errorMessage =
+            //                 "error" in error
+            //                     ? error.error
+            //                     : (
+            //                           error.data as {
+            //                               status: number;
+            //                               message: string;
+            //                           }
+            //                       ).message;
+            //             toast(errorMessage, {
+            //                 position: "top-center",
+            //                 action: {
+            //                     label: "Скрыть",
+            //                     onClick: () => {}
+            //                 }
+            //                 // icon: (
+            //                 //     <PiWarningFill className="text-4xl leading-none text-red-500" />
+            //                 // )
+            //             });
+            //         } else if (isErrorWithMessage(error)) {
+            //             toast(error.message, {
+            //                 position: "top-center",
+            //                 action: {
+            //                     label: "Скрыть",
+            //                     onClick: () => {}
+            //                 }
+            //                 // icon: (
+            //                 //     <PiWarningFill className="text-4xl leading-none text-red-500" />
+            //                 // )
+            //             });
+            //         }
+            //     }
+            // },
+
+            invalidatesTags: (result, error) => (error ? [] : ["Promo"])
+
             // invalidatesTags: ["Promo"]
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
@@ -211,7 +260,8 @@ export const userApi = createApi({
                     code,
                     email: sessionStorage.getItem("email")
                 }
-            })
+            }),
+            invalidatesTags: (result, error) => (error ? [] : ["User"])
         }),
         changeUserPassword: builder.mutation<
             SuccessResponse,

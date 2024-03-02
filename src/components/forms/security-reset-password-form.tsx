@@ -1,23 +1,34 @@
+import { useId } from "react";
 import { Link, Navigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { passwordSchema, PasswordFormSchema } from "@/utils/schemas";
 
-import { useGetUserQuery, useChangePasswordConfirmMutation } from "@/store";
+import {
+    useGetUserQuery,
+    useChangePasswordConfirmMutation
+} from "@/store/api/userApi";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 export const SecurityResetPasswordForm = () => {
+    const passwordId = useId();
+    const passwordErrorId = useId();
+    const serverErrorId = useId();
+
     const { data: user } = useGetUserQuery();
-    const [changeOldPassword, { isLoading, isSuccess, isError, error }] =
+    const [changeOldPassword, { isLoading, isSuccess }] =
         useChangePasswordConfirmMutation();
     const {
         handleSubmit,
         register,
+        setError,
+        clearErrors,
         formState: { errors }
     } = useForm<PasswordFormSchema>({
         resolver: zodResolver(passwordSchema),
@@ -29,7 +40,32 @@ export const SecurityResetPasswordForm = () => {
     const onSubmitHandler: SubmitHandler<PasswordFormSchema> = async ({
         password
     }) => {
-        await changeOldPassword({ password });
+        try {
+            await changeOldPassword({ password }).unwrap();
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (error.data as { status: number; message: string })
+                              .message;
+                setError("root", {
+                    type: "manual",
+                    message: errorMessage
+                });
+            } else if (isErrorWithMessage(error)) {
+                setError("root", {
+                    type: "manual",
+                    message: error.message
+                });
+            }
+        }
+    };
+
+    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+        if (!errors?.root) return;
+
+        clearErrors("root");
     };
 
     if (isSuccess) {
@@ -47,18 +83,34 @@ export const SecurityResetPasswordForm = () => {
             <Label>
                 <span>Введите старый пароль</span>
                 <Input
+                    id={passwordId}
                     placeholder="Введите пароль"
                     aria-invalid={
-                        isError || errors?.password ? "true" : "false"
+                        errors?.root || errors?.password ? "true" : "false"
+                    }
+                    aria-errormessage={
+                        errors?.root
+                            ? serverErrorId
+                            : errors?.password
+                              ? passwordErrorId
+                              : undefined
                     }
                     {...register("password")}
+                    onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
-                {errors?.password ? (
-                    <ErrorMessage message={errors?.password?.message} />
-                ) : null}
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
+                {errors?.root ? (
+                    <ErrorMessage
+                        id={serverErrorId}
+                        htmlFor={passwordId}
+                        message={errors?.root?.message}
+                    />
+                ) : errors?.password ? (
+                    <ErrorMessage
+                        id={passwordErrorId}
+                        htmlFor={passwordId}
+                        message={errors?.password?.message}
+                    />
                 ) : null}
             </Label>
             <Link
