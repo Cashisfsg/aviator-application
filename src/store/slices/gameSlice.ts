@@ -38,6 +38,7 @@ interface Player {
     time: Date;
     coeff?: number;
     win?: Record<Currency, number>;
+    profileImage: string;
 }
 
 export interface GameDetails {

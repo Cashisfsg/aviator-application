@@ -1,5 +1,3 @@
-import { toast } from "sonner";
-
 import { userApi } from "@/store/api/userApi";
 import { baseWithdrawApi } from "@/store/api/withdrawal";
 import {
@@ -30,7 +28,7 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
                 method: "POST",
                 body
             }),
-            invalidatesTags: ["Withdraw"]
+            invalidatesTags: (result, error) => (error ? [] : ["Withdraw"])
         }),
         cancelWithdrawById: builder.mutation<
             CancelWithdrawByIdResponse,
@@ -40,29 +38,14 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
                 url: `withdrawals/${id}/cancel`,
                 method: "PUT"
             }),
-            invalidatesTags: ["Withdraw"],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    const { data } = await queryFulfilled;
-                    toast(data?.message, {
-                        position: "top-center",
-                        action: {
-                            label: "Скрыть",
-                            onClick: () => {}
-                        }
-                    });
+                    await queryFulfilled;
 
                     dispatch(userApi.util.invalidateTags(["Balance"]));
-                } catch (error) {
-                    toast(error?.data?.message, {
-                        position: "top-center",
-                        action: {
-                            label: "Скрыть",
-                            onClick: () => {}
-                        }
-                    });
-                }
-            }
+                } catch {}
+            },
+            invalidatesTags: (result, error) => (error ? [] : ["Withdraw"])
         })
     })
 });

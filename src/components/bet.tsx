@@ -1,5 +1,6 @@
 import { useState, useReducer, useEffect, useRef, forwardRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import {
     useAuth,
@@ -21,12 +22,13 @@ import {
     useGetUserBalanceQuery,
     GameDetails
 } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { SucceedToast } from "./toasts/succeed-toast";
+
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
 import { formatCurrency } from "@/utils/helpers";
 
@@ -478,7 +480,6 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const [bonusCashOutEnabled, setBonusCashOutEnabled] = useState(false);
 
     const dispatch = useAppDispatch();
-    const { toast } = useToast();
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
@@ -607,19 +608,37 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
         if (bonus.bonusActive && betNumber === 1) {
             dispatch(deactivateBonus());
-            toast({
-                title: `Вы выиграли ${(
-                    gain - (bonus?.bonusQuantity as number)
-                ).toFixed(2)} ${currentGameTab.currency}`,
-                duration: 5000
-            });
+            // toast({
+            //     title: `Вы выиграли ${(
+            //         gain - (bonus?.bonusQuantity as number)
+            //     ).toFixed(2)} ${currentGameTab.currency}`,
+            //     duration: 5000
+            // });
         } else {
-            toast({
-                title: `Вы выиграли ${(
-                    gain - currentGameTab.currentBet
-                ).toFixed(2)} ${currentGameTab.currency}`,
-                duration: 5000
-            });
+            // toast({
+            //     title: `Вы выиграли ${(
+            //         gain - currentGameTab.currentBet
+            //     ).toFixed(2)} ${currentGameTab.currency}`,
+            //     duration: 5000
+            // });
+            toast.custom(
+                t => (
+                    <SucceedToast
+                        t={t}
+                        gain={gain}
+                        rate={gain / currentGameTab.currentBet}
+                        currency={currentGameTab.currency}
+                    />
+                ),
+                {
+                    position: "top-center",
+                    classNames: {
+                        toast: "group-[.toaster]:!bg-transparent group-[.toaster]:!gap-0 group-[.toaster]:!shadow-none"
+                    },
+                    // duration: 50000,
+                    className: "sm:w-[356px] w-max"
+                }
+            );
         }
 
         dispatch(setBetState({ betNumber, betState: "init" }));
@@ -720,7 +739,6 @@ const MIN_RATE = 1.1;
 
 const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
     const dispatch = useAppDispatch();
-    const { toast } = useToast();
 
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
@@ -758,21 +776,38 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
 
             if (bonus.bonusActive && betNumber === 1) {
                 dispatch(deactivateBonus());
-                toast({
-                    title: `Вы выиграли ${(
-                        (rate - 1) *
-                        (bonus?.bonusQuantity as number)
-                    ).toFixed(2)} ${currentGameTab.currency}`,
-                    duration: 5000
-                });
+                // toast({
+                //     title: `Вы выиграли ${(
+                //         (rate - 1) *
+                //         (bonus?.bonusQuantity as number)
+                //     ).toFixed(2)} ${currentGameTab.currency}`,
+                //     duration: 5000
+                // });
             } else {
-                toast({
-                    title: `Вы выиграли ${(
-                        (rate - 1) *
-                        currentGameTab.currentBet
-                    ).toFixed(2)} ${currentGameTab.currency}`,
-                    duration: 5000
-                });
+                // toast({
+                //     title: `Вы выиграли ${(
+                //         (rate - 1) *
+                //         currentGameTab.currentBet
+                //     ).toFixed(2)} ${currentGameTab.currency}`,
+                //     duration: 5000
+                // });
+                toast.custom(
+                    t => (
+                        <SucceedToast
+                            t={t}
+                            gain={rate * currentGameTab.currentBet}
+                            rate={rate}
+                            currency={currentGameTab.currency}
+                        />
+                    ),
+                    {
+                        position: "top-center",
+                        classNames: {
+                            toast: "group-[.toaster]:!bg-transparent group-[.toaster]:!gap-0 group-[.toaster]:!shadow-none"
+                        },
+                        className: "w-[356px]"
+                    }
+                );
             }
 
             dispatch(userApi.util.invalidateTags(["Balance"]));

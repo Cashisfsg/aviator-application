@@ -1,9 +1,10 @@
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import {
     // useAppDispatch,
     // userApi,
     useGetUserBalanceQuery
 } from "@/store/api/userApi";
+import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import {
     useFetchAllWithdrawsQuery,
@@ -16,6 +17,7 @@ import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
 import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
+import { PiWarningFill } from "react-icons/pi";
 
 interface DrawHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {}
 
@@ -71,7 +73,50 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
         if (!id) return;
 
         // const response = await cancelDraw({ id });
-        await cancelDraw({ id });
+
+        try {
+            const response = await cancelDraw({ id }).unwrap();
+            toast(response?.message, {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
+            });
+        } catch (error) {
+            if (isFetchBaseQueryError(error)) {
+                const errorMessage =
+                    "error" in error
+                        ? error.error
+                        : (
+                              error.data as {
+                                  status: number;
+                                  message: string;
+                              }
+                          ).message;
+                toast.error(errorMessage, {
+                    position: "top-center",
+                    action: {
+                        label: "Скрыть",
+                        onClick: () => {}
+                    },
+                    icon: (
+                        <PiWarningFill className="text-4xl leading-none text-red-500" />
+                    )
+                });
+            } else if (isErrorWithMessage(error)) {
+                toast.error(error.message, {
+                    position: "top-center",
+                    action: {
+                        label: "Скрыть",
+                        onClick: () => {}
+                    },
+                    icon: (
+                        <PiWarningFill className="text-4xl leading-none text-red-500" />
+                    )
+                });
+            }
+        }
 
         // if (response?.error) {
         //     toast(response?.error?.data?.message, {
@@ -90,7 +135,6 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
         //         }
         //     });
 
-        //     dispatch(userApi.util.invalidateTags(["Balance"]));
         // }
     };
 

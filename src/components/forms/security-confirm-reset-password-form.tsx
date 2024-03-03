@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { Navigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -50,6 +51,14 @@ export const SecurityConfirmResetPasswordForm = () => {
 
         try {
             await changePassword({ token, password, passwordConfirm }).unwrap();
+
+            toast("Пароль успешно изменён", {
+                position: "top-center",
+                action: {
+                    label: "Скрыть",
+                    onClick: () => {}
+                }
+            });
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =

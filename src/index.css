@@ -78,12 +78,12 @@ button:focus-visible {
         width: min(420px, 100% - 1rem);
     }
 
-    body {
+    html {
         overflow-x: auto;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
-    body::-webkit-scrollbar {
+    html::-webkit-scrollbar {
         /* height: 0px;  */
         display: none;
     }

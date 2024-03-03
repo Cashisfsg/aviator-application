@@ -39,17 +39,30 @@ export const AllBetsTabpanel = () => {
             return;
         }
 
-        const response = await getPreviousRoundInfo();
+        if (previousRoundData.data.length !== 0) {
+            setPreviousRoundData(previousData => ({
+                ...previousData,
+                enabled: true
+            }));
+            return;
+        }
 
-        if (response?.error) return;
+        try {
+            const data = await getPreviousRoundInfo().unwrap();
 
-        // setPreviousRoundData(previousData => ({
-        //     ...previousData,
-        //     data: response.data,
-        //     enabled: true
-        // }));
+            console.log("Data");
+            console.log(data);
+
+            setPreviousRoundData(previousData => ({
+                ...previousData,
+                data: data,
+                enabled: true
+            }));
+        } catch (error) {}
     };
 
+    console.log("Previous round data");
+    console.log(previousRoundData);
     console.log(gameDetails);
 
     useEffect(() => {
@@ -84,7 +97,9 @@ export const AllBetsTabpanel = () => {
                         fillRule="nonzero"
                     />
                 </svg>
-                <span className="text-[#9ea0a3]">Предыдущий</span>
+                <span className="text-[#9ea0a3]">
+                    {previousRoundData.enabled ? "Текущий" : "Предыдущий"}
+                </span>
             </button>
 
             <Table
@@ -137,10 +152,11 @@ export const AllBetsTabpanel = () => {
                                 >
                                     <Cell className="flex items-center gap-x-2">
                                         <img
-                                            src={Avatar}
+                                            src={player.profileImage || Avatar}
                                             alt="User avatar image"
                                             height="30"
                                             width="30"
+                                            loading="lazy"
                                             className="rounded-full"
                                         />
                                         <span className="text-[#9ea0a3]">
@@ -182,7 +198,9 @@ export const AllBetsTabpanel = () => {
                     )}
                 />
             ) : null}
-            {!gameDetails || gameDetails?.currentPlayers.length === 0 ? (
+            {!gameDetails ||
+            gameDetails?.currentPlayers.length === 0 ||
+            previousRoundData.data.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
                 </p>
