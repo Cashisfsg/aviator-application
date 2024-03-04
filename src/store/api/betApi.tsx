@@ -197,10 +197,11 @@ export const betApi = createApi({
             }),
             providesTags: ["Coefficients"]
         }),
-        getPreviousRoundInfo: builder.query<PreviousRoundInfoResponse[], void>({
+        getPreviousRoundInfo: builder.query<PreviousRoundInfoResponse, void>({
             query: () => ({
                 url: "/bets/last-game"
-            })
+            }),
+            keepUnusedDataFor: 0
         })
     })
 });

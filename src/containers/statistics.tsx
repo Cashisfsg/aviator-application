@@ -7,7 +7,7 @@ import { useAuth } from "@/store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AllBetsTabpanel = lazy(() =>
-    import("@/components/all-bets-tabpanel").then(module => ({
+    import("@/components/all-bets-tabpanel/all-bets-tabpanel").then(module => ({
         default: module.AllBetsTabpanel
     }))
 );

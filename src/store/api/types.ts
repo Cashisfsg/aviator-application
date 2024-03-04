@@ -94,14 +94,20 @@ export interface PaginationParams {
     limit: number;
 }
 
-export interface PreviousRoundInfoResponse {
+export interface Player {
     bet: CurrencyRecord;
     time: string;
     coeff: number;
-    win: CurrencyRecord;
+    win: CurrencyRecord | undefined;
     playerId: string;
     playerLogin: string;
     profileImage: string;
+}
+
+export interface PreviousRoundInfoResponse {
+    winAmount: CurrencyRecord;
+    betAmount: CurrencyRecord;
+    bets: Player[];
 }
 
 //! ================= Admin types ================= //

@@ -12,7 +12,6 @@ export const MainPage = () => {
             <main className="content-wrapper flex flex-auto flex-col gap-y-4 pb-8">
                 <Chart />
                 <BettingZone />
-
                 <Statistics />
             </main>
 
