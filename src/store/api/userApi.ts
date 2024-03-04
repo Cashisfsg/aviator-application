@@ -1,18 +1,17 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { EntityState, createEntityAdapter } from "@reduxjs/toolkit";
+
+import { baseQueryWithLogout } from "./api";
 
 import {
     User,
     UserBalance,
     Promo,
-    UserRequisite,
     Token,
     SuccessResponse,
     ChangePasswordRequest,
-    Requisite,
     PaginationParams
 } from "./types";
-import { RootStore } from "..";
 // import { toast } from "sonner";
 // import { isErrorWithMessage, isFetchBaseQueryError } from "../services";
 
@@ -49,16 +48,7 @@ export const referralEntitySelector = referralEntityAdapter.getSelectors();
 
 export const userApi = createApi({
     reducerPath: "userApi",
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL,
-        prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootStore).auth.token;
-            if (token) {
-                headers.set("authorization", `Bearer ${token}`);
-            }
-            return headers;
-        }
-    }),
+    baseQuery: baseQueryWithLogout,
     tagTypes: ["User", "Balance", "Promo"],
     endpoints: builder => ({
         //! =================================================================
@@ -145,16 +135,7 @@ export const userApi = createApi({
                 providesTags: ["Promo"]
             }
         ),
-        getUserRequisites: builder.query<UserRequisite[], void>({
-            query: () => ({
-                url: "user/requisites"
-            })
-        }),
-        getUserRecommendedRequisites: builder.query<Requisite[], void>({
-            query: () => ({
-                url: "user/requisites/recommended"
-            })
-        }),
+
         //! =================================================================
         activatePromoCode: builder.mutation<
             SuccessResponse,
@@ -302,7 +283,7 @@ export const userApi = createApi({
             //         console.error(error);
             //     }
             // }
-            invalidatesTags: ["User"]
+            invalidatesTags: (result, error) => (error ? [] : ["User"])
         })
     })
 });
@@ -320,10 +301,6 @@ export const {
     useLazyGetUserBalanceQuery,
     useGetUserPromoQuery,
     useLazyGetUserPromoQuery,
-    useGetUserRequisitesQuery,
-    useLazyGetUserRequisitesQuery,
-    useGetUserRecommendedRequisitesQuery,
-    useLazyGetUserRecommendedRequisitesQuery,
     useActivatePromoCodeMutation,
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation,

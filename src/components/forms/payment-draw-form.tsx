@@ -6,13 +6,8 @@ import {
     WithdrawValidationSchema as FormSchema
 } from "@/utils/schemas";
 
-import {
-    userApi,
-    useAppDispatch,
-    useGetUserBalanceQuery,
-    useGetUserRequisitesQuery
-} from "@/store";
-
+import { userApi, useAppDispatch, useGetUserBalanceQuery } from "@/store";
+import { useFetchRequisitesQuery } from "@/api/requisite";
 import { useCreateWithdrawMutation } from "@/api/withdraw";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -31,7 +26,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 }) => {
     const [createDraw, { isLoading, isError, error }] =
         useCreateWithdrawMutation();
-    const { data: requisites } = useGetUserRequisitesQuery();
+    const { data: requisites } = useFetchRequisitesQuery();
     const { data: balance } = useGetUserBalanceQuery();
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)

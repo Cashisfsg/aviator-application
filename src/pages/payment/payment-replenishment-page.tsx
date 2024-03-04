@@ -4,11 +4,11 @@ import { Popover } from "@/components/ui/popover/popover";
 import { PaymentDepositDialog } from "@/components/dialogs";
 import { DepositsHistoryPopover } from "@/components/popovers";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
+import { useGetUserQuery } from "@/store/api/userApi";
 import {
-    useGetUserQuery,
-    useGetUserRequisitesQuery,
-    useGetUserRecommendedRequisitesQuery
-} from "@/store";
+    useFetchRequisitesQuery,
+    useFetchRecommendedRequisitesQuery
+} from "@/api/requisite";
 
 import { PaymentMethod, TechnicalSupport } from "./components";
 import { PreviousRouteLink } from "@/components/previous-route-link";
@@ -27,11 +27,11 @@ export const PaymentReplenishmentPage = () => {
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
-        useGetUserRequisitesQuery();
+        useFetchRequisitesQuery();
     const {
         data: recommendedRequisites,
         isSuccess: isRecommendedRequisitesRequestSuccess
-    } = useGetUserRecommendedRequisitesQuery();
+    } = useFetchRecommendedRequisitesQuery();
 
     return (
         <>

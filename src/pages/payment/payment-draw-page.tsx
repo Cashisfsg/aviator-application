@@ -4,11 +4,12 @@ import { Popover } from "@/components/ui/popover/popover";
 import { PaymentDrawDialog } from "@/components/dialogs/payment-draw-dialog";
 import { DrawHistoryPopover } from "@/components/popovers";
 
+import { useGetUserQuery } from "@/store/api/userApi";
+
 import {
-    useGetUserQuery,
-    useGetUserRequisitesQuery,
-    useGetUserRecommendedRequisitesQuery
-} from "@/store";
+    useFetchRequisitesQuery,
+    useFetchRecommendedRequisitesQuery
+} from "@/api/requisite";
 
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { PaymentMethod, TechnicalSupport } from "./components";
@@ -25,11 +26,11 @@ export const PaymentDrawPage = () => {
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
-        useGetUserRequisitesQuery();
+        useFetchRequisitesQuery();
     const {
         data: recommendedRequisites,
         isSuccess: isRecommendedRequisitesRequestSuccess
-    } = useGetUserRecommendedRequisitesQuery();
+    } = useFetchRecommendedRequisitesQuery();
 
     return (
         <>

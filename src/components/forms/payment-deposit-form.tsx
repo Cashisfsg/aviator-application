@@ -10,7 +10,6 @@ import {
 } from "@/utils/schemas";
 
 import {
-    useGetUserRequisitesQuery,
     useGetUserBalanceQuery,
     useGetReplenishmentLimitsQuery,
     useAddReplenishmentMutation,
@@ -19,6 +18,8 @@ import {
     useCancelReplenishmentByIdMutation,
     Replenishment
 } from "@/store";
+
+import { useFetchRequisitesQuery } from "@/api/requisite";
 
 import { DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -69,7 +70,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
         );
     });
 
-    const { data: requisites } = useGetUserRequisitesQuery();
+    const { data: requisites } = useFetchRequisitesQuery();
     const [depositBalance, { isLoading: isReplenishmentRequestLoading }] =
         useAddReplenishmentMutation();
     const [

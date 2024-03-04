@@ -1,6 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+
+import { baseQueryWithLogout } from "./api";
 import { SuccessResponse, Replenishment } from "./types";
-import { RootStore } from "..";
 
 interface Currency {
     currency: string;
@@ -16,16 +17,7 @@ interface Limit {
 
 export const replenishmentApi = createApi({
     reducerPath: "replenishmentApi",
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL,
-        prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootStore).auth.token;
-            if (token) {
-                headers.set("authorization", `Bearer ${token}`);
-            }
-            return headers;
-        }
-    }),
+    baseQuery: baseQueryWithLogout,
     tagTypes: ["Deposit"],
     endpoints: builder => ({
         //! =================================================================

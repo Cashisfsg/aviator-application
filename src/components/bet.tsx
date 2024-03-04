@@ -28,6 +28,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { SucceedToast } from "./toasts/succeed-toast";
+import { NotEnoughMoneyToast } from "./toasts/not-enough-money-toast";
 
 import { decimal, validateBet } from "@/utils/helpers/validate-bet";
 import { formatCurrency } from "@/utils/helpers";
@@ -528,24 +529,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
             }
 
             dispatch(setBetState({ betNumber, betState: "start" }));
-        };
 
-        const startNewRound = () => {
-            if (newRoundBegin) {
-                socket.off("game", startNewRound);
-                return;
-            }
-
-            toggleRoundState();
-            console.log("New round started");
-        };
-
-        const makeBet = () => {
-            if (currentGameTab.betState !== "start") {
-                socket.off("game", makeBet);
-                return;
-            }
-
+            //================================================
             if (bonus.bonusActive && betNumber === 1) {
                 socket.emit("bet", {
                     betNumber: betNumber,
@@ -561,6 +546,51 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 });
             }
             dispatch(userApi.util.invalidateTags(["Balance"]));
+            //================================================
+        };
+
+        const startNewRound = () => {
+            if (newRoundBegin) {
+                socket.off("game", startNewRound);
+                return;
+            }
+
+            toggleRoundState();
+            console.log("New round started");
+        };
+
+        // const makeBet = () => {
+        //     if (currentGameTab.betState !== "start") {
+        //         socket.off("game", makeBet);
+        //         return;
+        //     }
+
+        //     if (bonus.bonusActive && betNumber === 1) {
+        //         socket.emit("bet", {
+        //             betNumber: betNumber,
+        //             currency: currentGameTab.currency,
+        //             bet: Math.round(Number(bonus.bonusQuantity)),
+        //             promoId: bonus.bonusId
+        //         });
+        //     } else {
+        //         socket.emit("bet", {
+        //             betNumber: betNumber,
+        //             currency: currentGameTab.currency,
+        //             bet: Math.round(currentGameTab.currentBet)
+        //         });
+        //     }
+        //     dispatch(userApi.util.invalidateTags(["Balance"]));
+
+        //     dispatch(setBetState({ betNumber, betState: "cash" }));
+
+        //     socket.off("game", makeBet);
+        // };
+
+        const makeBet = () => {
+            if (currentGameTab.betState !== "start") {
+                socket.off("game", makeBet);
+                return;
+            }
 
             dispatch(setBetState({ betNumber, betState: "cash" }));
 
@@ -599,6 +629,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
     const abortBet = () => {
         dispatch(setBetState({ betNumber, betState: "init" }));
+        socket.emit("cancel", { betNumber });
+        dispatch(userApi.util.invalidateTags(["Balance"]));
     };
 
     const cashOut: React.MouseEventHandler<HTMLButtonElement> = event => {
@@ -654,12 +686,25 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
             return (
                 <button
                     style={{ textShadow: "0 1px 2px rgba(0, 0, 0, .5)" }}
-                    disabled={
-                        betNumber === 1 && bonus.bonusActive
-                            ? false
-                            : currentGameTab.currentBet > currentGameTab.balance
-                    }
+                    // disabled={
+                    //     betNumber === 1 && bonus.bonusActive
+                    //         ? false
+                    //         : currentGameTab.currentBet > currentGameTab.balance
+                    // }
                     onClick={() => {
+                        if (
+                            currentGameTab.currentBet > currentGameTab.balance
+                        ) {
+                            toast.custom(t => <NotEnoughMoneyToast t={t} />, {
+                                position: "top-center",
+                                classNames: {
+                                    toast: "group-[.toaster]:!bg-transparent group-[.toaster]:!gap-0 group-[.toaster]:!shadow-none"
+                                },
+                                className: "w-[356px] h-auto"
+                            });
+                            return;
+                        }
+
                         if (newRoundBegin)
                             dispatch(
                                 setBetState({ betNumber, betState: "bet" })
@@ -668,6 +713,25 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                             dispatch(
                                 setBetState({ betNumber, betState: "start" })
                             );
+                            //================================================
+                            if (bonus.bonusActive && betNumber === 1) {
+                                socket.emit("bet", {
+                                    betNumber: betNumber,
+                                    currency: currentGameTab.currency,
+                                    bet: Math.round(
+                                        Number(bonus.bonusQuantity)
+                                    ),
+                                    promoId: bonus.bonusId
+                                });
+                            } else {
+                                socket.emit("bet", {
+                                    betNumber: betNumber,
+                                    currency: currentGameTab.currency,
+                                    bet: Math.round(currentGameTab.currentBet)
+                                });
+                            }
+                            dispatch(userApi.util.invalidateTags(["Balance"]));
+                            //================================================
                         }
                     }}
                     className="min-h-[86px] rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"

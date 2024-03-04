@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
-    // adminApi,
     authApi,
     betApi,
     baseWithdrawApi,
@@ -14,7 +13,6 @@ export const store = configureStore({
     reducer: {
         auth: authReducer,
         game: gameSliceReducer,
-        // [adminApi.reducerPath]: adminApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
         [baseWithdrawApi.reducerPath]: baseWithdrawApi.reducer,
@@ -24,7 +22,6 @@ export const store = configureStore({
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
-            // .concat(adminApi.middleware)
             .concat(authApi.middleware)
             .concat(betApi.middleware)
             .concat(baseWithdrawApi.middleware)
