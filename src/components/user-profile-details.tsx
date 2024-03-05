@@ -1,9 +1,6 @@
-import {
-    selectInitData,
-    useAuth,
-    useGetUserQuery,
-    useStateSelector
-} from "@/store";
+import { selectInitData, useStateSelector } from "@/store";
+import { useGetUserQuery } from "@/store/api/userApi";
+import { useAuth } from "@/store/hooks/useAuth";
 
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { UploadImage } from "./upload-image";
@@ -12,6 +9,7 @@ import Avatar from "@/assets/avatar-360w.webp";
 
 export const UserProfileDetails = () => {
     const { isAuthenticated } = useAuth();
+
     const { data: user, isLoading } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });

@@ -9,17 +9,17 @@ import {
     DepositValidationSchema as FormSchema
 } from "@/utils/schemas";
 
+import { useGetUserBalanceQuery } from "@/store/api/userApi";
+
+import { useFetchRequisitesQuery } from "@/api/requisite";
 import {
-    useGetUserBalanceQuery,
-    useGetReplenishmentLimitsQuery,
-    useAddReplenishmentMutation,
-    useGetAllDepositsQuery,
+    useFetchAllReplenishmentsQuery,
+    useFetchReplenishmentLimitsQuery,
+    useCreateReplenishmentMutation,
     useConfirmReplenishmentByIdMutation,
     useCancelReplenishmentByIdMutation,
     Replenishment
-} from "@/store";
-
-import { useFetchRequisitesQuery } from "@/api/requisite";
+} from "@/api/replenishment";
 
 import { DialogClose } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -54,12 +54,12 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
     const [formState, setFormState] = useState<ReplenishmentFormState>(
         initialFormState.state
     );
-    const { data: allReplenishments } = useGetAllDepositsQuery();
+    const { data: allReplenishments } = useFetchAllReplenishmentsQuery();
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,
         isLoading: isLimitsLoading
-    } = useGetReplenishmentLimitsQuery();
+    } = useFetchReplenishmentLimitsQuery();
 
     const [currentReplenishment, setCurrentReplenishment] = useState<
         Replenishment | undefined
@@ -72,7 +72,7 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
 
     const { data: requisites } = useFetchRequisitesQuery();
     const [depositBalance, { isLoading: isReplenishmentRequestLoading }] =
-        useAddReplenishmentMutation();
+        useCreateReplenishmentMutation();
     const [
         confirmReplenishment,
         { isLoading: isPaymentConfirmRequestLoading }

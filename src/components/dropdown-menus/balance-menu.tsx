@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/store/hooks/useAuth";
-import { useGetUserBalanceQuery } from "@/store";
+import { useGetUserBalanceQuery } from "@/store/api/userApi";
 
 // import {
 //     DropdownMenu,

@@ -7,7 +7,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { useAppDispatch, userApi, replenishmentApi, logout } from "@/store";
+import { useAppDispatch, userApi, baseReplenishmentApi, logout } from "@/store";
 
 interface SignOutAlertDialogProps {
     open: boolean;
@@ -37,7 +37,7 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
                         onClick={() => {
                             dispatch(logout());
                             dispatch(userApi.util.resetApiState());
-                            dispatch(replenishmentApi.util.resetApiState());
+                            dispatch(baseReplenishmentApi.util.resetApiState());
                         }}
                     >
                         Да

@@ -1,8 +1,8 @@
+import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import {
-    useGetAllDepositsQuery,
-    useGetUserBalanceQuery,
+    useFetchAllReplenishmentsQuery,
     Replenishment
-} from "@/store";
+} from "@/api/replenishment";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -27,7 +27,8 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
     setDialogOpen,
     ...props
 }) => {
-    const { data: deposits, isSuccess } = useGetAllDepositsQuery();
+    const { data: replenishments, isSuccess } =
+        useFetchAllReplenishmentsQuery();
 
     return (
         <section
@@ -39,19 +40,21 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
         >
             <ScrollArea
                 className={
-                    deposits && deposits?.length >= 2 ? "h-64" : "h-auto"
+                    replenishments && replenishments?.length >= 2
+                        ? "h-64"
+                        : "h-auto"
                 }
             >
                 {isSuccess ? (
-                    deposits && deposits.length !== 0 ? (
-                        deposits.map((deposit, index) => (
+                    replenishments && replenishments.length !== 0 ? (
+                        replenishments.map((deposit, index) => (
                             <div key={deposit?._id}>
                                 <PaymentDetails
                                     deposit={deposit}
                                     setInitialFormState={setInitialFormState}
                                     setDialogOpen={setDialogOpen}
                                 />
-                                {index !== deposits.length - 1 ? (
+                                {index !== replenishments.length - 1 ? (
                                     <hr
                                         key={index}
                                         className="h-2"

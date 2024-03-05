@@ -122,6 +122,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
 
 const raiseBets = {
     USD: [1, 2, 5, 10],
+    UAH: [100, 200, 500, 1000],
     RUB: [250, 500, 1000, 2000],
     UZS: [50000, 100000, 200000, 500000],
     KZT: [1000, 2500, 5000, 10000]
@@ -718,9 +719,10 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                                 socket.emit("bet", {
                                     betNumber: betNumber,
                                     currency: currentGameTab.currency,
-                                    bet: Math.round(
-                                        Number(bonus.bonusQuantity)
-                                    ),
+                                    bet:
+                                        Math.round(
+                                            Number(bonus.bonusQuantity) * 100
+                                        ) / 100,
                                     promoId: bonus.bonusId
                                 });
                             } else {
@@ -766,7 +768,7 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                     </p>
                     <button
                         onClick={abortBet}
-                        className="h-full min-h-[58px] w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d] mh:hover:bg-[#f7001f]"
+                        className="h-full min-h-[57px] w-full rounded-2.5xl border-2 border-[#ff7171] bg-[#cb011a] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#b21f2d] mh:hover:bg-[#f7001f]"
                     >
                         Отмена
                     </button>

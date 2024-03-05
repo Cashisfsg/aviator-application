@@ -8,5 +8,5 @@ export const formatCurrency = (
         maximumFractionDigits: 2
     });
 
-    return formatterUSD.format(currency);
+    return formatterUSD.format(currency).replace(",", ".");
 };

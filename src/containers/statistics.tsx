@@ -37,58 +37,49 @@ export const Statistics = () => {
         <Tabs
             defaultValue="all"
             className="min-h-3 rounded-2.5xl"
-            ref={ref}
         >
-            {inView ? (
+            <>
+                <TabsList ref={ref}>
+                    <TabsTrigger value="all">Все ставки</TabsTrigger>
+                    {isAuthenticated ? (
+                        <TabsTrigger value="my">Мои</TabsTrigger>
+                    ) : null}
+
+                    <TabsTrigger value="top">Топ</TabsTrigger>
+                </TabsList>
                 <Suspense
                     fallback={
-                        <>
-                            <TabsList>
-                                <TabsTrigger value="all">
-                                    Все ставки
-                                </TabsTrigger>
-                                {isAuthenticated ? (
-                                    <TabsTrigger value="my">Мои</TabsTrigger>
-                                ) : null}
-
-                                <TabsTrigger value="top">Топ</TabsTrigger>
-                            </TabsList>
-                            <div className="mt-5">
-                                <GridLoader color="red" />
-                            </div>
-                        </>
+                        <div className="mt-5">
+                            <GridLoader color="red" />
+                        </div>
                     }
                 >
-                    <TabsList>
-                        <TabsTrigger value="all">Все ставки</TabsTrigger>
-                        {isAuthenticated ? (
-                            <TabsTrigger value="my">Мои</TabsTrigger>
-                        ) : null}
-
-                        <TabsTrigger value="top">Топ</TabsTrigger>
-                    </TabsList>
-                    <TabsContent
-                        value="all"
-                        className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
-                    >
-                        <AllBetsTabpanel />
-                    </TabsContent>
-                    {isAuthenticated ? (
-                        <TabsContent
-                            value="my"
-                            className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
-                        >
-                            <MyBetsTabpanel />
-                        </TabsContent>
+                    {inView ? (
+                        <>
+                            <TabsContent
+                                value="all"
+                                className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
+                            >
+                                <AllBetsTabpanel />
+                            </TabsContent>
+                            {isAuthenticated ? (
+                                <TabsContent
+                                    value="my"
+                                    className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
+                                >
+                                    <MyBetsTabpanel />
+                                </TabsContent>
+                            ) : null}
+                            <TabsContent
+                                value="top"
+                                className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
+                            >
+                                <TopBetsTabpanel />
+                            </TabsContent>
+                        </>
                     ) : null}
-                    <TabsContent
-                        value="top"
-                        className="mt-5 gap-x-1 gap-y-2 overflow-hidden rounded-2.5xl bg-black-50 pb-5 text-lg"
-                    >
-                        <TopBetsTabpanel />
-                    </TabsContent>
                 </Suspense>
-            ) : null}
+            </>
         </Tabs>
     );
 };

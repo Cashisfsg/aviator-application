@@ -41,11 +41,12 @@ import { Button } from "@/components/ui/button";
 import { Input, ErrorMessage } from "@/components/ui/input";
 
 import { FaCheck } from "react-icons/fa6";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import { ImSpinner9 } from "react-icons/im";
 
 import KZIcon from "@/assets/kz-flag.png";
 import RUIcon from "@/assets/ru-flag.png";
+import UAIcon from "@/assets/ua-flag.png";
 import UZIcon from "@/assets/uz-flag.png";
 
 import { cn } from "@/utils";
@@ -53,7 +54,8 @@ import { cn } from "@/utils";
 const currencies = [
     { id: 1, label: "Казахстанский тенге", value: "KZT", icon: KZIcon },
     { id: 2, label: "Российский рубль", value: "RUB", icon: RUIcon },
-    { id: 3, label: "Узбекистанский сум", value: "UZS", icon: UZIcon }
+    { id: 3, label: "Узбекистанский сум", value: "UZS", icon: UZIcon },
+    { id: 4, label: "Украинская гривна", value: "UAH", icon: UAIcon }
 ];
 
 export const SignUpForm = () => {

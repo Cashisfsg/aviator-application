@@ -3,7 +3,7 @@ import {
     authApi,
     betApi,
     baseWithdrawApi,
-    replenishmentApi,
+    baseReplenishmentApi,
     // socketApi,
     userApi
 } from "./api";
@@ -16,7 +16,7 @@ export const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [betApi.reducerPath]: betApi.reducer,
         [baseWithdrawApi.reducerPath]: baseWithdrawApi.reducer,
-        [replenishmentApi.reducerPath]: replenishmentApi.reducer,
+        [baseReplenishmentApi.reducerPath]: baseReplenishmentApi.reducer,
         // [socketApi.reducerPath]: socketApi.reducer,
         [userApi.reducerPath]: userApi.reducer
     },
@@ -25,7 +25,7 @@ export const store = configureStore({
             .concat(authApi.middleware)
             .concat(betApi.middleware)
             .concat(baseWithdrawApi.middleware)
-            .concat(replenishmentApi.middleware)
+            .concat(baseReplenishmentApi.middleware)
             // .concat(socketApi.middleware)
             .concat(userApi.middleware)
 });
