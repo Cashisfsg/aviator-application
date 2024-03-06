@@ -1,6 +1,5 @@
 import { useState, useEffect, useId } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
 
 import {
     useGetUserQuery,
@@ -12,8 +11,9 @@ import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/toasts/toast";
+
 import { ImSpinner9 } from "react-icons/im";
-import { PiWarningFill } from "react-icons/pi";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -51,27 +51,9 @@ export const SecurityConfirmExistingEmailForm = () => {
                                       message: string;
                                   }
                               ).message;
-                    toast.error(errorMessage, {
-                        position: "top-center",
-                        action: {
-                            label: "Скрыть",
-                            onClick: () => {}
-                        },
-                        icon: (
-                            <PiWarningFill className="text-4xl leading-none text-red-500" />
-                        )
-                    });
+                    toast.error(errorMessage);
                 } else if (isErrorWithMessage(error)) {
-                    toast.error(error.message, {
-                        position: "top-center",
-                        action: {
-                            label: "Скрыть",
-                            onClick: () => {}
-                        },
-                        icon: (
-                            <PiWarningFill className="text-4xl leading-none text-red-500" />
-                        )
-                    });
+                    toast.error(error.message);
                 }
             }
         })();

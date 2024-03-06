@@ -1,6 +1,5 @@
-import { toast } from "sonner";
 import { useChangeProfileImageMutation } from "@/store";
-import { PiWarningFill } from "react-icons/pi";
+import { toast } from "@/components/toasts/toast";
 
 export const UploadImage = () => {
     const [uploadImage, { isLoading }] = useChangeProfileImageMutation();
@@ -15,16 +14,7 @@ export const UploadImage = () => {
         const file = input.files[0];
 
         if (file.size > 1024 * 1024) {
-            toast.error("Размер файла не должен превышать 1 мб", {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                },
-                icon: (
-                    <PiWarningFill className="text-4xl leading-none text-red-500" />
-                )
-            });
+            toast.error("Размер файла не должен превышать 1 мб");
             input.value = "";
             return;
         }

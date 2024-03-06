@@ -1,4 +1,8 @@
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+    // DialogContent,
+    DialogHeader,
+    DialogTitle
+} from "@/components/ui/dialog";
 import { SignUpForm } from "../form/sign-up-form";
 
 export const SignUpModal = () => {

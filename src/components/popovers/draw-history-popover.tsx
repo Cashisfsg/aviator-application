@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import {
     // useAppDispatch,
     // userApi,
@@ -14,10 +13,10 @@ import {
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
+import { toast } from "@/components/toasts/toast";
 
 import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
-import { PiWarningFill } from "react-icons/pi";
 
 interface DrawHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {}
 
@@ -76,13 +75,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
 
         try {
             const response = await cancelDraw({ id }).unwrap();
-            toast(response?.message, {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
+            toast.notify(response?.message);
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =
@@ -94,27 +87,9 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                                   message: string;
                               }
                           ).message;
-                toast.error(errorMessage, {
-                    position: "top-center",
-                    action: {
-                        label: "Скрыть",
-                        onClick: () => {}
-                    },
-                    icon: (
-                        <PiWarningFill className="text-4xl leading-none text-red-500" />
-                    )
-                });
+                toast.error(errorMessage);
             } else if (isErrorWithMessage(error)) {
-                toast.error(error.message, {
-                    position: "top-center",
-                    action: {
-                        label: "Скрыть",
-                        onClick: () => {}
-                    },
-                    icon: (
-                        <PiWarningFill className="text-4xl leading-none text-red-500" />
-                    )
-                });
+                toast.error(error.message);
             }
         }
 

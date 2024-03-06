@@ -1,9 +1,9 @@
 import { useRef } from "react";
-import { toast } from "sonner";
 
 import { useActivatePromoCodeMutation } from "@/store/api/userApi";
+import { toast } from "@/components/toasts/toast";
+
 import { ImSpinner9 } from "react-icons/im";
-import { PiWarningFill } from "react-icons/pi";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 interface FormFields {
@@ -28,13 +28,7 @@ export const ActivationBonusForm = () => {
             promoCode.setAttribute("type", "button");
             buttonRef.current?.setAttribute("disabled", "");
 
-            toast("Промокод успешно активирован", {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
+            toast.notify("Промокод успешно активирован");
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =
@@ -46,27 +40,9 @@ export const ActivationBonusForm = () => {
                                   message: string;
                               }
                           ).message;
-                toast.error(errorMessage, {
-                    position: "top-center",
-                    action: {
-                        label: "Скрыть",
-                        onClick: () => {}
-                    },
-                    icon: (
-                        <PiWarningFill className="text-4xl leading-none text-red-500" />
-                    )
-                });
+                toast.error(errorMessage);
             } else if (isErrorWithMessage(error)) {
-                toast.error(error.message, {
-                    position: "top-center",
-                    action: {
-                        label: "Скрыть",
-                        onClick: () => {}
-                    },
-                    icon: (
-                        <PiWarningFill className="text-4xl leading-none text-red-500" />
-                    )
-                });
+                toast.error(error.message);
             }
         }
     };

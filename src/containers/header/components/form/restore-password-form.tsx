@@ -1,5 +1,5 @@
 import { useRef, useId } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,10 @@ import {
 import { useSendConfirmationCodeMutation } from "@/store";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
+import {
+    RestorePasswordDialogHeader,
+    RestorePasswordDialogFooter
+} from "../modals/restore-password-modal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,8 +26,10 @@ export const RestorePasswordForm = () => {
     const formRef = useRef<HTMLFormElement>(null);
     const emailId = useId();
     const emailErrorId = useId();
-    const [sendConfirmationCode, { isLoading, isSuccess }] =
+    const [sendConfirmationCode, { isLoading }] =
         useSendConfirmationCodeMutation();
+
+    const navigate = useNavigate();
 
     const email = sessionStorage.getItem("email");
 
@@ -46,6 +52,7 @@ export const RestorePasswordForm = () => {
         try {
             await sendConfirmationCode({ email }).unwrap();
             sessionStorage.setItem("email", email);
+            navigate("/main/password/confirm-email");
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =
@@ -72,55 +79,57 @@ export const RestorePasswordForm = () => {
         clearErrors();
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/password/confirm-email" />;
-    }
-
     return (
-        <form
-            className="space-y-8"
-            onSubmit={handleSubmit(onSubmit)}
-            ref={formRef}
-        >
-            <Label>
-                <span className="text-sm">
-                    Введите email привязанный к аккаунту
-                </span>
-                <Input
-                    id={emailId}
-                    {...register("email")}
-                    aria-invalid={
-                        errors?.email || errors?.root ? "true" : "false"
-                    }
-                    aria-errormessage={
-                        errors?.email || errors?.root ? emailErrorId : undefined
-                    }
-                    autoComplete="off"
-                    onFocus={onFocusHandler}
-                />
-
-                {errors?.root ? (
-                    <ErrorMessage
-                        id={emailErrorId}
-                        message={errors?.root?.message}
-                    />
-                ) : errors?.email ? (
-                    <ErrorMessage
-                        id={emailErrorId}
-                        message={errors?.email?.message}
-                    />
-                ) : null}
-            </Label>
-            <Button
-                variant="confirm"
-                disabled={isLoading}
+        <>
+            <RestorePasswordDialogHeader />
+            <form
+                className="space-y-8"
+                onSubmit={handleSubmit(onSubmit)}
+                ref={formRef}
             >
-                {isLoading ? (
-                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
-                ) : (
-                    "Восстановить"
-                )}
-            </Button>
-        </form>
+                <Label>
+                    <span className="text-sm">
+                        Введите email привязанный к аккаунту
+                    </span>
+                    <Input
+                        id={emailId}
+                        {...register("email")}
+                        aria-invalid={
+                            errors?.email || errors?.root ? "true" : "false"
+                        }
+                        aria-errormessage={
+                            errors?.email || errors?.root
+                                ? emailErrorId
+                                : undefined
+                        }
+                        autoComplete="off"
+                        onFocus={onFocusHandler}
+                    />
+
+                    {errors?.root ? (
+                        <ErrorMessage
+                            id={emailErrorId}
+                            message={errors?.root?.message}
+                        />
+                    ) : errors?.email ? (
+                        <ErrorMessage
+                            id={emailErrorId}
+                            message={errors?.email?.message}
+                        />
+                    ) : null}
+                </Label>
+                <Button
+                    variant="confirm"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                    ) : (
+                        "Восстановить"
+                    )}
+                </Button>
+            </form>
+            <RestorePasswordDialogFooter />
+        </>
     );
 };

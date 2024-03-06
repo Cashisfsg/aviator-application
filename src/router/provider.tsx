@@ -10,18 +10,14 @@ import GridLoader from "react-spinners/GridLoader";
 import { MainPage, ErrorPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
-import { SignInModal } from "@/containers/header/components/modals/sign-in-modal";
-import { SignUpModal } from "@/containers/header/components/modals/sign-up-modal";
-import { RestorePasswordModal } from "@/containers/header/components/modals/restore-password-modal";
-import { RestorePasswordForm } from "@/containers/header/components/form/restore-password-form";
-import {
-    ConfirmEmailForm
-    // action as confirmEmailAction
-} from "@/containers/header/components/form/confirm-email-form";
-import {
-    ResetPasswordForm
-    // action as resetPasswordAction
-} from "@/containers/header/components/form/reset-password-form";
+// import {
+//     ConfirmEmailForm
+//     // action as confirmEmailAction
+// } from "@/containers/header/components/form/confirm-email-form";
+// import {
+//     ResetPasswordForm
+//     // action as resetPasswordAction
+// } from "@/containers/header/components/form/reset-password-form";
 import {
     SecurityForm,
     SecurityBindEmailForm,
@@ -31,32 +27,51 @@ import {
     SecurityResetPasswordForm
 } from "@/components/forms";
 
-// import { AdminReplenishmentPage } from "@/pages/admin/admin-replenishment-page";
-// import { AdminLoginForm } from "@/pages/admin/login-form";
-
-// const MainPage = lazy(async () =>
-//     import("@/pages/main-page").then(module => ({ default: module.MainPage }))
-// );
-
 const PaymentLayout = lazy(async () =>
     import("@/pages/payment/layout").then(module => ({
         default: module.Layout
     }))
 );
 
-// const AdminDashboardLayout = lazy(async () =>
-//     import("@/pages/admin/components/layout").then(module => ({
-//         default: module.Layout
-//     }))
-// );
+const SignInModal = lazy(async () =>
+    import("@/containers/header/components/modals/sign-in-modal").then(
+        module => ({
+            default: module.SignInModal
+        })
+    )
+);
 
-// const SignInModal = lazy(async () =>
-//     import("@/containers/header/components/modals/sign-in-modal").then(
-//         module => ({
-//             default: module.SignInModal
-//         })
-//     )
-// );
+const SignUpModal = lazy(async () =>
+    import("@/containers/header/components/modals/sign-up-modal").then(
+        module => ({
+            default: module.SignUpModal
+        })
+    )
+);
+
+const RestorePasswordForm = lazy(async () =>
+    import("@/containers/header/components/form/restore-password-form").then(
+        module => ({
+            default: module.RestorePasswordForm
+        })
+    )
+);
+
+const ConfirmEmailForm = lazy(async () =>
+    import("@/containers/header/components/form/confirm-email-form").then(
+        module => ({
+            default: module.ConfirmEmailForm
+        })
+    )
+);
+
+const ResetPasswordForm = lazy(async () =>
+    import("@/containers/header/components/form/reset-password-form").then(
+        module => ({
+            default: module.ResetPasswordForm
+        })
+    )
+);
 
 const PaymentDrawPage = lazy(async () =>
     import("@/pages/payment/payment-draw-page").then(module => ({
@@ -71,28 +86,9 @@ const PaymentReplenishmentPage = lazy(async () =>
 );
 
 const router = createBrowserRouter([
-    // {
-    // path: "aviator_front",
-    // async lazy() {
-    //     return import("@/containers/layout").then(module => ({
-    //         Component: module.Layout
-    //     }));
-    // },
-    // children: [
     {
         path: "main",
-        element: (
-            // <Suspense
-            //     fallback={
-            //         <GridLoader
-            //             className="fixed left-1/2 top-1/2"
-            //             color={"red"}
-            //         />
-            //     }
-            // >
-            <MainPage />
-            // </Suspense>
-        ),
+        element: <MainPage />,
         errorElement: <ErrorPage />,
         children: [
             {
@@ -107,7 +103,6 @@ const router = createBrowserRouter([
             },
             {
                 path: "password",
-                element: <RestorePasswordModal />,
                 errorElement: <ErrorPage />,
                 children: [
                     {
@@ -206,13 +201,6 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "draw",
-                // async lazy() {
-                //     return import("@/pages/payment/payment-draw-page").then(
-                //         module => ({
-                //             Component: module.PaymentDrawPage
-                //         })
-                //     );
-                // }
                 element: (
                     <Suspense
                         fallback={
@@ -254,66 +242,6 @@ const router = createBrowserRouter([
             }
         ]
     },
-    // {
-    //     path: "admin",
-    //     children: [
-    //         {
-    //             path: "login",
-    //             element: <AdminLoginForm />
-    //         },
-    //         {
-    //             path: "dashboard",
-    //             element: <AdminDashboardLayout />,
-    //             children: [
-    //                 {
-    //                     path: "replenishments",
-    //                     element: <AdminReplenishmentPage />
-    //                 },
-    //                 {
-    //                     path: "withdrawals",
-    //                     element: <div>Выводы</div>
-    //                 },
-    //                 {
-    //                     path: "balance",
-    //                     element: <div>Пополнить баланс</div>
-    //                 },
-    //                 {
-    //                     path: "requisites",
-    //                     element: <div>Реквизиты</div>
-    //                 },
-    //                 {
-    //                     path: "*",
-    //                     element: (
-    //                         <Navigate
-    //                             to="/admin/dashboard/replenishments"
-    //                             replace
-    //                         />
-    //                     )
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             path: "*",
-    //             element: (
-    //                 <Navigate
-    //                     to="/admin/login"
-    //                     replace
-    //                 />
-    //             )
-    //         }
-    //     ]
-    // },
-    // {
-    //     path: "*",
-    //     element: (
-    //         <Navigate
-    //             to="/main"
-    //             replace
-    //         />
-    //     )
-    // }
-    //     ]
-    // },
     {
         path: "*",
         element: (

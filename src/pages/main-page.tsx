@@ -1,3 +1,5 @@
+// import { useEffect } from "react";
+
 import { BettingZone } from "@/containers/betting-zone";
 import { Statistics } from "@/containers/statistics";
 import { Chart } from "@/components/chart/chart";
@@ -5,6 +7,17 @@ import { Header } from "@/containers/header/header";
 import { Toaster } from "@/components/ui/sonner";
 
 export const MainPage = () => {
+    // useEffect(() => {
+    //     const onBeforeUnloadHandler = (event: BeforeUnloadEvent) => {
+    //         event.preventDefault();
+    //         return (event.returnValue = "");
+    //     };
+
+    //     window.addEventListener("beforeunload", onBeforeUnloadHandler, {
+    //         capture: true
+    //     });
+    // }, []);
+
     return (
         <>
             <Header />

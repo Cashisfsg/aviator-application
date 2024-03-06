@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/store/hooks/useAuth";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
+import { useStateSelector } from "@/store/hooks";
+import { selectCurrentGameTab } from "@/store";
+import { toast } from "@/components/toasts/toast";
 
 // import {
 //     DropdownMenu,
@@ -65,9 +68,25 @@ export const BalanceMenu = () => {
     const [open, setOpen] = useState(false);
     const { isAuthenticated } = useAuth();
 
+    const { betState: first_bet_state } = useStateSelector(state =>
+        selectCurrentGameTab(state, 1)
+    );
+    const { betState: second_bet_state } = useStateSelector(state =>
+        selectCurrentGameTab(state, 2)
+    );
+
     const { data: balance, isLoading } = useGetUserBalanceQuery(undefined, {
         skip: !isAuthenticated
     });
+
+    const onLinkClickHandler: React.MouseEventHandler<
+        HTMLAnchorElement
+    > = event => {
+        if (first_bet_state === "init" && second_bet_state === "init") return;
+
+        event.preventDefault();
+        toast.error("Дождитесь окончания раунда");
+    };
 
     const onClickHandler = () => {
         setOpen(false);
@@ -104,6 +123,7 @@ export const BalanceMenu = () => {
                         <DropDownMenuItem onClick={onClickHandler}>
                             <Link
                                 to="/payment/replenishment"
+                                onClick={onLinkClickHandler}
                                 className="inline-block w-full px-2.5 py-2"
                             >
                                 Пополнить
@@ -115,6 +135,7 @@ export const BalanceMenu = () => {
                         <DropDownMenuItem onClick={onClickHandler}>
                             <Link
                                 to="/payment/draw"
+                                onClick={onLinkClickHandler}
                                 className="inline-block w-full px-2.5 py-2"
                             >
                                 Вывести

@@ -1,8 +1,12 @@
 import { useState, useId } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useConfirmPasswordChangeMutation } from "@/store";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
+import {
+    RestorePasswordDialogHeader,
+    RestorePasswordDialogFooter
+} from "../modals/restore-password-modal";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,8 +28,8 @@ export const ConfirmEmailForm = () => {
     const codeErrorId = useId();
     const email = sessionStorage.getItem("email");
 
-    const [confirmChange, { isLoading, isSuccess }] =
-        useConfirmPasswordChangeMutation();
+    const navigate = useNavigate();
+    const [confirmChange, { isLoading }] = useConfirmPasswordChangeMutation();
 
     const handleSubmit: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -36,6 +40,7 @@ export const ConfirmEmailForm = () => {
             const { code } = event.currentTarget;
 
             await confirmChange({ code: Number(code.value) }).unwrap();
+            navigate("/main/password/reset");
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =
@@ -58,10 +63,6 @@ export const ConfirmEmailForm = () => {
         }
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/password/reset" />;
-    }
-
     const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
         setErrorState(err => ({
             ...err,
@@ -71,49 +72,53 @@ export const ConfirmEmailForm = () => {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="grid gap-y-8"
-        >
-            <Label direction="column">
-                <span className="text-sm">
-                    На ваш Email отправлен код для подтверждения
-                </span>
-                <Input
-                    readOnly
-                    value={email as string}
-                    className="outline-none"
-                />
-            </Label>
-            <Label direction="column">
-                <span className="text-sm">Введите код</span>
-                <Input
-                    id={codeId}
-                    name="code"
-                    aria-invalid={errorState.isError}
-                    aria-errormessage={
-                        errorState.isError ? codeErrorId : undefined
-                    }
-                    onFocus={onFocusHandler}
-                />
-                {errorState.isError ? (
-                    <ErrorMessage
-                        id={codeErrorId}
-                        htmlFor={codeId}
-                        message={errorState.message}
-                    />
-                ) : null}
-            </Label>
-            <Button
-                variant="confirm"
-                disabled={isLoading}
+        <>
+            <RestorePasswordDialogHeader />
+            <form
+                onSubmit={handleSubmit}
+                className="grid gap-y-8"
             >
-                {isLoading ? (
-                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
-                ) : (
-                    "Восстановить"
-                )}
-            </Button>
-        </form>
+                <Label direction="column">
+                    <span className="text-sm">
+                        На ваш Email отправлен код для подтверждения
+                    </span>
+                    <Input
+                        readOnly
+                        value={email as string}
+                        className="outline-none"
+                    />
+                </Label>
+                <Label direction="column">
+                    <span className="text-sm">Введите код</span>
+                    <Input
+                        id={codeId}
+                        name="code"
+                        aria-invalid={errorState.isError}
+                        aria-errormessage={
+                            errorState.isError ? codeErrorId : undefined
+                        }
+                        onFocus={onFocusHandler}
+                    />
+                    {errorState.isError ? (
+                        <ErrorMessage
+                            id={codeErrorId}
+                            htmlFor={codeId}
+                            message={errorState.message}
+                        />
+                    ) : null}
+                </Label>
+                <Button
+                    variant="confirm"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                    ) : (
+                        "Восстановить"
+                    )}
+                </Button>
+            </form>
+            <RestorePasswordDialogFooter />
+        </>
     );
 };
