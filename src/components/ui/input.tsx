@@ -1,13 +1,14 @@
 import * as React from "react";
 
 import { IoWarningOutline } from "react-icons/io5";
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
 
 import { cn } from "@/utils";
 
-export interface InputProps
-    extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type, ...props }, ref) => {
         return (
             <input
@@ -23,9 +24,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         );
     }
 );
-Input.displayName = "Input";
 
-export { Input };
+Input.displayName = "Input";
 
 interface ErrorMessageProps
     extends React.OutputHTMLAttributes<HTMLOutputElement> {
@@ -49,3 +49,41 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         </output>
     );
 };
+
+interface PasswordProps
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
+
+export const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
+    ({ className, ...props }, forwardRef) => {
+        const [visible, toggleVisibility] = React.useReducer(
+            state => !state,
+            false
+        );
+
+        return (
+            <div className="flex h-max w-full items-center rounded-lg border-2 border-gray-500 outline outline-2 outline-offset-1 outline-transparent has-[input[aria-invalid=true]]:border-red-750 has-[input:focus-visible]:outline-white/80">
+                <input
+                    type={visible ? "text" : "password"}
+                    autoComplete="off"
+                    ref={forwardRef}
+                    className={cn(
+                        "flex-auto bg-transparent px-4 py-2 focus-visible:outline-transparent",
+                        className
+                    )}
+                    {...props}
+                />
+                <button
+                    type="button"
+                    onClick={toggleVisibility}
+                    className="h-10 basis-10 focus-visible:outline-white/80"
+                >
+                    {visible ? (
+                        <IoIosEyeOff className="mx-auto text-xl" />
+                    ) : (
+                        <IoIosEye className="mx-auto text-xl" />
+                    )}
+                </button>
+            </div>
+        );
+    }
+);

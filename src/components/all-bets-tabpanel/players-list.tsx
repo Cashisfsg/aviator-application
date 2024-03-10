@@ -1,5 +1,6 @@
 import { Table, Row, Cell } from "@/components/ui/table";
 import { Currency, Player } from "@/store";
+import { Badge } from "@/components/ui/badge";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
@@ -46,13 +47,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                                 2
                             )} ${currency}`}</Cell>
                             <Cell>
-                                {!isNaN(player?.coeff as number) ? (
-                                    <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold">
-                                        {player?.coeff}x
-                                    </span>
-                                ) : (
-                                    "-"
-                                )}
+                                <Badge value={player?.coeff} />
                             </Cell>
                             <Cell>
                                 {!isNaN(player?.win?.[currency] as number)

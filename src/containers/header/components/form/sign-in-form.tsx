@@ -12,7 +12,7 @@ import {
 
 import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input, ErrorMessage } from "@/components/ui/input";
+import { Input, Password, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ImSpinner9 } from "react-icons/im";
@@ -93,9 +93,7 @@ export const SignInForm = () => {
                         id={loginId}
                         type="text"
                         aria-invalid={
-                            errors?.root || errors?.password || errors.login
-                                ? "true"
-                                : "false"
+                            errors?.root || errors.login ? "true" : "false"
                         }
                         aria-errormessage={
                             errors.login
@@ -119,9 +117,8 @@ export const SignInForm = () => {
                 </Label>
                 <Label>
                     <span>Пароль</span>
-                    <Input
+                    <Password
                         id={passwordId}
-                        type="password"
                         {...register("password")}
                         aria-invalid={
                             errors?.root || errors.password ? "true" : "false"

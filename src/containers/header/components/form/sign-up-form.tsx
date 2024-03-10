@@ -38,7 +38,7 @@ import {
 
 // import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Input, ErrorMessage } from "@/components/ui/input";
+import { Input, Password, ErrorMessage } from "@/components/ui/input";
 
 import { FaCheck } from "react-icons/fa6";
 import { ChevronsUpDown } from "lucide-react";
@@ -239,10 +239,7 @@ export const SignUpForm = () => {
                         <FormItem>
                             <FormLabel>Пароль</FormLabel>
                             <FormControl>
-                                <Input
-                                    type="password"
-                                    {...field}
-                                />
+                                <Password {...field} />
                             </FormControl>
 
                             <FormMessage />
@@ -256,10 +253,7 @@ export const SignUpForm = () => {
                         <FormItem>
                             <FormLabel>Подтвердите пароль</FormLabel>
                             <FormControl>
-                                <Input
-                                    type="password"
-                                    {...field}
-                                />
+                                <Password {...field} />
                             </FormControl>
 
                             <FormMessage />
