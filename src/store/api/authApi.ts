@@ -34,9 +34,7 @@ export const authApi = createApi({
                 try {
                     await queryFulfilled;
                     dispatch(userApi.util.invalidateTags(["User", "Balance"]));
-                } catch (error) {
-                    console.error(error);
-                }
+                } catch {}
             }
         }),
         authenticateUser: builder.mutation<Token, UserAuthorizationData>({
@@ -49,9 +47,7 @@ export const authApi = createApi({
                 try {
                     await queryFulfilled;
                     dispatch(userApi.util.invalidateTags(["User", "Balance"]));
-                } catch (error) {
-                    console.error(error);
-                }
+                } catch {}
             }
         }),
         sendConfirmationCode: builder.mutation<

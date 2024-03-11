@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,7 @@ import {
 } from "@/utils/schemas";
 
 import { useChangePasswordMutation } from "@/store";
-import { useAuth } from "@/store/hooks/useAuth";
+// import { useAuth } from "@/store/hooks/useAuth";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import {
@@ -24,8 +24,8 @@ import { ImSpinner9 } from "react-icons/im";
 
 export const ResetPasswordForm = () => {
     const [changePassword, { isLoading }] = useChangePasswordMutation();
-    const { token } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const passwordId = useId();
     const passwordConfirmId = useId();
@@ -52,13 +52,13 @@ export const ResetPasswordForm = () => {
         password,
         passwordConfirm
     }) => {
-        if (!token) return;
+        if (!location?.state?.token) return;
 
         try {
             await changePassword({
                 password,
                 passwordConfirm,
-                token
+                token: location?.state?.token
             }).unwrap();
             navigate("/main/sign-in", {
                 state: {
@@ -90,17 +90,6 @@ export const ResetPasswordForm = () => {
 
         clearErrors("root");
     };
-
-    // if (isSuccess) {
-    //     return (
-    //         <Navigate
-    //             to="/main/sign-in"
-    //             state={{
-    //                 password: getValues().password
-    //             }}
-    //         />
-    //     );
-    // }
 
     return (
         <>

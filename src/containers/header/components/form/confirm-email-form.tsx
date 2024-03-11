@@ -39,8 +39,10 @@ export const ConfirmEmailForm = () => {
         try {
             const { code } = event.currentTarget;
 
-            await confirmChange({ code: Number(code.value) }).unwrap();
-            navigate("/main/password/reset");
+            const { token } = await confirmChange({
+                code: Number(code.value)
+            }).unwrap();
+            navigate("/main/password/reset", { state: { token } });
         } catch (error) {
             if (isFetchBaseQueryError(error)) {
                 const errorMessage =

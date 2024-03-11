@@ -103,7 +103,7 @@ export const BurgerMenu = () => {
                                     className="flex gap-x-2 px-2.5 py-2"
                                 >
                                     <BsStars className="text-base text-[#767b85]" />
-                                    <span>Бонусы и промокоды</span>
+                                    <span>Бонусы</span>
                                 </DropDownMenuItem>
                                 <DropDownMenuSeparator />
                             </>

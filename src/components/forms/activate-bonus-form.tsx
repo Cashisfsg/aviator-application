@@ -57,7 +57,7 @@ export const ActivationBonusForm = () => {
     return (
         <form
             onSubmit={onSubmitHandler}
-            className="group flex basis-32 flex-col gap-1"
+            className="group ml-auto flex w-44 flex-col gap-1 px-3 py-2 text-sm"
         >
             <input
                 type="button"

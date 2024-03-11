@@ -24,12 +24,10 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
                 <section>
                     <header>
                         <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-center text-lg font-bold text-gray-300">
-                            Бонусы
+                            Бонусная ставка
                         </h2>
-                        <div className="flex items-end justify-between px-3 py-2 text-sm text-[#9ea0a3]">
-                            <span>Список</span>
-                            <ActivationBonusForm />
-                        </div>
+
+                        <ActivationBonusForm />
                     </header>
 
                     <BonusTable setOpen={setOpen} />
@@ -37,7 +35,7 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
 
                 <section>
                     <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-center text-lg font-bold text-gray-300">
-                        Бонусы на пополнение
+                        Бонусы к пополнению
                     </h2>
                     <DepositBonusTable />
                 </section>

@@ -54,7 +54,7 @@ export const SignInForm = () => {
             await authenticate(data).unwrap();
             reset();
             navigate("/main");
-            // sessionStorage.removeItem("email");
+            sessionStorage.removeItem("email");
             dialogCloseRef?.current?.click();
         } catch (error) {
             if (isFetchBaseQueryError(error)) {

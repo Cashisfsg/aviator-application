@@ -6,15 +6,6 @@ import { useStateSelector } from "@/store/hooks";
 import { selectCurrentGameTab } from "@/store";
 import { toast } from "@/components/toasts/toast";
 
-// import {
-//     DropdownMenu,
-//     DropdownMenuContent,
-//     DropdownMenuItem,
-//     DropdownMenuLabel,
-//     DropdownMenuSeparator,
-//     DropdownMenuTrigger
-// } from "@/components/ui/dropdown-menu";
-
 import {
     Popover,
     PopoverTrigger,
@@ -26,52 +17,14 @@ import {
     DropDownMenuSeparator
 } from "@/components/ui/drop-down-list";
 
-// export const BalanceMenu = () => {
-//     const { isAuthenticated } = useAuth();
-
-//     const { data: balance } = useGetUserBalanceQuery(undefined, {
-//         skip: !isAuthenticated
-//     });
-
-//     return (
-//         <>
-//             {isAuthenticated ? (
-//                 <DropdownMenu modal={false}>
-//                     <DropdownMenuTrigger
-//                         disabled={!isAuthenticated}
-//                         className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5"
-//                     >
-//                         {balance?.balance.toFixed(2) || "300"}{" "}
-//                         {balance?.currency || "$"}
-//                     </DropdownMenuTrigger>
-//                     <DropdownMenuContent forceMount>
-//                         <DropdownMenuLabel>
-//                             Баланс {balance?.balance.toFixed(2)}{" "}
-//                             {balance?.currency}
-//                         </DropdownMenuLabel>
-//                         <DropdownMenuSeparator />
-//                         <DropdownMenuItem asChild>
-//                             <Link to="/payment/replenishment">Пополнить</Link>
-//                         </DropdownMenuItem>
-//                         <DropdownMenuSeparator />
-//                         <DropdownMenuItem asChild>
-//                             <Link to="/payment/draw">Вывести</Link>
-//                         </DropdownMenuItem>
-//                     </DropdownMenuContent>
-//                 </DropdownMenu>
-//             ) : null}
-//         </>
-//     );
-// };
-
 export const BalanceMenu = () => {
     const [open, setOpen] = useState(false);
     const { isAuthenticated } = useAuth();
 
-    const { betState: first_bet_state } = useStateSelector(state =>
+    const { betState: firstBetState } = useStateSelector(state =>
         selectCurrentGameTab(state, 1)
     );
-    const { betState: second_bet_state } = useStateSelector(state =>
+    const { betState: secondBetState } = useStateSelector(state =>
         selectCurrentGameTab(state, 2)
     );
 
@@ -82,7 +35,7 @@ export const BalanceMenu = () => {
     const onLinkClickHandler: React.MouseEventHandler<
         HTMLAnchorElement
     > = event => {
-        if (first_bet_state === "init" && second_bet_state === "init") return;
+        if (firstBetState === "init" && secondBetState === "init") return;
 
         event.preventDefault();
         toast.error("Дождитесь окончания раунда");
@@ -101,7 +54,10 @@ export const BalanceMenu = () => {
                 <span className="h-[30px] w-20 animate-pulse rounded-full border border-[#414148] bg-slate-700" />
             ) : (
                 <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
-                    {balance?.balance.toFixed(2)} {balance?.currency}
+                    <span className="font-bold text-[#28A909]">
+                        {balance?.balance.toFixed(2)}
+                    </span>{" "}
+                    {balance?.currency}
                 </PopoverTrigger>
             )}
 

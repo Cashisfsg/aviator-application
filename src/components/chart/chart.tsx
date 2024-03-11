@@ -31,29 +31,55 @@ export const Chart = () => {
         const crash = () => {
             if (!airplaneRef.current) return;
 
-            animationRef.current = airplaneRef.current.animate(
-                [
-                    {
-                        translate: "800px 0px"
-                    }
-                ],
-                { duration: 1000, iterations: 1, fill: "forwards" }
-            );
+            if (animationEnabled) {
+                animationRef.current = airplaneRef.current.animate(
+                    [
+                        {
+                            translate: "800px 0px"
+                        }
+                    ],
+                    { duration: 500, iterations: 1, fill: "forwards" }
+                );
+                setTimeout(() => {
+                    animationRef.current?.cancel();
+                    airplaneRef.current?.classList.replace("fly", "hidden");
+                }, 1000);
+            }
+
             rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
+
+            // airplaneRef.current.classList.replace("fly", "fly-away");
+
+            // animationRef.current.addEventListener(
+            //     "animationend",
+            //     () => {
+            //         animationRef.current?.cancel();
+            //         airplaneRef.current?.classList.replace("fly", "hidden");
+            //     },
+            //     {
+            //         once: true
+            //     }
+            // );
         };
 
         const startGame = () => {
             if (!airplaneRef.current) return;
 
             setStartScreen(true);
+
+            if (airplaneRef.current.classList.contains("hidden"))
+                airplaneRef.current?.classList.remove("hidden");
         };
 
         const restart = () => {
             if (!airplaneRef.current) return;
+
             rateRef.current?.resetAnimation();
-            airplaneRef.current.classList.remove("fly");
-            animationRef.current?.cancel();
+            // airplaneRef.current.classList.remove("fly");
+            // airplaneRef.current.classList.add("fly");
+            // animationRef.current?.cancel();
+
             containerRef.current?.setAttribute("data-active", "true");
         };
 
@@ -63,10 +89,10 @@ export const Chart = () => {
         };
 
         const game = () => {
-            airplaneRef.current?.classList.add("fly");
-
             rateRef.current?.startAnimation();
             setStartScreen(false);
+            if (animationEnabled) airplaneRef.current?.classList.add("fly");
+            else airplaneRef.current?.classList.remove("fly");
         };
 
         socket.on("crash", crash);
@@ -78,7 +104,7 @@ export const Chart = () => {
             socket.off("loading", loading);
             socket.off("game", game);
         };
-    }, [socket]);
+    }, [socket, animationEnabled]);
 
     return (
         <section>
@@ -88,7 +114,7 @@ export const Chart = () => {
                 </h2>
             ) : null} */}
 
-            <figure className="rounded-2.5xl ">
+            <figure className="rounded-2.5xl">
                 <svg
                     width="100%"
                     viewBox="0 0 557 253"
@@ -149,10 +175,10 @@ export const Chart = () => {
                                 Ожидаем новый раунд
                             </text>
                             <use
+                                className="use-slider"
                                 href="#slider"
                                 x="50%"
                                 y="50%"
-                                transform="translate(-65, 40)"
                             />
                         </g>
                     ) : null}
@@ -225,44 +251,6 @@ export const Chart = () => {
                 </svg>
             </figure>
             <SoundEffects />
-            {/* <button
-                onClick={() => {
-                    if (!airplaneRef.current) return;
-
-                    setStartScreen(true);
-                }}
-            >
-                Старт
-            </button>
-            <button
-                onClick={() => {
-                    if (!airplaneRef.current) return;
-
-                    animationRef.current = airplaneRef.current.animate(
-                        [
-                            {
-                                translate: "800px 0px"
-                            }
-                        ],
-                        { duration: 1000, iterations: 1, fill: "forwards" }
-                    );
-                    rateRef.current?.stopAnimation();
-                    containerRef.current?.setAttribute("data-active", "false");
-                }}
-            >
-                Улететь
-            </button>
-            <button
-                onClick={() => {
-                    if (!airplaneRef.current) return;
-                    rateRef.current?.resetAnimation();
-                    airplaneRef.current.classList.remove("fly");
-                    animationRef.current?.cancel();
-                    containerRef.current?.setAttribute("data-active", "true");
-                }}
-            >
-                Сброс
-            </button> */}
         </section>
     );
 };

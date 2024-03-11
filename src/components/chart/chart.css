@@ -60,6 +60,16 @@ figure {
         fly 3s linear 5s infinite;
 }
 
+.fly-away {
+    animation: fly-away 1s linear forwards;
+}
+
+@keyframes fly-away {
+    to {
+        translate: 800px 0px;
+    }
+}
+
 .propeller {
     transform-origin: center -50% center;
 
@@ -185,6 +195,10 @@ figure {
 
 .slider {
     animation: slider 4.55s linear;
+}
+
+.use-slider {
+    transform: translate(-65px, 40px);
 }
 
 @keyframes slider {

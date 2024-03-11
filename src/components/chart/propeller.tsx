@@ -10,7 +10,6 @@ export const Propeller: React.FC<PropellerProps> = ({ ...props }) => {
             viewBox="0 0 512 512"
             fill="#e50539"
             stroke="none"
-            // style={{ transformOrigin: "center -50%" }}
         >
             <g
                 transform="translate(0,512) scale(0.1,-0.1)"

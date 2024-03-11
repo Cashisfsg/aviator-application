@@ -88,7 +88,11 @@ export const authSlice = createSlice({
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
-                    state.socket.auth = { token: payload.token };
+                    // state.socket.disconnect();
+                    state.socket = io(BASE_URL, {
+                        auth: { token: payload.token }
+                    });
+                    // state.socket.connect();
                 }
             )
             // .addMatcher(
@@ -106,18 +110,9 @@ export const authSlice = createSlice({
                     );
                     state.token = payload.token;
                     state.isAuthenticated = true;
-                    state.socket.auth = { token: payload.token };
-                }
-            )
-            .addMatcher(
-                authApi.endpoints.confirmPasswordChange.matchFulfilled,
-                (state, { payload }) => {
-                    localStorage.setItem(
-                        "token",
-                        JSON.stringify({ token: payload.token })
-                    );
-                    state.token = payload.token;
-                    state.socket.auth = { token: payload.token };
+                    state.socket = io(BASE_URL, {
+                        auth: { token: payload.token }
+                    });
                 }
             )
             .addMatcher(
