@@ -283,7 +283,7 @@ export const userApi = createApi({
             //         console.error(error);
             //     }
             // }
-            invalidatesTags: (result, error) => (error ? [] : ["User"])
+            invalidatesTags: ["User"]
         })
     })
 });

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useReducer } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import { useStateSelector, selectSettings, selectSocket } from "@/store";
 
@@ -8,7 +8,7 @@ import TakeOffSound from "@/assets/sound/take-off.mp3";
 export const SoundEffects = () => {
     const takeOnAudioRef = useRef<HTMLAudioElement>(null);
     const takeOffAudioRef = useRef<HTMLAudioElement>(null);
-    const [gameStarted, toggleState] = useReducer(state => !state, false);
+    const [gameStarted, setGameStarted] = useState(false);
 
     const socket = useStateSelector(state => selectSocket(state));
     const { soundEnabled } = useStateSelector(state => selectSettings(state));
@@ -32,7 +32,7 @@ export const SoundEffects = () => {
 
             takeOnAudioRef.current.currentTime = 0.6;
             takeOnAudioRef.current?.play();
-            toggleState();
+            setGameStarted(true);
         };
 
         const playFinishRoundSound = () => {
@@ -43,7 +43,7 @@ export const SoundEffects = () => {
 
             if (!takeOnAudioRef.current || !takeOffAudioRef.current) return;
 
-            toggleState();
+            setGameStarted(false);
             takeOnAudioRef.current.pause();
             takeOnAudioRef.current.currentTime = 0;
             takeOffAudioRef.current.currentTime = 0.8;

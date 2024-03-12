@@ -49,7 +49,7 @@ export const Statistics = () => {
                 </TabsList>
                 <Suspense
                     fallback={
-                        <div className="mt-5">
+                        <div className="mt-5 min-h-[305px]">
                             <GridLoader color="red" />
                         </div>
                     }

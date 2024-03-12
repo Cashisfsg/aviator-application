@@ -1,4 +1,4 @@
-import { Table, Caption, Row, Cell } from "@/components/ui/table";
+import { Table, Row, Cell } from "@/components/ui/table";
 
 import { formatCurrency, formatDate, formatTime } from "@/utils/helpers";
 
@@ -18,9 +18,6 @@ export const DepositBonusTable = () => {
                     "Срок действия"
                 ]}
                 data={promo || []}
-                renderCaption={
-                    <Caption className="px-3 text-left">Список</Caption>
-                }
                 renderData={data => (
                     <>
                         {data.map(code => (

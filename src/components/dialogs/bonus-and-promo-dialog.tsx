@@ -37,6 +37,7 @@ export const BonusAndPromoDialog: React.FC<BonusAndPromoDialogProps> = ({
                     <h2 className="rounded-md bg-[#2c2d30] px-4 py-2 text-center text-lg font-bold text-gray-300">
                         Бонусы к пополнению
                     </h2>
+
                     <DepositBonusTable />
                 </section>
             </DialogContent>
