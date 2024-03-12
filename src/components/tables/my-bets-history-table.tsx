@@ -73,7 +73,7 @@ export const MyBetsHistoryTable = () => {
             className="scrollbar max-h-64"
         >
             {isError && <pre>{error?.data?.message}</pre>}
-            {!isError ? (
+            {isSuccess ? (
                 <Table
                     className="px-1.5"
                     headers={[

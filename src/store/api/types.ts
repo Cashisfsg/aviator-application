@@ -87,6 +87,7 @@ export interface Bet {
     win: number;
     playerId: string;
     playerLogin: string;
+    profileImage: string;
 }
 
 export interface PaginationParams {
