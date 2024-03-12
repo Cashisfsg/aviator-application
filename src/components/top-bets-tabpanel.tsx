@@ -125,9 +125,9 @@ const TopBetsList = ({ bets, currency }) => {
                     key={bet?._id}
                     img={bet?.profileImage}
                     login={bet?.playerLogin}
-                    bet={bet?.bet?.[currency]}
-                    win={bet?.win?.[currency]}
-                    currency={currency || ""}
+                    bet={bet?.bet?.[currency || "USD"]}
+                    win={bet?.win?.[currency || "USD"]}
+                    currency={currency || "USD"}
                     rate={bet?.coeff}
                     dateTime={bet?.time}
                 />

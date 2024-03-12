@@ -12,7 +12,7 @@ export const Header = () => {
     return (
         <header className="content-wrapper">
             <div className="flex items-center justify-between rounded-sm bg-[#1b1c1d] px-2.5">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-2 xs:gap-4">
                     <Logo />
                     {isAuthenticated ? (
                         <button className="h-6 w-6 rounded-full bg-[#2c2d30] p-1 text-center text-sm font-bold leading-none text-slate-400">
@@ -21,7 +21,7 @@ export const Header = () => {
                         </button>
                     ) : null}
                 </div>
-                <div className="relative flex items-center gap-4 py-2">
+                <div className="relative flex items-center gap-2 py-2 xs:gap-4">
                     {!isAuthenticated ? (
                         <button className="h-6 w-6 rounded-full bg-[#2c2d30] p-1 text-center text-sm font-bold leading-none text-slate-400">
                             <span>?</span>

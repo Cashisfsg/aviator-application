@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/drop-down-list";
 
 import { UserProfileDetails } from "../user-profile-details";
+import { RedirectMenu } from "../redirect-menu";
 
 // import {
 //     DropdownMenu,
@@ -145,9 +146,9 @@ export const BurgerMenu = () => {
                         </DropDownMenuItem>
                         <DropDownMenuSeparator />
 
-                        {isAuthenticated ? (
-                            <>
-                                <DropDownMenuItem
+                        {/* {isAuthenticated ? (
+                            <> */}
+                        {/* <DropDownMenuItem
                                     onPointerUp={() => {
                                         onClickHandler();
                                         setTimeout(() => {
@@ -170,9 +171,10 @@ export const BurgerMenu = () => {
                                     </svg>
                                     <span>История моих ставок</span>
                                 </DropDownMenuItem>
-                                <DropDownMenuSeparator />
-                            </>
-                        ) : null}
+                                <DropDownMenuSeparator /> */}
+                        <RedirectMenu />
+                        {/* </>
+                        ) : null} */}
 
                         {isAuthenticated ? (
                             <>

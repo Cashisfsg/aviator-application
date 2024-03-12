@@ -18,27 +18,6 @@ export const MyBetsHistoryTable = () => {
 
     const { data: balance } = useGetUserBalanceQuery();
 
-    // const {
-    //     data: bets,
-    //     hasNextPage,
-    //     isSuccess,
-    //     isError,
-    //     error
-    // } = useGetUserBetsQuery(
-    //     {
-    //         skip: queryParams.skip,
-    //         limit: queryParams.limit
-    //     },
-    //     {
-    //         selectFromResult: ({ data, ...otherParams }) => ({
-    //             data: data?.data,
-    //             hasNextPage: data?.hasNextPage,
-    //             ...otherParams
-    //         })
-    //         // refetchOnMountOrArgChange: true
-    //     }
-    // );
-
     const {
         data: bets,
         isSuccess,
