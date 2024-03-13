@@ -1,6 +1,7 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 
 import { authApi, userApi, User } from "../api";
+import { securityApi } from "@/api/securityApi";
 import { RootStore } from "../types";
 import { io, Socket } from "socket.io-client";
 
@@ -88,6 +89,8 @@ export const authSlice = createSlice({
             .addMatcher(
                 authApi.endpoints.authenticateUser.matchFulfilled,
                 (state, { payload }) => {
+                    if (payload.twoFactorEnabled) return;
+
                     localStorage.setItem(
                         "token",
                         JSON.stringify({ token: payload.token })
@@ -101,12 +104,21 @@ export const authSlice = createSlice({
                     // state.socket.connect();
                 }
             )
-            // .addMatcher(
-            //     userApi.endpoints.getUser.matchFulfilled,
-            //     (state, { payload }) => {
-            //         state.initData = payload;
-            //     }
-            // )
+            .addMatcher(
+                securityApi.endpoints.verifyUser.matchFulfilled,
+                (state, { payload }) => {
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify({ token: payload.token })
+                    );
+                    state.token = payload.token;
+                    state.isAuthenticated = true;
+                    // state.socket.disconnect();
+                    state.socket = io(BASE_URL, {
+                        auth: { token: payload.token }
+                    });
+                }
+            )
             .addMatcher(
                 authApi.endpoints.createNewUserAccount.matchFulfilled,
                 (state, { payload }) => {

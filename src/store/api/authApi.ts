@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
     UserRegistrationCredentials,
-    UserAuthorizationData,
+    AuthenticationUserRequest,
     Token,
     SuccessResponse,
+    AuthenticationUserResponse,
     ForgotPasswordRequest,
     ChangePasswordConfirmRequest,
     ChangePasswordRequest
@@ -37,7 +38,10 @@ export const authApi = createApi({
                 } catch {}
             }
         }),
-        authenticateUser: builder.mutation<Token, UserAuthorizationData>({
+        authenticateUser: builder.mutation<
+            AuthenticationUserResponse,
+            AuthenticationUserRequest
+        >({
             query: body => ({
                 url: "auth/login",
                 method: "POST",
@@ -45,11 +49,31 @@ export const authApi = createApi({
             }),
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
-                    await queryFulfilled;
-                    dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+                    const response = await queryFulfilled;
+
+                    if (!response.data.twoFactorEnabled)
+                        dispatch(
+                            userApi.util.invalidateTags(["User", "Balance"])
+                        );
                 } catch {}
             }
         }),
+        // verifyUser: builder.mutation<
+        //     { token: string },
+        //     { login: string; code: number }
+        // >({
+        //     query: body => ({
+        //         url: "/auth/login/verify",
+        //         method: "POST",
+        //         body
+        //     }),
+        //     async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        //         try {
+        //             await queryFulfilled;
+        //             dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+        //         } catch {}
+        //     }
+        // }),
         sendConfirmationCode: builder.mutation<
             SuccessResponse,
             ForgotPasswordRequest

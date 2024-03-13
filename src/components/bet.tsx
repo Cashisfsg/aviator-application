@@ -499,15 +499,15 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
     const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
-    const [gain, setGain] = useState(currentGameTab.currentBet);
+    const [coef, setCoef] = useState(currentGameTab.currentBet);
 
-    useEffect(() => {
-        if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
-            setGain(bonus?.bonusQuantity);
-        } else {
-            currentGameTab.currentBet;
-        }
-    }, [bonus.bonusActive]);
+    // useEffect(() => {
+    //     if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
+    //         setGain(bonus?.bonusQuantity);
+    //     } else {
+    //         currentGameTab.currentBet;
+    //     }
+    // }, [bonus.bonusActive]);
 
     useEffect(() => {
         const winnings = ({ x }: { x: number }) => {
@@ -516,16 +516,26 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
             if (
                 betNumber === 1 &&
                 bonus.bonusActive &&
-                bonus.bonusQuantity &&
-                bonus.bonusCoefficient
+                x >= bonus.bonusCoefficient
             ) {
-                setGain(x * bonus.bonusQuantity);
-                if (x >= bonus.bonusCoefficient) {
-                    setBonusCashOutEnabled(true);
-                }
-            } else {
-                setGain(x * currentGameTab.currentBet);
+                setBonusCashOutEnabled(true);
             }
+
+            setCoef(x);
+
+            // if (
+            //     betNumber === 1 &&
+            //     bonus.bonusActive &&
+            //     bonus.bonusQuantity &&
+            //     bonus.bonusCoefficient
+            // ) {
+            //     setGain(x * bonus.bonusQuantity);
+            //     if (x >= bonus.bonusCoefficient) {
+            //         setBonusCashOutEnabled(true);
+            //     }
+            // } else {
+            //     setGain(x * currentGameTab.currentBet);
+            // }
         };
 
         const cancelBetBeforeGameStart = () => {
@@ -609,11 +619,12 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
         const resetBet = () => {
             if (betNumber === 1 && bonus.bonusActive && bonus.bonusQuantity) {
-                setGain(bonus.bonusQuantity);
+                // setGain(bonus.bonusQuantity);
                 setBonusCashOutEnabled(false);
-            } else {
-                setGain(currentGameTab.currentBet);
             }
+            // else {
+            //     setGain(currentGameTab.currentBet);
+            // }
         };
 
         socket.on("game", winnings);
@@ -667,8 +678,8 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 t => (
                     <SucceedToast
                         t={t}
-                        gain={gain}
-                        rate={gain / currentGameTab.currentBet}
+                        gain={coef * currentGameTab.currentBet}
+                        rate={coef}
                         currency={currentGameTab.currency}
                     />
                 ),
@@ -792,7 +803,9 @@ const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 >
                     <p>Вывести</p>
                     <p className="text-2xl">
-                        <span className="text-2xl">{gain?.toFixed(2)}</span>{" "}
+                        <span className="text-2xl">
+                            {(coef * currentGameTab.currentBet)?.toFixed(2)}
+                        </span>{" "}
                         <span className="text-lg">
                             {currentGameTab.currency}
                         </span>

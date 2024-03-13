@@ -10,9 +10,15 @@ export interface UserRegistrationCredentials {
     from?: string;
 }
 
-export interface UserAuthorizationData {
+export interface AuthenticationUserRequest {
     login: string;
     password: string;
+}
+
+export interface AuthenticationUserResponse {
+    twoFactorEnabled: boolean;
+    token: string;
+    message: string;
 }
 
 export interface Token {

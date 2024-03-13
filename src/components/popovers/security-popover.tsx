@@ -48,7 +48,7 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
                 sideOffset={20}
                 align="end"
                 onPointerDownOutside={() => navigate("/main")}
-                className="w-60 border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
+                className="w-72 border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
             >
                 <>
                     {pathname === "/main/security" ? (

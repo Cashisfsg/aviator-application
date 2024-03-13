@@ -1,1 +1,1 @@
-export { securityApi } from "./securityApi";
+export * from "./securityApi";

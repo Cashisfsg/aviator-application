@@ -1,6 +1,7 @@
-import { useId, useRef } from "react";
+import { useState, useId, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuthenticateUserMutation } from "@/store";
+import { useAuthenticateUserMutation } from "@/store/api/authApi";
+import { useVerifyUserMutation } from "@/api/securityApi";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +11,7 @@ import {
     AuthorizationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
+import { toast } from "@/components/toasts/toast";
 import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input, Password, ErrorMessage } from "@/components/ui/input";
@@ -18,13 +20,18 @@ import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
 
 export const SignInForm = () => {
+    const [verificationModeEnabled, setVerificationModeEnabled] =
+        useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
     const [authenticate, { isLoading }] = useAuthenticateUserMutation();
+    const [verify] = useVerifyUserMutation();
 
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
-    const formId = useId();
+    const loginFormId = useId();
+    const verifyFormId = useId();
     const loginId = useId();
     const passwordId = useId();
     const loginErrorId = useId();
@@ -37,6 +44,7 @@ export const SignInForm = () => {
         reset,
         clearErrors,
         setError,
+        getValues,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -49,9 +57,17 @@ export const SignInForm = () => {
         reValidateMode: "onSubmit"
     });
 
-    const onSubmitHandler: SubmitHandler<FormSchema> = async data => {
+    const onSubmitLoginHandler: SubmitHandler<FormSchema> = async data => {
         try {
-            await authenticate(data).unwrap();
+            const { twoFactorEnabled, message } =
+                await authenticate(data).unwrap();
+
+            if (twoFactorEnabled) {
+                setVerificationModeEnabled(true);
+                toast.notify(message);
+                return;
+            }
+
             reset();
             navigate("/main");
             sessionStorage.removeItem("email");
@@ -80,12 +96,31 @@ export const SignInForm = () => {
         clearErrors();
     };
 
+    const onSubmitVerifyHandler: React.FormEventHandler<
+        HTMLFormElement & { code: HTMLInputElement }
+    > = async event => {
+        event.preventDefault();
+
+        try {
+            const { code } = event.currentTarget;
+            await verify({
+                login: getValues("login"),
+                code: Number(code.value)
+            });
+
+            reset();
+            navigate("/main");
+            sessionStorage.removeItem("email");
+            dialogCloseRef?.current?.click();
+        } catch (error) {}
+    };
+
     return (
         <>
             <form
-                id={formId}
+                id={loginFormId}
                 className="grid gap-y-8"
-                onSubmit={handleSubmit(onSubmitHandler)}
+                onSubmit={handleSubmit(onSubmitLoginHandler)}
             >
                 <Label>
                     <span>Логин или Email</span>
@@ -148,12 +183,27 @@ export const SignInForm = () => {
                     ) : null}
                 </Label>
             </form>
+            {verificationModeEnabled ? (
+                <form
+                    id={verifyFormId}
+                    onSubmit={onSubmitVerifyHandler}
+                    className="mt-4"
+                >
+                    <Label>
+                        <span>Код из Email</span>
+                        <Input
+                            inputMode="numeric"
+                            name="code"
+                        />
+                    </Label>
+                </form>
+            ) : null}
             <p className="text-right text-sm text-blue-500">
                 <Link to="/main/password/restore">Забыли пароль?</Link>
             </p>
             <Button
                 variant="confirm"
-                form={formId}
+                form={verificationModeEnabled ? verifyFormId : loginFormId}
                 disabled={isLoading}
                 className="disabled:cursor-wait"
             >
