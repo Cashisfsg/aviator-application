@@ -1,4 +1,11 @@
-import { useState, useReducer, useEffect, useRef, forwardRef } from "react";
+import {
+    useState,
+    useReducer,
+    useEffect,
+    useRef,
+    forwardRef,
+    Suspense
+} from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -112,9 +119,11 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
                     setOpen(open => !open);
                 }}
             >
-                <DialogContent className="w-80">
-                    <Outlet />
-                </DialogContent>
+                <Suspense>
+                    <DialogContent className="w-80">
+                        <Outlet />
+                    </DialogContent>
+                </Suspense>
             </Dialog>
         </>
     );
@@ -264,7 +273,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                         currentGameTab.betState !== "init" || !isAuthenticated
                     }
                     data-state={currentGameTab.betState}
-                    className="grid grid-cols-[68px_68px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
+                    className="grid grid-cols-[71px_71px] gap-x-1 gap-y-2 disabled:pointer-events-none disabled:opacity-75"
                 >
                     {betNumber === 1 && bonus.bonusActive ? (
                         <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
@@ -278,7 +287,7 @@ const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                         </div>
                     ) : (
                         <>
-                            <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
+                            <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-0.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
                                 <button
                                     type="button"
                                     disabled={
@@ -458,7 +467,7 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
         return (
             <input
                 {...props}
-                maxLength={7}
+                maxLength={11}
                 autoComplete="off"
                 inputMode="numeric"
                 defaultValue={
@@ -467,7 +476,7 @@ const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
                 onChange={onChangeHandler}
                 onBlur={onBlurHandler}
                 ref={ref}
-                className="h-full w-full border-none bg-inherit text-center text-xl font-bold leading-none text-white outline-none focus-visible:outline-none"
+                className="h-full w-full border-none bg-inherit text-center text-base font-bold leading-none text-white outline-none focus-visible:outline-none"
             />
         );
     }

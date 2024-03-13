@@ -67,7 +67,9 @@ export const SignUpForm = () => {
         useCreateNewUserAccountMutation();
     const navigate = useNavigate();
 
-    const { telegramId } = useStateSelector(state => selectInitData(state));
+    const { telegramId, from } = useStateSelector(state =>
+        selectInitData(state)
+    );
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -76,8 +78,9 @@ export const SignUpForm = () => {
             password: "",
             passwordConfirm: "",
             email: undefined,
-            from: "",
-            telegramId,
+            promocode: "",
+            // from: from,
+            // telegramId,
             accepted_terms: undefined
         }
     });
@@ -87,9 +90,9 @@ export const SignUpForm = () => {
         login,
         password,
         passwordConfirm,
-        email,
-        from,
-        telegramId
+        email
+        // from,
+        // telegramId
     }) => {
         const response = await createNewUser({
             currency,
@@ -97,7 +100,7 @@ export const SignUpForm = () => {
             password,
             passwordConfirm,
             email,
-            from,
+            from: from || undefined,
             telegramId
         });
 
@@ -262,7 +265,7 @@ export const SignUpForm = () => {
                 />
                 <FormField
                     control={form.control}
-                    name="from"
+                    name="promocode"
                     render={({ field }) => (
                         <FormItem>
                             <Popover
@@ -343,6 +346,20 @@ export const SignUpForm = () => {
                 <FormField
                     control={form.control}
                     name="telegramId"
+                    render={({ field }) => (
+                        <FormItem className="hidden">
+                            <FormControl>
+                                <Input
+                                    type="hidden"
+                                    {...field}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="from"
                     render={({ field }) => (
                         <FormItem className="hidden">
                             <FormControl>

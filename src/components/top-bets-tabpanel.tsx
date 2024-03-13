@@ -129,6 +129,7 @@ const TopBetsList = ({ bets, currency }) => {
                     win={bet?.win?.[currency || "USD"]}
                     currency={currency || "USD"}
                     rate={bet?.coeff}
+                    winRate={bet?.game_coeff}
                     dateTime={bet?.time}
                 />
             ))}
@@ -142,6 +143,7 @@ interface TopBetItemProps {
     bet: number;
     win: number;
     rate: number;
+    winRate: number;
     currency: string;
     dateTime: string;
 }
@@ -152,6 +154,7 @@ const TopBetItem: React.FC<TopBetItemProps> = ({
     bet,
     win,
     rate,
+    winRate,
     currency,
     dateTime
 }) => {
@@ -209,7 +212,7 @@ const TopBetItem: React.FC<TopBetItemProps> = ({
                     })}
                 </time>
                 <span>
-                    Раунд: <b className="text-white">{rate?.toFixed(2)}x</b>
+                    Раунд: <b className="text-white">{winRate?.toFixed(2)}x</b>
                 </span>
             </p>
         </li>

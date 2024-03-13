@@ -28,9 +28,7 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     const { data: referral } = useGetUserReferralQuery();
     const { data: user } = useGetUserQuery();
 
-    const telegramLink = `https://t.me/${
-        import.meta.env.VITE_BOT_NAME
-    }?start=${user?.telegramId}`;
+    const referralLink = `https://avibet.io/referral?username=${user?.login}`;
 
     const onClickHandler = () => {
         setTimeout(() => {
@@ -80,10 +78,10 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
                     <span className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600">
-                        {telegramLink}
+                        {referralLink}
                     </span>
                     <ClipboardCopy
-                        textToCopy={telegramLink}
+                        textToCopy={referralLink}
                         toastMessage="Ссылка скопирована в буфер обмена"
                         className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
                     >

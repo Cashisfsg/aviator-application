@@ -16,12 +16,12 @@ export const RedirectMenu = () => {
         <>
             <DropDownMenuItem>
                 <a
-                    // href="https://avibet.io"
                     href={
                         telegramId
                             ? "https://avibet.io"
                             : `https://t.me/${import.meta.env.VITE_BOT_NAME}`
                     }
+                    target="_blank"
                     className="flex gap-x-2 px-2.5 py-2"
                 >
                     {telegramId ? (

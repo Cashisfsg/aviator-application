@@ -84,10 +84,11 @@ export interface Bet {
     currency: Currency;
     time: string;
     coeff: number;
-    win: number;
+    win: CurrencyRecord;
     playerId: string;
     playerLogin: string;
     profileImage: string;
+    game_coeff: number;
 }
 
 export interface PaginationParams {

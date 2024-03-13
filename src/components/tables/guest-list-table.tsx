@@ -37,7 +37,7 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                     <>
                         {data.map(descendant => (
                             <Row key={descendant._id}>
-                                <Cell className="text-xs">
+                                <Cell className="max-w-20 truncate text-xs">
                                     {descendant._id}
                                 </Cell>
                                 <Cell className="text-xs">

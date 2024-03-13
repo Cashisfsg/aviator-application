@@ -12,7 +12,7 @@ export interface Coefficient {
 export const topBetsEntityAdapter = createEntityAdapter({
     selectId: (bet: Bet) => bet._id,
     sortComparer: (a, b) => {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
+        return b.win["USD"] - a.win["USD"];
     }
 });
 

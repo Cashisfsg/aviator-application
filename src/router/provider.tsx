@@ -27,6 +27,8 @@ import {
     SecurityResetPasswordForm
 } from "@/components/forms";
 
+import { ReferralRedirect } from "./referral-redirect";
+
 const PaymentLayout = lazy(async () =>
     import("@/pages/payment/layout").then(module => ({
         default: module.Layout
@@ -241,6 +243,10 @@ const router = createBrowserRouter([
                 )
             }
         ]
+    },
+    {
+        path: "referral",
+        element: <ReferralRedirect />
     },
     {
         path: "*",

@@ -1,4 +1,4 @@
-import { createSlice, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 
 import { authApi, userApi, User } from "../api";
 import { RootStore } from "../types";
@@ -23,6 +23,7 @@ interface AuthState {
     isAuthenticated: boolean;
     initData: Pick<User, "login" | "telegramId" | "profileImage"> | null;
     socket: Socket;
+    from: string | null;
 }
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
@@ -39,7 +40,8 @@ export const authSlice = createSlice({
                 token: null,
                 isAuthenticated: false,
                 socket: io(BASE_URL),
-                initData: null
+                initData: null,
+                from: null
             };
 
         const { token } = JSON.parse(storedData);
@@ -48,7 +50,8 @@ export const authSlice = createSlice({
             token,
             isAuthenticated: true,
             socket: io(BASE_URL, { auth: { token } }),
-            initData: null
+            initData: null,
+            from: null
         } as AuthState;
     },
     reducers: {
@@ -75,6 +78,9 @@ export const authSlice = createSlice({
                 telegramId: payload.telegramId,
                 profileImage: payload.profileImage
             };
+        },
+        setInviteLink: (state, action: PayloadAction<string>) => {
+            state.from = action.payload;
         }
     },
     extraReducers: builder => {
@@ -140,7 +146,7 @@ export const selectToken = (state: RootStore) => state.auth.token;
 export const selectAuthenticationStatus = (state: RootStore) =>
     state.auth.isAuthenticated;
 
-export const { logout, setUserInitData } = authSlice.actions;
+export const { logout, setUserInitData, setInviteLink } = authSlice.actions;
 
 const socket = (state: RootStore) => state.auth.socket;
 
@@ -150,8 +156,14 @@ const selectLogin = (state: RootStore) => state.auth.initData?.login;
 const selectTelegramId = (state: RootStore) => state.auth.initData?.telegramId;
 const selectProfileImage = (state: RootStore) =>
     state.auth.initData?.profileImage;
+const selectFrom = (state: RootStore) => state.auth.from;
 
 export const selectInitData = createSelector(
-    [selectLogin, selectTelegramId, selectProfileImage],
-    (login, telegramId, profileImage) => ({ login, telegramId, profileImage })
+    [selectLogin, selectTelegramId, selectProfileImage, selectFrom],
+    (login, telegramId, profileImage, from) => ({
+        login,
+        telegramId,
+        profileImage,
+        from
+    })
 );
