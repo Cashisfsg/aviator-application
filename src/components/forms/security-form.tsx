@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import {
     useTurnOn2FAMutation,
+    useTurnOff2FAMutation,
     useSend2FAConfirmationCodeMutation
 } from "@/api/securityApi";
 import { useGetUserQuery } from "@/store/api/userApi";
@@ -18,14 +19,20 @@ export const SecurityForm = () => {
         skip: !isAuthenticated
     });
     const [turnOn2FA] = useTurnOn2FAMutation();
+    const [turnOff2FA] = useTurnOff2FAMutation();
     const [verifyUser] = useSend2FAConfirmationCodeMutation();
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
     > = async () => {
         try {
-            const { message } = await turnOn2FA().unwrap();
-            toast.notify(message);
+            if (user?.twoFA) {
+                const { message } = await turnOff2FA().unwrap();
+                toast.notify(message);
+            } else {
+                const { message } = await turnOn2FA().unwrap();
+                toast.notify(message);
+            }
             setVerifyEnabled(true);
         } catch (error) {}
     };
@@ -79,7 +86,7 @@ export const SecurityForm = () => {
                 onClick={onClickHandler}
                 className="rounded-md border border-gray-50 bg-[#2c2d30] px-4 py-2 text-center"
             >
-                Включить двойную проверку
+                {`${user?.twoFA ? "Отключить" : "Включить"} двойную проверку`}
             </button>
             {verifyEnabled ? (
                 <form

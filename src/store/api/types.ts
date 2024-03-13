@@ -56,8 +56,8 @@ export interface User {
     login: string;
     email: string;
     balance: number;
-    bonuses: string[];
     profileImage: string;
+    twoFA: boolean;
 }
 
 export interface UserBalance {

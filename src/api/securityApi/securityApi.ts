@@ -6,13 +6,41 @@ export const securityApi = userApi.injectEndpoints({
             query: () => ({
                 url: "/two-fa/set/on",
                 method: "POST"
-            })
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        userApi.util.updateQueryData(
+                            "getUser",
+                            undefined,
+                            draft => {
+                                Object.assign(draft, { twoFA: true });
+                            }
+                        )
+                    );
+                } catch {}
+            }
         }),
-        turnOff2FA: builder.mutation<void, void>({
+        turnOff2FA: builder.mutation<{ message: string }, void>({
             query: () => ({
                 url: "/two-fa/set/off",
                 method: "POST"
-            })
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        userApi.util.updateQueryData(
+                            "getUser",
+                            undefined,
+                            draft => {
+                                Object.assign(draft, { twoFA: false });
+                            }
+                        )
+                    );
+                } catch {}
+            }
         }),
         send2FAConfirmationCode: builder.mutation<
             { message: string },
