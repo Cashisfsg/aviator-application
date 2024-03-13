@@ -22,7 +22,7 @@ export const Slider: React.FC<SliderProps> = ({ ...props }) => {
                 <rect
                     x="0"
                     y="0"
-                    height="100%"
+                    // height="100%"
                     rx="3"
                     fill="#e50539"
                     className="slider"

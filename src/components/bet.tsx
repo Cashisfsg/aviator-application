@@ -833,6 +833,10 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
         bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE
     );
 
+    // const rate1 = useRef(
+    //     bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE
+    // );
+
     useEffect(() => {
         const autoBet = ({ x }: { x: number }) => {
             if (
@@ -904,7 +908,13 @@ const AutoBetTab: React.FC<AutoBetTabProps> = ({ betNumber, audioRef }) => {
         return () => {
             socket.off("game", autoBet);
         };
-    }, [rate, currentGameTab.autoModeOn, currentGameTab.betState, socket]);
+    }, [
+        rate,
+        currentGameTab.autoModeOn,
+        currentGameTab.betState,
+        socket,
+        soundEnabled
+    ]);
 
     const onChangeHandler: React.ChangeEventHandler<
         HTMLInputElement

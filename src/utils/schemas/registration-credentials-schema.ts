@@ -69,7 +69,7 @@ export const registrationCredentialsSchema = z
             .optional()
             .transform(e => (e === "" ? undefined : e)),
 
-        from: z.string().optional(),
+        promocode: z.string().optional(),
         telegramId: z.coerce.number().optional(),
         // .transform(e => e?.trim()),
         accepted_terms: z.literal(true)

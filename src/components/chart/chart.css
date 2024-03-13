@@ -194,6 +194,8 @@ figure {
 }
 
 .slider {
+    z-index: 1;
+    height: 100%;
     animation: slider 4.55s linear;
 }
 

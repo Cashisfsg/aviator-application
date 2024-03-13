@@ -95,7 +95,7 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                             : 0}
                     </span>
 
-                    <span>Всего заработанных</span>
+                    <span>Всего заработано</span>
                     <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-xs text-white shadow-[inset_0_1px_1px_#ffffff80]">
                         {referral?.referralBalance || 0} {referral?.currency}
                     </span>

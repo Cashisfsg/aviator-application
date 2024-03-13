@@ -172,7 +172,6 @@ export const BurgerMenu = () => {
                                     <span>История моих ставок</span>
                                 </DropDownMenuItem>
                                 <DropDownMenuSeparator /> */}
-                        <RedirectMenu />
                         {/* </>
                         ) : null} */}
 
@@ -273,6 +272,8 @@ export const BurgerMenu = () => {
                             </DropDownMenuItem>
                         ) : null}
                         <DropDownMenuSeparator />
+
+                        <RedirectMenu />
 
                         {isAuthenticated ? (
                             <DropDownMenuItem

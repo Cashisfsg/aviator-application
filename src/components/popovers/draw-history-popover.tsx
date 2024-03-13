@@ -139,7 +139,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Метод</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.requisite.name}
+                        {draw?.requisite?.name}
                     </td>
                 </tr>
                 <tr>

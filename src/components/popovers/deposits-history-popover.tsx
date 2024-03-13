@@ -117,7 +117,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 <tr>
                     <td className="px-1.5 py-0.5">Метод</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.requisite.name}
+                        {deposit?.requisite?.name}
                     </td>
                 </tr>
                 <tr>

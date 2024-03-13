@@ -78,7 +78,7 @@ export const SignUpForm = () => {
             password: "",
             passwordConfirm: "",
             email: undefined,
-            promocode: "",
+            promocode: undefined,
             // from: from,
             // telegramId,
             accepted_terms: undefined
@@ -294,7 +294,7 @@ export const SignUpForm = () => {
                                                 event.currentTarget.elements?.namedItem(
                                                     "code"
                                                 )?.value;
-                                            form.setValue("from", code);
+                                            form.setValue("promocode", code);
                                             setPromoOpen(false);
                                         }}
                                         className="relative"
@@ -343,34 +343,7 @@ export const SignUpForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="telegramId"
-                    render={({ field }) => (
-                        <FormItem className="hidden">
-                            <FormControl>
-                                <Input
-                                    type="hidden"
-                                    {...field}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="from"
-                    render={({ field }) => (
-                        <FormItem className="hidden">
-                            <FormControl>
-                                <Input
-                                    type="hidden"
-                                    {...field}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
+
                 {isError ? (
                     <ErrorMessage message={error?.data?.message} />
                 ) : null}

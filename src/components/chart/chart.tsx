@@ -19,13 +19,20 @@ export const Chart = () => {
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
 
-    // const { isAuthenticated } = useAuth();
     const socket = useStateSelector(state => selectSocket(state));
     const { animationEnabled } = useStateSelector(state =>
         selectSettings(state)
     );
 
     const [startScreen, setStartScreen] = useState(true);
+
+    useEffect(() => {
+        if (animationEnabled) {
+            airplaneRef.current?.classList.remove("hidden");
+        } else {
+            airplaneRef.current?.classList.add("hidden");
+        }
+    }, [animationEnabled]);
 
     useEffect(() => {
         const crash = () => {
@@ -48,19 +55,6 @@ export const Chart = () => {
 
             rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
-
-            // airplaneRef.current.classList.replace("fly", "fly-away");
-
-            // animationRef.current.addEventListener(
-            //     "animationend",
-            //     () => {
-            //         animationRef.current?.cancel();
-            //         airplaneRef.current?.classList.replace("fly", "hidden");
-            //     },
-            //     {
-            //         once: true
-            //     }
-            // );
         };
 
         const startGame = () => {
@@ -68,7 +62,10 @@ export const Chart = () => {
 
             setStartScreen(true);
 
-            if (airplaneRef.current.classList.contains("hidden"))
+            if (
+                animationEnabled &&
+                airplaneRef.current.classList.contains("hidden")
+            )
                 airplaneRef.current?.classList.remove("hidden");
         };
 
@@ -76,9 +73,6 @@ export const Chart = () => {
             if (!airplaneRef.current) return;
 
             rateRef.current?.resetAnimation();
-            // airplaneRef.current.classList.remove("fly");
-            // airplaneRef.current.classList.add("fly");
-            // animationRef.current?.cancel();
 
             containerRef.current?.setAttribute("data-active", "true");
         };
@@ -91,8 +85,15 @@ export const Chart = () => {
         const game = () => {
             rateRef.current?.startAnimation();
             setStartScreen(false);
-            if (animationEnabled) airplaneRef.current?.classList.add("fly");
-            else airplaneRef.current?.classList.remove("fly");
+            if (animationEnabled) {
+                airplaneRef.current?.classList.add("fly");
+                // airplaneRef.current?.classList.add("fly");
+                // airplaneRef.current?.classList.remove("hidden");
+            } else {
+                airplaneRef.current?.classList.remove("fly");
+                // airplaneRef.current?.classList.remove("fly");
+                // airplaneRef.current?.classList.add("hidden");
+            }
         };
 
         socket.on("crash", crash);
