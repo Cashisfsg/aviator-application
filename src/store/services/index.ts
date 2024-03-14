@@ -1,1 +1,5 @@
-export { isFetchBaseQueryError, isErrorWithMessage } from "./helpers";
+export {
+    isFetchBaseQueryError,
+    isErrorWithMessage,
+    handleErrorResponse
+} from "./helpers";

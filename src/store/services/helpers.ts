@@ -22,3 +22,18 @@ export const isErrorWithMessage = (
         typeof (error as any).message === "string"
     );
 };
+
+export const handleErrorResponse = (
+    error: unknown,
+    callback: (error: string) => void
+) => {
+    if (isFetchBaseQueryError(error)) {
+        const errorMessage =
+            "error" in error
+                ? error.error
+                : (error.data as { status: number; message: string }).message;
+        callback(errorMessage);
+    } else if (isErrorWithMessage(error)) {
+        callback(error.message);
+    }
+};
