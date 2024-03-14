@@ -12,6 +12,7 @@ export interface Replenishment {
     requisite: Requisite;
     createdAt: string;
     completedDate: string;
+    uid: number;
 }
 
 export interface SuccessResponse {

@@ -1,7 +1,7 @@
 import { useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import { useConfirmPasswordChangeMutation } from "@/store";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import {
     RestorePasswordDialogHeader,
@@ -44,24 +44,13 @@ export const ConfirmEmailForm = () => {
             }).unwrap();
             navigate("/main/password/reset", { state: { token } });
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setErrorState(err => ({
                     ...err,
-                    message: errorMessage,
+                    message: message,
                     isError: true
                 }));
-            } else if (isErrorWithMessage(error)) {
-                setErrorState(err => ({
-                    ...err,
-                    message: error.message,
-                    isError: true
-                }));
-            }
+            });
         }
     };
 

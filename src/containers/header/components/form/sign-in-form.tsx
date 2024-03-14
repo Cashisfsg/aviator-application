@@ -2,7 +2,7 @@ import { useState, useId, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthenticateUserMutation } from "@/store/api/authApi";
 import { useVerifyUserMutation } from "@/api/securityApi";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -73,22 +73,12 @@ export const SignInForm = () => {
             sessionStorage.removeItem("email");
             dialogCloseRef?.current?.click();
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 

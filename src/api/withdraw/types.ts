@@ -23,6 +23,7 @@ export interface Withdraw {
     requisite: Requisite;
     createdAt: string;
     completedDate: string;
+    uid: number;
 }
 
 export interface PaymentDrawRequest {

@@ -9,7 +9,7 @@ import {
 } from "@/utils/schemas";
 
 import { useSendConfirmationCodeMutation } from "@/store";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import {
     RestorePasswordDialogHeader,
@@ -54,22 +54,12 @@ export const RestorePasswordForm = () => {
             sessionStorage.setItem("email", email);
             navigate("/main/password/confirm-email");
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 
@@ -89,7 +79,7 @@ export const RestorePasswordForm = () => {
             >
                 <Label>
                     <span className="text-sm">
-                        Введите email привязанный к аккаунту
+                        Введите email, привязанный к аккаунту
                     </span>
                     <Input
                         id={emailId}

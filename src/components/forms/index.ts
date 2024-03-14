@@ -7,3 +7,4 @@ export * from "./security-confirm-existing-email-form";
 export * from "./security-confirm-reset-password-form";
 export * from "./security-form";
 export * from "./security-reset-password-form";
+export * from "./security-two-fa";

@@ -3,7 +3,7 @@ import {
     // userApi,
     useGetUserBalanceQuery
 } from "@/store/api/userApi";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import {
     useFetchAllWithdrawsQuery,
@@ -66,51 +66,16 @@ interface DrawDetailsProps {
 const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
     const { data: balance } = useGetUserBalanceQuery();
     const [cancelDraw] = useCancelWithdrawByIdMutation();
-    // const dispatch = useAppDispatch();
 
     const abortDraw = async (id: string | undefined) => {
         if (!id) return;
-
-        // const response = await cancelDraw({ id });
 
         try {
             const response = await cancelDraw({ id }).unwrap();
             toast.notify(response?.message);
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (
-                              error.data as {
-                                  status: number;
-                                  message: string;
-                              }
-                          ).message;
-                toast.error(errorMessage);
-            } else if (isErrorWithMessage(error)) {
-                toast.error(error.message);
-            }
+            handleErrorResponse(error, message => toast.error(message));
         }
-
-        // if (response?.error) {
-        //     toast(response?.error?.data?.message, {
-        //         position: "top-center",
-        //         action: {
-        //             label: "Скрыть",
-        //             onClick: () => {}
-        //         }
-        //     });
-        // } else {
-        //     toast(response?.data?.message, {
-        //         position: "top-center",
-        //         action: {
-        //             label: "Скрыть",
-        //             onClick: () => {}
-        //         }
-        //     });
-
-        // }
     };
 
     return (
@@ -181,10 +146,10 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                         <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={draw?._id}
+                                textToCopy={draw?.uid}
                                 className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {draw?._id || ""}
+                                {draw?.uid || ""}
                             </ClipboardCopy>
                         </p>
                     </td>

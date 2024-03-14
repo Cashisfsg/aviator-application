@@ -13,12 +13,13 @@ export const RedirectMenu = () => {
     const { telegramId } = useStateSelector(state => selectInitData(state));
 
     return (
+        // ? "googlechrome://navigate?url=https://avibet.io"
         <>
             <DropDownMenuItem>
                 <a
                     href={
                         telegramId
-                            ? "https://avibet.io"
+                            ? "googlechrome://navigate?url=https://avibet.io"
                             : `https://t.me/${import.meta.env.VITE_BOT_NAME}`
                     }
                     target="_blank"

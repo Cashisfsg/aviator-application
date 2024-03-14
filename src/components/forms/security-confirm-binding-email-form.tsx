@@ -1,13 +1,14 @@
 import { useState, useId } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useChangeEmailMutation } from "@/store/api/userApi";
-import { toast } from "sonner";
+
+import { toast } from "@/components/toasts/toast";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -18,11 +19,13 @@ export const SecurityConfirmBindingEmailForm = () => {
         message: "",
         isError: false
     });
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const codeId = useId();
     const codeErrorId = useId();
 
-    const [changeEmail, { isSuccess, isLoading }] = useChangeEmailMutation();
+    const [changeEmail, { isLoading }] = useChangeEmailMutation();
 
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -34,33 +37,16 @@ export const SecurityConfirmBindingEmailForm = () => {
             await changeEmail({
                 code: Number(code.value)
             }).unwrap();
-            sessionStorage.removeItem("email");
-            toast("Email был успешно изменён", {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
+            toast.notify("Email был успешно изменён");
+            navigate("/main/security");
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setErrorState(err => ({
                     ...err,
-                    message: errorMessage,
+                    message: message,
                     isError: true
                 }));
-            } else if (isErrorWithMessage(error)) {
-                setErrorState(err => ({
-                    ...err,
-                    message: error.message,
-                    isError: true
-                }));
-            }
+            });
         }
     };
 
@@ -68,9 +54,9 @@ export const SecurityConfirmBindingEmailForm = () => {
         setErrorState(state => ({ ...state, isError: false, message: "" }));
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/security" />;
-    }
+    // if (isSuccess) {
+    //     return <Navigate to="/main/security" />;
+    // }
 
     return (
         <form
@@ -83,7 +69,7 @@ export const SecurityConfirmBindingEmailForm = () => {
                 <span>На ваш Email отправлен код</span>
                 <Input
                     readOnly
-                    value={sessionStorage.getItem("email") || ""}
+                    value={location?.state?.email}
                     className="border-[#414148] focus-visible:outline-transparent"
                 />
             </Label>

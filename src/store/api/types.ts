@@ -58,6 +58,7 @@ export interface User {
     balance: number;
     profileImage: string;
     twoFA: boolean;
+    uid: number;
 }
 
 export interface UserBalance {

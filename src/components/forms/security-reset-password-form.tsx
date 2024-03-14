@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -14,15 +14,16 @@ import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 export const SecurityResetPasswordForm = () => {
     const passwordId = useId();
     const passwordErrorId = useId();
     const serverErrorId = useId();
 
+    const navigate = useNavigate();
     const { data: user } = useGetUserQuery();
-    const [changeOldPassword, { isLoading, isSuccess }] =
+    const [changeOldPassword, { isLoading }] =
         useChangePasswordConfirmMutation();
     const {
         handleSubmit,
@@ -42,23 +43,14 @@ export const SecurityResetPasswordForm = () => {
     }) => {
         try {
             await changeOldPassword({ password }).unwrap();
+            navigate("/main/security/reset-password/confirm");
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 
@@ -68,9 +60,9 @@ export const SecurityResetPasswordForm = () => {
         clearErrors("root");
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/security/reset-password/confirm" />;
-    }
+    // if (isSuccess) {
+    //     return <Navigate to="/main/security/reset-password/confirm" />;
+    // }
 
     return (
         <form
@@ -112,24 +104,26 @@ export const SecurityResetPasswordForm = () => {
                         message={errors?.password?.message}
                     />
                 ) : null}
+                <Link
+                    to={
+                        user?.email
+                            ? "/main/security/email/confirm"
+                            : "/main/security/bind-email"
+                    }
+                    state={
+                        user?.email
+                            ? {
+                                  nextUrl:
+                                      "/main/security/reset-password/confirm"
+                              }
+                            : null
+                    }
+                    className="ml-auto block w-fit text-xs text-[#757b85]"
+                >
+                    Сбросить через Email
+                </Link>
             </Label>
-            <Link
-                to={
-                    user?.email
-                        ? "/main/security/email/confirm"
-                        : "/main/security/bind-email"
-                }
-                state={
-                    user?.email
-                        ? {
-                              nextUrl: "/main/security/reset-password/confirm"
-                          }
-                        : null
-                }
-                className="text-right text-xs text-[#757b85]"
-            >
-                Сбросить через Email
-            </Link>
+
             <button
                 disabled={isLoading}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-2"

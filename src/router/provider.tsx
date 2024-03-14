@@ -24,7 +24,8 @@ import {
     SecurityConfirmBindingEmailForm,
     SecurityConfirmExistingEmailForm,
     SecurityConfirmResetPasswordForm,
-    SecurityResetPasswordForm
+    SecurityResetPasswordForm,
+    SecurityTwoFAForm
 } from "@/components/forms";
 
 import { ReferralRedirect } from "./referral-redirect";
@@ -165,6 +166,10 @@ const router = createBrowserRouter([
                     {
                         path: "reset-password/confirm",
                         element: <SecurityConfirmResetPasswordForm />
+                    },
+                    {
+                        path: "two-fa",
+                        element: <SecurityTwoFAForm />
                     },
                     {
                         path: "*",

@@ -148,10 +148,10 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                         <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={deposit?._id}
+                                textToCopy={String(deposit?.uid)}
                                 className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {deposit?._id || ""}
+                                {deposit?.uid || ""}
                             </ClipboardCopy>
                         </p>
                     </td>

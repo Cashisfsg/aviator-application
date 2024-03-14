@@ -47,10 +47,10 @@ export const PaymentDrawPage = () => {
                     <p className="justify-self-start text-sm leading-5 text-slate-400 ">
                         <span>ID</span>{" "}
                         <ClipboardCopy
-                            textToCopy={user?._id}
+                            textToCopy={user?.uid}
                             className="inline-block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                         >
-                            {user?._id || ""}
+                            {user?.uid || ""}
                         </ClipboardCopy>
                     </p>
                     <div
@@ -71,7 +71,7 @@ export const PaymentDrawPage = () => {
                 </header>
                 <section>
                     <h2 className="text-lg uppercase text-slate-400">
-                        Рекомендуемые способы
+                        Рекомендуемые методы
                     </h2>
                     {isRecommendedRequisitesRequestSuccess ? (
                         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">

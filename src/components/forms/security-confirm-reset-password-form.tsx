@@ -1,6 +1,6 @@
 import { useId } from "react";
-import { Navigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/toasts/toast";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -11,7 +11,7 @@ import {
 
 import { useChangeUserPasswordMutation } from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -25,8 +25,9 @@ export const SecurityConfirmResetPasswordForm = () => {
     const passwordConfirmErrorId = useId();
     const serverErrorId = useId();
 
-    const [changePassword, { isLoading, isSuccess }] =
-        useChangeUserPasswordMutation();
+    const navigate = useNavigate();
+
+    const [changePassword, { isLoading }] = useChangeUserPasswordMutation();
     const { token } = useAuth();
 
     const {
@@ -51,31 +52,15 @@ export const SecurityConfirmResetPasswordForm = () => {
 
         try {
             await changePassword({ token, password, passwordConfirm }).unwrap();
-
-            toast("Пароль успешно изменён", {
-                position: "top-center",
-                action: {
-                    label: "Скрыть",
-                    onClick: () => {}
-                }
-            });
+            toast.notify("Пароль успешно изменён");
+            navigate("/main/security");
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 
@@ -85,9 +70,9 @@ export const SecurityConfirmResetPasswordForm = () => {
         clearErrors("root");
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/security" />;
-    }
+    // if (isSuccess) {
+    //     return <Navigate to="/main/security" />;
+    // }
 
     return (
         <form

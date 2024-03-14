@@ -264,10 +264,10 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={currentReplenishment?._id}
+                                textToCopy={String(currentReplenishment?.uid)}
                                 className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {currentReplenishment?._id || ""}
+                                {currentReplenishment?.uid || ""}
                             </ClipboardCopy>
                         </span>
                         <span>
@@ -301,10 +301,10 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={currentReplenishment?._id}
+                                textToCopy={String(currentReplenishment?.uid)}
                                 className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {currentReplenishment?._id || ""}
+                                {currentReplenishment?.uid || ""}
                             </ClipboardCopy>
                         </span>
                         <span>
@@ -369,10 +369,10 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={currentReplenishment?._id}
+                                textToCopy={String(currentReplenishment?.uid)}
                                 className="inline-block max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {currentReplenishment?._id || ""}
+                                {currentReplenishment?.uid || ""}
                             </ClipboardCopy>
                         </span>
                         <span>

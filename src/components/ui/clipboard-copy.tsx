@@ -2,7 +2,7 @@ import { toast } from "sonner";
 
 interface ClipboardCopyProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    textToCopy: string | null | undefined;
+    textToCopy: number | string | null | undefined;
     toastMessage?: string;
 }
 
@@ -19,7 +19,7 @@ export const ClipboardCopy: React.FC<ClipboardCopyProps> = ({
         if (!textToCopy) return;
 
         try {
-            await navigator.clipboard.writeText(textToCopy);
+            await navigator.clipboard.writeText(String(textToCopy));
         } catch (error) {
             console.error(error);
         }

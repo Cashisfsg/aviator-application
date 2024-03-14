@@ -48,10 +48,10 @@ export const UserProfileDetails = () => {
                         </p>
 
                         <ClipboardCopy
-                            textToCopy={user?._id}
+                            textToCopy={user?.uid}
                             className="max-w-[13ch] overflow-hidden text-ellipsis whitespace-nowrap text-left text-xs"
                         >
-                            {user?._id ? `ID ${user?._id}` : "user ID"}
+                            {user?.uid ? `ID ${user?.uid}` : "user ID"}
                         </ClipboardCopy>
                     </>
                 )}

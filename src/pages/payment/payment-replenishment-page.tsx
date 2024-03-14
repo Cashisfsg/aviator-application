@@ -80,7 +80,7 @@ export const PaymentReplenishmentPage = () => {
                 </header>
                 <section>
                     <h2 className="text-lg uppercase text-slate-400">
-                        Рекомендуемые способы
+                        Рекомендуемые методы
                     </h2>
                     {isRecommendedRequisitesRequestSuccess ? (
                         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">

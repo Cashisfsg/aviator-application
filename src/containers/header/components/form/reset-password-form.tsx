@@ -10,14 +10,14 @@ import {
 
 import { useChangePasswordMutation } from "@/store";
 // import { useAuth } from "@/store/hooks/useAuth";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import {
     RestorePasswordDialogHeader,
     RestorePasswordDialogFooter
 } from "../modals/restore-password-modal";
 import { Label } from "@/components/ui/label";
-import { Input, ErrorMessage } from "@/components/ui/input";
+import { Password, ErrorMessage } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { ImSpinner9 } from "react-icons/im";
@@ -66,22 +66,12 @@ export const ResetPasswordForm = () => {
                 }
             });
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 
@@ -102,7 +92,7 @@ export const ResetPasswordForm = () => {
                     <span className="text-xs">
                         Придумайте новый пароль (мин. 8 символов)
                     </span>
-                    <Input
+                    <Password
                         id={passwordId}
                         {...register("password")}
                         aria-invalid={errors?.password ? "true" : "false"}
@@ -120,8 +110,8 @@ export const ResetPasswordForm = () => {
                     ) : null}
                 </Label>
                 <Label>
-                    <span className="text-sm">Повторите пароль</span>
-                    <Input
+                    <span>Повторите пароль</span>
+                    <Password
                         id={passwordConfirmId}
                         {...register("passwordConfirm")}
                         aria-invalid={errors.passwordConfirm ? "true" : "false"}

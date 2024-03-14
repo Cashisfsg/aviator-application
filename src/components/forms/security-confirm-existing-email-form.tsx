@@ -1,12 +1,12 @@
 import { useState, useEffect, useId } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
     useGetUserQuery,
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation
-} from "@/store";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+} from "@/store/api/userApi";
+import { handleErrorResponse } from "@/store/services";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -31,30 +31,18 @@ export const SecurityConfirmExistingEmailForm = () => {
     const { data: user } = useGetUserQuery();
     const [sendConfirmationCodeOnExistingEmail] =
         useSendConfirmationCodeOnExistingEmailMutation();
-    const [confirmExistingEmail, { isSuccess, isLoading }] =
+    const [confirmExistingEmail, { isLoading }] =
         useConfirmExistingEmailMutation();
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
             try {
                 await sendConfirmationCodeOnExistingEmail().unwrap();
             } catch (error) {
-                if (isFetchBaseQueryError(error)) {
-                    const errorMessage =
-                        "error" in error
-                            ? error.error
-                            : (
-                                  error.data as {
-                                      status: number;
-                                      message: string;
-                                  }
-                              ).message;
-                    toast.error(errorMessage);
-                } else if (isErrorWithMessage(error)) {
-                    toast.error(error.message);
-                }
+                handleErrorResponse(error, message => toast.error(message));
             }
         })();
     }, []);
@@ -71,25 +59,15 @@ export const SecurityConfirmExistingEmailForm = () => {
                 code: Number(code.value),
                 email: user?.email as string
             }).unwrap();
+            navigate(location?.state?.nextUrl);
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setErrorState(err => ({
                     ...err,
-                    message: errorMessage,
+                    message: message,
                     isError: true
                 }));
-            } else if (isErrorWithMessage(error)) {
-                setErrorState(err => ({
-                    ...err,
-                    message: error.message,
-                    isError: true
-                }));
-            }
+            });
         }
     };
 
@@ -97,9 +75,9 @@ export const SecurityConfirmExistingEmailForm = () => {
         setErrorState(state => ({ ...state, isError: false, message: "" }));
     };
 
-    if (isSuccess) {
-        return <Navigate to={location.state?.nextUrl} />;
-    }
+    // if (isSuccess) {
+    //     return <Navigate to={location.state?.nextUrl} />;
+    // }
 
     return (
         <form

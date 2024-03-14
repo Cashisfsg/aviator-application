@@ -1,11 +1,11 @@
 import { useId } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useSendEmailChangeCodeMutation } from "@/store/api/userApi";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
+import { handleErrorResponse } from "@/store/services";
 
 import {
     emailValidationSchema as formSchema,
@@ -22,14 +22,15 @@ export const SecurityBindEmailForm = () => {
     const emailErrorId = useId();
     const serverErrorId = useId();
 
-    const [sendChangeCode, { isLoading, isSuccess }] =
-        useSendEmailChangeCodeMutation();
+    const navigate = useNavigate();
+    const [sendChangeCode, { isLoading }] = useSendEmailChangeCodeMutation();
 
     const {
         handleSubmit,
         register,
         setError,
         clearErrors,
+        // getValues,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -39,26 +40,16 @@ export const SecurityBindEmailForm = () => {
     });
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ email }) => {
-        sessionStorage.setItem("email", email);
         try {
             await sendChangeCode({ email }).unwrap();
+            navigate("/main/security/bind-email/confirm", { state: email });
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (error.data as { status: number; message: string })
-                              .message;
+            handleErrorResponse(error, message => {
                 setError("root", {
                     type: "manual",
-                    message: errorMessage
+                    message: message
                 });
-            } else if (isErrorWithMessage(error)) {
-                setError("root", {
-                    type: "manual",
-                    message: error.message
-                });
-            }
+            });
         }
     };
 
@@ -68,9 +59,14 @@ export const SecurityBindEmailForm = () => {
         clearErrors("root");
     };
 
-    if (isSuccess) {
-        return <Navigate to="/main/security/bind-email/confirm" />;
-    }
+    // if (isSuccess) {
+    //     return (
+    //         <Navigate
+    //             to="/main/security/bind-email/confirm"
+    //             state={{ email: getValues("email") }}
+    //         />
+    //     );
+    // }
 
     return (
         <form
