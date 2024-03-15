@@ -1,18 +1,64 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-interface TimerProps extends React.TimeHTMLAttributes<HTMLTimeElement> {
-    targetDate: string | undefined;
+interface DefaultTimerProps extends React.TimeHTMLAttributes<HTMLTimeElement> {
+    onTimeout?: () => void;
 }
+
+interface TimeDurationNumeric extends DefaultTimerProps {
+    finishTime?: never;
+    minutes?: number;
+    seconds?: number;
+}
+
+interface TimeDurationString extends DefaultTimerProps {
+    finishTime: number | string;
+    minutes?: never;
+    seconds?: never;
+}
+
+type TimerProps = TimeDurationNumeric | TimeDurationString;
 
 const MILLISECONDS_PER_SECOND = 1000;
 const SECONDS_PER_MINUTE = 60;
 const MINUTE_PER_HOUR = 60;
 
 export const CountDownTimer: React.FC<TimerProps> = ({
-    targetDate,
+    finishTime,
+    minutes = 0,
+    seconds = 0,
+    onTimeout,
     ...props
 }) => {
-    const [time, setTime] = useState({ minutes: 0, seconds: 0 });
+    const [time, setTime] = useState(() => {
+        if (!finishTime) return { minutes: minutes, seconds: seconds };
+
+        const targetTime = new Date(finishTime).getTime();
+        const currentTime = new Date().getTime();
+        const timeDifference = targetTime - currentTime;
+
+        const startMinutes = Math.floor(
+            (timeDifference %
+                (MILLISECONDS_PER_SECOND *
+                    SECONDS_PER_MINUTE *
+                    MINUTE_PER_HOUR)) /
+                (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)
+        );
+
+        const startSeconds = Math.round(
+            (timeDifference % (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) /
+                MILLISECONDS_PER_SECOND
+        );
+
+        return { minutes: startMinutes, seconds: startSeconds };
+    });
+
+    const targetTime = useRef(
+        finishTime
+            ? new Date(finishTime).getTime()
+            : new Date().getTime() +
+                  (minutes * SECONDS_PER_MINUTE + seconds) *
+                      MILLISECONDS_PER_SECOND
+    );
 
     // prettier-ignore
     const timeString = `${
@@ -24,39 +70,38 @@ export const CountDownTimer: React.FC<TimerProps> = ({
     useEffect(() => {
         const timer = setInterval(() => {
             const currentTime = new Date().getTime();
-            const timeDifference = targetDate
-                ? new Date(targetDate).getTime() +
-                  30 * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND -
-                  currentTime
-                : 0;
-
-            console.log("Текущее время: ", currentTime);
-            console.log("Время окончания: ", timeDifference);
+            const timeDifference = targetTime.current - currentTime;
 
             if (timeDifference <= 0) {
+                onTimeout?.();
                 clearInterval(timer);
                 setTime(time => ({ ...time, minutes: 0, seconds: 0 }));
                 return;
             }
 
-            const minutes = Math.floor(
+            const minutesLeft = Math.floor(
                 (timeDifference %
                     (MILLISECONDS_PER_SECOND *
                         SECONDS_PER_MINUTE *
                         MINUTE_PER_HOUR)) /
                     (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)
             );
-            const seconds = Math.floor(
+
+            const secondsLeft = Math.round(
                 (timeDifference %
                     (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) /
                     MILLISECONDS_PER_SECOND
             );
 
-            setTime(time => ({ ...time, minutes, seconds }));
+            setTime(time => ({
+                ...time,
+                minutes: minutesLeft,
+                seconds: secondsLeft
+            }));
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [targetDate]);
+    }, [finishTime, minutes, seconds, onTimeout]);
 
     return (
         <time

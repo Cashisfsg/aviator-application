@@ -1,11 +1,15 @@
 import { useNavigate, Link } from "react-router-dom";
 
 import { useTurnOn2FAMutation, useTurnOff2FAMutation } from "@/api/securityApi";
-import { useGetUserQuery } from "@/store/api/userApi";
+import {
+    useGetUserQuery,
+    useSendConfirmationCodeOnExistingEmailMutation
+} from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
-
-import { toast } from "../toasts/toast";
 import { handleErrorResponse } from "@/store/services";
+
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/toasts/toast";
 
 export const SecurityForm = () => {
     const { isAuthenticated } = useAuth();
@@ -14,9 +18,26 @@ export const SecurityForm = () => {
     const { data: user } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });
+    const [sendConfirmationCodeOnExistingEmail, { isLoading: isCodeSending }] =
+        useSendConfirmationCodeOnExistingEmailMutation();
     const [turnOn2FA, { isLoading: is2FATurningOn }] = useTurnOn2FAMutation();
     const [turnOff2FA, { isLoading: is2FATurningOff }] =
         useTurnOff2FAMutation();
+
+    const onChangeEmailHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        try {
+            const { message } =
+                await sendConfirmationCodeOnExistingEmail().unwrap();
+            toast.notify(message);
+            navigate("/main/security/email/confirm", {
+                state: { nextUrl: "/main/security/bind-email" }
+            });
+        } catch (error) {
+            handleErrorResponse(error, message => toast.error(message));
+        }
+    };
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
@@ -30,7 +51,7 @@ export const SecurityForm = () => {
                 toast.notify(message);
             }
             navigate("/main/security/two-fa", {
-                state: { email: user?.email }
+                state: { email: user?.email, twoFA: user?.twoFA }
             });
         } catch (error) {
             handleErrorResponse(error, message => {
@@ -46,21 +67,24 @@ export const SecurityForm = () => {
                 <>
                     <div className="space-y-2">
                         <p>Ваш Email</p>
-                        <input
+
+                        <Input
                             defaultValue={user?.email}
                             readOnly
-                            className="w-full rounded-md border-2 border-[#414148] bg-transparent px-4 py-2"
+                            className="border-[#414148] focus-visible:outline-transparent"
                         />
 
-                        <Link
-                            to="/main/security/email/confirm"
-                            state={{
-                                nextUrl: "/main/security/bind-email"
-                            }}
-                            className="ml-auto block w-fit text-xs text-[#757b85]"
+                        <button
+                            // to="/main/security/email/confirm"
+                            // state={{
+                            //     nextUrl: "/main/security/bind-email"
+                            // }}
+                            disabled={isCodeSending}
+                            onClick={onChangeEmailHandler}
+                            className="ml-auto block w-fit text-xs text-[#757b85] disabled:cursor-wait disabled:opacity-60"
                         >
                             Изменить
-                        </Link>
+                        </button>
                     </div>
                 </>
             ) : (

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/drop-down-list";
 
 import { PiTelegramLogoBold } from "react-icons/pi";
-import { BsBrowserEdge } from "react-icons/bs";
+import { FaChrome } from "react-icons/fa";
 
 export const RedirectMenu = () => {
     const { telegramId } = useStateSelector(state => selectInitData(state));
@@ -26,7 +26,7 @@ export const RedirectMenu = () => {
                     className="flex gap-x-2 px-2.5 py-2"
                 >
                     {telegramId ? (
-                        <BsBrowserEdge className="text-base text-[#767B85]" />
+                        <FaChrome className="text-base text-[#767B85]" />
                     ) : (
                         <PiTelegramLogoBold className="text-base text-[#767B85]" />
                     )}

@@ -30,7 +30,6 @@ export const SecurityBindEmailForm = () => {
         register,
         setError,
         clearErrors,
-        // getValues,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -59,15 +58,6 @@ export const SecurityBindEmailForm = () => {
         clearErrors("root");
     };
 
-    // if (isSuccess) {
-    //     return (
-    //         <Navigate
-    //             to="/main/security/bind-email/confirm"
-    //             state={{ email: getValues("email") }}
-    //         />
-    //     );
-    // }
-
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
@@ -76,7 +66,6 @@ export const SecurityBindEmailForm = () => {
             <PreviousRouteLink />
             <h3 className="text-center">Привязать Email</h3>
             <Label>
-                {/* <span>Email</span> */}
                 <Input
                     id={emailId}
                     placeholder="Введите email"

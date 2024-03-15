@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from "react";
+import { useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -6,11 +6,16 @@ import {
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation
 } from "@/store/api/userApi";
+import { useAuth } from "@/store/hooks/useAuth";
 import { handleErrorResponse } from "@/store/services";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
-import { Input, ErrorMessage } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
 import { toast } from "@/components/toasts/toast";
 
 import { ImSpinner9 } from "react-icons/im";
@@ -20,16 +25,13 @@ interface FormFields {
 }
 
 export const SecurityConfirmExistingEmailForm = () => {
-    const [errorState, setErrorState] = useState({
-        message: "",
-        isError: false
+    const buttonRef = useRef<ResendCodeElement>(null);
+
+    const { isAuthenticated } = useAuth();
+    const { data: user } = useGetUserQuery(undefined, {
+        skip: !isAuthenticated
     });
-
-    const codeId = useId();
-    const codeErrorId = useId();
-
-    const { data: user } = useGetUserQuery();
-    const [sendConfirmationCodeOnExistingEmail] =
+    const [sendConfirmationCodeOnExistingEmail, { isLoading: isCodeSending }] =
         useSendConfirmationCodeOnExistingEmailMutation();
     const [confirmExistingEmail, { isLoading }] =
         useConfirmExistingEmailMutation();
@@ -37,15 +39,17 @@ export const SecurityConfirmExistingEmailForm = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        (async () => {
-            try {
-                await sendConfirmationCodeOnExistingEmail().unwrap();
-            } catch (error) {
-                handleErrorResponse(error, message => toast.error(message));
-            }
-        })();
-    }, []);
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        try {
+            await sendConfirmationCodeOnExistingEmail().unwrap();
+            buttonRef.current?.show();
+            buttonRef.current?.disable();
+        } catch (error) {
+            handleErrorResponse(error, message => toast.error(message));
+        }
+    };
 
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -62,22 +66,10 @@ export const SecurityConfirmExistingEmailForm = () => {
             navigate(location?.state?.nextUrl);
         } catch (error) {
             handleErrorResponse(error, message => {
-                setErrorState(err => ({
-                    ...err,
-                    message: message,
-                    isError: true
-                }));
+                toast.error(message);
             });
         }
     };
-
-    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
-        setErrorState(state => ({ ...state, isError: false, message: "" }));
-    };
-
-    // if (isSuccess) {
-    //     return <Navigate to={location.state?.nextUrl} />;
-    // }
 
     return (
         <form
@@ -98,25 +90,18 @@ export const SecurityConfirmExistingEmailForm = () => {
             <Label>
                 <span>Код</span>
                 <Input
-                    id={codeId}
                     placeholder="Введите код"
                     name="code"
                     required
-                    aria-invalid={errorState.isError}
-                    aria-errormessage={
-                        errorState.isError ? codeErrorId : undefined
-                    }
-                    onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
-                {errorState.isError ? (
-                    <ErrorMessage
-                        id={codeErrorId}
-                        htmlFor={codeId}
-                        message={errorState.message}
-                    />
-                ) : null}
+                <ResendCodeButton
+                    disabled={isCodeSending}
+                    onClick={onClickHandler}
+                    ref={buttonRef}
+                />
             </Label>
+
             <button
                 disabled={isLoading}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"

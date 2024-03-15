@@ -1,15 +1,31 @@
+import { useRef } from "react";
+
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSend2FAConfirmationCodeMutation } from "@/api/securityApi";
+import {
+    useTurnOff2FAMutation,
+    useTurnOn2FAMutation,
+    useSend2FAConfirmationCodeMutation
+} from "@/api/securityApi";
 import { handleErrorResponse } from "@/store/services";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/toasts/toast";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 
 export const SecurityTwoFAForm = () => {
+    const buttonRef = useRef<ResendCodeElement>(null);
+
     const location = useLocation();
     const navigate = useNavigate();
+
+    const [turnOn2FA, { isLoading: is2FATurningOn }] = useTurnOn2FAMutation();
+    const [turnOff2FA, { isLoading: is2FATurningOff }] =
+        useTurnOff2FAMutation();
     const [verifyUser, { isLoading: isUserVerifying }] =
         useSend2FAConfirmationCodeMutation();
 
@@ -26,6 +42,24 @@ export const SecurityTwoFAForm = () => {
             }).unwrap();
             toast.notify(message);
             navigate("/main/security");
+        } catch (error) {
+            handleErrorResponse(error, message => {
+                toast.error(message);
+            });
+        }
+    };
+
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        try {
+            if (location?.state?.twoFA) {
+                await turnOff2FA().unwrap();
+            } else {
+                await turnOn2FA().unwrap();
+            }
+            buttonRef.current?.show();
+            buttonRef.current?.disable();
         } catch (error) {
             handleErrorResponse(error, message => {
                 toast.error(message);
@@ -53,12 +87,16 @@ export const SecurityTwoFAForm = () => {
 
             <Label>
                 <span>Код</span>
-                <input
-                    inputMode="numeric"
-                    autoComplete="off"
-                    required
+                <Input
+                    placeholder="Введите код"
                     name="code"
-                    className="w-full rounded-md border border-gray-50 bg-[#2c2d30] px-4 py-2"
+                    required
+                    className="border-[#414148]"
+                />
+                <ResendCodeButton
+                    disabled={is2FATurningOn || is2FATurningOff}
+                    onClick={onClickHandler}
+                    ref={buttonRef}
                 />
             </Label>
             <button
@@ -67,12 +105,6 @@ export const SecurityTwoFAForm = () => {
             >
                 Подтвердить
             </button>
-            {/* <button
-                disabled={isUserVerifying}
-                className="ml-auto block text-xs text-[#757b85]"
-            >
-                Подтвердить
-            </button> */}
         </form>
     );
 };

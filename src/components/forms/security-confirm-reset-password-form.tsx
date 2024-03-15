@@ -23,7 +23,6 @@ export const SecurityConfirmResetPasswordForm = () => {
     const passwordConfirmId = useId();
     const passwordErrorId = useId();
     const passwordConfirmErrorId = useId();
-    const serverErrorId = useId();
 
     const navigate = useNavigate();
 
@@ -33,8 +32,6 @@ export const SecurityConfirmResetPasswordForm = () => {
     const {
         handleSubmit,
         register,
-        setError,
-        clearErrors,
         formState: { errors }
     } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -56,23 +53,10 @@ export const SecurityConfirmResetPasswordForm = () => {
             navigate("/main/security");
         } catch (error) {
             handleErrorResponse(error, message => {
-                setError("root", {
-                    type: "manual",
-                    message: message
-                });
+                toast.error(message);
             });
         }
     };
-
-    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
-        if (!errors?.root) return;
-
-        clearErrors("root");
-    };
-
-    // if (isSuccess) {
-    //     return <Navigate to="/main/security" />;
-    // }
 
     return (
         <form
@@ -87,18 +71,11 @@ export const SecurityConfirmResetPasswordForm = () => {
                 <Input
                     id={passwordId}
                     placeholder="Введите пароль"
-                    aria-invalid={
-                        errors?.root || errors?.password ? "true" : "false"
-                    }
+                    aria-invalid={errors?.password ? "true" : "false"}
                     aria-errormessage={
-                        errors?.root
-                            ? serverErrorId
-                            : errors?.password
-                              ? passwordErrorId
-                              : undefined
+                        errors?.password ? passwordErrorId : undefined
                     }
                     {...register("password")}
-                    onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
                 {errors?.password ? (
@@ -114,30 +91,18 @@ export const SecurityConfirmResetPasswordForm = () => {
                 <Input
                     id={passwordConfirmId}
                     placeholder="Повторите пароль"
-                    aria-invalid={
-                        errors?.root || errors?.passwordConfirm
-                            ? "true"
-                            : "false"
-                    }
+                    aria-invalid={errors?.passwordConfirm ? "true" : "false"}
                     aria-errormessage={
-                        errors?.root
-                            ? serverErrorId
-                            : errors?.passwordConfirm
-                              ? passwordConfirmErrorId
-                              : undefined
+                        errors?.passwordConfirm
+                            ? passwordConfirmErrorId
+                            : undefined
                     }
                     {...register("passwordConfirm")}
                     className="border-[#414148]"
                 />
-                {errors?.root ? (
+                {errors?.passwordConfirm ? (
                     <ErrorMessage
                         id={passwordConfirmErrorId}
-                        htmlFor={passwordConfirmId}
-                        message={errors?.root?.message}
-                    />
-                ) : errors?.passwordConfirm ? (
-                    <ErrorMessage
-                        id={serverErrorId}
                         htmlFor={passwordConfirmId}
                         message={errors?.passwordConfirm?.message}
                     />

@@ -1,11 +1,11 @@
-import { useState, useId } from "react";
+// import { useState, useId } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useChangeEmailMutation } from "@/store/api/userApi";
 
 import { toast } from "@/components/toasts/toast";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
-import { Input, ErrorMessage } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
 import { handleErrorResponse } from "@/store/services";
@@ -15,15 +15,15 @@ interface FormFields {
 }
 
 export const SecurityConfirmBindingEmailForm = () => {
-    const [errorState, setErrorState] = useState({
-        message: "",
-        isError: false
-    });
+    // const [errorState, setErrorState] = useState({
+    //     message: "",
+    //     isError: false
+    // });
     const navigate = useNavigate();
     const location = useLocation();
 
-    const codeId = useId();
-    const codeErrorId = useId();
+    // const codeId = useId();
+    // const codeErrorId = useId();
 
     const [changeEmail, { isLoading }] = useChangeEmailMutation();
 
@@ -41,22 +41,14 @@ export const SecurityConfirmBindingEmailForm = () => {
             navigate("/main/security");
         } catch (error) {
             handleErrorResponse(error, message => {
-                setErrorState(err => ({
-                    ...err,
-                    message: message,
-                    isError: true
-                }));
+                toast.error(message);
             });
         }
     };
 
-    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
-        setErrorState(state => ({ ...state, isError: false, message: "" }));
-    };
-
-    // if (isSuccess) {
-    //     return <Navigate to="/main/security" />;
-    // }
+    // const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
+    //     setErrorState(state => ({ ...state, isError: false, message: "" }));
+    // };
 
     return (
         <form
@@ -76,23 +68,23 @@ export const SecurityConfirmBindingEmailForm = () => {
             <Label>
                 <span>Введите код</span>
                 <Input
-                    id={codeId}
+                    // id={codeId}
                     placeholder="Введите код"
                     name="code"
-                    aria-invalid={errorState.isError}
-                    aria-errormessage={
-                        errorState.isError ? codeErrorId : undefined
-                    }
-                    onFocus={onFocusHandler}
+                    // aria-invalid={errorState.isError}
+                    // aria-errormessage={
+                    //     errorState.isError ? codeErrorId : undefined
+                    // }
+                    // onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
-                {errorState.isError ? (
+                {/* {errorState.isError ? (
                     <ErrorMessage
                         id={codeErrorId}
                         htmlFor={codeId}
                         message={errorState.message}
                     />
-                ) : null}
+                ) : null} */}
             </Label>
             <button
                 disabled={isLoading}
