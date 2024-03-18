@@ -38,7 +38,7 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                         {data.map(descendant => (
                             <Row key={descendant._id}>
                                 <Cell className="max-w-20 truncate text-xs">
-                                    {descendant._id}
+                                    {descendant.uid}
                                 </Cell>
                                 <Cell className="text-xs">
                                     {formatTime(descendant?.createdAt)},{" "}

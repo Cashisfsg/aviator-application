@@ -8,15 +8,13 @@ export const ReferralRedirect = () => {
 
     const dispatch = useAppDispatch();
 
-    const username = searchParams.get("username");
+    const uid = searchParams.get("uid");
 
     useEffect(() => {
-        if (!username) return;
+        if (!uid) return;
 
-        dispatch(setInviteLink(username));
-    }, [username]);
+        dispatch(setInviteLink(uid));
+    }, [uid]);
 
-    if (username) return <Navigate to="/main" />;
-
-    return <></>;
+    return <Navigate to="/main" />;
 };

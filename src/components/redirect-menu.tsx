@@ -1,5 +1,5 @@
-import { useStateSelector } from "@/store/hooks";
-import { selectInitData } from "@/store/slices/authSlice";
+// import { useStateSelector } from "@/store/hooks";
+// import { selectInitData } from "@/store/slices/authSlice";
 
 import {
     DropDownMenuItem,
@@ -8,34 +8,62 @@ import {
 
 import { PiTelegramLogoBold } from "react-icons/pi";
 import { FaChrome } from "react-icons/fa";
+import { TelegramClient } from "@/store/api/types";
 
 export const RedirectMenu = () => {
-    const { telegramId } = useStateSelector(state => selectInitData(state));
+    // const { telegramId } = useStateSelector(state => selectInitData(state));
+
+    const tg = (
+        window as Window & typeof globalThis & { Telegram: TelegramClient }
+    ).Telegram.WebApp;
+
+    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+        tg.openLink("https://avibet.io");
+    };
 
     return (
         // ? "googlechrome://navigate?url=https://avibet.io"
         <>
             <DropDownMenuItem>
-                <a
+                {tg?.initDataUnsafe?.user?.id ? (
+                    <button
+                        onClick={onClickHandler}
+                        className="flex w-full items-center gap-x-2 px-2.5 py-2"
+                    >
+                        <FaChrome className="text-base text-[#767B85]" />
+                        <span>Перейти на сайт</span>
+                    </button>
+                ) : (
+                    <a
+                        href={`https://t.me/${import.meta.env.VITE_BOT_NAME}`}
+                        target="_blank"
+                        className="flex gap-x-2 px-2.5 py-2"
+                    >
+                        <PiTelegramLogoBold className="text-base text-[#767B85]" />
+
+                        <span>Перейти в Телеграм-бот</span>
+                    </a>
+                )}
+                {/* <a
                     href={
-                        telegramId
+                        tg?.initDataUnsafe?.user?.id
                             ? "googlechrome://navigate?url=https://avibet.io"
                             : `https://t.me/${import.meta.env.VITE_BOT_NAME}`
                     }
                     target="_blank"
                     className="flex gap-x-2 px-2.5 py-2"
                 >
-                    {telegramId ? (
+                    {tg?.initDataUnsafe?.user?.id ? (
                         <FaChrome className="text-base text-[#767B85]" />
                     ) : (
                         <PiTelegramLogoBold className="text-base text-[#767B85]" />
                     )}
                     <span>
-                        {telegramId
+                        {tg?.initDataUnsafe?.user?.id
                             ? "Перейти на сайт"
                             : "Перейти в Телеграм-бот"}
                     </span>
-                </a>
+                </a> */}
             </DropDownMenuItem>
             <DropDownMenuSeparator />
         </>
