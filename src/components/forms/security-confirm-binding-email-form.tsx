@@ -1,14 +1,22 @@
 // import { useState, useId } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useChangeEmailMutation } from "@/store/api/userApi";
+
+import {
+    useChangeEmailMutation,
+    useSendEmailChangeCodeMutation
+} from "@/store/api/userApi";
+import { handleErrorResponse } from "@/store/services";
 
 import { toast } from "@/components/toasts/toast";
-
 import { PreviousRouteLink } from "@/components/previous-route-link";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
-import { handleErrorResponse } from "@/store/services";
+import { useRef } from "react";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -19,13 +27,31 @@ export const SecurityConfirmBindingEmailForm = () => {
     //     message: "",
     //     isError: false
     // });
+    const buttonRef = useRef<ResendCodeElement>(null);
+
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [sendChangeCode, { isLoading: isCodeSending }] =
+        useSendEmailChangeCodeMutation();
 
     // const codeId = useId();
     // const codeErrorId = useId();
 
-    const [changeEmail, { isLoading }] = useChangeEmailMutation();
+    const [changeEmail, { isLoading: isEmailConfirming }] =
+        useChangeEmailMutation();
+
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        try {
+            await sendChangeCode({ email: location?.state?.email }).unwrap();
+            buttonRef.current?.show();
+            buttonRef.current?.disable();
+        } catch (error) {
+            handleErrorResponse(error, message => toast.error(message));
+        }
+    };
 
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -85,12 +111,17 @@ export const SecurityConfirmBindingEmailForm = () => {
                         message={errorState.message}
                     />
                 ) : null} */}
+                <ResendCodeButton
+                    disabled={isCodeSending}
+                    onClick={onClickHandler}
+                    ref={buttonRef}
+                />
             </Label>
             <button
-                disabled={isLoading}
+                disabled={isEmailConfirming}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"
             >
-                {isLoading ? (
+                {isEmailConfirming ? (
                     <ImSpinner9 className="mx-auto animate-spin text-sm" />
                 ) : (
                     "Сохранить"

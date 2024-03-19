@@ -1,5 +1,5 @@
 import { PopoverClose } from "@radix-ui/react-popover";
-import { useGetUserQuery, useGetUserReferralQuery } from "@/store";
+import { useGetUserQuery, useGetUserReferralQuery } from "@/store/api/userApi";
 
 import {
     Popover,
@@ -25,10 +25,15 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     setDailyStatisticsDialogOpen,
     setBurgerMenuOpen
 }) => {
-    const { data: referral } = useGetUserReferralQuery();
-    const { data: user } = useGetUserQuery();
+    const { data: referral } = useGetUserReferralQuery(undefined, {
+        skip: !open
+    });
+    const { data: user } = useGetUserQuery(undefined, { skip: !open });
 
-    const referralLink = `https://avibet.io/referral?username=${user?.login}`;
+    const referralLink = `https://avibet.io/referral?uid=${user?.uid}`;
+    const telegramReferralLink = `https://t.me/${
+        import.meta.env.VITE_BOT_NAME
+    }?uid=${user?.uid}`;
 
     const onClickHandler = () => {
         setTimeout(() => {
@@ -82,6 +87,17 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                     </span>
                     <ClipboardCopy
                         textToCopy={referralLink}
+                        toastMessage="Ссылка скопирована в буфер обмена"
+                        className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
+                    >
+                        Скопировать
+                    </ClipboardCopy>
+
+                    <span className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600">
+                        {telegramReferralLink}
+                    </span>
+                    <ClipboardCopy
+                        textToCopy={telegramReferralLink}
                         toastMessage="Ссылка скопирована в буфер обмена"
                         className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-xs text-white shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
                     >

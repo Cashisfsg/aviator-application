@@ -41,7 +41,7 @@ export const SecurityBindEmailForm = () => {
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ email }) => {
         try {
             await sendChangeCode({ email }).unwrap();
-            navigate("/main/security/bind-email/confirm", { state: email });
+            navigate("/main/security/bind-email/confirm", { state: { email } });
         } catch (error) {
             handleErrorResponse(error, message => {
                 setError("root", {
