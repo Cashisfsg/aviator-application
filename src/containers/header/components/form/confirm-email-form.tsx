@@ -1,6 +1,9 @@
-import { useState, useId } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useConfirmPasswordChangeMutation } from "@/store";
+import {
+    useConfirmPasswordChangeMutation,
+    useSendConfirmationCodeMutation
+} from "@/store/api/authApi";
 import { handleErrorResponse } from "@/store/services";
 
 import {
@@ -10,26 +13,27 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage } from "@/components/ui/input";
 
 import { ImSpinner9 } from "react-icons/im";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
+import { toast } from "@/components/toasts/toast";
 
 interface FormFields {
     code: HTMLInputElement;
 }
 
 export const ConfirmEmailForm = () => {
-    const [errorState, setErrorState] = useState({
-        message: "",
-        isError: false
-    });
-
-    const codeId = useId();
-    const codeErrorId = useId();
+    const buttonRef = useRef<ResendCodeElement>(null);
     const email = sessionStorage.getItem("email");
 
     const navigate = useNavigate();
-    const [confirmChange, { isLoading }] = useConfirmPasswordChangeMutation();
+    const [confirmChange, { isLoading: isConfirming }] =
+        useConfirmPasswordChangeMutation();
+    const [sendConfirmationCode, { isLoading: isSending }] =
+        useSendConfirmationCodeMutation();
 
     const handleSubmit: React.FormEventHandler<
         HTMLFormElement & FormFields
@@ -45,21 +49,26 @@ export const ConfirmEmailForm = () => {
             navigate("/main/password/reset", { state: { token } });
         } catch (error) {
             handleErrorResponse(error, message => {
-                setErrorState(err => ({
-                    ...err,
-                    message: message,
-                    isError: true
-                }));
+                toast.error(message);
             });
         }
     };
 
-    const onFocusHandler: React.FocusEventHandler<HTMLInputElement> = () => {
-        setErrorState(err => ({
-            ...err,
-            message: "",
-            isError: false
-        }));
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        try {
+            await sendConfirmationCode({
+                email: sessionStorage.getItem("email") || ""
+            }).unwrap();
+            buttonRef.current?.show();
+            buttonRef.current?.disable();
+            navigate("/main/password/confirm-email");
+        } catch (error) {
+            handleErrorResponse(error, message => {
+                toast.error(message);
+            });
+        }
     };
 
     return (
@@ -82,27 +91,20 @@ export const ConfirmEmailForm = () => {
                 <Label direction="column">
                     <span className="text-sm">Введите код</span>
                     <Input
-                        id={codeId}
                         name="code"
-                        aria-invalid={errorState.isError}
-                        aria-errormessage={
-                            errorState.isError ? codeErrorId : undefined
-                        }
-                        onFocus={onFocusHandler}
+                        required
                     />
-                    {errorState.isError ? (
-                        <ErrorMessage
-                            id={codeErrorId}
-                            htmlFor={codeId}
-                            message={errorState.message}
-                        />
-                    ) : null}
+                    <ResendCodeButton
+                        disabled={isSending}
+                        onClick={onClickHandler}
+                        ref={buttonRef}
+                    />
                 </Label>
                 <Button
                     variant="confirm"
-                    disabled={isLoading}
+                    disabled={isConfirming || isSending}
                 >
-                    {isLoading ? (
+                    {isConfirming ? (
                         <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
                     ) : (
                         "Восстановить"

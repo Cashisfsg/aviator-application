@@ -8,11 +8,8 @@ import {
     RegistrationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
-import {
-    useStateSelector,
-    selectInitData,
-    useCreateNewUserAccountMutation
-} from "@/store";
+import { useCreateNewUserAccountMutation } from "@/store/api/authApi";
+import { TelegramClient } from "@/store/api/types";
 
 import {
     Form,
@@ -59,6 +56,9 @@ const currencies = [
 ];
 
 export const SignUpForm = () => {
+    const tg = (
+        window as Window & typeof globalThis & { Telegram: TelegramClient }
+    ).Telegram.WebApp;
     const [open, setOpen] = useState(false);
     const [promoOpen, setPromoOpen] = useState(false);
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
@@ -67,9 +67,7 @@ export const SignUpForm = () => {
         useCreateNewUserAccountMutation();
     const navigate = useNavigate();
 
-    const { telegramId, from } = useStateSelector(state =>
-        selectInitData(state)
-    );
+    // const { telegramId } = useStateSelector(state => selectInitData(state));
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -79,7 +77,7 @@ export const SignUpForm = () => {
             passwordConfirm: "",
             email: undefined,
             promocode: undefined,
-            // from: from,
+            // from: sessionStorage.getItem("referral"),
             // telegramId,
             accepted_terms: undefined
         }
@@ -100,9 +98,13 @@ export const SignUpForm = () => {
             password,
             passwordConfirm,
             email,
-            from: from || undefined,
-            telegramId
+            from:
+                JSON.parse(sessionStorage.getItem("referral") || "{}")?.uid ||
+                undefined,
+            telegramId: tg?.initDataUnsafe?.user?.id
         });
+
+        sessionStorage.removeItem("referral");
 
         if (response?.error) return;
 

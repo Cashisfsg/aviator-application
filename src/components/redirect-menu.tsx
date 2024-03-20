@@ -1,6 +1,3 @@
-// import { useStateSelector } from "@/store/hooks";
-// import { selectInitData } from "@/store/slices/authSlice";
-
 import {
     DropDownMenuItem,
     DropDownMenuSeparator

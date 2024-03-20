@@ -301,10 +301,7 @@ export const BurgerMenu = () => {
                         open={myBetsHistoryDialogOpen}
                         setOpen={setMyBetsHistoryDialogOpen}
                     />
-                    <SignOutAlertDialog
-                        open={alertDialogOpen}
-                        setOpen={setAlertDialogOpen}
-                    />
+
                     <BonusAndPromoDialog
                         open={bonusAndPromoDialogOpen}
                         setOpen={setBonusAndPromoDialogOpen}
@@ -330,6 +327,10 @@ export const BurgerMenu = () => {
                         open={securityPopoverOpen}
                         setPopoverOpen={setSecurityPopoverOpen}
                         setBurgerMenuOpen={setBurgerMenuOpen}
+                    />
+                    <SignOutAlertDialog
+                        open={alertDialogOpen}
+                        setOpen={setAlertDialogOpen}
                     />
                 </>
             ) : null}

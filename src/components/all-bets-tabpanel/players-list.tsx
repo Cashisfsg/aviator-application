@@ -1,11 +1,11 @@
 import { Table, Row, Cell } from "@/components/ui/table";
-import { Currency, Player } from "@/store";
+import { Currency, PlayerTest } from "@/store";
 import { Badge } from "@/components/ui/badge";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
 interface PlayersListProps {
-    players: Player[];
+    players: PlayerTest[];
     currency: Currency;
 }
 

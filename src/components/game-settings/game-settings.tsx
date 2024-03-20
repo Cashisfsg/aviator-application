@@ -1,13 +1,12 @@
 import { useId } from "react";
 
+import { useStateSelector, useAppDispatch } from "@/store/hooks";
 import {
-    useStateSelector,
-    useAppDispatch,
     toggleSound,
     toggleMusic,
     toggleAnimation,
     selectSettings
-} from "@/store";
+} from "@/store/slices/settingsSlice";
 
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";

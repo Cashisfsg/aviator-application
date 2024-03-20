@@ -75,12 +75,12 @@ export const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
                 <button
                     type="button"
                     onClick={toggleVisibility}
-                    className="h-10 shrink-0 basis-10 focus-visible:outline-white/80"
+                    className="group h-full shrink-0 basis-10 focus:outline-transparent"
                 >
                     {visible ? (
-                        <IoIosEyeOff className="mx-auto text-xl" />
+                        <IoIosEyeOff className="mx-auto rounded-sm text-xl outline-offset-2 group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-white/80" />
                     ) : (
-                        <IoIosEye className="mx-auto text-xl" />
+                        <IoIosEye className="mx-auto rounded-sm text-xl outline-offset-2 group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-white/80" />
                     )}
                 </button>
             </div>

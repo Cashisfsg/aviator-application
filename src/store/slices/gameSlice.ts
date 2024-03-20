@@ -1,8 +1,9 @@
 import { RefObject } from "react";
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { userApi, Currency } from "../api";
-import { authSlice } from "../slices";
+import { userApi } from "../api/userApi";
+import { authApi } from "../api/authApi";
 import { RootStore } from "../types";
+import { Currency } from "@/api/withdraw/types";
 
 type BetState = "init" | "start" | "bet" | "cash";
 
@@ -10,7 +11,7 @@ interface Bet {
     betState: BetState;
     betNumber: 1 | 2;
     balance: number;
-    currency: string;
+    currency: Currency;
     autoModeOn: boolean;
     currentBet: number;
     min: number;
@@ -22,6 +23,7 @@ interface ActiveBonus {
     bonusActive: true;
     bonusQuantity: number;
     bonusCoefficient: number;
+    cashOutEnabled: boolean;
 }
 
 interface UnActiveBonus {
@@ -29,37 +31,31 @@ interface UnActiveBonus {
     bonusActive: false;
     bonusQuantity: null;
     bonusCoefficient: null;
+    cashOutEnabled: false;
 }
 
-interface Player {
-    playerLogin: string;
-    bet: Record<Currency, number>;
-    currency: string;
-    time: Date;
-    coeff?: number;
-    win?: Record<Currency, number>;
-    profileImage: string;
-}
+// interface Player {
+//     playerLogin: string;
+//     bet: Record<Currency, number>;
+//     currency: string;
+//     time: Date;
+//     coeff?: number;
+//     win?: Record<Currency, number>;
+//     profileImage: string;
+// }
 
-export interface GameDetails {
-    betAmount: number;
-    winAmount: number;
-    currentPlayers: Player[];
-}
-
-interface Settings {
-    animationEnabled: boolean;
-    musicEnabled: boolean;
-    soundEnabled: boolean;
-}
+// export interface GameDetails {
+//     betAmount: number;
+//     winAmount: number;
+//     currentPlayers: Player[];
+// }
 
 type Bonus = ActiveBonus | UnActiveBonus;
 
 type Game = {
     bets: [Bet, Bet];
     bonus: Bonus;
-    gameDetails: GameDetails;
-    settings: Settings;
+    // gameDetails: GameDetails;
 };
 
 const initialState = {
@@ -89,31 +85,28 @@ const initialState = {
         bonusId: null,
         bonusQuantity: null,
         bonusActive: false,
-        bonusCoefficient: null
-    },
-    gameDetails: {
-        betAmount: 0,
-        winAmount: 0,
-        currentPlayers: []
-    },
-    settings: {
-        animationEnabled: true,
-        soundEnabled: false,
-        musicEnabled: false
+        bonusCoefficient: null,
+        cashOutEnabled: false
     }
+    // gameDetails: {
+    //     betAmount: 0,
+    //     winAmount: 0,
+    //     currentPlayers: []
+    // }
 } as Game;
 
 const gameSlice = createSlice({
     name: "game",
-    initialState: () => {
-        const storedData = sessionStorage.getItem("settings");
+    // initialState: () => {
+    //     const storedData = sessionStorage.getItem("settings");
 
-        if (!storedData) return initialState;
+    //     if (!storedData) return initialState;
 
-        const settings = JSON.parse(storedData);
+    //     const settings = JSON.parse(storedData);
 
-        return { ...initialState, settings };
-    },
+    //     return { ...initialState, settings };
+    // },
+    initialState,
     reducers: {
         setBetState: (
             state,
@@ -208,7 +201,8 @@ const gameSlice = createSlice({
         ) => {
             state.bonus.bonusActive = true;
             state.bonus.bonusId = action.payload.bonusId;
-            state.bonus.bonusQuantity = Number(action.payload.bonusQuantity);
+            state.bonus.bonusQuantity =
+                Math.round(Number(action.payload.bonusQuantity) * 100) / 100;
             state.bonus.bonusCoefficient = Number(
                 action.payload.bonusCoefficient
             );
@@ -218,33 +212,28 @@ const gameSlice = createSlice({
             state.bonus.bonusId = null;
             state.bonus.bonusQuantity = null;
             state.bonus.bonusCoefficient = null;
+            state.bonus.cashOutEnabled = false;
         },
-        setGameDetails: (state, action: PayloadAction<GameDetails>) => {
-            state.gameDetails.betAmount = action.payload.betAmount;
-            state.gameDetails.winAmount = action.payload.winAmount;
-            state.gameDetails.currentPlayers = action.payload.currentPlayers;
-        },
-        resetGameDetails: state => {
-            state.gameDetails = initialState.gameDetails;
-        },
-        toggleAnimation: state => {
-            state.settings.animationEnabled = !state.settings.animationEnabled;
-            sessionStorage.setItem("settings", JSON.stringify(state.settings));
-        },
-        toggleSound: state => {
-            state.settings.soundEnabled = !state.settings.soundEnabled;
-            sessionStorage.setItem("settings", JSON.stringify(state.settings));
-        },
-        toggleMusic: state => {
-            state.settings.musicEnabled = !state.settings.musicEnabled;
-            sessionStorage.setItem("settings", JSON.stringify(state.settings));
+        enableBonusCashOut: state => {
+            state.bonus.cashOutEnabled = true;
         }
+        // setGameDetails: (state, action: PayloadAction<GameDetails>) => {
+        //     state.gameDetails.betAmount = action.payload.betAmount;
+        //     state.gameDetails.winAmount = action.payload.winAmount;
+        //     state.gameDetails.currentPlayers = action.payload.currentPlayers;
+        // },
+        // resetGameDetails: state => {
+        //     state.gameDetails = initialState.gameDetails;
+        // }
     },
     extraReducers: builder => {
         builder
-            .addCase(authSlice.actions.logout, () => {
+            .addMatcher(authApi.endpoints.signOut.matchFulfilled, () => {
                 return initialState;
             })
+            // .addCase(authSlice.actions.logout, () => {
+            //     return initialState;
+            // })
             .addMatcher(
                 userApi.endpoints.getUserBalance.matchFulfilled,
                 (state, { payload }) => {
@@ -274,14 +263,12 @@ export const { reducer: gameSliceReducer, actions: gameSliceActions } =
 export const {
     setBetState,
     setCurrentBet,
-    setGameDetails,
-    resetGameDetails,
+    // setGameDetails,
+    // resetGameDetails,
     toggleAutoMode,
     activateBonus,
     deactivateBonus,
-    toggleAnimation,
-    toggleMusic,
-    toggleSound
+    enableBonusCashOut
 } = gameSlice.actions;
 
 const gameTab = (state: RootStore) => state.game;
@@ -298,41 +285,47 @@ const bonusActive = (state: RootStore) => state.game.bonus.bonusActive;
 const bonusQuantity = (state: RootStore) => state.game.bonus.bonusQuantity;
 const bonusCoefficient = (state: RootStore) =>
     state.game.bonus.bonusCoefficient;
+const bonusCashOutEnabled = (state: RootStore) =>
+    state.game.bonus.cashOutEnabled;
 
 export const selectBonus = createSelector(
-    [bonusId, bonusActive, bonusQuantity, bonusCoefficient],
-    (bonusId, bonusActive, bonusQuantity, bonusCoefficient) => ({
+    [
         bonusId,
         bonusActive,
         bonusQuantity,
-        bonusCoefficient
+        bonusCoefficient,
+        bonusCashOutEnabled
+    ],
+    (
+        bonusId,
+        bonusActive,
+        bonusQuantity,
+        bonusCoefficient,
+        bonusCashOutEnabled
+    ) => ({
+        bonusId,
+        bonusActive,
+        bonusQuantity,
+        bonusCoefficient,
+        bonusCashOutEnabled
     })
 );
 
-const betAmount = (state: RootStore) => state.game.gameDetails.betAmount;
-const winAmount = (state: RootStore) => state.game.gameDetails.winAmount;
-const currentPlayers = (state: RootStore) =>
-    state.game.gameDetails.currentPlayers;
-
-export const selectGameDetails = createSelector(
-    [betAmount, winAmount, currentPlayers],
-    (betAmount, winAmount, currentPlayers) => ({
-        betAmount,
-        winAmount,
-        currentPlayers
-    })
+export const selectBonusCashOutEnabled = createSelector(
+    [bonusCashOutEnabled],
+    bonusCashOutEnabled => bonusCashOutEnabled
 );
 
-const animationEnabled = (state: RootStore) =>
-    state.game.settings.animationEnabled;
-const musicEnabled = (state: RootStore) => state.game.settings.musicEnabled;
-const soundEnabled = (state: RootStore) => state.game.settings.soundEnabled;
+// const betAmount = (state: RootStore) => state.game.gameDetails.betAmount;
+// const winAmount = (state: RootStore) => state.game.gameDetails.winAmount;
+// const currentPlayers = (state: RootStore) =>
+//     state.game.gameDetails.currentPlayers;
 
-export const selectSettings = createSelector(
-    [animationEnabled, musicEnabled, soundEnabled],
-    (animationEnabled, musicEnabled, soundEnabled) => ({
-        animationEnabled,
-        musicEnabled,
-        soundEnabled
-    })
-);
+// export const selectGameDetails = createSelector(
+//     [betAmount, winAmount, currentPlayers],
+//     (betAmount, winAmount, currentPlayers) => ({
+//         betAmount,
+//         winAmount,
+//         currentPlayers
+//     })
+// );

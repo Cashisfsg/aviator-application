@@ -18,6 +18,10 @@ import { Input, Password, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { ImSpinner9 } from "react-icons/im";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
 
 export const SignInForm = () => {
     const [verificationModeEnabled, setVerificationModeEnabled] =
@@ -25,10 +29,12 @@ export const SignInForm = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const [authenticate, { isLoading }] = useAuthenticateUserMutation();
-    const [verify] = useVerifyUserMutation();
+    const [authenticate, { isLoading: isAuthenticating }] =
+        useAuthenticateUserMutation();
+    const [verify, { isLoading: isVerifying }] = useVerifyUserMutation();
 
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
+    const buttonRef = useRef<ResendCodeElement>(null);
 
     const loginFormId = useId();
     const verifyFormId = useId();
@@ -65,6 +71,8 @@ export const SignInForm = () => {
             if (twoFactorEnabled) {
                 setVerificationModeEnabled(true);
                 toast.notify(message);
+                buttonRef.current?.show();
+                buttonRef.current?.disable();
                 return;
             }
 
@@ -96,13 +104,18 @@ export const SignInForm = () => {
             await verify({
                 login: getValues("login"),
                 code: Number(code.value)
-            });
+            }).unwrap();
 
             reset();
             navigate("/main");
+
             sessionStorage.removeItem("email");
             dialogCloseRef?.current?.click();
-        } catch (error) {}
+        } catch (error) {
+            handleErrorResponse(error, message => {
+                toast.error(message);
+            });
+        }
     };
 
     return (
@@ -183,7 +196,14 @@ export const SignInForm = () => {
                         <span>Код из Email</span>
                         <Input
                             inputMode="numeric"
+                            required
                             name="code"
+                        />
+                        <ResendCodeButton
+                            type="submit"
+                            form={loginFormId}
+                            disabled={isVerifying}
+                            ref={buttonRef}
                         />
                     </Label>
                 </form>
@@ -194,10 +214,10 @@ export const SignInForm = () => {
             <Button
                 variant="confirm"
                 form={verificationModeEnabled ? verifyFormId : loginFormId}
-                disabled={isLoading}
+                disabled={isAuthenticating}
                 className="disabled:cursor-wait"
             >
-                {isLoading ? (
+                {isAuthenticating ? (
                     <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
                 ) : (
                     "Войти"

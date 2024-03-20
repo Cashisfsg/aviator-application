@@ -26,10 +26,7 @@ export const BettingZone = () => {
             {multiBetEnabled ? <Bet betNumber={2} /> : null}
             <button
                 style={{ textShadow: "0 1px 2px rgba(0,0,0,.5)" }}
-                disabled={
-                    secondGameTab.betState === "start" ||
-                    secondGameTab.betState === "cash"
-                }
+                disabled={secondGameTab.betState !== "init"}
                 onClick={onClickHandler}
                 aria-pressed={multiBetEnabled}
                 className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full shadow-[inset_0_1px_1px_#ffffff80] transition-colors disabled:pointer-events-none aria-[pressed=false]:bg-[#427f00] mh:aria-[pressed=false]:hover:bg-[#28a909]"

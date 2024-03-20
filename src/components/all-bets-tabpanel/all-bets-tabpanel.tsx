@@ -1,5 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { useStateSelector, selectSocket } from "@/store";
+import { useState, lazy, Suspense } from "react";
+// import { useStateSelector, selectSocket } from "@/store";
 
 import { ToggleRoundDetailsButton } from "./toggle-round-details-button";
 import { CurrentRoundDetailsTab } from "./current-round-details-tab";
@@ -12,21 +12,21 @@ const PreviousRoundDetailsTab = lazy(() =>
 );
 
 export const AllBetsTabpanel = () => {
-    const socket = useStateSelector(state => selectSocket(state));
+    // const socket = useStateSelector(state => selectSocket(state));
 
     const [currentRound, setCurrentRound] = useState(true);
 
-    useEffect(() => {
-        const resetRoundDetails = () => {
-            if (currentRound) return;
+    // useEffect(() => {
+    //     const resetRoundDetails = () => {
+    //         if (currentRound) return;
 
-            setCurrentRound(true);
-        };
+    //         setCurrentRound(true);
+    //     };
 
-        socket.on("loading", resetRoundDetails);
+    //     socket.on("loading", resetRoundDetails);
 
-        return () => socket.off("loading", resetRoundDetails);
-    }, [socket, currentRound]);
+    //     return () => socket.off("loading", resetRoundDetails);
+    // }, [socket, currentRound]);
 
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
         setCurrentRound(round => !round);

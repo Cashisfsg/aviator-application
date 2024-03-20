@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const alphanumericRegex = /^\s?[A-Za-z0-9]+\s?$/;
+const alphanumericRegex = /^\s?[A-Za-z0-9_]+\s?$/;
 
 export const registrationCredentialsSchema = z
     .object({

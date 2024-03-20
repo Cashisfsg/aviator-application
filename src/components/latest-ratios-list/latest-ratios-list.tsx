@@ -1,22 +1,23 @@
-import { useState, useEffect, useId, useRef } from "react";
+import { useState, useEffect, useId } from "react";
 
-import {
-    useStateSelector,
-    useAppDispatch,
-    selectSocket,
-    betApi,
-    useGetLastThirtyCoefficientsQuery
-    // Coefficient,
-    // useLazyGetLastThirtyCoefficientsQuery
-} from "@/store";
+import { selectLastRate } from "@/store/slices/test.slice";
+import { useStateSelector, useAppDispatch } from "@/store/hooks";
+import { betApi, useGetLastThirtyCoefficientsQuery } from "@/store/api/betApi";
+
+// import  selectSocket,
+
+// useGetLastThirtyCoefficientsQuery
+// Coefficient,
+// useLazyGetLastThirtyCoefficientsQuery
+// "@/store";
 
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
     const [key, setKey] = useState(0);
-    const coefficient = useRef(1);
 
-    const socket = useStateSelector(state => selectSocket(state));
+    const lastRate = useStateSelector(state => selectLastRate(state));
+    // const roundState = useStateSelector(state => selectAirplaneState(state));
     // const [coefficients, setCoefficients] = useState<Coefficient[]>([]);
     const dropdownMenuId = useId();
 
@@ -27,75 +28,33 @@ export const LatestRatiosList = () => {
     //     useLazyGetLastThirtyCoefficientsQuery();
 
     useEffect(() => {
-        const setCoefficient = ({ x }: { x: number }) => {
-            coefficient.current = x;
-        };
+        if (!isSuccess) return;
 
-        const updateCoefficients = () => {
-            dispatch(
-                betApi.util.updateQueryData(
-                    "getLastThirtyCoefficients",
-                    undefined,
-                    draftPosts => {
-                        draftPosts.length = draftPosts.length - 1;
-                        draftPosts.unshift({
-                            _id: new Date().toISOString(),
-                            coeff: coefficient.current,
-                            createdAt: new Date().toISOString()
-                        });
-                    }
-                )
-            );
+        dispatch(
+            betApi.util.updateQueryData(
+                "getLastThirtyCoefficients",
+                undefined,
+                draft => {
+                    draft.length = draft.length - 1;
+                    draft.unshift({
+                        _id: new Date().toISOString(),
+                        coeff: lastRate,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            )
+        );
 
-            coefficient.current = 1;
-            setKey(key => key + 1);
-        };
+        setKey(key => key + 1);
 
-        socket.on("game", setCoefficient);
-        socket.on("crash", updateCoefficients);
+        // socket.on("game", setCoefficient);
+        // socket.on("crash", updateCoefficients);
 
-        return () => {
-            socket.off("game", setCoefficient);
-            socket.off("crash", updateCoefficients);
-        };
-    }, [socket]);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             const { data } = await fetchCoefficients();
-
-    //             if (data === undefined) return;
-
-    //             setCoefficients(data);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     })();
-    // }, []);
-
-    // useEffect(() => {
-    //     const addCoefficient = async () => {
-    //         (async () => {
-    //             try {
-    //                 const { data } = await fetchCoefficients();
-
-    //                 if (data === undefined) return;
-
-    //                 setCoefficients(data);
-    //                 setKey(key => key + 1);
-    //             } catch (error) {
-    //                 console.error(error);
-    //             }
-    //         })();
-    //     };
-
-    //     socket.on("crash", addCoefficient);
-
-    //     return () => {
-    //         socket.on("crash", addCoefficient);
-    //     };
-    // }, [socket, fetchCoefficients]);
+        // return () => {
+        //     socket.off("game", setCoefficient);
+        //     socket.off("crash", updateCoefficients);
+        // };
+    }, [lastRate]);
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
@@ -108,14 +67,6 @@ export const LatestRatiosList = () => {
             String(!ariaExpanded)
         );
     };
-
-    // const add = () => {
-    //     setKey(key => key + 1);
-    //     setCoef(coef => {
-    //         const newArray = coef.slice(0, -1);
-    //         return [Math.random() * 15, ...newArray];
-    //     });
-    // };
 
     return (
         <div className="relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">

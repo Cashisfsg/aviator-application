@@ -1,17 +1,15 @@
-import { toast } from "sonner";
-
-import { Table, Row, Cell } from "@/components/ui/table";
-
-import { formatDate, formatTime } from "@/utils/helpers";
+import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import {
-    useAppDispatch,
-    useStateSelector,
     userApi,
-    selectCurrentGameTab,
-    activateBonus,
     useGetUserPromoQuery,
     useGetUserBalanceQuery
-} from "@/store";
+} from "@/store/api/userApi";
+import { selectCurrentGameTab, activateBonus } from "@/store/slices/gameSlice";
+
+import { Table, Row, Cell } from "@/components/ui/table";
+import { toast } from "@/components/toasts/toast";
+
+import { formatDate, formatTime } from "@/utils/helpers";
 
 interface BonusTableProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,15 +41,9 @@ export const BonusTable: React.FC<BonusTableProps> = ({ setOpen }) => {
                 bonusCoefficient
             })
         );
-        dispatch(userApi.util.invalidateTags(["Promo"]));
+        // dispatch(userApi.util.invalidateTags(["Promo"]));
 
-        toast("Промокод на одноразовую ставку успешно активирован", {
-            position: "top-center",
-            action: {
-                label: "Скрыть",
-                onClick: () => {}
-            }
-        });
+        toast.notify("Промокод на одноразовую ставку успешно активирован");
 
         setOpen(false);
     };
@@ -71,7 +63,7 @@ export const BonusTable: React.FC<BonusTableProps> = ({ setOpen }) => {
                         {data.map(promo => (
                             <Row key={promo?._id}>
                                 <Cell className="text-white">
-                                    {promo?.amount}
+                                    {promo?.amount?.toFixed(2)}
                                 </Cell>
                                 <Cell>
                                     <span className="rounded-full bg-black/80 px-3 py-0.5 text-xs font-bold text-white">

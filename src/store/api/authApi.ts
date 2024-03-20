@@ -10,6 +10,11 @@ import {
     ChangePasswordRequest
 } from "./types";
 import { userApi } from ".";
+import { authenticate } from "../slices/socketSlice";
+
+interface SignOutRequest {
+    token: string;
+}
 
 export const authApi = createApi({
     reducerPath: "authApi",
@@ -51,12 +56,21 @@ export const authApi = createApi({
                 try {
                     const response = await queryFulfilled;
 
-                    if (!response.data.twoFactorEnabled)
+                    if (!response.data.twoFactorEnabled) {
                         dispatch(
                             userApi.util.invalidateTags(["User", "Balance"])
                         );
+                        dispatch(authenticate(response.data.token));
+                    }
                 } catch {}
             }
+        }),
+        signOut: builder.mutation<void, SignOutRequest>({
+            query: ({ token }) => ({
+                url: "/auth/sign-out",
+                method: "POST",
+                body: { token: token }
+            })
         }),
         // verifyUser: builder.mutation<
         //     { token: string },
@@ -113,6 +127,7 @@ export const authApi = createApi({
 export const {
     useCreateNewUserAccountMutation,
     useAuthenticateUserMutation,
+    useSignOutMutation,
     useSendConfirmationCodeMutation,
     useConfirmPasswordChangeMutation,
     useChangePasswordMutation,

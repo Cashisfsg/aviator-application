@@ -22,6 +22,7 @@ interface Referral {
 }
 export interface Descendant {
     _id: string;
+    uid: number;
     createdAt: string;
     updatedUt: string;
     earnings: number;

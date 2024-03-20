@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import {
-    // useAuth,
-    useStateSelector,
-    selectSocket,
-    selectSettings
-} from "@/store";
+
+import { useStateSelector } from "@/store/hooks";
+import { selectAirplaneState } from "@/store/slices/test.slice";
+import { selectAnimationSettings } from "@/store/slices/settingsSlice";
+
 // import { socket } from "@/components/socket/socket";
 import "./chart.css";
 import { Airplane } from "./airplane";
@@ -19,9 +18,9 @@ export const Chart = () => {
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
 
-    const socket = useStateSelector(state => selectSocket(state));
-    const { animationEnabled } = useStateSelector(state =>
-        selectSettings(state)
+    const airplaneState = useStateSelector(state => selectAirplaneState(state));
+    const animationEnabled = useStateSelector(state =>
+        selectAnimationSettings(state)
     );
 
     const [startScreen, setStartScreen] = useState(true);
@@ -96,16 +95,14 @@ export const Chart = () => {
             }
         };
 
-        socket.on("crash", crash);
-        socket.on("loading", loading);
-        socket.on("game", game);
-
-        return () => {
-            socket.off("crash", crash);
-            socket.off("loading", loading);
-            socket.off("game", game);
-        };
-    }, [socket, animationEnabled]);
+        if (airplaneState === "loading") {
+            loading();
+        } else if (airplaneState === "crash") {
+            crash();
+        } else if (airplaneState === "game") {
+            game();
+        }
+    }, [animationEnabled, airplaneState]);
 
     return (
         <section>

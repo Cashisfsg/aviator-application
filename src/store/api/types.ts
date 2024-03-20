@@ -240,6 +240,7 @@ interface WebApp {
     isClosingConfirmationEnabled: boolean;
     BackButton: BackButton;
     MainButton: MainButton;
+    openLink: (url: string) => void;
 }
 
 export interface TelegramClient {

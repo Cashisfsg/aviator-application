@@ -1,6 +1,6 @@
-import { selectInitData, useStateSelector } from "@/store";
 import { useGetUserQuery } from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
+import { TelegramClient } from "@/store/api/types";
 
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { UploadImage } from "./upload-image";
@@ -8,12 +8,15 @@ import { UploadImage } from "./upload-image";
 import Avatar from "@/assets/avatar-360w.webp";
 
 export const UserProfileDetails = () => {
+    const tg = (
+        window as Window & typeof globalThis & { Telegram: TelegramClient }
+    ).Telegram.WebApp;
+
     const { isAuthenticated } = useAuth();
 
     const { data: user, isLoading } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });
-    const userInitData = useStateSelector(state => selectInitData(state));
 
     return (
         <div className="flex items-center justify-between gap-1.5 p-2.5">
@@ -31,7 +34,7 @@ export const UserProfileDetails = () => {
                         <img
                             src={
                                 user?.profileImage ||
-                                userInitData?.profileImage ||
+                                tg?.initDataUnsafe?.user?.photo_url ||
                                 Avatar
                             }
                             alt="Аватар профиля"
@@ -44,7 +47,9 @@ export const UserProfileDetails = () => {
                         />
 
                         <p className="max-w-[11ch] overflow-hidden text-ellipsis whitespace-nowrap">
-                            {user?.login || userInitData?.login || "Username"}
+                            {user?.login ||
+                                tg?.initDataUnsafe?.user?.first_name ||
+                                "Username"}
                         </p>
 
                         <ClipboardCopy

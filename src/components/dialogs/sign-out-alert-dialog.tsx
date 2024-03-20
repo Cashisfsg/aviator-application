@@ -7,7 +7,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { useAppDispatch, userApi, baseReplenishmentApi, logout } from "@/store";
+
+import { useSignOutMutation } from "@/store/api/authApi";
 
 interface SignOutAlertDialogProps {
     open: boolean;
@@ -18,7 +19,15 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
     open,
     setOpen
 }) => {
-    const dispatch = useAppDispatch();
+    const [signOut] = useSignOutMutation();
+
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        await signOut({
+            token: JSON.parse(localStorage.getItem("token") || "{}")?.token
+        });
+    };
 
     return (
         <AlertDialog
@@ -33,13 +42,7 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Нет</AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={() => {
-                            dispatch(logout());
-                            dispatch(userApi.util.resetApiState());
-                            dispatch(baseReplenishmentApi.util.resetApiState());
-                        }}
-                    >
+                    <AlertDialogAction onClick={onClickHandler}>
                         Да
                     </AlertDialogAction>
                 </AlertDialogFooter>
