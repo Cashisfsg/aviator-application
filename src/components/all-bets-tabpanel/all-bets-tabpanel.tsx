@@ -1,6 +1,7 @@
-import { useState, lazy, Suspense } from "react";
-// import { useStateSelector, selectSocket } from "@/store";
+import { lazy, Suspense, useLayoutEffect, useRef } from "react";
 
+import { useStateSelector, useAppDispatch } from "@/store/hooks";
+import { setCurrentRound } from "@/store/slices/gameSlice";
 import { ToggleRoundDetailsButton } from "./toggle-round-details-button";
 import { CurrentRoundDetailsTab } from "./current-round-details-tab";
 import GridLoader from "react-spinners/GridLoader";
@@ -12,28 +13,24 @@ const PreviousRoundDetailsTab = lazy(() =>
 );
 
 export const AllBetsTabpanel = () => {
-    // const socket = useStateSelector(state => selectSocket(state));
+    const currentRound = useStateSelector(state => state.game.currentRound);
+    const dispatch = useAppDispatch();
 
-    const [currentRound, setCurrentRound] = useState(true);
+    const tableRef = useRef<HTMLDivElement>(null);
 
-    // useEffect(() => {
-    //     const resetRoundDetails = () => {
-    //         if (currentRound) return;
-
-    //         setCurrentRound(true);
-    //     };
-
-    //     socket.on("loading", resetRoundDetails);
-
-    //     return () => socket.off("loading", resetRoundDetails);
-    // }, [socket, currentRound]);
+    useLayoutEffect(() => {
+        tableRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }, []);
 
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
-        setCurrentRound(round => !round);
+        dispatch(setCurrentRound());
     };
 
     return (
-        <>
+        <div ref={tableRef}>
             <ToggleRoundDetailsButton onClick={onClickHandler}>
                 {currentRound ? "Предыдущий" : "Текущий"}
             </ToggleRoundDetailsButton>
@@ -50,6 +47,6 @@ export const AllBetsTabpanel = () => {
                     <PreviousRoundDetailsTab />
                 </Suspense>
             )}
-        </>
+        </div>
     );
 };

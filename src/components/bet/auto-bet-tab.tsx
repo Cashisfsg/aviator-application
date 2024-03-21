@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 
-import { userApi } from "@/store/api/userApi";
-import { useGetUserBetsQuery } from "@/store/api/betApi";
 import { useStateSelector, useAppDispatch } from "@/store/hooks";
 import {
     selectBonus,
     selectCurrentGameTab,
-    setBetState,
+    setAutoBetCoefficient,
     toggleAutoMode
 } from "@/store/slices/gameSlice";
 import { selectSoundSettings } from "@/store/slices/settingsSlice";
@@ -32,7 +30,6 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
     );
-    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const bonus = useStateSelector(state => selectBonus(state));
     const soundEnabled = useStateSelector(state => selectSoundSettings(state));
@@ -42,87 +39,6 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
             ? (bonus.bonusCoefficient as number).toFixed(2)
             : MIN_RATE.toFixed(2)
     );
-    const [rate, setRate] = useState(
-        bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE
-    );
-
-    // useEffect(() => {
-    //     const autoBet = ({ x }: { x: number }) => {
-    //         if (
-    //             !currentGameTab.autoModeOn ||
-    //             currentGameTab.betState !== "cash"
-    //         ) {
-    //             // socket.off("game", autoBet);
-    //             return;
-    //         }
-
-    //         if (x < rate) return;
-
-    //         socket.emit("cash-out", {
-    //             betNumber
-    //         });
-
-    //         if (bonus.bonusActive && betNumber === 1) {
-    //             // dispatch(deactivateBonus());
-    //             // toast({
-    //             //     title: `Вы выиграли ${(
-    //             //         (rate - 1) *
-    //             //         (bonus?.bonusQuantity as number)
-    //             //     ).toFixed(2)} ${currentGameTab.currency}`,
-    //             //     duration: 5000
-    //             // });
-    //         } else {
-    //             // toast({
-    //             //     title: `Вы выиграли ${(
-    //             //         (rate - 1) *
-    //             //         currentGameTab.currentBet
-    //             //     ).toFixed(2)} ${currentGameTab.currency}`,
-    //             //     duration: 5000
-    //             // });
-    //             toast.custom(
-    //                 t => (
-    //                     <SucceedToast
-    //                         t={t}
-    //                         gain={rate * currentGameTab.currentBet}
-    //                         rate={rate}
-    //                         currency={currentGameTab.currency}
-    //                     />
-    //                 ),
-    //                 {
-    //                     position: "top-center",
-    //                     classNames: {
-    //                         toast: "group-[.toaster]:!bg-transparent group-[.toaster]:!gap-0 group-[.toaster]:!shadow-none"
-    //                     },
-    //                     className: "w-[356px]"
-    //                 }
-    //             );
-    //         }
-
-    //         dispatch(userApi.util.invalidateTags(["Balance"]));
-    //         // dispatch(betApi.util.resetApiState());
-    //         // dispatch(betApi.util.invalidateTags(["My"]));
-    //         refetch();
-    //         dispatch(setBetState({ betNumber, betState: "init" }));
-
-    //         // socket.off("game", autoBet);
-
-    //         if (!audioRef.current || !soundEnabled) return;
-
-    //         audioRef.current.currentTime = 0.25;
-    //         audioRef.current?.play();
-    //     };
-
-    //     socket.on("game", autoBet);
-
-    //     // return () => {
-    //     //     socket.off("game", autoBet);
-    //     // };
-    // }, [
-    //     rate,
-    //     currentGameTab.autoModeOn,
-    //     currentGameTab.betState,
-    //     soundEnabled
-    // ]);
 
     const onChangeHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -145,7 +61,9 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
             100
         );
         event.currentTarget.value = value.toFixed(2);
-        setRate(value);
+        dispatch(
+            setAutoBetCoefficient({ betNumber: betNumber, coefficient: value })
+        );
     };
 
     return (

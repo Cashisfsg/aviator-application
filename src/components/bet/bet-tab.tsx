@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
-import { useGetUserBetsQuery } from "@/store/api/betApi";
+// import { useGetUserBetsQuery } from "@/store/api/betApi";
 
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import { useAuth } from "@/store/hooks/useAuth";
@@ -13,7 +13,7 @@ import {
     selectCurrentGameTab,
     setCurrentBet
 } from "@/store/slices/gameSlice";
-import { selectAirplaneState } from "@/store/slices/test.slice";
+// import { selectAirplaneState } from "@/store/slices/test.slice";
 
 import { BetInput } from "./bet-input";
 import { BetButton } from "./bet-button";
@@ -48,18 +48,18 @@ export const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
-    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
+    // const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const dispatch = useAppDispatch();
-    const roundState = useStateSelector(state => selectAirplaneState(state));
+    // const roundState = useStateSelector(state => selectAirplaneState(state));
     const soundEnabled = useStateSelector(state => selectSoundSettings(state));
 
-    useEffect(() => {
-        if (roundState !== "crash" || currentGameTab.betState !== "cash")
-            return;
+    // useEffect(() => {
+    //     if (roundState !== "crash" || currentGameTab.betState !== "cash")
+    //         return;
 
-        refetch();
-    }, [roundState, currentGameTab.betState]);
+    //     refetch();
+    // }, [roundState, currentGameTab.betState]);
 
     const handlePointerDown = (
         type: "increment" | "decrement",

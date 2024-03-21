@@ -11,10 +11,12 @@ import {
 } from "../slices/test.slice";
 import {
     setBetState,
+    setCurrentRound,
     deactivateBonus,
     enableBonusCashOut
 } from "../slices/gameSlice";
 import { userApi } from "../api/userApi";
+import { betApi } from "../api/betApi";
 import { toast } from "@/components/toasts/toast";
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
@@ -25,8 +27,6 @@ let socket: Socket<ServerToClientListen, ClientToServerListen> = io(BASE_URL, {
     },
     autoConnect: false
 });
-
-console.log("Token" + socket.auth.token);
 
 const initialRoundData = {
     betAmount: { USD: 0, UZS: 0, KZT: 0, RUB: 0, USDT: 0 },
@@ -57,10 +57,13 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                 socket.on("game", ({ x }) => {
                     const bets = store.getState().game.bets;
+                    const gameState = store.getState().test.state;
                     store.dispatch(setRate(x));
 
                     if (x === 1) {
+                        // if (gameState !== "start") {
                         store.dispatch(toggleState("start"));
+                        // }
 
                         bets.forEach((bet, index) => {
                             if (bet.betState === "start") {
@@ -75,7 +78,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     } else {
                         const bonus = store.getState().game.bonus;
 
-                        if (store.getState().test.state !== "game") {
+                        if (gameState !== "game") {
                             store.dispatch(toggleState("game"));
                         }
 
@@ -85,11 +88,43 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                             }
                         }
                     }
+
+                    bets.forEach((bet, index) => {
+                        if (!bet.autoModeOn || bet.betState !== "cash") return;
+
+                        if (x < bet.autoBetCoefficient) return;
+
+                        socket.emit("cash-out", {
+                            betNumber: (index + 1) as 1 | 2
+                        });
+                        store.dispatch(
+                            setBetState({
+                                betNumber: (index + 1) as 1 | 2,
+                                betState: "init"
+                            })
+                        );
+                        store.dispatch(
+                            betApi.endpoints.getUserBets.initiate(
+                                { skip: 0, limit: 6 },
+                                { subscribe: false, forceRefetch: true }
+                            )
+                        );
+                        store.dispatch(
+                            userApi.util.invalidateTags(["Balance"])
+                        );
+                        toast.win(
+                            bet.autoBetCoefficient * bet.currentBet,
+                            bet.autoBetCoefficient,
+                            bet.currency
+                        );
+                    });
                 });
 
                 socket.on("loading", () => {
                     store.dispatch(toggleState("loading"));
-                    store.dispatch(updateRoundData(initialRoundData));
+                    if (store.getState().test.roundStats.playersAmount !== 0) {
+                        store.dispatch(updateRoundData(initialRoundData));
+                    }
 
                     const { bets, bonus } = store.getState().game;
 
@@ -116,15 +151,23 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                 })
                             );
 
-                            if (index === 1) {
-                                console.log("Invalidate balance");
+                            // if (index === 1) {
+                            //     console.log("Invalidate balance");
 
-                                store.dispatch(
-                                    userApi.util.invalidateTags(["Balance"])
-                                );
-                            }
+                            //     store.dispatch(
+                            //         userApi.util.invalidateTags(["Balance"])
+                            //     );
+                            // }
                         }
                     });
+
+                    if (bets.some(bet => bet.betState === "bet")) {
+                        console.log("Invalidate balance");
+
+                        store.dispatch(
+                            userApi.util.invalidateTags(["Balance"])
+                        );
+                    }
                 });
 
                 socket.on("crash", () => {
@@ -137,20 +180,35 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         store.dispatch(deactivateBonus());
                     }
 
+                    // if (bets.some(bet => bet.betState === "cash")) {
+                    //     store.dispatch(
+                    //         userApi.util.invalidateTags(["Balance"])
+                    //     );
+                    // }
+
                     bets.forEach((bet, index) => {
-                        if (bet.betState === "cash") {
-                            store.dispatch(
-                                setBetState({
-                                    betNumber: (index + 1) as 1 | 2,
-                                    betState: "init"
-                                })
-                            );
-                        }
+                        if (bet.betState !== "cash") return;
+
+                        store.dispatch(
+                            setBetState({
+                                betNumber: (index + 1) as 1 | 2,
+                                betState: "init"
+                            })
+                        );
                     });
 
                     setTimeout(() => {
                         store.dispatch(toggleState("end"));
                     }, 0);
+
+                    if (!store.getState().game.currentRound) {
+                        console.log(
+                            "Current round: " +
+                                store.getState().game.currentRound
+                        );
+
+                        store.dispatch(setCurrentRound(true));
+                    }
                 });
 
                 socket.on("currentPlayers", data => {
@@ -165,8 +223,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 break;
 
             case "webSocket/authenticate":
-                console.log("Authenctication");
-
                 // socket.emit("disconnect");
 
                 socket = io(BASE_URL, {
@@ -176,12 +232,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 });
 
                 // socket.auth = { token: action.payload };
-
-                // console.log("Token payload: " + action.payload);
-
-                // setTimeout(() => {
-                //     console.log(socket.auth);
-                // }, 1000);
 
                 break;
 
@@ -201,6 +251,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                             betState: "start"
                         })
                     );
+                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
                 }
 
                 break;
@@ -214,6 +265,13 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 );
 
                 socket.emit("cash-out", { betNumber: action.payload as 1 | 2 });
+                store.dispatch(
+                    betApi.endpoints.getUserBets.initiate(
+                        { skip: 0, limit: 6 },
+                        { subscribe: false, forceRefetch: true }
+                    )
+                );
+                store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
                 break;
 

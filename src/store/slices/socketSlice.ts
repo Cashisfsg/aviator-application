@@ -22,12 +22,10 @@ const webSocketSlice = createSlice({
         wsDisconnect: state => {
             state.status = "disconnected";
         },
-        authenticate: (state, action: PayloadAction<string>) => {},
-        send: () => {}
+        authenticate: (state, action: PayloadAction<string>) => {}
     }
 });
 
 export const { actions: webSocketActions, reducer: webSocketReducer } =
     webSocketSlice;
-export const { wsConnect, wsDisconnect, authenticate, send } =
-    webSocketSlice.actions;
+export const { wsConnect, wsDisconnect, authenticate } = webSocketSlice.actions;

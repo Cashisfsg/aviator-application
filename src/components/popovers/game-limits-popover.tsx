@@ -21,7 +21,7 @@ export const GameLimitsPopover: React.FC<GameLimitsPopoverProps> = ({
     setOpen,
     setBurgerMenuOpen
 }) => {
-    const { data: limits } = useGetGameLimitsQuery();
+    const { data: limits } = useGetGameLimitsQuery(undefined, { skip: !open });
 
     const onClickHandler = () => {
         setTimeout(() => {

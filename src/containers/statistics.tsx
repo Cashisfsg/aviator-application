@@ -77,7 +77,9 @@ export const Statistics = () => {
                                 <TopBetsTabpanel />
                             </TabsContent>
                         </>
-                    ) : null}
+                    ) : (
+                        <div className="h-10" />
+                    )}
                 </Suspense>
             </>
         </Tabs>

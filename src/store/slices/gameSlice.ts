@@ -13,6 +13,7 @@ interface Bet {
     balance: number;
     currency: Currency;
     autoModeOn: boolean;
+    autoBetCoefficient: number;
     currentBet: number;
     min: number;
     max: number;
@@ -55,6 +56,7 @@ type Bonus = ActiveBonus | UnActiveBonus;
 type Game = {
     bets: [Bet, Bet];
     bonus: Bonus;
+    currentRound: boolean;
     // gameDetails: GameDetails;
 };
 
@@ -66,6 +68,7 @@ const initialState = {
             balance: 300,
             currency: "USD",
             autoModeOn: false,
+            autoBetCoefficient: 1.1,
             currentBet: 1,
             min: 1,
             max: 100
@@ -76,6 +79,7 @@ const initialState = {
             balance: 300,
             currency: "USD",
             autoModeOn: false,
+            autoBetCoefficient: 1.1,
             currentBet: 1,
             min: 1,
             max: 100
@@ -87,7 +91,8 @@ const initialState = {
         bonusActive: false,
         bonusCoefficient: null,
         cashOutEnabled: false
-    }
+    },
+    currentRound: true
     // gameDetails: {
     //     betAmount: 0,
     //     winAmount: 0,
@@ -117,10 +122,15 @@ const gameSlice = createSlice({
         },
         toggleAutoMode: (
             state,
-            action: PayloadAction<{ betNumber: 1 | 2 }>
+            action: PayloadAction<{ betNumber: 1 | 2; state?: boolean }>
         ) => {
-            state.bets[action.payload.betNumber - 1].autoModeOn =
-                !state.bets[action.payload.betNumber - 1].autoModeOn;
+            if (action.payload.state !== undefined) {
+                state.bets[action.payload.betNumber - 1].autoModeOn =
+                    action.payload.state;
+            } else {
+                state.bets[action.payload.betNumber - 1].autoModeOn =
+                    !state.bets[action.payload.betNumber - 1].autoModeOn;
+            }
         },
         setCurrentBet: (
             state,
@@ -191,6 +201,13 @@ const gameSlice = createSlice({
                     return state;
             }
         },
+        setAutoBetCoefficient: (
+            state,
+            action: PayloadAction<{ betNumber: 1 | 2; coefficient: number }>
+        ) => {
+            state.bets[action.payload.betNumber - 1].autoBetCoefficient =
+                action.payload.coefficient;
+        },
         activateBonus: (
             state,
             action: PayloadAction<{
@@ -216,6 +233,16 @@ const gameSlice = createSlice({
         },
         enableBonusCashOut: state => {
             state.bonus.cashOutEnabled = true;
+        },
+        setCurrentRound: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            if (action.payload !== undefined) {
+                state.currentRound = action.payload;
+            } else {
+                state.currentRound = !state.currentRound;
+            }
         }
         // setGameDetails: (state, action: PayloadAction<GameDetails>) => {
         //     state.gameDetails.betAmount = action.payload.betAmount;
@@ -267,6 +294,8 @@ export const {
     // resetGameDetails,
     toggleAutoMode,
     activateBonus,
+    setAutoBetCoefficient,
+    setCurrentRound,
     deactivateBonus,
     enableBonusCashOut
 } = gameSlice.actions;

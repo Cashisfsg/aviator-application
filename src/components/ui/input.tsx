@@ -61,13 +61,13 @@ export const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
         );
 
         return (
-            <div className="flex h-max items-center rounded-lg border-2 border-gray-500 outline outline-2 outline-offset-1 outline-transparent has-[input[aria-invalid=true]]:border-red-750 has-[input:focus-visible]:outline-white/80">
+            <div className="grid grid-cols-[1fr_auto] grid-rows-1 rounded-lg border-2 border-gray-500 outline outline-2 outline-offset-1 outline-transparent has-[input[aria-invalid=true]]:border-red-750 has-[input:focus-visible]:outline-white/80">
                 <input
                     type={visible ? "text" : "password"}
                     autoComplete="off"
                     ref={forwardRef}
                     className={cn(
-                        "flex-auto bg-transparent px-4 py-2 focus-visible:outline-transparent",
+                        "bg-transparent px-4 py-2 focus-visible:outline-transparent",
                         className
                     )}
                     {...props}
@@ -75,7 +75,7 @@ export const Password = React.forwardRef<HTMLInputElement, PasswordProps>(
                 <button
                     type="button"
                     onClick={toggleVisibility}
-                    className="group h-full shrink-0 basis-10 focus:outline-transparent"
+                    className="group w-10 focus:outline-transparent"
                 >
                     {visible ? (
                         <IoIosEyeOff className="mx-auto rounded-sm text-xl outline-offset-2 group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-white/80" />

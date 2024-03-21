@@ -1,4 +1,6 @@
+import { useLayoutEffect, useRef } from "react";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
+import { useAuth } from "@/store/hooks/useAuth";
 import { useStateSelector } from "@/store/hooks";
 
 import { TotalRoundDetailsTable } from "./total-round-details-table";
@@ -9,25 +11,39 @@ import {
 } from "@/store/slices/test.slice";
 
 export const CurrentRoundDetailsTab = () => {
-    const { data: balance, isLoading } = useGetUserBalanceQuery();
+    const { isAuthenticated } = useAuth();
+    const { data: balance } = useGetUserBalanceQuery(undefined, {
+        skip: !isAuthenticated
+    });
+    const tableRef = useRef<HTMLDivElement>(null);
+
     // const roundDetails = useStateSelector(state => selectGameDetails(state));
     const roundStats = useStateSelector(state => selectRoundStatistic(state));
     const playersList = useStateSelector(state => selectPlayersList(state));
 
+    useLayoutEffect(() => {
+        tableRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }, []);
+
     return (
-        <>
+        <div ref={tableRef}>
             {/* {!isLoading ? (
                 <> */}
             <TotalRoundDetailsTable
                 betsAmount={roundStats.playersAmount}
-                totalBets={roundStats.betAmount?.[balance?.currency]}
-                totalWinnings={roundStats.winAmount?.[balance?.currency]}
-                currency={balance?.currency}
+                totalBets={roundStats.betAmount?.[balance?.currency || "USD"]}
+                totalWinnings={
+                    roundStats.winAmount?.[balance?.currency || "USD"]
+                }
+                currency={balance?.currency || "USD"}
             />
 
             <PlayersList
                 players={playersList || []}
-                currency={balance?.currency}
+                currency={balance?.currency || "USD"}
             />
             {/* </>
             ) : null} */}
@@ -36,6 +52,6 @@ export const CurrentRoundDetailsTab = () => {
                     Пусто
                 </p>
             ) : null}
-        </>
+        </div>
     );
 };

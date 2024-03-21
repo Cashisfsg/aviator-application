@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth, useGetSupportServiceLinkQuery } from "@/store";
@@ -49,6 +49,7 @@ import { IoExitOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
 
 export const BurgerMenu = () => {
+    const [isPending, startTransition] = useTransition();
     const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [myBetsHistoryDialogOpen, setMyBetsHistoryDialogOpen] =
@@ -74,7 +75,9 @@ export const BurgerMenu = () => {
         <>
             <Popover
                 open={burgerMenuOpen}
-                onOpenChange={setBurgerMenuOpen}
+                onOpenChange={open =>
+                    startTransition(() => setBurgerMenuOpen(open))
+                }
             >
                 <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5 transition-colors duration-150 aria-expanded:text-[#e50539] mh:hover:text-[#e50539]">
                     <FiMenu />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import {
     useGetUserBalanceQuery,
@@ -15,6 +15,15 @@ import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 
 export const MyBetsHistoryTable = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
+
+    const tableRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        tableRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }, []);
 
     const { data: balance } = useGetUserBalanceQuery();
 
@@ -53,73 +62,80 @@ export const MyBetsHistoryTable = () => {
         >
             {isError && <pre>{error?.data?.message}</pre>}
             {isSuccess ? (
-                <Table
-                    className="px-1.5"
-                    headers={[
-                        "Время",
-                        `Ставка, ${balance?.currency || "USD"}`,
-                        "Коэфф.",
-                        `Выигрыш, ${balance?.currency || "USD"}`
-                    ]}
-                    data={bets || []}
-                    renderHeader={headers => (
-                        <Row>
-                            {headers.map(header => (
-                                <TableHeaderCell
-                                    key={header}
-                                    className="sticky -top-0.5 bg-black-50"
-                                >
-                                    {header}
-                                </TableHeaderCell>
-                            ))}
-                        </Row>
-                    )}
-                    renderData={data => (
-                        <>
-                            {data.map(bet => (
-                                <Row
-                                    key={bet?._id}
-                                    className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
-                                        isNaN(bet?.win?.[balance?.currency])
-                                            ? ""
-                                            : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
-                                    }`}
-                                >
-                                    <Cell className="px-2 py-1 text-left text-[10px] leading-none">
-                                        <time
-                                            dateTime={bet?.time}
-                                            className="block"
-                                        >
-                                            {formatTime(bet?.time)}
-                                        </time>
-                                        <time
-                                            dateTime={bet?.time}
-                                            className="block"
-                                        >
-                                            {formatDate(bet?.time)}
-                                        </time>
-                                    </Cell>
-                                    <Cell>
-                                        {formatCurrency(
-                                            bet?.bet?.[balance?.currency]
-                                        )}
-                                    </Cell>
-                                    <Cell>
-                                        <Badge value={bet?.coeff} />
-                                    </Cell>
-                                    <Cell>
-                                        {!isNaN(bet?.win?.[balance?.currency])
-                                            ? formatCurrency(
-                                                  bet?.win?.[balance?.currency]
-                                              )
-                                            : "-"}
-                                    </Cell>
-                                </Row>
-                            ))}
-                        </>
-                    )}
-                />
+                <div ref={tableRef}>
+                    <Table
+                        className="px-1.5"
+                        headers={[
+                            "Время",
+                            `Ставка, ${balance?.currency || "USD"}`,
+                            "Коэфф.",
+                            `Выигрыш, ${balance?.currency || "USD"}`
+                        ]}
+                        data={bets || []}
+                        renderHeader={headers => (
+                            <Row>
+                                {headers.map(header => (
+                                    <TableHeaderCell
+                                        key={header}
+                                        className="sticky -top-0.5 bg-black-50"
+                                    >
+                                        {header}
+                                    </TableHeaderCell>
+                                ))}
+                            </Row>
+                        )}
+                        renderData={data => (
+                            <>
+                                {data.map(bet => (
+                                    <Row
+                                        key={bet?._id}
+                                        className={`[&>td:nth-child(even)]:font-bold [&>td:nth-child(even)]:text-white ${
+                                            isNaN(bet?.win?.[balance?.currency])
+                                                ? ""
+                                                : "[&>td:first-child]:border-l-2 [&>td:last-child]:border-r-2 [&>td]:border-y-2 [&>td]:border-[#427f00] [&>td]:bg-[#123405]"
+                                        }`}
+                                    >
+                                        <Cell className="px-2 py-1 text-left text-[10px] leading-none">
+                                            <time
+                                                dateTime={bet?.time}
+                                                className="block"
+                                            >
+                                                {formatTime(bet?.time)}
+                                            </time>
+                                            <time
+                                                dateTime={bet?.time}
+                                                className="block"
+                                            >
+                                                {formatDate(bet?.time)}
+                                            </time>
+                                        </Cell>
+                                        <Cell>
+                                            {formatCurrency(
+                                                bet?.bet?.[balance?.currency]
+                                            )}
+                                        </Cell>
+                                        <Cell>
+                                            <Badge value={bet?.coeff} />
+                                        </Cell>
+                                        <Cell>
+                                            {!isNaN(
+                                                bet?.win?.[balance?.currency]
+                                            )
+                                                ? formatCurrency(
+                                                      bet?.win?.[
+                                                          balance?.currency
+                                                      ]
+                                                  )
+                                                : "-"}
+                                        </Cell>
+                                    </Row>
+                                ))}
+                            </>
+                        )}
+                    />
+                </div>
             ) : null}
+
             {isSuccess && (!bets || bets.length === 0) ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто

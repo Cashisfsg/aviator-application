@@ -1,19 +1,23 @@
 import { useReducer } from "react";
 
-import { useStateSelector, selectCurrentGameTab } from "@/store";
+import { useStateSelector, useAppDispatch } from "@/store/hooks";
 import { Bet } from "@/components/bet";
+import { selectCurrentGameTab, toggleAutoMode } from "@/store/slices/gameSlice";
 
 export const BettingZone = () => {
     const [multiBetEnabled, toggleMultiBetState] = useReducer(
         state => !state,
         true
     );
+    const dispatch = useAppDispatch();
+
     const secondGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, 2)
     );
 
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
         toggleMultiBetState();
+        dispatch(toggleAutoMode({ betNumber: 2, state: false }));
     };
 
     return (

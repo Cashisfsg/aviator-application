@@ -1,11 +1,11 @@
 import { Table, Row, Cell } from "@/components/ui/table";
-import { Currency, PlayerTest } from "@/store";
+import { Currency, Player } from "@/store/api/types";
 import { Badge } from "@/components/ui/badge";
 
 import Avatar from "@/assets/avatar-360w.webp";
 
 interface PlayersListProps {
-    players: PlayerTest[];
+    players: Player[];
     currency: Currency;
 }
 
@@ -43,7 +43,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                                     )}***${player?.playerLogin?.at(-1)}`}
                                 </span>
                             </Cell>
-                            <Cell>{`${player?.bet?.[currency].toFixed(
+                            <Cell>{`${player?.bet?.[currency]?.toFixed(
                                 2
                             )} ${currency}`}</Cell>
                             <Cell>
@@ -51,7 +51,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                             </Cell>
                             <Cell>
                                 {!isNaN(player?.win?.[currency] as number)
-                                    ? `${player?.win?.[currency].toFixed(
+                                    ? `${player?.win?.[currency]?.toFixed(
                                           2
                                       )} ${currency}`
                                     : "-"}

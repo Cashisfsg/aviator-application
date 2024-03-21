@@ -1,6 +1,7 @@
 import { forwardRef, useRef } from "react";
 
 import { useGetGameLimitsQuery } from "@/store/api/userApi";
+import { useAuth } from "@/store/hooks/useAuth";
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import { selectCurrentGameTab, setCurrentBet } from "@/store/slices/gameSlice";
 
@@ -12,11 +13,14 @@ interface BetInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const BetInput = forwardRef<HTMLInputElement, BetInputProps>(
     ({ betNumber, ...props }, ref) => {
-        const dispatch = useAppDispatch();
-        const { data: limits } = useGetGameLimitsQuery();
+        const { isAuthenticated } = useAuth();
+        const { data: limits } = useGetGameLimitsQuery(undefined, {
+            skip: !isAuthenticated
+        });
         const currentGameTab = useStateSelector(state =>
             selectCurrentGameTab(state, betNumber)
         );
+        const dispatch = useAppDispatch();
         const inputValidValue = useRef<string>(
             String(currentGameTab.currentBet)
         );

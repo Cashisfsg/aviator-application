@@ -1,5 +1,4 @@
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
-import { useGetUserBetsQuery } from "@/store/api/betApi";
 import { selectBonus, selectCurrentGameTab } from "@/store/slices/gameSlice";
 import {
     abortBet,
@@ -21,8 +20,6 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     );
     const bonus = useStateSelector(state => selectBonus(state));
     const rate = useStateSelector(state => selectRoundRate(state, betNumber));
-
-    const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const placeBet = () => {
         if (currentGameTab.currentBet > currentGameTab.balance) {
@@ -51,7 +48,6 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
         );
 
         dispatch(cashOut(betNumber));
-        refetch();
         onClick?.(event);
     };
 
