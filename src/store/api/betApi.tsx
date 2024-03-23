@@ -3,10 +3,14 @@ import { EntityState, createEntityAdapter } from "@reduxjs/toolkit";
 import { Bet, PaginationParams, PreviousRoundInfoResponse } from "./types";
 import { RootStore } from "../types";
 
-export interface Coefficient {
+interface Coefficient {
     _id: string;
-    coeff: number;
+    uid: number;
     createdAt: string;
+    updatedAt: string;
+    __v: number;
+    endedAt: string;
+    game_coeff: number;
 }
 
 export const topBetsEntityAdapter = createEntityAdapter({
@@ -191,10 +195,19 @@ export const betApi = createApi({
             //         : ["My"];
             // }
         }),
-        getLastThirtyCoefficients: builder.query<Coefficient[], void>({
+        getLastThirtyCoefficients: builder.query<
+            Pick<Coefficient, "_id" | "game_coeff">[],
+            void
+        >({
             query: () => ({
                 url: "bets/coeffs"
             }),
+            transformResponse: (response: Coefficient[]) => {
+                return response.map(rate => ({
+                    _id: rate._id,
+                    game_coeff: rate.game_coeff
+                }));
+            },
             providesTags: ["Coefficients"]
         }),
         getPreviousRoundInfo: builder.query<PreviousRoundInfoResponse, void>({

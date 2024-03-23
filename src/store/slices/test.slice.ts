@@ -7,7 +7,7 @@ type Currency = "USD" | "RUB" | "KZT" | "UZS" | "USDT";
 
 export type CurrencyRecordTest = Record<Currency, number>;
 
-interface RoundStatistic {
+export interface RoundStatistic {
     playersAmount: number;
     betAmount: CurrencyRecordTest;
     winAmount: CurrencyRecordTest;

@@ -18,6 +18,7 @@ import {
 import { userApi } from "../api/userApi";
 import { betApi } from "../api/betApi";
 import { toast } from "@/components/toasts/toast";
+import { authApi } from "..";
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
@@ -202,11 +203,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     }, 0);
 
                     if (!store.getState().game.currentRound) {
-                        console.log(
-                            "Current round: " +
-                                store.getState().game.currentRound
-                        );
-
                         store.dispatch(setCurrentRound(true));
                     }
                 });
@@ -216,6 +212,26 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 });
 
                 socket.connect();
+                break;
+
+            case "auth/logout":
+                if (!localStorage.getItem("token")) return;
+
+                store.dispatch(
+                    authApi.endpoints.signOut.initiate(
+                        {
+                            token: JSON.parse(
+                                localStorage.getItem("token") || ""
+                            )?.token
+                        },
+                        { subscribe: false, forceRefetch: true }
+                    )
+                );
+
+                socket.auth = { token: "" };
+
+                localStorage.removeItem("token");
+
                 break;
 
             case "webSocket/wsDisconnect":

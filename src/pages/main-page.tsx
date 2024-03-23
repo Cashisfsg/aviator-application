@@ -4,6 +4,9 @@ import { Chart } from "@/components/chart/chart";
 import { Header } from "@/containers/header/header";
 import { Toaster } from "@/components/ui/sonner";
 
+import { useAppDispatch } from "@/store";
+import { makeBet } from "@/store/slices/test.slice";
+
 export const MainPage = () => {
     // useEffect(() => {
     //     const onBeforeUnloadHandler = (event: BeforeUnloadEvent) => {
@@ -15,6 +18,7 @@ export const MainPage = () => {
     //         capture: true
     //     });
     // }, []);
+    const dispatch = useAppDispatch();
 
     return (
         <>
@@ -26,6 +30,13 @@ export const MainPage = () => {
                 <Statistics />
             </main>
 
+            <button
+                onClick={() =>
+                    dispatch(makeBet({ betNumber: 1, currency: "RUB", bet: 8 }))
+                }
+            >
+                Click
+            </button>
             <Toaster />
         </>
     );

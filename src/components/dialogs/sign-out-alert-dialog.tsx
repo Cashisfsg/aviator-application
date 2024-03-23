@@ -1,3 +1,6 @@
+import { useAppDispatch } from "@/store/hooks";
+import { logout } from "@/store/slices/authSlice";
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -8,8 +11,6 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 
-import { useSignOutMutation } from "@/store/api/authApi";
-
 interface SignOutAlertDialogProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,14 +20,10 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
     open,
     setOpen
 }) => {
-    const [signOut] = useSignOutMutation();
+    const dispatch = useAppDispatch();
 
-    const onClickHandler: React.MouseEventHandler<
-        HTMLButtonElement
-    > = async () => {
-        await signOut({
-            token: JSON.parse(localStorage.getItem("token") || "{}")?.token
-        });
+    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+        dispatch(logout());
     };
 
     return (

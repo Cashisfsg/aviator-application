@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     useConfirmPasswordChangeMutation,
@@ -20,6 +20,7 @@ import {
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
 import { toast } from "@/components/toasts/toast";
+import { EmailTooltip } from "@/components/email-tooltip";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -27,6 +28,7 @@ interface FormFields {
 
 export const ConfirmEmailForm = () => {
     const buttonRef = useRef<ResendCodeElement>(null);
+    const codeId = useId();
     const email = sessionStorage.getItem("email");
 
     const navigate = useNavigate();
@@ -88,9 +90,14 @@ export const ConfirmEmailForm = () => {
                         className="outline-none"
                     />
                 </Label>
-                <Label direction="column">
-                    <span className="text-sm">Введите код</span>
+                <div className="space-y-2">
+                    <p className="flex items-center justify-between">
+                        <label htmlFor={codeId}>Введите код</label>
+                        <EmailTooltip />
+                    </p>
                     <Input
+                        id={codeId}
+                        inputMode="numeric"
                         name="code"
                         required
                     />
@@ -99,7 +106,7 @@ export const ConfirmEmailForm = () => {
                         onClick={onClickHandler}
                         ref={buttonRef}
                     />
-                </Label>
+                </div>
                 <Button
                     variant="confirm"
                     disabled={isConfirming || isSending}

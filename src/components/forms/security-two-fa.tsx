@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useId } from "react";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -16,9 +16,11 @@ import {
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
 import { PreviousRouteLink } from "@/components/previous-route-link";
+import { EmailTooltip } from "@/components/email-tooltip";
 
 export const SecurityTwoFAForm = () => {
     const buttonRef = useRef<ResendCodeElement>(null);
+    const codeId = useId();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -85,9 +87,13 @@ export const SecurityTwoFAForm = () => {
                 />
             </Label>
 
-            <Label>
-                <span>Код</span>
+            <div className="space-y-2">
+                <p className="flex items-center justify-between">
+                    <label htmlFor={codeId}>Код</label>
+                    <EmailTooltip />
+                </p>
                 <Input
+                    id={codeId}
                     placeholder="Введите код"
                     name="code"
                     required
@@ -98,7 +104,7 @@ export const SecurityTwoFAForm = () => {
                     onClick={onClickHandler}
                     ref={buttonRef}
                 />
-            </Label>
+            </div>
             <button
                 disabled={isUserVerifying}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-2 disabled:cursor-wait disabled:opacity-80"

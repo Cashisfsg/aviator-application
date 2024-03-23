@@ -4,28 +4,18 @@ import { selectLastRate } from "@/store/slices/test.slice";
 import { useStateSelector, useAppDispatch } from "@/store/hooks";
 import { betApi, useGetLastThirtyCoefficientsQuery } from "@/store/api/betApi";
 
-// import  selectSocket,
-
-// useGetLastThirtyCoefficientsQuery
-// Coefficient,
-// useLazyGetLastThirtyCoefficientsQuery
-// "@/store";
-
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
     const [key, setKey] = useState(0);
 
     const lastRate = useStateSelector(state => selectLastRate(state));
-    // const roundState = useStateSelector(state => selectAirplaneState(state));
-    // const [coefficients, setCoefficients] = useState<Coefficient[]>([]);
+
     const dropdownMenuId = useId();
 
     const dispatch = useAppDispatch();
     const { data: coefficients, isSuccess } =
         useGetLastThirtyCoefficientsQuery();
-    // const [fetchCoefficients, { isSuccess }] =
-    //     useLazyGetLastThirtyCoefficientsQuery();
 
     useEffect(() => {
         if (!isSuccess) return;
@@ -38,22 +28,14 @@ export const LatestRatiosList = () => {
                     draft.length = draft.length - 1;
                     draft.unshift({
                         _id: new Date().toISOString(),
-                        coeff: lastRate,
-                        createdAt: new Date().toISOString()
+                        game_coeff: lastRate
+                        // createdAt: new Date().toISOString()
                     });
                 }
             )
         );
 
         setKey(key => key + 1);
-
-        // socket.on("game", setCoefficient);
-        // socket.on("crash", updateCoefficients);
-
-        // return () => {
-        //     socket.off("game", setCoefficient);
-        //     socket.off("crash", updateCoefficients);
-        // };
     }, [lastRate]);
 
     const onClickHandler: React.MouseEventHandler<
@@ -75,7 +57,7 @@ export const LatestRatiosList = () => {
                     {coefficients?.slice(0, 16)?.map((coefficient, i) => (
                         <Badge
                             key={`${coefficient?._id} - ${key}`}
-                            value={coefficient?.coeff}
+                            value={coefficient?.game_coeff}
                             className={generateClassName(i)}
                         />
                     ))}
@@ -143,7 +125,7 @@ export const LatestRatiosList = () => {
                     {coefficients?.map((coefficient, i) => (
                         <Badge
                             key={i}
-                            value={coefficient?.coeff}
+                            value={coefficient?.game_coeff}
                             className=""
                         />
                     ))}

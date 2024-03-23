@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useId } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -12,6 +12,8 @@ import { handleErrorResponse } from "@/store/services";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { EmailTooltip } from "@/components/email-tooltip";
+
 import {
     ResendCodeButton,
     ResendCodeElement
@@ -26,6 +28,7 @@ interface FormFields {
 
 export const SecurityConfirmExistingEmailForm = () => {
     const buttonRef = useRef<ResendCodeElement>(null);
+    const codeId = useId();
 
     const { isAuthenticated } = useAuth();
     const { data: user } = useGetUserQuery(undefined, {
@@ -87,9 +90,13 @@ export const SecurityConfirmExistingEmailForm = () => {
                 />
             </Label>
 
-            <Label>
-                <span>Код</span>
+            <div className="space-y-2">
+                <p className="flex items-center justify-between">
+                    <label htmlFor={codeId}>Код</label>
+                    <EmailTooltip />
+                </p>
                 <Input
+                    id={codeId}
                     placeholder="Введите код"
                     name="code"
                     required
@@ -100,7 +107,7 @@ export const SecurityConfirmExistingEmailForm = () => {
                     onClick={onClickHandler}
                     ref={buttonRef}
                 />
-            </Label>
+            </div>
 
             <button
                 disabled={isLoading}

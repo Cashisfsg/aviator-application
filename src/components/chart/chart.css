@@ -193,10 +193,15 @@ figure {
     }
 }
 
+.slider-bar {
+    fill: rgba(255, 255, 255, 0.8);
+    width: 100%;
+}
+
 .slider {
     z-index: 1;
     height: 100%;
-    animation: slider 4.55s linear;
+    /* animation: slider 4.55s linear forwards; */
 }
 
 .use-slider {
@@ -204,11 +209,11 @@ figure {
 }
 
 @keyframes slider {
-    0% {
-        width: 100%;
+    from {
+        width: 130px;
     }
-    100% {
-        width: 0%;
+    to {
+        width: 0px;
     }
 }
 

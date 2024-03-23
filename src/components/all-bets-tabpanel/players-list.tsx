@@ -13,6 +13,10 @@ export const PlayersList: React.FC<PlayersListProps> = ({
     players,
     currency
 }) => {
+    const onErrorHandler: React.ReactEventHandler<HTMLImageElement> = event => {
+        event.currentTarget.src = Avatar;
+    };
+
     return (
         <Table
             headers={["Игрок", "Ставка", "Коэф.", "Выигрыш"]}
@@ -31,6 +35,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                             <Cell className="flex items-center gap-x-2">
                                 <img
                                     src={player.profileImage || Avatar}
+                                    onError={onErrorHandler}
                                     alt="User avatar image"
                                     height="30"
                                     width="30"

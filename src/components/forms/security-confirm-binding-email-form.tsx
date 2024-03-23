@@ -1,4 +1,5 @@
 // import { useState, useId } from "react";
+import { useRef, useId } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -15,8 +16,9 @@ import {
 } from "@/components/ui/resend-code-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { EmailTooltip } from "@/components/email-tooltip";
+
 import { ImSpinner9 } from "react-icons/im";
-import { useRef } from "react";
 
 interface FormFields {
     code: HTMLInputElement;
@@ -35,7 +37,7 @@ export const SecurityConfirmBindingEmailForm = () => {
     const [sendChangeCode, { isLoading: isCodeSending }] =
         useSendEmailChangeCodeMutation();
 
-    // const codeId = useId();
+    const codeId = useId();
     // const codeErrorId = useId();
 
     const [changeEmail, { isLoading: isEmailConfirming }] =
@@ -91,17 +93,17 @@ export const SecurityConfirmBindingEmailForm = () => {
                     className="border-[#414148] focus-visible:outline-transparent"
                 />
             </Label>
-            <Label>
-                <span>Введите код</span>
+            <div className="space-y-2">
+                <p className="flex items-center justify-between">
+                    <label htmlFor={codeId}>Код</label>
+                    <EmailTooltip />
+                </p>
+
                 <Input
-                    // id={codeId}
+                    id={codeId}
                     placeholder="Введите код"
+                    required
                     name="code"
-                    // aria-invalid={errorState.isError}
-                    // aria-errormessage={
-                    //     errorState.isError ? codeErrorId : undefined
-                    // }
-                    // onFocus={onFocusHandler}
                     className="border-[#414148]"
                 />
                 {/* {errorState.isError ? (
@@ -116,7 +118,7 @@ export const SecurityConfirmBindingEmailForm = () => {
                     onClick={onClickHandler}
                     ref={buttonRef}
                 />
-            </Label>
+            </div>
             <button
                 disabled={isEmailConfirming}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"

@@ -2,7 +2,12 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import {
+    useForm,
+    SubmitHandler,
+    UseFormReturn,
+    ControllerRenderProps
+} from "react-hook-form";
 import {
     registrationCredentialsSchema as formSchema,
     RegistrationCredentialsFormSchema as FormSchema
@@ -59,7 +64,6 @@ export const SignUpForm = () => {
     const tg = (
         window as Window & typeof globalThis & { Telegram: TelegramClient }
     ).Telegram.WebApp;
-    const [open, setOpen] = useState(false);
     const [promoOpen, setPromoOpen] = useState(false);
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
@@ -92,24 +96,23 @@ export const SignUpForm = () => {
         // from,
         // telegramId
     }) => {
-        const response = await createNewUser({
-            currency,
-            login,
-            password,
-            passwordConfirm,
-            email,
-            from:
-                JSON.parse(sessionStorage.getItem("referral") || "{}")?.uid ||
-                undefined,
-            telegramId: tg?.initDataUnsafe?.user?.id
-        });
+        try {
+            await createNewUser({
+                currency,
+                login,
+                password,
+                passwordConfirm,
+                email,
+                from:
+                    JSON.parse(sessionStorage.getItem("referral") || "{}")
+                        ?.uid || undefined,
+                telegramId: tg?.initDataUnsafe?.user?.id
+            }).unwrap();
 
-        sessionStorage.removeItem("referral");
-
-        if (response?.error) return;
-
-        navigate("/main");
-        dialogCloseRef?.current?.click();
+            sessionStorage.removeItem("referral");
+            navigate("/main");
+            dialogCloseRef?.current?.click();
+        } catch (error) {}
     };
 
     return (
@@ -124,81 +127,10 @@ export const SignUpForm = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Валюта</FormLabel>
-                            <Popover
-                                open={open}
-                                onOpenChange={setOpen}
-                            >
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            role="combobox"
-                                            className={cn(
-                                                "w-full justify-between border-2 border-gray-500 bg-none py-4 text-base aria-[invalid=true]:border-red-750 focus:aria-[invalid=true]:outline focus:aria-[invalid=true]:-outline-offset-2",
-                                                !field.value &&
-                                                    "text-muted-foreground"
-                                            )}
-                                            {...field}
-                                        >
-                                            {field.value
-                                                ? currencies.find(
-                                                      currency =>
-                                                          currency.value ===
-                                                          field.value
-                                                  )?.label
-                                                : "Выберите валюту"}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[270px] p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Поиск валюты..." />
-                                        <CommandEmpty>
-                                            Валюта не найдена
-                                        </CommandEmpty>
-                                        <CommandGroup>
-                                            {/* <ScrollArea className="h-64"> */}
-                                            {currencies.map(currency => (
-                                                <CommandItem
-                                                    value={currency.label}
-                                                    key={currency.value}
-                                                    onSelect={() => {
-                                                        form.resetField(
-                                                            "currency",
-                                                            {
-                                                                keepError: false
-                                                            }
-                                                        );
-                                                        form.setValue(
-                                                            "currency",
-                                                            currency.value
-                                                        );
-
-                                                        setOpen(false);
-                                                    }}
-                                                >
-                                                    {/* <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            currency.value ===
-                                                                field.value
-                                                                ? "opacity-100"
-                                                                : "opacity-0"
-                                                        )}
-                                                    /> */}
-                                                    <img
-                                                        src={currency.icon}
-                                                        alt={currency.label}
-                                                        className="mr-2 h-6 w-6"
-                                                    />{" "}
-                                                    {currency.label}
-                                                </CommandItem>
-                                            ))}
-                                            {/* </ScrollArea> */}
-                                        </CommandGroup>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            <CurrenciesPopover
+                                form={form}
+                                field={field}
+                            />
 
                             <FormMessage />
                         </FormItem>
@@ -367,5 +299,103 @@ export const SignUpForm = () => {
                 />
             </form>
         </Form>
+    );
+};
+
+interface Currency
+    extends ControllerRenderProps<
+        {
+            currency: string;
+            login: string;
+            password: string;
+            passwordConfirm: string;
+            accepted_terms: true;
+            email?: string | undefined;
+            promocode?: string | undefined;
+            telegramId?: number | undefined;
+        },
+        "currency"
+    > {}
+interface FormProps
+    extends UseFormReturn<
+        {
+            password: string;
+            passwordConfirm: string;
+            currency: string;
+            login: string;
+            accepted_terms: true;
+            email?: string | undefined;
+            promocode?: string | undefined;
+            telegramId?: number | undefined;
+        },
+        any,
+        undefined
+    > {}
+
+interface CurrenciesPopoverProps {
+    form: FormProps;
+    field: Currency;
+}
+
+const CurrenciesPopover: React.FC<CurrenciesPopoverProps> = ({
+    form,
+    field
+}) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Popover
+            open={open}
+            onOpenChange={setOpen}
+        >
+            <PopoverTrigger asChild>
+                <FormControl>
+                    <Button
+                        role="combobox"
+                        className={cn(
+                            "w-full justify-between border-2 border-gray-500 bg-none py-4 text-base aria-[invalid=true]:border-red-750 focus:aria-[invalid=true]:outline focus:aria-[invalid=true]:-outline-offset-2",
+                            !field.value && "text-muted-foreground"
+                        )}
+                        {...field}
+                    >
+                        {field.value
+                            ? currencies.find(
+                                  currency => currency.value === field.value
+                              )?.label
+                            : "Выберите валюту"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-[270px] p-0">
+                <Command>
+                    <CommandInput placeholder="Поиск валюты..." />
+                    <CommandEmpty>Валюта не найдена</CommandEmpty>
+                    <CommandGroup>
+                        {currencies.map(currency => (
+                            <CommandItem
+                                value={currency.label}
+                                key={currency.value}
+                                onSelect={() => {
+                                    form.resetField("currency", {
+                                        keepError: false
+                                    });
+                                    form.setValue("currency", currency.value);
+
+                                    setOpen(false);
+                                }}
+                            >
+                                <img
+                                    src={currency.icon}
+                                    alt={currency.label}
+                                    className="mr-2 h-6 w-6"
+                                />{" "}
+                                {currency.label}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
     );
 };

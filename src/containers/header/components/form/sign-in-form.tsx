@@ -22,10 +22,12 @@ import {
     ResendCodeButton,
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
+import { EmailTooltip } from "@/components/email-tooltip";
 
 export const SignInForm = () => {
     const [verificationModeEnabled, setVerificationModeEnabled] =
         useState(false);
+    const codeId = useId();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -192,9 +194,13 @@ export const SignInForm = () => {
                     onSubmit={onSubmitVerifyHandler}
                     className="mt-4"
                 >
-                    <Label>
-                        <span>Код из Email</span>
+                    <div className="space-y-2">
+                        <p className="flex items-center justify-between">
+                            <label htmlFor={codeId}>Код из Email</label>
+                            <EmailTooltip />
+                        </p>
                         <Input
+                            id={codeId}
                             inputMode="numeric"
                             required
                             name="code"
@@ -205,7 +211,7 @@ export const SignInForm = () => {
                             disabled={isVerifying}
                             ref={buttonRef}
                         />
-                    </Label>
+                    </div>
                 </form>
             ) : null}
             <p className="text-right text-sm text-blue-500">

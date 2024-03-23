@@ -35,17 +35,13 @@ export const authSlice = createSlice({
         } as AuthState;
     },
     reducers: {
-        // logout: state => {
-        //     localStorage.removeItem("token");
-        //     state.token = null;
-        //     state.isAuthenticated = false;
-        //     state.initData = {
-        //         login: state?.initData?.login as string,
-        //         telegramId: state.initData?.telegramId as number,
-        //         profileImage: state.initData?.profileImage as string
-        //     };
-        //     userApi.util.resetApiState();
-        // },
+        logout: state => {
+            userApi.util.resetApiState();
+            // localStorage.removeItem("token");
+            state.token = null;
+            state.isAuthenticated = false;
+            userApi.util.resetApiState();
+        }
         // setUserInitData: (
         //     state,
         //     {
@@ -105,22 +101,24 @@ export const authSlice = createSlice({
                     );
                     state.token = payload.token;
                 }
-            )
-            .addMatcher(authApi.endpoints.signOut.matchFulfilled, state => {
-                localStorage.removeItem("token");
-                state.token = null;
-                state.isAuthenticated = false;
-                // state.initData = {
-                //     login: state?.initData?.login as string,
-                //     telegramId: state.initData?.telegramId as number,
-                //     profileImage: state.initData?.profileImage as string
-                // };
-                userApi.util.resetApiState();
-            });
+            );
+        // .addMatcher(authApi.endpoints.signOut.matchFulfilled, state => {
+        //     localStorage.removeItem("token");
+        //     state.token = null;
+        //     state.isAuthenticated = false;
+        // state.initData = {
+        //     login: state?.initData?.login as string,
+        //     telegramId: state.initData?.telegramId as number,
+        //     profileImage: state.initData?.profileImage as string
+        // };
+        //     userApi.util.resetApiState();
+        // });
     }
 });
 
 export const { reducer: authReducer, actions: authActions } = authSlice;
+
+export const { logout } = authSlice.actions;
 
 export const getAuthenticationStatus = (state: RootStore) => ({
     token: state.auth.token,

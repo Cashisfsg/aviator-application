@@ -13,6 +13,7 @@ import { RateCoefficient, RateElement } from "./rate-coefficient";
 import { SoundEffects } from "../sound-effects/sound-effects";
 
 export const Chart = () => {
+    const [isSliderVisible, setIsSliderVisible] = useState(true);
     const airplaneRef = useRef<SVGUseElement>(null);
     const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
@@ -27,9 +28,9 @@ export const Chart = () => {
 
     useEffect(() => {
         if (animationEnabled) {
-            airplaneRef.current?.classList.remove("hidden");
+            airplaneRef.current?.classList.remove("opacity-0");
         } else {
-            airplaneRef.current?.classList.add("hidden");
+            airplaneRef.current?.classList.add("opacity-0");
         }
     }, [animationEnabled]);
 
@@ -48,12 +49,20 @@ export const Chart = () => {
                 );
                 setTimeout(() => {
                     animationRef.current?.cancel();
-                    airplaneRef.current?.classList.replace("fly", "hidden");
+                    airplaneRef.current?.classList.remove("fly");
+                    airplaneRef.current?.classList.add("hidden");
                 }, 1000);
             }
 
             rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
+            if (startScreen) setStartScreen(false);
+            if (isSliderVisible) setIsSliderVisible(false);
+            if (!rateRef.current?.className?.includes("opacity-100")) {
+                if (!rateRef.current) return;
+                rateRef.current.className =
+                    rateRef.current?.className + " opacity-100";
+            }
         };
 
         const startGame = () => {
@@ -97,10 +106,15 @@ export const Chart = () => {
 
         if (airplaneState === "loading") {
             loading();
+            setIsSliderVisible(true);
         } else if (airplaneState === "crash") {
             crash();
-        } else if (airplaneState === "game") {
+            // setTimeout(() => {
+            //     setIsSliderVisible(false);
+            // }, 500);
+        } else if (airplaneState === "start") {
             game();
+            // if (!isSliderVisible) setIsSliderVisible(false);
         }
     }, [animationEnabled, airplaneState]);
 
@@ -124,7 +138,7 @@ export const Chart = () => {
                 >
                     <defs>
                         <Propeller />
-                        <Slider />
+                        <Slider isVisible={isSliderVisible} />
                         <Airplane />
                     </defs>
 
@@ -159,6 +173,7 @@ export const Chart = () => {
                                         "opacity-100",
                                         "opacity-0"
                                     );
+                                    setIsSliderVisible(false);
                                 }}
                             />
                             <text
@@ -172,12 +187,14 @@ export const Chart = () => {
                             >
                                 Ожидаем новый раунд
                             </text>
-                            <use
-                                className="use-slider"
-                                href="#slider"
-                                x="50%"
-                                y="50%"
-                            />
+                            {isSliderVisible ? (
+                                <use
+                                    className="use-slider"
+                                    href="#slider"
+                                    x="50%"
+                                    y="50%"
+                                />
+                            ) : null}
                         </g>
                     ) : null}
 

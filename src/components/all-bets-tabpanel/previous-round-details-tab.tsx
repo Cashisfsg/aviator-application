@@ -16,14 +16,18 @@ export const PreviousRoundDetailsTab = () => {
                 <> */}
             <TotalRoundDetailsTable
                 betsAmount={roundDetails?.bets.length}
-                totalBets={roundDetails?.betAmount?.[balance?.currency]}
-                totalWinnings={roundDetails?.winAmount?.[balance?.currency]}
-                currency={balance?.currency}
+                totalBets={
+                    roundDetails?.betAmount?.[balance?.currency || "USD"]
+                }
+                totalWinnings={
+                    roundDetails?.winAmount?.[balance?.currency || "USD"]
+                }
+                currency={balance?.currency || "USD"}
             />
 
             <PlayersList
                 players={roundDetails?.bets || []}
-                currency={balance?.currency}
+                currency={balance?.currency || "USD"}
             />
             {/* </>
             ) : null} */}
