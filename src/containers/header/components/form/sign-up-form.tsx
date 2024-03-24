@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,6 +52,8 @@ import UAIcon from "@/assets/ua-flag.png";
 import UZIcon from "@/assets/uz-flag.png";
 
 import { cn } from "@/utils";
+import { Accordion } from "@/components/ui/accordion/accordion";
+import { RiArrowDownSLine } from "react-icons/ri";
 
 const currencies = [
     { id: 1, label: "Казахстанский тенге", value: "KZT", icon: KZIcon },
@@ -92,7 +94,8 @@ export const SignUpForm = () => {
         login,
         password,
         passwordConfirm,
-        email
+        email,
+        promocode
         // from,
         // telegramId
     }) => {
@@ -103,6 +106,7 @@ export const SignUpForm = () => {
                 password,
                 passwordConfirm,
                 email,
+                promocode,
                 from:
                     JSON.parse(sessionStorage.getItem("referral") || "{}")
                         ?.uid || undefined,
@@ -202,7 +206,7 @@ export const SignUpForm = () => {
                     name="promocode"
                     render={({ field }) => (
                         <FormItem>
-                            <Popover
+                            {/* <Popover
                                 open={promoOpen}
                                 onOpenChange={setPromoOpen}
                             >
@@ -242,8 +246,14 @@ export const SignUpForm = () => {
                                         </button>
                                     </form>
                                 </PopoverContent>
-                            </Popover>
+                            </Popover> */}
 
+                            <FormControl>
+                                <PromoCode
+                                    form={form}
+                                    field={field}
+                                />
+                            </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -302,20 +312,6 @@ export const SignUpForm = () => {
     );
 };
 
-interface Currency
-    extends ControllerRenderProps<
-        {
-            currency: string;
-            login: string;
-            password: string;
-            passwordConfirm: string;
-            accepted_terms: true;
-            email?: string | undefined;
-            promocode?: string | undefined;
-            telegramId?: number | undefined;
-        },
-        "currency"
-    > {}
 interface FormProps
     extends UseFormReturn<
         {
@@ -330,6 +326,21 @@ interface FormProps
         },
         any,
         undefined
+    > {}
+
+interface Currency
+    extends ControllerRenderProps<
+        {
+            currency: string;
+            login: string;
+            password: string;
+            passwordConfirm: string;
+            accepted_terms: true;
+            email?: string | undefined;
+            promocode?: string | undefined;
+            telegramId?: number | undefined;
+        },
+        "currency"
     > {}
 
 interface CurrenciesPopoverProps {
@@ -397,5 +408,52 @@ const CurrenciesPopover: React.FC<CurrenciesPopoverProps> = ({
                 </Command>
             </PopoverContent>
         </Popover>
+    );
+};
+
+interface PromoCode
+    extends ControllerRenderProps<
+        {
+            currency: string;
+            login: string;
+            password: string;
+            passwordConfirm: string;
+            accepted_terms: true;
+            email?: string | undefined;
+            promocode?: string | undefined;
+            telegramId?: number | undefined;
+        },
+        "promocode"
+    > {}
+
+interface PromoCodeProps {
+    form: FormProps;
+    field: PromoCode;
+}
+
+const PromoCode: React.FC<PromoCodeProps> = ({ form, field }) => {
+    const promocodeId = useId();
+
+    return (
+        <Accordion className="space-y-2">
+            <Accordion.Trigger className="flex justify-between border-b  pb-1 text-blue-500 transition-all duration-1000 group-aria-[expanded=false]:border-b-white/0 group-aria-[expanded=true]:border-b-white/100">
+                <label htmlFor={promocodeId}>Введите промокод</label>
+                <RiArrowDownSLine className="text-2xl text-white duration-500 group-aria-[expanded=true]:rotate-180" />
+            </Accordion.Trigger>
+
+            <Accordion.Content>
+                <div>
+                    <Input
+                        id={promocodeId}
+                        // onChange={event =>
+                        //     form.setValue("promocode", event.target.value)
+                        // }
+                        // style={{ paddingBlock: "unset" }}
+                        className="focus-visible:outline-none"
+                        {...field}
+                    />
+                </div>
+            </Accordion.Content>
+        </Accordion>
     );
 };

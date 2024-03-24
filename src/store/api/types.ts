@@ -8,6 +8,7 @@ export interface UserRegistrationCredentials {
     email?: string;
     telegramId?: number;
     from?: string;
+    promocode?: string;
 }
 
 export interface AuthenticationUserRequest {
