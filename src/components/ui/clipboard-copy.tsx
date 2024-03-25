@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@/components/toasts/toast";
 
 interface ClipboardCopyProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -24,13 +24,7 @@ export const ClipboardCopy: React.FC<ClipboardCopyProps> = ({
             console.error(error);
         }
 
-        toast(toastMessage, {
-            position: "top-center",
-            action: {
-                label: "Скрыть",
-                onClick: () => {}
-            }
-        });
+        toast.notify(toastMessage);
     };
 
     return (

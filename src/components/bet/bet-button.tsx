@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import { selectBonus, selectCurrentGameTab } from "@/store/slices/gameSlice";
 import {
@@ -14,6 +16,9 @@ interface BetButtonProps {
 }
 
 export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
+    const clickCounter = useRef(1);
+    const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
     const dispatch = useAppDispatch();
     const currentGameTab = useStateSelector(state =>
         selectCurrentGameTab(state, betNumber)
@@ -21,19 +26,35 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const bonus = useStateSelector(state => selectBonus(state));
     const rate = useStateSelector(state => selectRoundRate(state, betNumber));
 
-    const placeBet = () => {
+    const placeBet: React.MouseEventHandler<HTMLButtonElement> = event => {
+        const target = event.currentTarget;
+
         if (currentGameTab.currentBet > currentGameTab.balance) {
             toast.notEnoughMoney();
-            return;
-        }
+            clickCounter.current += 1;
+            clearTimeout(timerRef.current);
 
-        dispatch(
-            makeBet({
-                betNumber,
-                currency: currentGameTab.currency,
-                bet: currentGameTab.currentBet
-            })
-        );
+            if (clickCounter.current <= 3) {
+                timerRef.current = setTimeout(() => {
+                    clickCounter.current = 1;
+                }, 5000);
+            } else {
+                target.setAttribute("disabled", "");
+
+                timerRef.current = setTimeout(() => {
+                    clickCounter.current = 1;
+                    target.removeAttribute("disabled");
+                }, 10000);
+            }
+        } else {
+            dispatch(
+                makeBet({
+                    betNumber,
+                    currency: currentGameTab.currency,
+                    bet: currentGameTab.currentBet
+                })
+            );
+        }
     };
 
     const cancelBet = () => {
@@ -57,7 +78,7 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 <button
                     style={{ textShadow: "0 1px 2px rgba(0, 0, 0, .5)" }}
                     onClick={placeBet}
-                    className="min-h-[86px] rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] mh:hover:bg-green-350"
+                    className="min-h-[86px] select-none rounded-2.5xl border-2 border-green-50 bg-green-450 px-3 py-1.5 font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#1c7430] disabled:pointer-events-none disabled:opacity-60 mh:hover:bg-green-350"
                 >
                     <p className="text-xl">Ставка</p>
                     <p>
@@ -100,7 +121,7 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 <button
                     onClick={cashOutMoney}
                     disabled={bonus.bonusActive && !bonus.bonusCashOutEnabled}
-                    className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] disabled:opacity-80 mh:hover:enabled:bg-[#f58708] mh:disabled:hover:cursor-not-allowed"
+                    className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] disabled:opacity-60 mh:hover:enabled:bg-[#f58708] mh:disabled:hover:cursor-not-allowed"
                 >
                     <p>Вывести</p>
                     <p className="text-2xl">

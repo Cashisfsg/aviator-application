@@ -180,3 +180,15 @@ input[type="checkbox"]:checked {
 
     top: 50%;
 }
+
+.accordion {
+    @apply group-aria-[expanded=false]:border-b-0 group-aria-[expanded=true]:border-b-2;
+
+    border-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0)
+        )
+        1;
+}

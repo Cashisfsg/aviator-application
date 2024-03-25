@@ -5,13 +5,7 @@ import BackgroundMusic from "./assets/sound/background_music.mp3";
 import "./App.css";
 import { useAppDispatch, useStateSelector } from "./store/hooks";
 import { selectMusicSettings } from "./store/slices/settingsSlice";
-import {
-    wsConnect
-    // setGameDetails,
-    // GameDetails,
-    // selectSocket
-} from "./store/slices/socketSlice";
-// import { TelegramClient } from "./store/api/types";
+import { wsConnect } from "./store/slices/socketSlice";
 
 const ReactRouterProvider = lazy(async () =>
     import("@/router/provider").then(module => ({
@@ -20,30 +14,9 @@ const ReactRouterProvider = lazy(async () =>
 );
 
 export const App = () => {
-    // const tg = (
-    //     window as Window & typeof globalThis & { Telegram: TelegramClient }
-    // ).Telegram.WebApp;
-
     const audioRef = useRef<HTMLAudioElement>(null);
     const dispatch = useAppDispatch();
     const musicEnabled = useStateSelector(state => selectMusicSettings(state));
-    // const socket = useStateSelector(state => selectSocket(state));
-
-    // useEffect(() => {
-    //     if (!tg?.initDataUnsafe?.user) return;
-
-    //     dispatch(
-    //         setUserInitData({
-    //             telegramId: tg?.initDataUnsafe?.user?.id,
-    //             profileImage: tg?.initDataUnsafe?.user?.photo_url,
-    //             login: tg?.initDataUnsafe?.user?.first_name
-    //         })
-    //     );
-    // }, [
-    //     tg?.initDataUnsafe?.user?.id,
-    //     tg?.initDataUnsafe?.user?.photo_url,
-    //     tg?.initDataUnsafe?.user?.first_name
-    // ]);
 
     useEffect(() => {
         if (musicEnabled) {

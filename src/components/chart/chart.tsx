@@ -4,7 +4,6 @@ import { useStateSelector } from "@/store/hooks";
 import { selectAirplaneState } from "@/store/slices/test.slice";
 import { selectAnimationSettings } from "@/store/slices/settingsSlice";
 
-// import { socket } from "@/components/socket/socket";
 import "./chart.css";
 import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
@@ -149,7 +148,15 @@ export const Chart = () => {
                         href="#airplane"
                         className="airplane origin-top-left"
                         ref={airplaneRef}
-                    />
+                    >
+                        {/* <animateMotion
+                            path="M21,203 C151,210 289,164 321,27 z"
+                            dur="3s"
+                            repeatCount="indefinite"
+                            // rotate="auto"
+                            fill="remove"
+                        /> */}
+                    </use>
 
                     {startScreen ? (
                         <g

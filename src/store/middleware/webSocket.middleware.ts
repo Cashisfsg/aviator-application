@@ -228,6 +228,8 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     )
                 );
 
+                store.dispatch(userApi.util.resetApiState());
+
                 socket.auth = { token: "" };
 
                 localStorage.removeItem("token");
