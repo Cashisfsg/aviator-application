@@ -51,7 +51,7 @@ figure {
     transform-style: preserve-3d;
     translate: 10px 200px;
     rotate: -12deg;
-    transition: all 3s linear;
+    /* transition: all 3s linear; */
 }
 
 .fly {
