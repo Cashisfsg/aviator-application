@@ -3,12 +3,13 @@ import {
     // useEffect,
     useRef,
     forwardRef,
-    useImperativeHandle
+    useImperativeHandle,
+    useEffect
 } from "react";
 
 // import { selectSocket, useStateSelector } from "@/store";
 
-import { selectRate } from "@/store/slices/test.slice";
+import { selectAirplaneState, selectRate } from "@/store/slices/test.slice";
 import { useStateSelector } from "@/store/hooks";
 
 export interface RateElement extends React.ComponentProps<"g"> {
@@ -30,6 +31,10 @@ export const RateCoefficient = forwardRef<RateElement, RateElementAttributes>(
         const textRef = useRef<SVGTextElement>(null);
         const rateRef = useRef<SVGTextElement>(null);
 
+        const airplaneState = useStateSelector(state =>
+            selectAirplaneState(state)
+        );
+
         // useEffect(() => {
         //     const setRate = ({ x }: { x: number }) => {
         //         setValue(x.toFixed(2));
@@ -42,37 +47,56 @@ export const RateCoefficient = forwardRef<RateElement, RateElementAttributes>(
         //     };
         // }, [isAnimationPlaying, socket]);
 
-        useImperativeHandle(
-            ref,
-            () => ({
-                startAnimation: () => {
-                    groupRef.current?.classList.replace(
-                        "opacity-0",
-                        "opacity-100"
-                    );
-                    // setIsAnimationPlaying(true);
-                },
-                stopAnimation: () => {
-                    textRef.current?.classList.remove("opacity-0");
-                    textRef.current?.classList.add("opacity-100");
-                    rateRef.current?.setAttribute("fill", "#e50539");
-                    // setIsAnimationPlaying(false);
-                },
-                resetAnimation: () => {
-                    groupRef.current?.classList.replace(
-                        "opacity-100",
-                        "opacity-0"
-                    );
-                    textRef.current?.classList.replace(
-                        "opacity-100",
-                        "opacity-0"
-                    );
-                    rateRef.current?.setAttribute("fill", "#fff");
-                    // setValue(0);
-                }
-            }),
-            []
-        );
+        // useImperativeHandle(
+        //     ref,
+        //     () => ({
+        //         startAnimation: () => {
+        //             groupRef.current?.classList.replace(
+        //                 "opacity-0",
+        //                 "opacity-100"
+        //             );
+        //             // setIsAnimationPlaying(true);
+        //         },
+        //         stopAnimation: () => {
+        //             textRef.current?.classList.remove("opacity-0");
+        //             textRef.current?.classList.add("opacity-100");
+        //             rateRef.current?.setAttribute("fill", "#e50539");
+        //             // setIsAnimationPlaying(false);
+        //         },
+        //         resetAnimation: () => {
+        //             groupRef.current?.classList.replace(
+        //                 "opacity-100",
+        //                 "opacity-0"
+        //             );
+        //             textRef.current?.classList.replace(
+        //                 "opacity-100",
+        //                 "opacity-0"
+        //             );
+        //             rateRef.current?.setAttribute("fill", "#fff");
+        //             // setValue(0);
+        //         }
+        //     }),
+        //     []
+        // );
+
+        useEffect(() => {
+            if (airplaneState === "start") {
+                groupRef.current?.classList.replace("opacity-0", "opacity-100");
+            } else if (airplaneState === "crash") {
+                groupRef.current?.classList.replace("opacity-0", "opacity-100");
+
+                textRef.current?.classList.remove("opacity-0");
+                textRef.current?.classList.add("opacity-100");
+                rateRef.current?.setAttribute("fill", "#e50539");
+            } else if (airplaneState === "loading") {
+                groupRef.current?.classList.replace("opacity-100", "opacity-0");
+                // groupRef.current?.classList.remove("opacity-100");
+                // groupRef.current?.classList.add("opacity-0");
+
+                textRef.current?.classList.replace("opacity-100", "opacity-0");
+                rateRef.current?.setAttribute("fill", "#fff");
+            }
+        }, [airplaneState]);
 
         return (
             <g

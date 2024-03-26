@@ -9,11 +9,13 @@ export const Slider: React.FC<SliderProps> = ({ isVisible, ...props }) => {
 
     useLayoutEffect(() => {
         if (!isVisible) return;
-        console.log("Start animation");
 
-        animateRef?.current?.beginElement();
-
-        console.log(animateRef.current);
+        if (animateRef?.current?.beginElement) {
+            animateRef?.current?.beginElement();
+        } else if (animateRef?.current?.beginElementAt) {
+            animateRef?.current?.beginElementAt(0);
+        }
+        // animateRef?.current?.beginElement();
     }, [isVisible]);
 
     return (

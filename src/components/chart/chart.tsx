@@ -14,7 +14,7 @@ import { SoundEffects } from "../sound-effects/sound-effects";
 export const Chart = () => {
     const [isSliderVisible, setIsSliderVisible] = useState(true);
     const airplaneRef = useRef<SVGUseElement>(null);
-    const rateRef = useRef<RateElement>(null);
+    // const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
     const animationRef = useRef<Animation>();
 
@@ -53,15 +53,15 @@ export const Chart = () => {
                 }, 1000);
             }
 
-            rateRef.current?.stopAnimation();
+            // rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
             if (startScreen) setStartScreen(false);
             if (isSliderVisible) setIsSliderVisible(false);
-            if (!rateRef.current?.className?.includes("opacity-100")) {
-                if (!rateRef.current) return;
-                rateRef.current.className =
-                    rateRef.current?.className + " opacity-100";
-            }
+            // if (!rateRef.current?.className?.includes("opacity-100")) {
+            //     if (!rateRef.current) return;
+            //     rateRef.current.className =
+            //         rateRef.current?.className + " opacity-100";
+            // }
         };
 
         const startGame = () => {
@@ -79,7 +79,7 @@ export const Chart = () => {
         const restart = () => {
             if (!airplaneRef.current) return;
 
-            rateRef.current?.resetAnimation();
+            // rateRef.current?.resetAnimation();
 
             containerRef.current?.setAttribute("data-active", "true");
         };
@@ -90,7 +90,7 @@ export const Chart = () => {
         };
 
         const game = () => {
-            rateRef.current?.startAnimation();
+            // rateRef.current?.startAnimation();
             setStartScreen(false);
             if (animationEnabled) {
                 airplaneRef.current?.classList.add("fly");
@@ -149,13 +149,13 @@ export const Chart = () => {
                         className="airplane origin-top-left"
                         ref={airplaneRef}
                     >
-                        {/* <animateMotion
+                        <animateMotion
                             path="M21,203 C151,210 289,164 321,27 z"
                             dur="3s"
                             repeatCount="indefinite"
                             // rotate="auto"
                             fill="remove"
-                        /> */}
+                        />
                     </use>
 
                     {startScreen ? (
@@ -205,8 +205,10 @@ export const Chart = () => {
                         </g>
                     ) : null}
 
-                    <RateCoefficient ref={rateRef} />
-                    <g transform="translate(10, 270) scale(0.95, 1)">
+                    <RateCoefficient
+                    // ref={rateRef}
+                    />
+                    <g transform="translate(15, 270) scale(0.95, 1)">
                         {Array(10)
                             .fill(0)
                             .map((_, i) => (
@@ -259,7 +261,7 @@ export const Chart = () => {
                                             <animate
                                                 attributeName="cy"
                                                 values={`${i * 10}%; ${
-                                                    (i + 1) * 10
+                                                    (i + 1) * 9.9
                                                 }%`}
                                                 dur="10s"
                                                 begin="0s"
