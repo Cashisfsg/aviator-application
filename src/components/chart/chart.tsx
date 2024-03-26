@@ -37,21 +37,21 @@ export const Chart = () => {
         const crash = () => {
             if (!airplaneRef.current) return;
 
-            if (animationEnabled) {
-                animationRef.current = airplaneRef.current.animate(
-                    [
-                        {
-                            translate: "800px 0px"
-                        }
-                    ],
-                    { duration: 500, iterations: 1, fill: "forwards" }
-                );
-                setTimeout(() => {
-                    animationRef.current?.cancel();
-                    airplaneRef.current?.classList.remove("fly");
-                    airplaneRef.current?.classList.add("hidden");
-                }, 1000);
-            }
+            // if (animationEnabled) {
+            animationRef.current = airplaneRef.current.animate(
+                [
+                    {
+                        translate: "800px 0px"
+                    }
+                ],
+                { duration: 500, iterations: 1, fill: "forwards" }
+            );
+            setTimeout(() => {
+                animationRef.current?.cancel();
+                airplaneRef.current?.classList.remove("fly");
+                airplaneRef.current?.classList.add("hidden");
+            }, 1000);
+            // }
 
             // rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
@@ -64,43 +64,34 @@ export const Chart = () => {
             // }
         };
 
-        const startGame = () => {
-            if (!airplaneRef.current) return;
-
-            setStartScreen(true);
-
-            if (
-                animationEnabled &&
-                airplaneRef.current.classList.contains("hidden")
-            )
-                airplaneRef.current?.classList.remove("hidden");
-        };
-
-        const restart = () => {
+        const loading = () => {
             if (!airplaneRef.current) return;
 
             // rateRef.current?.resetAnimation();
 
             containerRef.current?.setAttribute("data-active", "true");
-        };
 
-        const loading = () => {
-            restart();
-            startGame();
+            setStartScreen(true);
+
+            if (
+                // animationEnabled &&
+                airplaneRef.current.classList.contains("hidden")
+            )
+                airplaneRef.current?.classList.remove("hidden");
         };
 
         const game = () => {
             // rateRef.current?.startAnimation();
             setStartScreen(false);
-            if (animationEnabled) {
-                airplaneRef.current?.classList.add("fly");
-                // airplaneRef.current?.classList.add("fly");
-                // airplaneRef.current?.classList.remove("hidden");
-            } else {
-                airplaneRef.current?.classList.remove("fly");
-                // airplaneRef.current?.classList.remove("fly");
-                // airplaneRef.current?.classList.add("hidden");
-            }
+            // if (animationEnabled) {
+            airplaneRef.current?.classList.add("fly");
+            // airplaneRef.current?.classList.add("fly");
+            // airplaneRef.current?.classList.remove("hidden");
+            // } else {
+            // airplaneRef.current?.classList.remove("fly");
+            // airplaneRef.current?.classList.remove("fly");
+            // airplaneRef.current?.classList.add("hidden");
+            // }
         };
 
         if (airplaneState === "loading") {
@@ -115,7 +106,7 @@ export const Chart = () => {
             game();
             // if (!isSliderVisible) setIsSliderVisible(false);
         }
-    }, [animationEnabled, airplaneState]);
+    }, [airplaneState]);
 
     return (
         <section>
@@ -137,7 +128,7 @@ export const Chart = () => {
                 >
                     <defs>
                         <Propeller />
-                        <Slider isVisible={isSliderVisible} />
+                        {/* <Slider /> */}
                         <Airplane />
                     </defs>
 
@@ -149,13 +140,13 @@ export const Chart = () => {
                         className="airplane origin-top-left"
                         ref={airplaneRef}
                     >
-                        <animateMotion
+                        {/* <animateMotion
                             path="M21,203 C151,210 289,164 321,27 z"
                             dur="3s"
                             repeatCount="indefinite"
                             // rotate="auto"
                             fill="remove"
-                        />
+                        /> */}
                     </use>
 
                     {startScreen ? (
@@ -194,20 +185,20 @@ export const Chart = () => {
                             >
                                 Ожидаем новый раунд
                             </text>
-                            {isSliderVisible ? (
-                                <use
-                                    className="use-slider"
-                                    href="#slider"
-                                    x="50%"
-                                    y="50%"
-                                />
-                            ) : null}
+                            {/* {isSliderVisible ? ( */}
+                            <Slider />
+                            {/* <use
+                                className="use-slider"
+                                href="#slider"
+                                x="50%"
+                                y="50%"
+                            /> */}
+                            {/* ) : null} */}
                         </g>
                     ) : null}
 
-                    <RateCoefficient
-                    // ref={rateRef}
-                    />
+                    <RateCoefficient />
+
                     <g transform="translate(15, 270) scale(0.95, 1)">
                         {Array(10)
                             .fill(0)
