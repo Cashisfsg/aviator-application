@@ -137,7 +137,7 @@ export const Chart = () => {
                 >
                     <defs>
                         <Propeller />
-                        <Slider isVisible={isSliderVisible} />
+                        {/* <Slider /> */}
                         <Airplane />
                     </defs>
 
@@ -194,14 +194,15 @@ export const Chart = () => {
                             >
                                 Ожидаем новый раунд
                             </text>
-                            {isSliderVisible ? (
-                                <use
-                                    className="use-slider"
-                                    href="#slider"
-                                    x="50%"
-                                    y="50%"
-                                />
-                            ) : null}
+                            {/* {isSliderVisible ? ( */}
+                            <Slider />
+                            {/* <use
+                                className="use-slider"
+                                href="#slider"
+                                x="50%"
+                                y="50%"
+                            /> */}
+                            {/* ) : null} */}
                         </g>
                     ) : null}
 

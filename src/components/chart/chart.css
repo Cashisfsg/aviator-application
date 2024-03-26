@@ -195,13 +195,16 @@ figure {
 
 .slider-bar {
     fill: rgba(255, 255, 255, 0.8);
-    width: 100%;
+    translate: -65px 40px;
+    /* width: 100%; */
 }
 
 .slider {
     z-index: 1;
-    height: 100%;
-    /* animation: slider 4.55s linear forwards; */
+    translate: -65px 40px;
+    /* height: 100%; */
+
+    animation: slider 4.55s linear forwards;
 }
 
 .use-slider {
