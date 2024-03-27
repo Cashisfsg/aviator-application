@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import { useStateSelector } from "@/store/hooks";
 import { selectAirplaneState } from "@/store/slices/test.slice";
@@ -12,7 +12,7 @@ import { RateCoefficient, RateElement } from "./rate-coefficient";
 import { SoundEffects } from "../sound-effects/sound-effects";
 
 export const Chart = () => {
-    const [isSliderVisible, setIsSliderVisible] = useState(true);
+    const [isSliderVisible, setIsSliderVisible] = useState(false);
     const airplaneRef = useRef<SVGUseElement>(null);
     // const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
@@ -23,7 +23,9 @@ export const Chart = () => {
         selectAnimationSettings(state)
     );
 
-    const [startScreen, setStartScreen] = useState(true);
+    console.log("Airplane state: " + airplaneState);
+
+    const [startScreen, setStartScreen] = useState(false);
 
     useEffect(() => {
         if (animationEnabled) {
@@ -33,7 +35,7 @@ export const Chart = () => {
         }
     }, [animationEnabled]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const crash = () => {
             if (!airplaneRef.current) return;
 
@@ -102,7 +104,7 @@ export const Chart = () => {
             // setTimeout(() => {
             //     setIsSliderVisible(false);
             // }, 500);
-        } else if (airplaneState === "start") {
+        } else if (airplaneState === "start" || airplaneState === "game") {
             game();
             // if (!isSliderVisible) setIsSliderVisible(false);
         }

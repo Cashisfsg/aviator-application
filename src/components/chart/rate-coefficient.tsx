@@ -19,7 +19,7 @@ export const RateCoefficient = ({ ...props }) => {
     const airplaneState = useStateSelector(state => selectAirplaneState(state));
 
     useEffect(() => {
-        if (airplaneState === "start") {
+        if (airplaneState === "start" || airplaneState === "game") {
             groupRef.current?.classList.replace("opacity-0", "opacity-100");
         } else if (airplaneState === "crash") {
             groupRef.current?.classList.replace("opacity-0", "opacity-100");
