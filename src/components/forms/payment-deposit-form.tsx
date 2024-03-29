@@ -9,6 +9,8 @@ import {
     DepositValidationSchema as FormSchema
 } from "@/utils/schemas";
 
+import { formatDate, formatTime } from "@/utils/helpers";
+
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 
 import { useFetchRequisitesQuery } from "@/api/requisite";
@@ -273,16 +275,20 @@ export const PaymentDepositForm: React.FC<ReplenishmentFormProps> = ({
                         <span>
                             Время на оплату{" "}
                             <CountDownTimer
-                                finishTime={currentReplenishment?.createdAt}
+                                finishTime={new Date(
+                                    currentReplenishment?.createdAt
+                                ).toISOString()}
                             />
+                            {formatDate(currentReplenishment?.createdAt)}{" "}
+                            {formatTime(currentReplenishment?.createdAt)}
                         </span>
                     </p>
 
                     <button
                         onClick={() => setFormState("confirm")}
-                        className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5"
+                        className="mt-4 rounded-md bg-lime-600 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5"
                     >
-                        Подтвердите оплату
+                        Подтвердить оплату
                     </button>
 
                     <button

@@ -1,19 +1,18 @@
-import { useRef, useId } from "react";
+import { useState, useRef, useId } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    useForm,
-    SubmitHandler,
-    // UseFormReturn,
-    ControllerRenderProps
-} from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
     registrationCredentialsSchema as formSchema,
     RegistrationCredentialsFormSchema as FormSchema
 } from "@/utils/schemas";
 
-import { useCreateNewUserAccountMutation } from "@/store/api/authApi";
+import {
+    useCreateNewUserAccountMutation,
+    useConfirmNewUserEmailMutation
+} from "@/store/api/authApi";
+import { handleErrorResponse } from "@/store/services";
 import { TelegramClient } from "@/store/api/types";
 
 import {
@@ -25,54 +24,46 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { DialogClose } from "@/components/ui/dialog";
-// import {
-//     Command,
-//     CommandEmpty,
-//     CommandGroup,
-//     CommandInput,
-//     CommandItem
-// } from "@/components/ui/command";
-// import {
-//     Popover,
-//     PopoverContent,
-//     PopoverTrigger
-// } from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
 import { Input, Password, ErrorMessage } from "@/components/ui/input";
-
-// import { ChevronsUpDown } from "lucide-react";
-import { ImSpinner9 } from "react-icons/im";
+import { EmailTooltip } from "@/components/email-tooltip";
+import {
+    ResendCodeButton,
+    ResendCodeElement
+} from "@/components/ui/resend-code-button";
 
 import { CurrenciesCombobox } from "./currencies-combobox";
+import { PromoCodeAccordion } from "./promo-accordeon";
 
-// import KZIcon from "@/assets/kz-flag.png";
-// import RUIcon from "@/assets/ru-flag.png";
-// import UAIcon from "@/assets/ua-flag.png";
-// import UZIcon from "@/assets/uz-flag.png";
+import { ImSpinner9 } from "react-icons/im";
+import { toast } from "@/components/toasts/toast";
 
-// import { cn } from "@/utils";
-import { Accordion } from "@/components/ui/accordion/accordion";
-import { RiArrowDownSLine } from "react-icons/ri";
-
-// const currencies = [
-//     { id: 1, label: "Казахстанский тенге", value: "KZT", icon: KZIcon },
-//     { id: 2, label: "Российский рубль", value: "RUB", icon: RUIcon },
-//     { id: 3, label: "Узбекистанский сум", value: "UZS", icon: UZIcon },
-//     { id: 4, label: "Украинская гривна", value: "UAH", icon: UAIcon }
-// ];
+interface InputCode {
+    code: HTMLInputElement;
+}
 
 export const SignUpForm = () => {
     const tg = (
         window as Window & typeof globalThis & { Telegram: TelegramClient }
     ).Telegram.WebApp;
+
+    const [verificationState, setVerificationState] = useState<{
+        enabled: boolean;
+        token: string | null;
+    }>({ enabled: false, token: null });
+    const createNewUserFormId = useId();
+    const verifyEmailFormId = useId();
+    const codeId = useId();
     const dialogCloseRef = useRef<HTMLButtonElement>(null);
+    const resendCodeButtonRef = useRef<ResendCodeElement>(null);
+    const codeInputRef = useRef<HTMLInputElement>(null);
 
-    const [createNewUser, { isLoading, isError, error }] =
+    const [createNewUser, { isLoading: isCreating, isError, error }] =
         useCreateNewUserAccountMutation();
+    const [verifyNewUserEmail, { isLoading: isVerifying }] =
+        useConfirmNewUserEmailMutation();
     const navigate = useNavigate();
-
-    // const { telegramId } = useStateSelector(state => selectInitData(state));
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -82,8 +73,6 @@ export const SignUpForm = () => {
             passwordConfirm: "",
             email: undefined,
             promocode: undefined,
-            // from: sessionStorage.getItem("referral"),
-            // telegramId,
             accepted_terms: undefined
         }
     });
@@ -95,11 +84,9 @@ export const SignUpForm = () => {
         passwordConfirm,
         email,
         promocode
-        // from,
-        // telegramId
     }) => {
         try {
-            await createNewUser({
+            const { isEmailToken, token } = await createNewUser({
                 currency,
                 login,
                 password,
@@ -112,160 +99,259 @@ export const SignUpForm = () => {
                 telegramId: tg?.initDataUnsafe?.user?.id
             }).unwrap();
 
+            if (isEmailToken) {
+                setVerificationState(state => ({
+                    ...state,
+                    enabled: true,
+                    token: token
+                }));
+                toast.notify("На ваш Email отправлен код");
+                resendCodeButtonRef.current?.show();
+                resendCodeButtonRef.current?.disable();
+                codeInputRef.current?.focus();
+                return;
+            }
+
             sessionStorage.removeItem("referral");
             navigate("/main");
             dialogCloseRef?.current?.click();
-        } catch (error) {}
+        } catch (error) {
+            // handleErrorResponse(error, message => {
+            //     toast.error(message);
+            // });
+        }
+    };
+
+    const onSubmitHandler: React.FormEventHandler<
+        HTMLFormElement & InputCode
+    > = async event => {
+        event.preventDefault();
+
+        try {
+            const { code } = event.currentTarget;
+            const {
+                currency,
+                login,
+                password,
+                passwordConfirm,
+                email,
+                promocode
+            } = form.getValues();
+
+            if (email === undefined) return;
+
+            await verifyNewUserEmail({
+                currency,
+                login,
+                password,
+                passwordConfirm,
+                email,
+                promocode,
+                from:
+                    JSON.parse(sessionStorage.getItem("referral") || "{}")
+                        ?.uid || undefined,
+                telegramId: tg?.initDataUnsafe?.user?.id,
+                token: verificationState.token as string,
+                code: Number(code.value)
+            }).unwrap();
+
+            setVerificationState(state => ({
+                ...state,
+                enabled: false,
+                token: null
+            }));
+            sessionStorage.removeItem("referral");
+            navigate("/main");
+            dialogCloseRef?.current?.click();
+        } catch (error) {
+            handleErrorResponse(error, message => {
+                toast.error(message);
+            });
+        }
     };
 
     return (
-        <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-            >
-                <FormField
-                    control={form.control}
-                    name="currency"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Валюта</FormLabel>
-                            <CurrenciesCombobox
-                                form={form}
-                                field={field}
-                            />
-
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="login"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Логин</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Введите Email (не обязательно)
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="email"
-                                    {...field}
-                                />
-                            </FormControl>
-
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Пароль</FormLabel>
-                            <FormControl>
-                                <Password {...field} />
-                            </FormControl>
-
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="passwordConfirm"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Подтвердите пароль</FormLabel>
-                            <FormControl>
-                                <Password {...field} />
-                            </FormControl>
-
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="promocode"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <PromoCode
+        <>
+            <Form {...form}>
+                <form
+                    id={createNewUserFormId}
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                >
+                    <FormField
+                        control={form.control}
+                        name="currency"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Валюта</FormLabel>
+                                <CurrenciesCombobox
                                     form={form}
                                     field={field}
                                 />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="accepted_terms"
-                    render={({ field: { value, ...rest } }) => (
-                        <FormItem className="flex items-center gap-4 ">
-                            <FormControl>
-                                <Input
-                                    type="checkbox"
-                                    checked={value}
-                                    className="flex-grow-0 cursor-pointer appearance-none border border-slate-300"
-                                    {...rest}
-                                />
-                            </FormControl>
-                            <p className="inline select-none text-xs">
-                                <span>
-                                    Я подтверждаю, что я ознакомлен и полностью
-                                    согласен с
-                                </span>{" "}
-                                <a
-                                    href=""
-                                    target="_blank"
-                                    className="cursor-pointer text-blue-500 underline-offset-2 mh:hover:underline"
-                                >
-                                    Условиями пользовательского соглашения
-                                </a>
-                            </p>
-                        </FormItem>
-                    )}
-                />
 
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
-                ) : null}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="login"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Логин</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
 
-                <Button
-                    type="submit"
-                    variant="confirm"
-                    disabled={isLoading}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>
+                                    Введите Email (не обязательно)
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="email"
+                                        {...field}
+                                    />
+                                </FormControl>
+
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Пароль</FormLabel>
+                                <FormControl>
+                                    <Password {...field} />
+                                </FormControl>
+
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="passwordConfirm"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Подтвердите пароль</FormLabel>
+                                <FormControl>
+                                    <Password {...field} />
+                                </FormControl>
+
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="promocode"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <PromoCodeAccordion
+                                        form={form}
+                                        field={field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="accepted_terms"
+                        render={({ field: { value, ...rest } }) => (
+                            <FormItem className="flex items-center gap-4 ">
+                                <FormControl>
+                                    <Input
+                                        type="checkbox"
+                                        checked={value}
+                                        className="flex-grow-0 cursor-pointer appearance-none border border-slate-300"
+                                        {...rest}
+                                    />
+                                </FormControl>
+                                <p className="inline select-none text-xs">
+                                    <span>
+                                        Я подтверждаю, что я ознакомлен и
+                                        полностью согласен с
+                                    </span>{" "}
+                                    <a
+                                        href=""
+                                        target="_blank"
+                                        className="cursor-pointer text-blue-500 underline-offset-2 mh:hover:underline"
+                                    >
+                                        Условиями пользовательского соглашения
+                                    </a>
+                                </p>
+                            </FormItem>
+                        )}
+                    />
+
+                    {isError ? (
+                        <ErrorMessage message={error?.data?.message} />
+                    ) : null}
+
+                    <DialogClose
+                        className="hidden"
+                        ref={dialogCloseRef}
+                    />
+                </form>
+            </Form>
+            {verificationState.enabled ? (
+                <form
+                    id={verifyEmailFormId}
+                    onSubmit={onSubmitHandler}
+                    className="mt-2 space-y-2"
                 >
-                    {isLoading ? (
-                        <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
-                    ) : (
-                        "Зарегистрироваться"
-                    )}
-                </Button>
-                <DialogClose
-                    className="hidden"
-                    ref={dialogCloseRef}
-                />
-            </form>
-        </Form>
+                    <p className="flex items-center justify-between">
+                        <label htmlFor={codeId}>Код из Email</label>
+                        <EmailTooltip />
+                    </p>
+                    <Input
+                        id={codeId}
+                        inputMode="numeric"
+                        required
+                        name="code"
+                        ref={codeInputRef}
+                    />
+                    <ResendCodeButton
+                        type="submit"
+                        form={createNewUserFormId}
+                        disabled={isVerifying}
+                        ref={resendCodeButtonRef}
+                    />
+                </form>
+            ) : null}
+            <Button
+                type="submit"
+                form={
+                    verificationState.enabled
+                        ? verifyEmailFormId
+                        : createNewUserFormId
+                }
+                variant="confirm"
+                disabled={isCreating || isVerifying}
+            >
+                {isCreating ? (
+                    <ImSpinner9 className="mx-auto animate-spin text-[28px]" />
+                ) : (
+                    "Зарегистрироваться"
+                )}
+            </Button>
+        </>
     );
 };
 
@@ -367,45 +453,3 @@ export const SignUpForm = () => {
 //         </Popover>
 //     );
 // };
-
-interface PromoCode
-    extends ControllerRenderProps<
-        {
-            currency: string;
-            login: string;
-            password: string;
-            passwordConfirm: string;
-            accepted_terms: true;
-            email?: string | undefined;
-            promocode?: string | undefined;
-            telegramId?: number | undefined;
-        },
-        "promocode"
-    > {}
-
-interface PromoCodeProps {
-    form: FormProps;
-    field: PromoCode;
-}
-
-const PromoCode: React.FC<PromoCodeProps> = ({ form, field }) => {
-    const promocodeId = useId();
-
-    return (
-        <Accordion className="-m-0.5 space-y-2">
-            <Accordion.Trigger className="accordion flex justify-between pb-1 text-blue-500 transition-all duration-300">
-                <label htmlFor={promocodeId}>Введите промокод</label>
-                <RiArrowDownSLine className="text-2xl text-white duration-500 group-aria-[expanded=true]:rotate-180" />
-            </Accordion.Trigger>
-
-            <Accordion.Content>
-                <div className="min-h-0 p-0.5">
-                    <Input
-                        id={promocodeId}
-                        {...field}
-                    />
-                </div>
-            </Accordion.Content>
-        </Accordion>
-    );
-};

@@ -16,12 +16,18 @@ export const CurrentRoundDetailsTab = () => {
         skip: !isAuthenticated
     });
     const tableRef = useRef<HTMLDivElement>(null);
+    const firstRender = useRef(true);
 
     // const roundDetails = useStateSelector(state => selectGameDetails(state));
     const roundStats = useStateSelector(state => selectRoundStatistic(state));
     const playersList = useStateSelector(state => selectPlayersList(state));
 
     useLayoutEffect(() => {
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
         tableRef.current?.scrollIntoView({
             behavior: "smooth",
             block: "start"

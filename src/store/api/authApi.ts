@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
     UserRegistrationCredentials,
     AuthenticationUserRequest,
+    CreateNewUserResponse,
+    ConfirmNewUserEmailRequest,
     Token,
     SuccessResponse,
     AuthenticationUserResponse,
@@ -28,13 +30,29 @@ export const authApi = createApi({
             })
         }),
         createNewUserAccount: builder.mutation<
-            Token,
+            CreateNewUserResponse,
             UserRegistrationCredentials
         >({
             query: body => ({
                 url: "auth/registration",
                 method: "POST",
                 body
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+                } catch {}
+            }
+        }),
+        confirmNewUserEmail: builder.mutation<
+            Token,
+            ConfirmNewUserEmailRequest
+        >({
+            query: body => ({
+                url: "/auth/registration/confirm",
+                method: "POST",
+                body: body
             }),
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
@@ -126,6 +144,7 @@ export const authApi = createApi({
 
 export const {
     useCreateNewUserAccountMutation,
+    useConfirmNewUserEmailMutation,
     useAuthenticateUserMutation,
     useSignOutMutation,
     useSendConfirmationCodeMutation,

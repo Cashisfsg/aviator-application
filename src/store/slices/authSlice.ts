@@ -82,6 +82,19 @@ export const authSlice = createSlice({
             .addMatcher(
                 authApi.endpoints.createNewUserAccount.matchFulfilled,
                 (state, { payload }) => {
+                    if (payload.isEmailToken) return state;
+
+                    localStorage.setItem(
+                        "token",
+                        JSON.stringify({ token: payload.token })
+                    );
+                    state.token = payload.token;
+                    state.isAuthenticated = true;
+                }
+            )
+            .addMatcher(
+                authApi.endpoints.confirmNewUserEmail.matchFulfilled,
+                (state, { payload }) => {
                     localStorage.setItem(
                         "token",
                         JSON.stringify({ token: payload.token })

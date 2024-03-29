@@ -26,6 +26,24 @@ export interface Token {
     token: string;
 }
 
+export interface CreateNewUserResponse {
+    isEmailToken: boolean;
+    token: string;
+}
+
+export interface ConfirmNewUserEmailRequest {
+    currency: string;
+    login: string;
+    password: string;
+    passwordConfirm: string;
+    email: string;
+    telegramId?: number;
+    promocode?: string;
+    from?: string;
+    token: string;
+    code: number;
+}
+
 export interface SuccessResponse {
     message: string;
 }

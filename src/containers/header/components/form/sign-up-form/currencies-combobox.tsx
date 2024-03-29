@@ -1,7 +1,6 @@
 import { useState, useId } from "react";
 
 import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 
 import KZIcon from "@/assets/kz-flag.png";
 import RUIcon from "@/assets/ru-flag.png";
@@ -62,9 +61,7 @@ export const CurrenciesCombobox: React.FC<CurrenciesPopoverProps> = ({
 
     const dialogId = useId();
 
-    const onClickHandler: React.MouseEventHandler<
-        HTMLButtonElement
-    > = event => {
+    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
         setIsOpen(open => !open);
     };
 

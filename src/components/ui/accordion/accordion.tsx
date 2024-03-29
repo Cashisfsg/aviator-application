@@ -48,6 +48,9 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({
     const onClickHandler: React.MouseEventHandler<HTMLElement> = event => {
         event.preventDefault();
 
+        if (event.currentTarget.getAttribute("aria-disabled") === "true")
+            return;
+
         if (detailsRef.current?.getAttribute("aria-expanded") === "true") {
             detailsRef.current?.setAttribute("aria-expanded", "false");
         } else {
@@ -80,7 +83,7 @@ const AccordionContent: React.FC<AccordionContentProps> = ({
     const { detailsRef } = useAccordionContext();
 
     const contentElement = React.Children.only(children) as React.ReactElement;
-    const props = contentElement.props;
+    const { className: childClassName, ...props } = contentElement.props;
 
     if (!React.isValidElement(contentElement)) return <>{children}</>;
 
@@ -97,10 +100,13 @@ const AccordionContent: React.FC<AccordionContentProps> = ({
     return (
         <div
             onTransitionEnd={onTransitionEndHandler}
-            className="grid overflow-hidden transition-all duration-500 group-aria-[expanded=false]:m-0 group-aria-[expanded=false]:grid-rows-[0fr] group-aria-[expanded=true]:grid-rows-[1fr] group-aria-[expanded=false]:p-0 group-aria-[expanded=false]:opacity-0 group-aria-[expanded=true]:opacity-100"
+            className={cn(
+                "grid overflow-hidden transition-all duration-500 group-aria-[expanded=false]:m-0 group-aria-[expanded=false]:grid-rows-[0fr] group-aria-[expanded=true]:grid-rows-[1fr] group-aria-[expanded=false]:p-0 group-aria-[expanded=false]:opacity-0 group-aria-[expanded=true]:opacity-100",
+                className
+            )}
         >
             {React.cloneElement(contentElement as React.ReactElement, {
-                className: cn("min-h-0", className),
+                className: cn("min-h-0", childClassName),
                 ...props
             })}
         </div>

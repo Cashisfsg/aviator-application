@@ -23,8 +23,6 @@ export const Chart = () => {
         selectAnimationSettings(state)
     );
 
-    console.log("Airplane state: " + airplaneState);
-
     const [startScreen, setStartScreen] = useState(false);
 
     useEffect(() => {

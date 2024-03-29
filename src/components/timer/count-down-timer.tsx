@@ -30,11 +30,14 @@ export const CountDownTimer: React.FC<TimerProps> = ({
     ...props
 }) => {
     const [time, setTime] = useState(() => {
-        if (!finishTime) return { minutes: minutes, seconds: seconds };
+        if (finishTime === undefined)
+            return { minutes: minutes, seconds: seconds };
 
         const targetTime = new Date(finishTime).getTime();
         const currentTime = new Date().getTime();
         const timeDifference = targetTime - currentTime;
+
+        if (timeDifference <= 0) return { minutes: minutes, seconds: seconds };
 
         const startMinutes = Math.floor(
             (timeDifference %
