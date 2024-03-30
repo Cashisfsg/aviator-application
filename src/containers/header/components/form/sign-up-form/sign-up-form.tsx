@@ -27,7 +27,7 @@ import { DialogClose } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 import { Input, Password, ErrorMessage } from "@/components/ui/input";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 import {
     ResendCodeButton,
     ResendCodeElement

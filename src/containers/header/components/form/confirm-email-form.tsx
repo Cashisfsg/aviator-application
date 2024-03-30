@@ -20,7 +20,7 @@ import {
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
 import { toast } from "@/components/toasts/toast";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 
 interface FormFields {
     code: HTMLInputElement;

@@ -16,7 +16,7 @@ import {
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
 import { PreviousRouteLink } from "@/components/previous-route-link";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 
 export const SecurityTwoFAForm = () => {
     const buttonRef = useRef<ResendCodeElement>(null);

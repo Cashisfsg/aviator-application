@@ -1,4 +1,6 @@
-import { Requisite } from "@/store";
+import { Requisite } from "@/store/api/types";
+
+import Visa from "@/assets/visa-360w.webp";
 
 interface PaymentProps extends React.HTMLAttributes<HTMLLIElement> {
     requisite: Requisite;
@@ -8,6 +10,10 @@ export const PaymentMethod: React.FC<PaymentProps> = ({
     requisite,
     ...props
 }) => {
+    const onErrorHandler: React.ReactEventHandler<HTMLImageElement> = event => {
+        event.currentTarget.src = Visa;
+    };
+
     return (
         <li
             {...props}
@@ -15,8 +21,9 @@ export const PaymentMethod: React.FC<PaymentProps> = ({
         >
             <p className="text-right">{requisite?.currency}</p>
             <img
-                src={requisite?.img}
+                src={requisite?.img || Visa}
                 alt={requisite?.name}
+                onError={onErrorHandler}
                 loading="lazy"
                 className="max-h-full object-cover object-center"
             />

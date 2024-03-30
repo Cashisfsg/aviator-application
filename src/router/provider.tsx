@@ -28,6 +28,9 @@ import {
     SecurityTwoFAForm
 } from "@/components/forms";
 
+import { CreateReplenishmentDialog } from "@/components/dialogs/create-replenishment-dialog";
+import { ReplenishmentDetailsDialog } from "@/components/dialogs/replenishment-details-dialog";
+
 import { ReferralRedirect } from "./referral-redirect";
 
 const PaymentLayout = lazy(async () =>
@@ -236,8 +239,34 @@ const router = createBrowserRouter([
                         <PaymentReplenishmentPage />
                     </Suspense>
                 ),
+                children: [
+                    {
+                        path: "requisite/:requisiteId",
+                        element: <CreateReplenishmentDialog />
+                    },
+                    {
+                        path: "requisite/:requisiteId/replenishment/:replenishmentId",
+                        element: <ReplenishmentDetailsDialog />
+                    }
+                ],
                 errorElement: <ErrorPage />
             },
+            // {
+            //     path: "replenishment/:replenishmentId",
+            //     element: (
+            //         <Suspense
+            //             fallback={
+            //                 <GridLoader
+            //                     className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            //                     color={"red"}
+            //                 />
+            //             }
+            //         >
+            //             <div>Replenishment id</div>
+            //         </Suspense>
+            //     ),
+            //     errorElement: <ErrorPage />
+            // },
             {
                 path: "*",
                 element: (

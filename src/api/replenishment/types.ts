@@ -1,11 +1,12 @@
 import { Requisite } from "../requisite";
+import { CurrencyRecord } from "../withdraw/types";
 
 export interface Replenishment {
     _id: string;
     user: string;
-    amount: number;
-    currency: string;
-    deduction: number;
+    amount: CurrencyRecord;
+    // currency: string;
+    deduction: CurrencyRecord;
     status: string;
     statusMessage: string;
     isPayConfirmed: boolean;
@@ -20,6 +21,12 @@ export interface SuccessResponse {
 }
 
 export type AllReplenishmentsResponse = Replenishment[];
+
+export interface FetchReplenishmentByIdRequest {
+    id: string;
+}
+
+export type FetchReplenishmentByIdResponse = Replenishment;
 
 export interface ReplenishmentLimitsResponse {
     minLimit: number;

@@ -1,6 +1,8 @@
 import { baseReplenishmentApi } from "@/store/api/replenishmentApi";
 import {
     AllReplenishmentsResponse,
+    FetchReplenishmentByIdRequest,
+    FetchReplenishmentByIdResponse,
     ReplenishmentLimitsResponse,
     CreateReplenishmentRequest,
     CreateReplenishmentResponse,
@@ -21,7 +23,28 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
                 }
                 return response;
             },
-            providesTags: ["Replenishment"]
+            providesTags: (result, error, arg) =>
+                result
+                    ? [
+                          ...result.map(({ _id }) => ({
+                              type: "Replenishment" as const,
+                              id: _id
+                          })),
+                          "Replenishment"
+                      ]
+                    : ["Replenishment"]
+        }),
+        fetchReplenishmentById: builder.query<
+            FetchReplenishmentByIdResponse,
+            FetchReplenishmentByIdRequest
+        >({
+            query: ({ id }) => ({ url: `/replenishments/${id}` }),
+            providesTags: result => [
+                {
+                    type: "Replenishment" as const,
+                    id: result?._id
+                }
+            ]
         }),
         fetchReplenishmentLimits: builder.query<
             ReplenishmentLimitsResponse,
@@ -50,7 +73,8 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
                 url: `replenishments/cancel/${id}`,
                 method: "PUT"
             }),
-            invalidatesTags: (result, error) => (error ? [] : ["Replenishment"])
+            invalidatesTags: (result, error, arg) =>
+                error ? [] : [{ type: "Replenishment", id: arg.id }]
         }),
         confirmReplenishmentById: builder.mutation<
             SuccessResponse,
@@ -60,7 +84,8 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
                 url: `replenishments/confirm/${id}`,
                 method: "PUT"
             }),
-            invalidatesTags: (result, error) => (error ? [] : ["Replenishment"])
+            invalidatesTags: (result, error, arg) =>
+                error ? [] : [{ type: "Replenishment", id: arg.id }]
         })
     })
 });
@@ -68,6 +93,8 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
 export const {
     useFetchAllReplenishmentsQuery,
     useLazyFetchAllReplenishmentsQuery,
+    useFetchReplenishmentByIdQuery,
+    useLazyFetchReplenishmentByIdQuery,
     useFetchReplenishmentLimitsQuery,
     useLazyFetchReplenishmentLimitsQuery,
     useCreateReplenishmentMutation,

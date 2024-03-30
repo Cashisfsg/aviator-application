@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import {
     useFetchAllReplenishmentsQuery,
@@ -6,38 +8,16 @@ import {
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { cn } from "@/utils";
 import { formatDate, formatTime } from "@/utils/helpers";
 import { usePopoverContext } from "@/components/ui/popover/use-popover-context";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 
-interface PaymentHistoryPopoverProps extends React.HTMLAttributes<HTMLElement> {
-    setInitialFormState: React.Dispatch<
-        React.SetStateAction<{
-            state: string;
-            replenishmentId: string;
-        }>
-    >;
-    setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
-    className,
-    setInitialFormState,
-    setDialogOpen,
-    ...props
-}) => {
+export const DepositsHistoryPopover = () => {
     const { data: replenishments, isSuccess } =
         useFetchAllReplenishmentsQuery();
 
     return (
-        <section
-            {...props}
-            className={cn(
-                "w-72 rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md",
-                className
-            )}
-        >
+        <section className="w-72 rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md">
             <ScrollArea
                 className={
                     replenishments && replenishments?.length >= 2
@@ -49,11 +29,7 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
                     replenishments && replenishments.length !== 0 ? (
                         replenishments.map((deposit, index) => (
                             <div key={deposit?._id}>
-                                <PaymentDetails
-                                    deposit={deposit}
-                                    setInitialFormState={setInitialFormState}
-                                    setDialogOpen={setDialogOpen}
-                                />
+                                <PaymentDetails replenishment={deposit} />
                                 {index !== replenishments.length - 1 ? (
                                     <hr
                                         key={index}
@@ -72,24 +48,33 @@ export const DepositsHistoryPopover: React.FC<PaymentHistoryPopoverProps> = ({
 };
 
 interface PaymentDetailsProps {
-    deposit?: Replenishment;
-    setInitialFormState?: React.Dispatch<
-        React.SetStateAction<{
-            state: string;
-            replenishmentId: string;
-        }>
-    >;
-    setDialogOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    replenishment?: Replenishment;
 }
 
-const PaymentDetails: React.FC<PaymentDetailsProps> = ({
-    deposit,
-    setInitialFormState,
-    setDialogOpen
-}) => {
+const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
     // const showReplenishmentDetails = () => {};
     const { dialogRef } = usePopoverContext();
     const { data: balance } = useGetUserBalanceQuery();
+
+    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+        () => {
+            // if (deposit?.isPayConfirmed) {
+            //     setInitialFormState?.(state => ({
+            //         ...state,
+            //         state: "confirmed",
+            //         replenishmentId: deposit?._id
+            //     }));
+            // } else {
+            //     setInitialFormState?.(state => ({
+            //         ...state,
+            //         state: "second",
+            //         replenishmentId: deposit?._id
+            //     }));
+            // }
+            // setDialogOpen?.(true);
+            dialogRef?.current?.close();
+        };
+    };
 
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
@@ -97,49 +82,51 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 <tr>
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.createdAt
-                            ? `${formatDate(deposit?.createdAt)} ${formatTime(
-                                  deposit?.createdAt
-                              )}`
+                        {replenishment?.createdAt
+                            ? `${formatDate(
+                                  replenishment?.createdAt
+                              )} ${formatTime(replenishment?.createdAt)}`
                             : null}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.completedDate
+                        {replenishment?.completedDate
                             ? `${formatDate(
-                                  deposit?.completedDate
-                              )} ${formatTime(deposit?.completedDate)}`
+                                  replenishment?.completedDate
+                              )} ${formatTime(replenishment?.completedDate)}`
                             : null}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Метод</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.requisite?.name}
+                        {replenishment?.requisite?.name}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {deposit?.amount?.[balance?.currency]
-                            ? `${deposit?.amount?.[balance?.currency].toFixed(
-                                  2
-                              )} ${balance?.currency}`
+                        {replenishment?.amount?.[balance?.currency || "USD"]
+                            ? `${replenishment?.amount?.[
+                                  balance?.currency || "USD"
+                              ].toFixed(2)} ${balance?.currency}`
                             : null}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Статус</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">{deposit?.status}</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">
+                        {replenishment?.status}
+                    </td>
                 </tr>
 
-                {deposit?.statusMessage ? (
+                {replenishment?.statusMessage ? (
                     <tr>
                         <td className="px-1.5 py-0.5">Причина отмены</td>
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            {deposit?.statusMessage}
+                            {replenishment?.statusMessage}
                         </td>
                     </tr>
                 ) : null}
@@ -148,37 +135,22 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                         <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={String(deposit?.uid)}
+                                textToCopy={String(replenishment?.uid)}
                                 className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {deposit?.uid || ""}
+                                {replenishment?.uid || ""}
                             </ClipboardCopy>
                         </p>
                     </td>
-                    {deposit?.status === "Ожидает оплаты" ? (
+                    {replenishment?.status === "Ожидает оплаты" ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            <button
-                                onClick={() => {
-                                    if (deposit?.isPayConfirmed) {
-                                        setInitialFormState?.(state => ({
-                                            ...state,
-                                            state: "confirmed",
-                                            replenishmentId: deposit?._id
-                                        }));
-                                    } else {
-                                        setInitialFormState?.(state => ({
-                                            ...state,
-                                            state: "second",
-                                            replenishmentId: deposit?._id
-                                        }));
-                                    }
-                                    setDialogOpen?.(true);
-                                    dialogRef?.current?.close();
-                                }}
+                            <Link
+                                to={`/payment/replenishment/requisite/${replenishment?.requisite?._id}/replenishment/${replenishment?._id}`}
+                                onClick={() => dialogRef?.current?.close()}
                                 className="text-right text-blue-500"
                             >
                                 Открыть
-                            </button>
+                            </Link>
                         </td>
                     ) : null}
                 </tr>

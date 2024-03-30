@@ -1,19 +1,20 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import {
     withdrawValidationSchema as formSchema,
     WithdrawValidationSchema as FormSchema
 } from "@/utils/schemas";
 
-import { userApi, useAppDispatch, useGetUserBalanceQuery } from "@/store";
+import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import { useFetchRequisitesQuery } from "@/api/requisite";
 import { useCreateWithdrawMutation } from "@/api/withdraw";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/toasts/toast";
 
 import { ImSpinner9 } from "react-icons/im";
+import Visa from "@/assets/visa-360w.webp";
 
 interface PaymentWithdrawFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,11 +29,10 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
         useCreateWithdrawMutation();
     const { data: requisites } = useFetchRequisitesQuery();
     const { data: balance } = useGetUserBalanceQuery();
+
     const selectedRequisite = requisites
         ?.flatMap(requisite => requisite.requisites)
         .find(requisite => requisite._id === selectedRequisiteId);
-
-    const dispatch = useAppDispatch();
 
     const {
         register,
@@ -50,24 +50,21 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
         amount,
         userRequisite
     }) => {
-        const response = await createDraw({
-            currency: selectedRequisite?.currency as string,
-            amount: Number(amount),
-            requisite: selectedRequisite?._id as string,
-            userRequisite
-        });
+        try {
+            await createDraw({
+                currency: selectedRequisite?.currency as string,
+                amount: Number(amount),
+                requisite: selectedRequisite?._id as string,
+                userRequisite
+            }).unwrap();
 
-        if (response?.error) return;
+            toast.notify("Заявка на вывод успешно создана");
+            setOpen(false);
+        } catch (error) {}
+    };
 
-        toast("Заявка на вывод успешно создана", {
-            position: "top-center",
-            action: {
-                label: "Скрыть",
-                onClick: () => {}
-            }
-        });
-        dispatch(userApi.util.invalidateTags(["Balance"]));
-        setOpen(false);
+    const onErrorHandler: React.ReactEventHandler<HTMLImageElement> = event => {
+        event.currentTarget.src = Visa;
     };
 
     return (
@@ -75,13 +72,14 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
             onSubmit={handleSubmit(onSubmitHandler)}
             className="grid gap-y-4 "
         >
-            <p className="flex h-10 items-center rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
+            <p className="flex h-10 items-center gap-2 rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
                 <img
                     src={selectedRequisite?.img}
-                    alt=""
+                    alt={selectedRequisite?.name}
+                    onError={onErrorHandler}
                     className="h-full"
-                />{" "}
-                <span className="inline-block w-full overflow-hidden text-ellipsis">
+                />
+                <span className="inline-block w-full truncate font-semibold">
                     {selectedRequisite?.name}
                 </span>
             </p>
@@ -92,7 +90,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                     placeholder="XXXX-XXXX-XXXX-XXXX"
                     {...register("userRequisite")}
                     aria-invalid={errors?.userRequisite ? "true" : "false"}
-                    className="border-transparent bg-slate-300/70 text-center leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
+                    className="h-10 border-transparent bg-slate-300/70 text-center leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                 />
                 {errors?.userRequisite ? (
                     <ErrorMessage message={errors?.userRequisite?.message} />
@@ -106,7 +104,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                     {...register("amount")}
                     placeholder="0"
                     aria-invalid={errors?.amount ? "true" : "false"}
-                    className="border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
+                    className="h-10 border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                 />
                 {errors?.amount ? (
                     <ErrorMessage
@@ -120,7 +118,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 
             <button
                 disabled={isLoading}
-                className="mt-4 rounded-md bg-lime-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
+                className="mt-4 rounded-md bg-green-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
             >
                 {isLoading ? (
                     <ImSpinner9 className="mx-auto animate-spin text-2xl" />

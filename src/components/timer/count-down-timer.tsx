@@ -11,7 +11,7 @@ interface TimeDurationNumeric extends DefaultTimerProps {
 }
 
 interface TimeDurationString extends DefaultTimerProps {
-    finishTime: number | string;
+    finishTime: number | string | undefined;
     minutes?: never;
     seconds?: never;
 }

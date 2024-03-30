@@ -2,7 +2,7 @@ import { useId, useRef } from "react";
 
 import { useConfirmNewUserEmailMutation } from "@/store/api/authApi";
 
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 import { Input } from "@/components/ui/input";
 import {
     ResendCodeButton,

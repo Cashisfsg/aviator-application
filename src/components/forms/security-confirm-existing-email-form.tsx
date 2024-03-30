@@ -12,7 +12,7 @@ import { handleErrorResponse } from "@/store/services";
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 
 import {
     ResendCodeButton,

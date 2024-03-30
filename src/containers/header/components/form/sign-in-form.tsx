@@ -22,7 +22,7 @@ import {
     ResendCodeButton,
     ResendCodeElement
 } from "@/components/ui/resend-code-button";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 
 export const SignInForm = () => {
     const [verificationModeEnabled, setVerificationModeEnabled] =

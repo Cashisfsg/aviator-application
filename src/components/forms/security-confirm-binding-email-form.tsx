@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/resend-code-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EmailTooltip } from "@/components/email-tooltip";
+import { EmailTooltip } from "@/components/tooltips/email-tooltip";
 
 import { ImSpinner9 } from "react-icons/im";
 

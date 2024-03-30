@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { Popover } from "@/components/ui/popover/popover";
-import { PaymentDepositDialog } from "@/components/dialogs";
 import { DepositsHistoryPopover } from "@/components/popovers";
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
 import { useGetUserQuery } from "@/store/api/userApi";
@@ -17,13 +17,8 @@ export const PaymentReplenishmentPage = () => {
     const [renderElement, setRenderElement] = useState<HTMLDivElement | null>(
         null
     );
-    const [paymentDepositDialogOpen, setPaymentDepositDialogOpen] =
-        useState(false);
-    const [initialFormState, setInitialFormState] = useState({
-        state: "init",
-        replenishmentId: ""
-    });
-    const [selectedRequisiteId, setSelectedRequisiteId] = useState("");
+
+    const navigate = useNavigate();
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
@@ -49,10 +44,10 @@ export const PaymentReplenishmentPage = () => {
                     <p className="justify-self-start text-sm leading-5 text-slate-400 ">
                         <span>ID</span>{" "}
                         <ClipboardCopy
-                            textToCopy={user?._id}
+                            textToCopy={user?.uid}
                             className="inline-block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                         >
-                            {user?._id || ""}
+                            {user?.uid || ""}
                         </ClipboardCopy>
                     </p>
                     <div
@@ -65,14 +60,7 @@ export const PaymentReplenishmentPage = () => {
                             </Popover.Trigger>
                             <Popover.Portal renderElement={renderElement}>
                                 <Popover.Content className="bg-transparent">
-                                    <DepositsHistoryPopover
-                                        setInitialFormState={
-                                            setInitialFormState
-                                        }
-                                        setDialogOpen={
-                                            setPaymentDepositDialogOpen
-                                        }
-                                    />
+                                    <DepositsHistoryPopover />
                                 </Popover.Content>
                             </Popover.Portal>
                         </Popover>
@@ -89,12 +77,9 @@ export const PaymentReplenishmentPage = () => {
                                     key={requisite._id}
                                     requisite={requisite}
                                     onClick={() => {
-                                        setPaymentDepositDialogOpen(true);
-                                        setInitialFormState(state => ({
-                                            ...state,
-                                            state: "init"
-                                        }));
-                                        setSelectedRequisiteId(requisite._id);
+                                        navigate(
+                                            `/payment/replenishment/requisite/${requisite._id}`
+                                        );
                                     }}
                                 />
                             ))}
@@ -114,13 +99,8 @@ export const PaymentReplenishmentPage = () => {
                                           key={method._id}
                                           requisite={method}
                                           onClick={() => {
-                                              setPaymentDepositDialogOpen(true);
-                                              setInitialFormState(state => ({
-                                                  ...state,
-                                                  state: "init"
-                                              }));
-                                              setSelectedRequisiteId(
-                                                  method._id
+                                              navigate(
+                                                  `/payment/replenishment/requisite/${method._id}`
                                               );
                                           }}
                                       />
@@ -132,12 +112,13 @@ export const PaymentReplenishmentPage = () => {
 
                 <TechnicalSupport />
 
-                <PaymentDepositDialog
+                {/* <PaymentDepositDialog
                     open={paymentDepositDialogOpen}
-                    initialFormState={initialFormState}
                     setOpen={setPaymentDepositDialogOpen}
                     selectedRequisiteId={selectedRequisiteId}
-                />
+                /> */}
+
+                <Outlet />
             </article>
         </>
     );

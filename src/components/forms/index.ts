@@ -1,5 +1,5 @@
 export { ActivationBonusForm } from "./activate-bonus-form";
-export * from "./payment-deposit-form";
+export * from "./replenishment-details-form";
 export * from "./payment-draw-form";
 export * from "./security-bind-email-form";
 export * from "./security-confirm-binding-email-form";

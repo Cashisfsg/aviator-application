@@ -28,6 +28,13 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
                 method: "POST",
                 body
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+
+                    dispatch(userApi.util.invalidateTags(["Balance"]));
+                } catch {}
+            },
             invalidatesTags: (result, error) => (error ? [] : ["Withdraw"])
         }),
         cancelWithdrawById: builder.mutation<
