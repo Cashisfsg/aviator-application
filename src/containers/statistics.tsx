@@ -58,7 +58,7 @@ export const Statistics = () => {
                         <>
                             <TabsContent
                                 value="all"
-                                className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 px-1.5 py-5"
+                                className="mt-5 gap-x-1 gap-y-2 rounded-2.5xl bg-black-50 py-5"
                             >
                                 <AllBetsTabpanel />
                             </TabsContent>

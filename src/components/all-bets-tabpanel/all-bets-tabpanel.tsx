@@ -5,7 +5,6 @@ import { setCurrentRound } from "@/store/slices/gameSlice";
 import { ToggleRoundDetailsButton } from "./toggle-round-details-button";
 import { CurrentRoundDetailsTab } from "./current-round-details-tab";
 import GridLoader from "react-spinners/GridLoader";
-import { useFirstRender } from "@/utils/hooks";
 
 const PreviousRoundDetailsTab = lazy(() =>
     import("./previous-round-details-tab").then(module => ({
@@ -17,24 +16,6 @@ export const AllBetsTabpanel = () => {
     const currentRound = useStateSelector(state => state.game.currentRound);
     const dispatch = useAppDispatch();
 
-    const [first, setFirst] = useState(true);
-
-    const tableRef = useRef<HTMLDivElement>(null);
-
-    const isFirstRender = useFirstRender();
-
-    useEffect(() => {
-        if (first) {
-            setFirst(false);
-            return;
-        }
-
-        tableRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    }, []);
-
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
         dispatch(setCurrentRound());
     };
@@ -45,7 +26,7 @@ export const AllBetsTabpanel = () => {
                 {currentRound ? "Предыдущий" : "Текущий"}
             </ToggleRoundDetailsButton>
             {currentRound ? (
-                <CurrentRoundDetailsTab tableRef={tableRef} />
+                <CurrentRoundDetailsTab />
             ) : (
                 <Suspense
                     fallback={

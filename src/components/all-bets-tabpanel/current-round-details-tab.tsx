@@ -1,9 +1,6 @@
-import { useEffect, useRef } from "react";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
 import { useStateSelector } from "@/store/hooks";
-
-import { useFirstRender } from "@/utils/hooks/useFirstRender";
 
 import { TotalRoundDetailsTable } from "./total-round-details-table";
 import { PlayersList } from "./players-list";
@@ -12,7 +9,7 @@ import {
     selectRoundStatistic
 } from "@/store/slices/test.slice";
 
-export const CurrentRoundDetailsTab = ({ tableRef }) => {
+export const CurrentRoundDetailsTab = () => {
     const { isAuthenticated } = useAuth();
     const { data: balance } = useGetUserBalanceQuery(undefined, {
         skip: !isAuthenticated
@@ -40,10 +37,7 @@ export const CurrentRoundDetailsTab = ({ tableRef }) => {
     // }, [isFirstRender]);
 
     return (
-        <div
-            ref={tableRef}
-            onLoad={() => console.log("Loading finished")}
-        >
+        <div>
             {/* {!isLoading ? (
                 <> */}
             <TotalRoundDetailsTable

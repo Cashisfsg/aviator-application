@@ -12,25 +12,29 @@ export const PreviousRoundDetailsTab = () => {
 
     return (
         <>
-            {/* {!isLoading ? (
-                <> */}
-            <TotalRoundDetailsTable
-                betsAmount={roundDetails?.bets.length}
-                totalBets={
-                    roundDetails?.betAmount?.[balance?.currency || "USD"]
-                }
-                totalWinnings={
-                    roundDetails?.winAmount?.[balance?.currency || "USD"]
-                }
-                currency={balance?.currency || "USD"}
-            />
+            {!isLoading ? (
+                <>
+                    <TotalRoundDetailsTable
+                        betsAmount={roundDetails?.bets.length}
+                        totalBets={
+                            roundDetails?.betAmount?.[
+                                balance?.currency || "USD"
+                            ]
+                        }
+                        totalWinnings={
+                            roundDetails?.winAmount?.[
+                                balance?.currency || "USD"
+                            ]
+                        }
+                        currency={balance?.currency || "USD"}
+                    />
 
-            <PlayersList
-                players={roundDetails?.bets || []}
-                currency={balance?.currency || "USD"}
-            />
-            {/* </>
-            ) : null} */}
+                    <PlayersList
+                        players={roundDetails?.bets || []}
+                        currency={balance?.currency || "USD"}
+                    />
+                </>
+            ) : null}
             {roundDetails === undefined || roundDetails.bets.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто

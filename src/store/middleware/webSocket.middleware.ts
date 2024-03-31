@@ -163,11 +163,13 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     });
 
                     if (bets.some(bet => bet.betState === "bet")) {
-                        console.log("Invalidate balance");
-
                         store.dispatch(
                             userApi.util.invalidateTags(["Balance"])
                         );
+                    }
+
+                    if (!store.getState().game.currentRound) {
+                        store.dispatch(setCurrentRound(true));
                     }
                 });
 
@@ -201,10 +203,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     setTimeout(() => {
                         store.dispatch(toggleState("end"));
                     }, 0);
-
-                    if (!store.getState().game.currentRound) {
-                        store.dispatch(setCurrentRound(true));
-                    }
                 });
 
                 socket.on("currentPlayers", data => {
