@@ -1,7 +1,9 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
 import { useStateSelector } from "@/store/hooks";
+
+import { useFirstRender } from "@/utils/hooks/useFirstRender";
 
 import { TotalRoundDetailsTable } from "./total-round-details-table";
 import { PlayersList } from "./players-list";
@@ -10,32 +12,38 @@ import {
     selectRoundStatistic
 } from "@/store/slices/test.slice";
 
-export const CurrentRoundDetailsTab = () => {
+export const CurrentRoundDetailsTab = ({ tableRef }) => {
     const { isAuthenticated } = useAuth();
     const { data: balance } = useGetUserBalanceQuery(undefined, {
         skip: !isAuthenticated
     });
-    const tableRef = useRef<HTMLDivElement>(null);
-    const firstRender = useRef(true);
+    // const tableRef = useRef<HTMLDivElement>(null);
 
     // const roundDetails = useStateSelector(state => selectGameDetails(state));
     const roundStats = useStateSelector(state => selectRoundStatistic(state));
     const playersList = useStateSelector(state => selectPlayersList(state));
 
-    useLayoutEffect(() => {
-        if (firstRender.current) {
-            firstRender.current = false;
-            return;
-        }
+    // const isFirstRender = useFirstRender();
 
-        tableRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    }, []);
+    // useEffect(() => {
+    //     console.log("First render");
+    //     console.log(isFirstRender);
+
+    //     if (isFirstRender) return;
+
+    //     console.log("Scroll");
+
+    //     tableRef.current?.scrollIntoView({
+    //         behavior: "smooth",
+    //         block: "start"
+    //     });
+    // }, [isFirstRender]);
 
     return (
-        <div ref={tableRef}>
+        <div
+            ref={tableRef}
+            onLoad={() => console.log("Loading finished")}
+        >
             {/* {!isLoading ? (
                 <> */}
             <TotalRoundDetailsTable

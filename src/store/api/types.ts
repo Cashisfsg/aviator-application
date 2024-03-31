@@ -64,7 +64,7 @@ export interface ChangePasswordRequest {
 
 //! ================= User types ================= //
 
-export type Currency = "USD" | "RUB" | "UZS" | "KZT";
+export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "USDT";
 
 export type CurrencyRecord = Record<Currency, number>;
 
@@ -106,7 +106,7 @@ export interface UserRequisite {
 
 export interface Bet {
     _id: string;
-    bet: number;
+    bet: CurrencyRecord;
     currency: Currency;
     time: string;
     coeff: number;
@@ -118,8 +118,8 @@ export interface Bet {
 }
 
 export interface PaginationParams {
-    skip: number;
-    limit: number;
+    skip?: number;
+    limit?: number;
 }
 
 export interface Player {

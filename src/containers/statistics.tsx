@@ -19,7 +19,7 @@ const MyBetsTabpanel = lazy(() =>
 );
 
 const TopBetsTabpanel = lazy(() =>
-    import("@/components/top-bets-tabpanel").then(module => ({
+    import("@/components/top-bets-tabpanel/top-bets-tabpanel").then(module => ({
         default: module.TopBetsTabpanel
     }))
 );
