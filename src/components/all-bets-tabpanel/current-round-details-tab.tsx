@@ -37,7 +37,7 @@ export const CurrentRoundDetailsTab = () => {
     // }, [isFirstRender]);
 
     return (
-        <div>
+        <>
             {/* {!isLoading ? (
                 <> */}
             <TotalRoundDetailsTable
@@ -60,6 +60,6 @@ export const CurrentRoundDetailsTab = () => {
                     Пусто
                 </p>
             ) : null}
-        </div>
+        </>
     );
 };

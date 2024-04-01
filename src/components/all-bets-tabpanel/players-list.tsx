@@ -1,4 +1,4 @@
-import { Table, Row, Cell, TableHeaderCell } from "@/components/ui/table";
+import { Row, Cell, TableHeaderCell } from "@/components/ui/table";
 import { Currency, Player } from "@/store/api/types";
 import { Badge } from "@/components/ui/badge";
 
@@ -70,7 +70,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
         <TableVirtuoso
             data={players}
             style={{ height: `${Math.min(players.length * 46, 384) + 24}px` }}
-            className="scrollbar ml-auto w-[calc(100%_-_6px)]"
+            className="scrollbar"
             itemContent={(_, player) => (
                 <>
                     <Cell
@@ -142,7 +142,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                     return (
                         <table
                             {...props}
-                            className="w-full table-fixed !border-separate !border-spacing-x-0 !border-spacing-y-1 text-base leading-none"
+                            className="w-full table-fixed !border-separate !border-spacing-x-0 !border-spacing-y-1 pl-2.5 pr-1.5 text-base leading-none mh:pr-0"
                         />
                     );
                 },

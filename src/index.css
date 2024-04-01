@@ -132,12 +132,20 @@ button:focus-visible {
     /* height: 100%; */
     /* width: 100%; */
     overflow-y: scroll;
+    /* scrollbar-width: thin; */
     transition: --var1 0.5s;
+}
+
+@-moz-document url-prefix() {
+    .scrollbar {
+        scrollbar-width: thin;
+    }
 }
 
 @media screen and (hover: hover) {
     .scrollbar:hover {
         --var1: #aaa;
+        /* scrollbar-widtsh: thin; */
     }
 
     .scrollbar::-webkit-scrollbar {

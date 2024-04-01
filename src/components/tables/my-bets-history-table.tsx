@@ -70,7 +70,7 @@ interface MyBetsTableProps {
 const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
     const { data: balance } = useGetUserBalanceQuery();
 
-    const tableRef = useRef<HTMLDivElement>(null);
+    const tableRef = useRef<HTMLTableElement>(null);
 
     useLayoutEffect(() => {
         tableRef.current?.scrollIntoView({
@@ -80,109 +80,106 @@ const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
     }, []);
 
     return (
-        <div ref={tableRef}>
-            <TableVirtuoso
-                data={bets}
-                className="scrollbar ml-auto !h-64 w-[calc(100%_-_6px)]"
-                itemContent={(_, bet) => (
-                    <>
-                        <Cell
-                            className={`border-y-2 border-l-2 px-2 py-1 text-left text-[10px] leading-none ${
-                                isNaN(bet?.win?.["USD"])
-                                    ? "border-transparent"
-                                    : "border-[#427f00] bg-[#123405]"
-                            }`}
+        <TableVirtuoso
+            data={bets}
+            className="scrollbar !h-64"
+            itemContent={(_, bet) => (
+                <>
+                    <Cell
+                        className={`border-y-2 border-l-2 px-2 py-1 text-left text-[10px] leading-none ${
+                            isNaN(bet?.win?.["USD"])
+                                ? "border-transparent"
+                                : "border-[#427f00] bg-[#123405]"
+                        }`}
+                    >
+                        <time
+                            dateTime={bet?.time}
+                            className="block"
                         >
-                            <time
-                                dateTime={bet?.time}
-                                className="block"
-                            >
-                                {formatTime(bet?.time)}
-                            </time>
-                            <time
-                                dateTime={bet?.time}
-                                className="block"
-                            >
-                                {formatDate(bet?.time)}
-                            </time>
-                        </Cell>
-                        <Cell
-                            className={`border-y-2 font-bold text-white ${
-                                isNaN(bet?.win?.["USD"])
-                                    ? "border-transparent"
-                                    : "border-[#427f00] bg-[#123405]"
-                            }`}
+                            {formatTime(bet?.time)}
+                        </time>
+                        <time
+                            dateTime={bet?.time}
+                            className="block"
                         >
-                            {formatCurrency(
-                                bet?.bet?.[balance?.currency || "USD"]
-                            )}
-                        </Cell>
-                        <Cell
-                            className={`border-y-2
+                            {formatDate(bet?.time)}
+                        </time>
+                    </Cell>
+                    <Cell
+                        className={`border-y-2 font-bold text-white ${
+                            isNaN(bet?.win?.["USD"])
+                                ? "border-transparent"
+                                : "border-[#427f00] bg-[#123405]"
+                        }`}
+                    >
+                        {formatCurrency(bet?.bet?.[balance?.currency || "USD"])}
+                    </Cell>
+                    <Cell
+                        className={`border-y-2
                     ${
                         isNaN(bet?.win?.["USD"])
                             ? "border-transparent"
                             : "border-[#427f00] bg-[#123405]"
                     }`}
-                        >
-                            <Badge value={bet?.coeff} />
-                        </Cell>
-                        <Cell
-                            className={`border-y-2 border-r-2 font-bold text-white ${
-                                isNaN(bet?.win?.["USD"])
-                                    ? "border-transparent"
-                                    : "border-[#427f00] bg-[#123405]"
-                            }`}
-                        >
-                            {!isNaN(bet?.win?.[balance?.currency || "USD"])
-                                ? formatCurrency(
-                                      bet?.win?.[balance?.currency || "USD"]
-                                  )
-                                : "-"}
-                        </Cell>
-                    </>
-                )}
-                components={{
-                    Table: props => {
-                        return (
-                            <table
-                                {...props}
-                                className="w-full table-fixed !border-separate !border-spacing-x-0 !border-spacing-y-1 text-sm leading-none"
-                            />
-                        );
-                    },
-                    TableRow: props => {
-                        return (
-                            <Row
-                                {...props}
-                                // className="mx-1.5"
-                            />
-                        );
-                    }
-                }}
-                fixedHeaderContent={() => (
-                    <tr>
-                        <TableHeaderCell className="bg-black-50">
-                            Время
-                        </TableHeaderCell>
-                        <TableHeaderCell className="bg-black-50">
-                            {`Ставка, ${balance?.currency || "USD"}`}
-                        </TableHeaderCell>
-                        <TableHeaderCell className="bg-black-50">
-                            Коэфф.
-                        </TableHeaderCell>
-                        <TableHeaderCell className="bg-black-50">
-                            {`Выигрыш, ${balance?.currency || "USD"}`}
-                        </TableHeaderCell>
-                    </tr>
-                )}
-                endReached={() => {
-                    setQueryParams(queryParams => ({
-                        ...queryParams,
-                        skip: bets?.length ?? 0
-                    }));
-                }}
-            />
-        </div>
+                    >
+                        <Badge value={bet?.coeff} />
+                    </Cell>
+                    <Cell
+                        className={`border-y-2 border-r-2 font-bold text-white ${
+                            isNaN(bet?.win?.["USD"])
+                                ? "border-transparent"
+                                : "border-[#427f00] bg-[#123405]"
+                        }`}
+                    >
+                        {!isNaN(bet?.win?.[balance?.currency || "USD"])
+                            ? formatCurrency(
+                                  bet?.win?.[balance?.currency || "USD"]
+                              )
+                            : "-"}
+                    </Cell>
+                </>
+            )}
+            components={{
+                Table: props => {
+                    return (
+                        <table
+                            {...props}
+                            ref={tableRef}
+                            className="w-full table-fixed !border-separate !border-spacing-x-0 !border-spacing-y-1 pl-2.5 pr-2.5 text-sm leading-none mh:pr-0"
+                        />
+                    );
+                },
+                TableRow: props => {
+                    return (
+                        <Row
+                            {...props}
+                            // className="mx-1.5"
+                        />
+                    );
+                }
+            }}
+            fixedHeaderContent={() => (
+                <tr>
+                    <TableHeaderCell className="bg-black-50">
+                        Время
+                    </TableHeaderCell>
+                    <TableHeaderCell className="bg-black-50">
+                        {`Ставка, ${balance?.currency || "USD"}`}
+                    </TableHeaderCell>
+                    <TableHeaderCell className="bg-black-50">
+                        Коэфф.
+                    </TableHeaderCell>
+                    <TableHeaderCell className="bg-black-50">
+                        {`Выигрыш, ${balance?.currency || "USD"}`}
+                    </TableHeaderCell>
+                </tr>
+            )}
+            endReached={() => {
+                setQueryParams(queryParams => ({
+                    ...queryParams,
+                    skip: bets?.length ?? 0
+                }));
+            }}
+        />
     );
 };
