@@ -86,6 +86,13 @@ export const BurgerMenu = () => {
                 <PopoverContent
                     align="end"
                     sideOffset={10}
+                    onInteractOutside={event => {
+                        const target = event.target as HTMLElement;
+
+                        if (target.closest("li.toast")) {
+                            event.preventDefault();
+                        }
+                    }}
                     className="z-10 w-72 border-none bg-[#2c2d30] p-0 text-white"
                 >
                     <div className="p-0 text-sm">
