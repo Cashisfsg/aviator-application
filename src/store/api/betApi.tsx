@@ -44,7 +44,7 @@ export const betApi = createApi({
         }
     }),
 
-    tagTypes: ["My", "Top", "Coefficients"],
+    tagTypes: ["My", "Top", "Coefficients", "Previous"],
 
     endpoints: builder => ({
         getTopBets: builder.query<
@@ -214,7 +214,7 @@ export const betApi = createApi({
             query: () => ({
                 url: "/bets/last-game"
             }),
-            keepUnusedDataFor: 0
+            providesTags: ["Previous"]
         })
     })
 });

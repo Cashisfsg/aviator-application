@@ -171,6 +171,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     if (!store.getState().game.currentRound) {
                         store.dispatch(setCurrentRound(true));
                     }
+                    store.dispatch(betApi.util.invalidateTags(["Previous"]));
                 });
 
                 socket.on("crash", () => {

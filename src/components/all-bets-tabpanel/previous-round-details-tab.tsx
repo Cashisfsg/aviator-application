@@ -6,20 +6,22 @@ import { PlayersList } from "./players-list";
 import { Skeleton } from "./skeleton";
 
 export const PreviousRoundDetailsTab = () => {
-    const { data: roundDetails, isLoading } = useGetPreviousRoundInfoQuery(
-        undefined,
-        {
-            refetchOnFocus: true
-        }
-    );
+    const {
+        data: roundDetails,
+        isLoading,
+        isSuccess
+    } = useGetPreviousRoundInfoQuery();
+
     const { data: balance } = useGetUserBalanceQuery();
 
     return (
         <>
-            {!isLoading ? (
-                <>
-                    {/* <Skeleton currency={balance?.currency || "USD"} /> */}
+            {isLoading ? (
+                <Skeleton currency={balance?.currency || "USD"} />
+            ) : null}
 
+            {isSuccess ? (
+                <>
                     <TotalRoundDetailsTable
                         betsAmount={roundDetails?.bets.length}
                         totalBets={
@@ -40,10 +42,8 @@ export const PreviousRoundDetailsTab = () => {
                         currency={balance?.currency || "USD"}
                     />
                 </>
-            ) : (
-                <Skeleton currency={balance?.currency || "USD"} />
-            )}
-            {!isLoading &&
+            ) : null}
+            {isSuccess &&
             (roundDetails === undefined || roundDetails.bets.length === 0) ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто
