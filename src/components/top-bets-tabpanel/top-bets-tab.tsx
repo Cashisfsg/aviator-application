@@ -39,7 +39,7 @@ export const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
         <>
             {isLoading ? (
                 <div className="scrollbar max-h-64">
-                    <ul className="grid grid-cols-1 grid-rows-1 gap-2 px-1.5 sm:grid-cols-2">
+                    <ul className="grid grid-cols-1 grid-rows-1 gap-2 pl-1.5 pr-1.5 sm:grid-cols-2 mh:pr-0">
                         {Array(6)
                             .fill(0)
                             .map((_, index) => (
@@ -48,6 +48,7 @@ export const TopBetsTab: React.FC<TopBetsTabProps> = ({ dateSort }) => {
                     </ul>
                 </div>
             ) : null}
+
             {isSuccess && bets.length !== 0 ? (
                 <TopBetsList
                     bets={bets}
