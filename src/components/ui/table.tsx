@@ -105,7 +105,7 @@ export const Cell: React.FC<TableCellProps> = ({
     return (
         <td
             {...props}
-            className={cn("bg-[#101112] p-1 text-[#bbbfc5]", className)}
+            className={cn("bg-[#101112] px-1 py-1 text-[#bbbfc5]", className)}
         >
             {children}
         </td>

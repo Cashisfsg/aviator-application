@@ -16,7 +16,7 @@ export const TotalRoundDetailsTable: React.FC<TotalRoundDetailsTable> = ({
 }) => {
     return (
         <Table
-            className="px-2.5"
+            className="table-fixed px-2.5"
             headers={["Кол-во ставок", "Сумма ставок", "Сумма выигрыша"]}
             data={[
                 [
