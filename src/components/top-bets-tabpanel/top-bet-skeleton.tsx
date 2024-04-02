@@ -1,7 +1,7 @@
 export const TopBetSkeleton = () => {
     return (
         <li className="grid grid-cols-[1fr_4fr] grid-rows-[auto_auto] place-items-center overflow-hidden rounded-md bg-[#101112] text-xs text-[#9ea0a3] sm:grid-cols-[3fr_7fr]">
-            <div className="space-y-2">
+            <div className="h-[68px] space-y-2">
                 <div className="size-10 animate-pulse rounded-full bg-slate-400" />
                 <p className="h-3 animate-pulse rounded-full bg-slate-400" />
             </div>

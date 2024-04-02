@@ -13,13 +13,16 @@ import { Badge } from "@/components/ui/badge";
 
 import { formatDate, formatTime, formatCurrency } from "@/utils/helpers";
 import { Bet } from "@/store";
+import React from "react";
 
 export const MyBetsHistoryTable = () => {
     const [queryParams, setQueryParams] = useState({ skip: 0, limit: 6 });
 
     const {
         data: bets,
+        isLoading,
         isSuccess,
+        isFetching,
         isError,
         error
     } = useGetUserBetsQuery(
@@ -41,12 +44,13 @@ export const MyBetsHistoryTable = () => {
         <>
             {isError && <pre>{error?.data?.message}</pre>}
 
-            {isSuccess ? (
-                <MyBetsTable
-                    bets={bets}
-                    setQueryParams={setQueryParams}
-                />
-            ) : null}
+            {/* {isSuccess ? ( */}
+            <MyBetsTable
+                bets={bets}
+                setQueryParams={setQueryParams}
+                isFetching={isFetching}
+            />
+            {/* ) : null} */}
 
             {isSuccess && (!bets || bets.length === 0) ? (
                 <p className="py-2 text-center text-base font-semibold">
@@ -65,9 +69,14 @@ interface MyBetsTableProps {
             limit: number;
         }>
     >;
+    isFetching: boolean;
 }
 
-const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
+const MyBetsTable: React.FC<MyBetsTableProps> = ({
+    bets,
+    setQueryParams,
+    isFetching
+}) => {
     const { data: balance } = useGetUserBalanceQuery();
 
     const tableRef = useRef<HTMLTableElement>(null);
@@ -82,7 +91,7 @@ const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
     return (
         <TableVirtuoso
             data={bets}
-            className="scrollbar !h-64"
+            className="scrollbar !h-[265px]"
             itemContent={(_, bet) => (
                 <>
                     <Cell
@@ -156,7 +165,14 @@ const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
                             // className="mx-1.5"
                         />
                     );
-                }
+                },
+                TableFoot: React.forwardRef((props, forwardRef) => (
+                    <tfoot
+                        className="!static"
+                        ref={forwardRef}
+                        {...props}
+                    />
+                ))
             }}
             fixedHeaderContent={() => (
                 <tr>
@@ -173,6 +189,31 @@ const MyBetsTable: React.FC<MyBetsTableProps> = ({ bets, setQueryParams }) => {
                         {`Выигрыш, ${balance?.currency || "USD"}`}
                     </TableHeaderCell>
                 </tr>
+            )}
+            fixedFooterContent={() => (
+                <>
+                    {isFetching
+                        ? Array(6)
+                              .fill(0)
+                              .map((_, i) => (
+                                  <tr key={i}>
+                                      <Cell className="h-8 space-y-1 rounded-l-lg">
+                                          <div className="h-2 w-10 animate-pulse rounded-full bg-slate-400"></div>
+                                          <div className="h-2 w-16 animate-pulse rounded-full bg-slate-400"></div>
+                                      </Cell>
+                                      <Cell className="h-8">
+                                          <div className="mx-auto h-3 w-10 animate-pulse rounded-full bg-slate-400"></div>
+                                      </Cell>
+                                      <Cell className="h-8">
+                                          <div className="mx-auto h-3 w-10 animate-pulse rounded-full bg-slate-400"></div>
+                                      </Cell>
+                                      <Cell className="h-8 rounded-r-lg">
+                                          <div className="mx-auto h-3 w-10 animate-pulse rounded-full bg-slate-400"></div>
+                                      </Cell>
+                                  </tr>
+                              ))
+                        : null}
+                </>
             )}
             endReached={() => {
                 setQueryParams(queryParams => ({
