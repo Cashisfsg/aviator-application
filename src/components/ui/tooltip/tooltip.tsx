@@ -48,43 +48,41 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
     const onMouseEnterHandler = (event: React.MouseEvent<HTMLElement>) => {
         const target = event.currentTarget;
 
-        if (tooltipRef.current?.getAttribute("aria-hidden") === "false") {
+        if (tooltipRef.current?.getAttribute("aria-hidden") === "false")
             clearTimeout(timerRef.current);
+        // } else {
+        // timerRef.current = setTimeout(() => {
+        if (!tooltipRef.current) return;
+
+        const viewportWidth = window.innerWidth;
+        const tooltipElement = tooltipRef.current;
+        const tooltipRect = tooltipElement.getBoundingClientRect();
+        const anchorRect = target.getBoundingClientRect();
+
+        if (
+            (anchorRect.right + anchorRect.left) / 2 +
+                (tooltipRect.right - tooltipRect.left) / 2 -
+                16 >
+            viewportWidth - 32
+        ) {
+            tooltipElement.style.left = `${Math.max(
+                viewportWidth - 32 - (tooltipRect.right - tooltipRect.left),
+                anchorRect.right - tooltipRect.width
+            )}px`;
         } else {
-            timerRef.current = setTimeout(() => {
-                if (!tooltipRef.current) return;
-
-                const viewportWidth = window.innerWidth;
-                const tooltipElement = tooltipRef.current;
-                const tooltipRect = tooltipElement.getBoundingClientRect();
-                const anchorRect = target.getBoundingClientRect();
-
-                if (
-                    (anchorRect.right + anchorRect.left) / 2 +
-                        (tooltipRect.right - tooltipRect.left) / 2 -
-                        16 >
-                    viewportWidth - 32
-                ) {
-                    tooltipElement.style.left = `${Math.max(
-                        viewportWidth -
-                            32 -
-                            (tooltipRect.right - tooltipRect.left),
-                        anchorRect.right - tooltipRect.width
-                    )}px`;
-                } else {
-                    tooltipElement.style.left = `${
-                        (anchorRect.right + anchorRect.left) / 2 -
-                        (tooltipRect.right - tooltipRect.left) / 2
-                    }px`;
-                }
-
-                tooltipElement.style.top = `calc(${
-                    anchorRect.top - tooltipRect.height
-                }px - 8px)`;
-
-                tooltipElement.setAttribute("aria-hidden", "false");
-            }, 1000);
+            tooltipElement.style.left = `${
+                (anchorRect.right + anchorRect.left) / 2 -
+                (tooltipRect.right - tooltipRect.left) / 2
+            }px`;
         }
+
+        tooltipElement.style.top = `calc(${
+            anchorRect.top - tooltipRect.height
+        }px - 8px)`;
+
+        tooltipElement.setAttribute("aria-hidden", "false");
+        // }, 1000);
+        // }
     };
 
     const onMouseLeaveHandler = () => {
@@ -97,9 +95,7 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
         }
     };
 
-    const onPointerDownHandler: React.PointerEventHandler<
-        HTMLElement
-    > = event => {
+    const onClickHandler: React.PointerEventHandler<HTMLElement> = event => {
         event.stopPropagation();
 
         if (tooltipRef.current?.getAttribute("aria-hidden") === "true") {
@@ -183,7 +179,7 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
                 onFocus: onFocusHandler,
                 onMouseLeave: onMouseLeaveHandler,
                 onBlur: onBlurHandler,
-                onPointerDownCapture: onPointerDownHandler,
+                onPointerDown: onClickHandler,
                 ref: triggerRef,
                 ...props
             })}
@@ -230,7 +226,7 @@ const TooltipContent: React.FC<TooltipContentProps> = ({
             onMouseEnter={onMouseEnterHandler}
             onMouseLeave={onMouseLeaveHandler}
             className={cn(
-                "fixed isolate aria-[hidden=false]:visible aria-[hidden=true]:invisible",
+                "absolute isolate aria-[hidden=false]:visible aria-[hidden=true]:invisible",
                 className
             )}
             ref={tooltipRef}

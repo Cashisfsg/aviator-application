@@ -32,10 +32,7 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
     return (
         <Popover
             open={open}
-            onOpenChange={() => {
-                if (open) sessionStorage.removeItem("email");
-                setPopoverOpen(open => !open);
-            }}
+            onOpenChange={setPopoverOpen}
         >
             <PopoverTrigger
                 tabIndex={-1}
@@ -47,7 +44,20 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
                 side="bottom"
                 sideOffset={20}
                 align="end"
-                onPointerDownOutside={() => navigate("/main")}
+                onPointerDownOutside={event => {
+                    if ((event.target as HTMLElement).closest("li.toast"))
+                        return;
+
+                    sessionStorage.removeItem("email");
+                    navigate("/main");
+                }}
+                onEscapeKeyDown={event => {
+                    if ((event.target as HTMLElement).closest("li.toast"))
+                        return;
+
+                    sessionStorage.removeItem("email");
+                    navigate("/main");
+                }}
                 className="w-60 border-[#414148] bg-[#1b1c1d] text-sm font-semibold leading-none text-white"
             >
                 <>

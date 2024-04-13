@@ -1,7 +1,8 @@
 import { useState, useTransition } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth, useGetServiceLinkQuery } from "@/store";
+import { useAuth } from "@/store/hooks/useAuth";
+import { useGetServiceLinkQuery } from "@/store/api/authApi";
 import { GameSettings } from "@/components/game-settings";
 
 import {
@@ -30,15 +31,6 @@ import {
 
 import { UserProfileDetails } from "../user-profile-details";
 import { RedirectMenu } from "../redirect-menu";
-
-// import {
-//     DropdownMenu,
-//     DropdownMenuContent,
-//     DropdownMenuItem,
-//     DropdownMenuLabel,
-//     DropdownMenuSeparator,
-//     DropdownMenuTrigger
-// } from "@/components/ui/dropdown-menu";
 
 import { FiMenu } from "react-icons/fi";
 import { BiSupport } from "react-icons/bi";
@@ -86,13 +78,6 @@ export const BurgerMenu = () => {
                 <PopoverContent
                     align="end"
                     sideOffset={10}
-                    onInteractOutside={event => {
-                        const target = event.target as HTMLElement;
-
-                        if (target.closest("li.toast")) {
-                            event.preventDefault();
-                        }
-                    }}
                     className="z-10 w-72 border-none bg-[#2c2d30] p-0 text-white"
                 >
                     <div className="p-0 text-sm">
