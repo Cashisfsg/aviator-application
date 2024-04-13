@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 
-import { useGetSupportServiceLinkQuery } from "@/store/api/authApi";
+import { useGetServiceLinkQuery } from "@/store/api/authApi";
 
 import {
     DialogDescription,
@@ -84,7 +84,7 @@ export const RestorePasswordDialogHeader = () => {
 };
 
 export const RestorePasswordDialogFooter = () => {
-    const { data } = useGetSupportServiceLinkQuery();
+    const { data: links } = useGetServiceLinkQuery();
 
     return (
         <DialogFooter className="grid grid-cols-2 gap-x-5">
@@ -102,7 +102,7 @@ export const RestorePasswordDialogFooter = () => {
                 <span className="text-xs">Не привязана почта?</span>
                 <br />
                 <a
-                    href={data?.link}
+                    href={links?.support}
                     target="_blank"
                     className="text-xs text-blue-500"
                 >

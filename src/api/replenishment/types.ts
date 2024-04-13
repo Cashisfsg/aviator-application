@@ -1,18 +1,41 @@
 import { Requisite } from "../requisite";
 import { CurrencyRecord } from "../withdraw/types";
 
+interface Limit {
+    min: CurrencyRecord;
+    max: CurrencyRecord;
+}
+
+export interface Method {
+    _id: string;
+    name: string;
+    currency: string;
+    img: string;
+    commission: number;
+    active: boolean;
+    min_symbols_count: number;
+    max_symbols_count: number;
+    replenishment: boolean;
+    withdrawal: boolean;
+    replenishmentLimit: Limit;
+    withdrawalLimit: Limit;
+    balance: number;
+}
+
 export interface Replenishment {
     _id: string;
     user: string;
     amount: CurrencyRecord;
-    // currency: string;
     deduction: CurrencyRecord;
     status: string;
     statusMessage: string;
     isPayConfirmed: boolean;
     requisite: Requisite;
+    method: Method;
     createdAt: string;
     completedDate: string;
+    card: string;
+    receipt: string;
     uid: number;
 }
 

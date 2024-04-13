@@ -59,7 +59,7 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
             CreateReplenishmentRequest
         >({
             query: body => ({
-                url: `replenishments`,
+                url: "/replenishments",
                 method: "POST",
                 body
             }),

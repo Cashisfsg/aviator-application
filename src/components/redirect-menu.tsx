@@ -41,26 +41,6 @@ export const RedirectMenu = () => {
                         <span>Перейти в Телеграм-бот</span>
                     </a>
                 )}
-                {/* <a
-                    href={
-                        tg?.initDataUnsafe?.user?.id
-                            ? "googlechrome://navigate?url=https://avibet.io"
-                            : `https://t.me/${import.meta.env.VITE_BOT_NAME}`
-                    }
-                    target="_blank"
-                    className="flex gap-x-2 px-2.5 py-2"
-                >
-                    {tg?.initDataUnsafe?.user?.id ? (
-                        <FaChrome className="text-base text-[#767B85]" />
-                    ) : (
-                        <PiTelegramLogoBold className="text-base text-[#767B85]" />
-                    )}
-                    <span>
-                        {tg?.initDataUnsafe?.user?.id
-                            ? "Перейти на сайт"
-                            : "Перейти в Телеграм-бот"}
-                    </span>
-                </a> */}
             </DropDownMenuItem>
             <DropDownMenuSeparator />
         </>

@@ -24,9 +24,16 @@ export const authApi = createApi({
         baseUrl: import.meta.env.VITE_API_BASE_URL
     }),
     endpoints: builder => ({
-        getSupportServiceLink: builder.query<{ link: string }, void>({
+        getServiceLink: builder.query<
+            {
+                support: "string";
+                news: "string";
+                chat: "string";
+            },
+            void
+        >({
             query: () => ({
-                url: "links/support"
+                url: "links"
             })
         }),
         createNewUserAccount: builder.mutation<
@@ -150,6 +157,6 @@ export const {
     useSendConfirmationCodeMutation,
     useConfirmPasswordChangeMutation,
     useChangePasswordMutation,
-    useGetSupportServiceLinkQuery,
-    useLazyGetSupportServiceLinkQuery
+    useGetServiceLinkQuery,
+    useLazyGetServiceLinkQuery
 } = authApi;

@@ -132,6 +132,7 @@ export const CreateReplenishmentForm = () => {
                     )}
                 </button>
             </form>
+
             <p className="text-center text-xs text-black">
                 <span>
                     Нажимая на кнопку <b>«Пополнить»</b> вы соглашаетесь с

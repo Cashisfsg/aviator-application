@@ -1,7 +1,7 @@
 import { useState, useTransition } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth, useGetSupportServiceLinkQuery } from "@/store";
+import { useAuth, useGetServiceLinkQuery } from "@/store";
 import { GameSettings } from "@/components/game-settings";
 
 import {
@@ -49,7 +49,7 @@ import { IoExitOutline } from "react-icons/io5";
 import { BsStars } from "react-icons/bs";
 
 export const BurgerMenu = () => {
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [myBetsHistoryDialogOpen, setMyBetsHistoryDialogOpen] =
@@ -65,9 +65,9 @@ export const BurgerMenu = () => {
 
     const { isAuthenticated } = useAuth();
 
-    const { data: support } = useGetSupportServiceLinkQuery();
+    const { data: links } = useGetServiceLinkQuery();
 
-    const onClickHandler = () => {
+    const closeBurgerMenu = () => {
         setBurgerMenuOpen(false);
     };
 
@@ -106,7 +106,7 @@ export const BurgerMenu = () => {
                             <>
                                 <DropDownMenuItem
                                     onPointerUp={() => {
-                                        onClickHandler();
+                                        closeBurgerMenu();
                                         setTimeout(() => {
                                             setBonusAndPromoDialogOpen(true);
                                         }, 200);
@@ -122,9 +122,9 @@ export const BurgerMenu = () => {
 
                         <DropDownMenuItem>
                             <a
-                                href={support?.link}
+                                href={links?.support}
                                 target="_blank"
-                                onClick={onClickHandler}
+                                onClick={closeBurgerMenu}
                                 className="flex gap-x-2 px-2.5 py-2"
                             >
                                 <BiSupport className="text-base text-[#767b85]" />
@@ -134,7 +134,7 @@ export const BurgerMenu = () => {
                         <DropDownMenuSeparator />
 
                         <DropDownMenuItem
-                            onClick={onClickHandler}
+                            onClick={closeBurgerMenu}
                             className="flex gap-x-2 px-2.5 py-2"
                         >
                             <svg
@@ -156,40 +156,11 @@ export const BurgerMenu = () => {
                         </DropDownMenuItem>
                         <DropDownMenuSeparator />
 
-                        {/* {isAuthenticated ? (
-                            <> */}
-                        {/* <DropDownMenuItem
-                                    onPointerUp={() => {
-                                        onClickHandler();
-                                        setTimeout(() => {
-                                            setMyBetsHistoryDialogOpen(true);
-                                        }, 200);
-                                    }}
-                                    className="flex gap-x-2 px-2.5 py-2"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="15"
-                                        height="14"
-                                        viewBox="0 0 15 14"
-                                    >
-                                        <path
-                                            fill="#767B85"
-                                            fillRule="nonzero"
-                                            d="M7.993.669c-2.45 0-4.62 1.33-5.74 3.36l-1.61-1.61v4.55h4.55l-1.96-1.96c.91-1.75 2.66-2.94 4.76-2.94 2.87 0 5.25 2.38 5.25 5.25s-2.38 5.25-5.25 5.25c-2.31 0-4.2-1.47-4.97-3.5h-1.47c.77 2.8 3.36 4.9 6.44 4.9 3.71 0 6.65-3.01 6.65-6.65 0-3.64-3.01-6.65-6.65-6.65zm-1.05 3.5v3.57l3.29 1.96.56-.91-2.8-1.68v-2.94h-1.05z"
-                                        />
-                                    </svg>
-                                    <span>История моих ставок</span>
-                                </DropDownMenuItem>
-                                <DropDownMenuSeparator /> */}
-                        {/* </>
-                        ) : null} */}
-
                         {isAuthenticated ? (
                             <>
                                 <DropDownMenuItem
                                     onPointerUp={() => {
-                                        onClickHandler();
+                                        closeBurgerMenu();
                                         setTimeout(() => {
                                             setGameLimitsPopoverOpen(true);
                                         }, 200);
@@ -216,21 +187,29 @@ export const BurgerMenu = () => {
                             </>
                         ) : null}
 
-                        <DropDownMenuItem
-                            onClick={onClickHandler}
-                            className="flex gap-x-2 px-2.5 py-2"
-                        >
-                            <ImNewspaper className="text-base text-[#767B85]" />
-                            <span>Новости</span>
+                        <DropDownMenuItem>
+                            <a
+                                href={links?.news}
+                                target="_blank"
+                                onClick={closeBurgerMenu}
+                                className="flex gap-x-2 px-2.5 py-2"
+                            >
+                                <ImNewspaper className="text-base text-[#767B85]" />
+                                <span>Новости</span>
+                            </a>
                         </DropDownMenuItem>
                         <DropDownMenuSeparator />
 
-                        <DropDownMenuItem
-                            onClick={onClickHandler}
-                            className="flex gap-x-2 px-2.5 py-2"
-                        >
-                            <HiOutlineChatBubbleBottomCenterText className="text-base text-[#767B85]" />
-                            <span>Чат</span>
+                        <DropDownMenuItem>
+                            <a
+                                href={links?.chat}
+                                target="_blank"
+                                onClick={closeBurgerMenu}
+                                className="flex gap-x-2 px-2.5 py-2"
+                            >
+                                <HiOutlineChatBubbleBottomCenterText className="text-base text-[#767B85]" />
+                                <span>Чат</span>
+                            </a>
                         </DropDownMenuItem>
                         <DropDownMenuSeparator />
 
@@ -238,7 +217,7 @@ export const BurgerMenu = () => {
                             <>
                                 <DropDownMenuItem
                                     onPointerUp={() => {
-                                        onClickHandler();
+                                        closeBurgerMenu();
                                         setTimeout(() => {
                                             setReferralProgramPopoverOpen(true);
                                         }, 200);
@@ -256,7 +235,7 @@ export const BurgerMenu = () => {
                             <>
                                 <DropDownMenuItem
                                     onPointerUp={() => {
-                                        onClickHandler();
+                                        closeBurgerMenu();
                                         setTimeout(() => {
                                             setSecurityPopoverOpen(true);
                                         }, 250);
@@ -292,7 +271,7 @@ export const BurgerMenu = () => {
                         {isAuthenticated ? (
                             <DropDownMenuItem
                                 onPointerDown={() => {
-                                    onClickHandler();
+                                    closeBurgerMenu();
                                     setAlertDialogOpen(true);
                                 }}
                                 className="flex gap-x-2 px-2.5 py-2"
@@ -316,15 +295,18 @@ export const BurgerMenu = () => {
                         open={bonusAndPromoDialogOpen}
                         setOpen={setBonusAndPromoDialogOpen}
                     />
+
                     <DailyStatisticsDialog
                         open={dailyStatisticsDialogOpen}
                         setOpen={setDailyStatisticsDialogOpen}
                     />
+
                     <GameLimitsPopover
                         open={gameLimitsPopoverOpen}
                         setOpen={setGameLimitsPopoverOpen}
                         setBurgerMenuOpen={setBurgerMenuOpen}
                     />
+
                     <ReferralProgramPopover
                         open={referralProgramPopoverOpen}
                         setPopoverOpen={setReferralProgramPopoverOpen}
@@ -333,11 +315,13 @@ export const BurgerMenu = () => {
                         }
                         setBurgerMenuOpen={setBurgerMenuOpen}
                     />
+
                     <SecurityPopover
                         open={securityPopoverOpen}
                         setPopoverOpen={setSecurityPopoverOpen}
                         setBurgerMenuOpen={setBurgerMenuOpen}
                     />
+
                     <SignOutAlertDialog
                         open={alertDialogOpen}
                         setOpen={setAlertDialogOpen}
