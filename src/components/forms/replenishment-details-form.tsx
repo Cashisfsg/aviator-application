@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ScaleLoader } from "react-spinners";
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import {
@@ -32,9 +33,10 @@ export const ReplenishmentDetailsForm = () => {
     const params = useParams();
     const navigate = useNavigate();
 
-    const { data: replenishment } = useFetchReplenishmentByIdQuery({
-        id: params?.replenishmentId as string
-    });
+    const { data: replenishment, isLoading: isReplenishmentDataLoading } =
+        useFetchReplenishmentByIdQuery({
+            id: params?.replenishmentId as string
+        });
 
     const [formState, setFormState] = useState<ReplenishmentFormState>("init");
 
@@ -68,6 +70,53 @@ export const ReplenishmentDetailsForm = () => {
             handleErrorResponse(error, message => toast.error(message));
         }
     };
+
+    if (isReplenishmentDataLoading)
+        return (
+            <div className="flex w-full items-center justify-center px-3">
+                <ScaleLoader color="rgb(54, 215, 183)" />
+            </div>
+        );
+
+    if (replenishment?.status === "В обработке...")
+        return (
+            <PaymentDetails replenishment={replenishment}>
+                <Field
+                    label={"Статус заявки"}
+                    value={"В обработке..."}
+                />
+
+                <DialogClose
+                    type="button"
+                    onClick={() =>
+                        navigate("/payment/replenishment", { replace: true })
+                    }
+                    className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
+                >
+                    Закрыть
+                </DialogClose>
+            </PaymentDetails>
+        );
+
+    if (replenishment?.status === "Отменена")
+        return (
+            <PaymentDetails replenishment={replenishment}>
+                <Field
+                    label={"Статус заявки"}
+                    value={"Отменена"}
+                />
+
+                <DialogClose
+                    type="button"
+                    onClick={() =>
+                        navigate("/payment/replenishment", { replace: true })
+                    }
+                    className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
+                >
+                    Закрыть
+                </DialogClose>
+            </PaymentDetails>
+        );
 
     switch (formState) {
         case "init":
@@ -168,7 +217,11 @@ export const ReplenishmentDetailsForm = () => {
 
                     <DialogClose
                         type="button"
-                        onClick={() => navigate("/payment/replenishment")}
+                        onClick={() =>
+                            navigate("/payment/replenishment", {
+                                replace: true
+                            })
+                        }
                         className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
                     >
                         Закрыть
@@ -238,7 +291,11 @@ export const ReplenishmentDetailsForm = () => {
 
                     <DialogClose
                         type="button"
-                        onClick={() => navigate("/payment/replenishment")}
+                        onClick={() =>
+                            navigate("/payment/replenishment", {
+                                replace: true
+                            })
+                        }
                         className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
                     >
                         Закрыть
@@ -292,13 +349,13 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
         <div className="grid gap-y-4">
             <p className="flex h-10 items-center gap-2 rounded-lg bg-slate-300/70 px-2 py-1 leading-none text-black">
                 <img
-                    src={replenishment?.requisite?.img || Visa}
-                    alt={replenishment?.requisite?.name}
+                    src={replenishment?.method?.img || Visa}
+                    alt={replenishment?.method?.name}
                     onError={onErrorHandler}
                     className="h-full"
                 />
                 <span className="inline-block w-full truncate font-semibold">
-                    {replenishment?.requisite?.name}
+                    {replenishment?.method?.name}
                 </span>
             </p>
 
@@ -317,7 +374,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 label={"Сумма депозита"}
                 value={`${replenishment?.amount?.[
                     balance?.currency || "USD"
-                ].toFixed(2)} ${balance?.currency}`}
+                ]?.toFixed(2)} ${balance?.currency}`}
             />
 
             <Field
@@ -326,14 +383,14 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                     (replenishment?.deduction?.[balance?.currency || "USD"] ||
                         0) -
                     (replenishment?.amount?.[balance?.currency || "USD"] || 0)
-                ).toFixed(2)} ${balance?.currency}`}
+                )?.toFixed(2)} ${balance?.currency}`}
             />
 
             <Field
                 label={"К оплате"}
                 value={`${replenishment?.deduction?.[
                     balance?.currency || "USD"
-                ].toFixed(2)} ${balance?.currency}`}
+                ]?.toFixed(2)} ${balance?.currency}`}
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
 

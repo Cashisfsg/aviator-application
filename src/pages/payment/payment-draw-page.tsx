@@ -41,7 +41,8 @@ export const PaymentDrawPage = () => {
                 />
                 Вывод
             </h1>
-            <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
+
+            <article className="relative mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
                     <p className="justify-self-start text-sm leading-5 text-slate-400 ">

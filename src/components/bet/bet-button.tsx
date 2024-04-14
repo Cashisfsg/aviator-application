@@ -27,6 +27,18 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const rate = useStateSelector(state => selectRoundRate(state, betNumber));
 
     const placeBet: React.MouseEventHandler<HTMLButtonElement> = event => {
+        if (bonus.bonusActive) {
+            dispatch(
+                makeBet({
+                    betNumber,
+                    currency: currentGameTab.currency,
+                    bet: bonus.bonusQuantity,
+                    promoId: bonus.bonusId
+                })
+            );
+            return;
+        }
+
         const target = event.currentTarget;
 
         if (currentGameTab.currentBet > currentGameTab.balance) {

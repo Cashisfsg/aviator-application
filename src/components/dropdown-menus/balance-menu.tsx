@@ -90,7 +90,7 @@ export const BalanceMenu = () => {
 
                         <DropDownMenuItem onClick={onClickHandler}>
                             <Link
-                                to="/payment/draw"
+                                to="/payment/withdrawal"
                                 onClick={onLinkClickHandler}
                                 className="inline-block w-full px-2.5 py-2"
                             >

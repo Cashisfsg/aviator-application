@@ -1,5 +1,23 @@
-import { Requisite } from "../requisite";
-import { CurrencyRecord } from "../withdraw/types";
+import { Currency, CurrencyRecord } from "../withdraw/types";
+
+interface Turnover {
+    confirmedCount: number;
+    confirmed: number;
+    inProcess: number;
+}
+
+interface Requisite {
+    _id: string;
+    account: string;
+    requisite: string;
+    active: boolean;
+    currency: Currency;
+    turnover: Turnover;
+    isCardFileRequired: false;
+    isReceiptFileRequired: false;
+    createdAt: string;
+    updatedAt: string;
+}
 
 interface Limit {
     min: CurrencyRecord;

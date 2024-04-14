@@ -28,6 +28,12 @@ export const PaymentReplenishmentPage = () => {
         isSuccess: isRecommendedRequisitesRequestSuccess
     } = useFetchRecommendedRequisitesQuery();
 
+    const onClickHandler = (id: string) => {
+        navigate(`/payment/replenishment/requisite/${id}`, {
+            replace: true
+        });
+    };
+
     return (
         <>
             <h1 className="relative text-2xl font-bold">
@@ -38,7 +44,7 @@ export const PaymentReplenishmentPage = () => {
                 Пополнение
             </h1>
 
-            <article className="mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
+            <article className="relative mt-6 flex-auto space-y-3 rounded-2.5xl bg-white px-2 pb-8 pt-4 text-black xs:px-4">
                 <header className="grid grid-cols-2 grid-rows-2 items-start">
                     <p className="justify-self-start leading-5">Все методы</p>
                     <p className="justify-self-start text-sm leading-5 text-slate-400 ">
@@ -66,6 +72,7 @@ export const PaymentReplenishmentPage = () => {
                         </Popover>
                     </div>
                 </header>
+
                 <section>
                     <h2 className="text-lg uppercase text-slate-400">
                         Рекомендуемые методы
@@ -76,11 +83,9 @@ export const PaymentReplenishmentPage = () => {
                                 <PaymentMethod
                                     key={requisite._id}
                                     requisite={requisite}
-                                    onClick={() => {
-                                        navigate(
-                                            `/payment/replenishment/requisite/${requisite._id}`
-                                        );
-                                    }}
+                                    onClick={() =>
+                                        onClickHandler(requisite._id)
+                                    }
                                 />
                             ))}
                         </ul>
@@ -98,11 +103,9 @@ export const PaymentReplenishmentPage = () => {
                                       <PaymentMethod
                                           key={method._id}
                                           requisite={method}
-                                          onClick={() => {
-                                              navigate(
-                                                  `/payment/replenishment/requisite/${method._id}`
-                                              );
-                                          }}
+                                          onClick={() =>
+                                              onClickHandler(method._id)
+                                          }
                                       />
                                   ))}
                               </ul>

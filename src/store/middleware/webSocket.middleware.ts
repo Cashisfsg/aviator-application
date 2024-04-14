@@ -182,6 +182,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                     if (bonus.bonusActive && bets[0].state === "cash") {
                         store.dispatch(deactivateBonus());
+                        store.dispatch(userApi.util.invalidateTags(["Promo"]));
                     }
 
                     // if (bets.some(bet => bet.betState === "cash")) {
@@ -290,12 +291,16 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 );
                 store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
+                if (store.getState().game.bonus.bonusActive) {
+                    store.dispatch(userApi.util.invalidateTags(["Promo"]));
+                }
+
                 break;
 
             case "test/abortBet":
-                // if (store.getState().game.bonus.bonusActive) {
-                //     store.dispatch(deactivateBonus());
-                // }
+                if (store.getState().game.bonus.bonusActive) {
+                    store.dispatch(deactivateBonus());
+                }
 
                 store.dispatch(
                     setBetState({

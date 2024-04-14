@@ -48,10 +48,10 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
         }),
         fetchReplenishmentLimits: builder.query<
             ReplenishmentLimitsResponse,
-            void
+            { id: string }
         >({
-            query: () => ({
-                url: "/replenishments/limits"
+            query: ({ id }) => ({
+                url: `/replenishments/limits/${id}`
             })
         }),
         createReplenishment: builder.mutation<
@@ -73,6 +73,26 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
                 url: `replenishments/cancel/${id}`,
                 method: "PUT"
             }),
+            invalidatesTags: (result, error, arg) =>
+                error ? [] : [{ type: "Replenishment", id: arg.id }]
+        }),
+        verifyReplenishmentById: builder.mutation<
+            SuccessResponse,
+            { id: string; file: File }
+        >({
+            query: ({ id, file }) => {
+                const formData = new FormData();
+                formData.append("card", file);
+                return {
+                    url: `/replenishments/verify/${id}`,
+                    method: "PUT",
+                    body: formData,
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    formData: true
+                };
+            },
             invalidatesTags: (result, error, arg) =>
                 error ? [] : [{ type: "Replenishment", id: arg.id }]
         }),

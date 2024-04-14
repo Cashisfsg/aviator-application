@@ -211,7 +211,7 @@ const router = createBrowserRouter([
 
         children: [
             {
-                path: "draw",
+                path: "withdrawal",
                 element: (
                     <Suspense
                         fallback={
@@ -256,27 +256,11 @@ const router = createBrowserRouter([
                 ],
                 errorElement: <ErrorPage />
             },
-            // {
-            //     path: "replenishment/:replenishmentId",
-            //     element: (
-            //         <Suspense
-            //             fallback={
-            //                 <GridLoader
-            //                     className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            //                     color={"red"}
-            //                 />
-            //             }
-            //         >
-            //             <div>Replenishment id</div>
-            //         </Suspense>
-            //     ),
-            //     errorElement: <ErrorPage />
-            // },
             {
                 path: "*",
                 element: (
                     <Navigate
-                        to="/payment/draw"
+                        to="/payment/replenishment"
                         replace
                     />
                 )

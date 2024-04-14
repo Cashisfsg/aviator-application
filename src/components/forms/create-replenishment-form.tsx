@@ -24,13 +24,13 @@ import Visa from "@/assets/visa-360w.webp";
 
 export const CreateReplenishmentForm = () => {
     const navigate = useNavigate();
-    const params = useParams();
+    const { requisiteId } = useParams();
 
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,
         isLoading: isLimitsLoading
-    } = useFetchReplenishmentLimitsQuery();
+    } = useFetchReplenishmentLimitsQuery({ id: requisiteId || "" });
     const [createReplenishment, { isLoading: isReplenishmentRequestLoading }] =
         useCreateReplenishmentMutation();
     const { data: requisites } = useFetchRequisitesQuery();
@@ -56,20 +56,30 @@ export const CreateReplenishmentForm = () => {
         () =>
             requisites
                 ?.flatMap(requisite => requisite.requisites)
-                .find(requisite => requisite._id === params?.requisiteId),
-        [requisites, params?.requisiteId]
+                .find(requisite => requisite._id === requisiteId),
+        [requisites, requisiteId]
     );
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ amount }) => {
         try {
-            const { _id } = await createReplenishment({
+            const {
+                _id,
+                requisite: { isCardFileRequired }
+            } = await createReplenishment({
                 currency: requisite?.currency as string,
                 amount: Number(amount),
                 requisite: requisite?._id as string
             }).unwrap();
-            navigate(
-                `/payment/replenishment/requisite/${params?.requisiteId}/replenishment/${_id}`
-            );
+            if (isCardFileRequired) {
+                navigate(`/payment/replenishment/verify/${_id}`, {
+                    replace: true
+                });
+            } else {
+                navigate(
+                    `/payment/replenishment/requisite/${requisiteId}/replenishment/${_id}`,
+                    { replace: true }
+                );
+            }
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));
         }
@@ -112,9 +122,9 @@ export const CreateReplenishmentForm = () => {
 
                     {isLimitsSuccessResponse ? (
                         <span className="text-right text-xs">
-                            {`от ${limits?.minLimit.toFixed(
+                            {`от ${limits?.minLimit?.toFixed(
                                 2
-                            )} до ${limits?.maxLimit.toFixed(
+                            )} до ${limits?.maxLimit?.toFixed(
                                 2
                             )} ${limits?.currency}`}
                         </span>

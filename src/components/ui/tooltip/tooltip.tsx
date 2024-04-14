@@ -48,41 +48,44 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
     const onMouseEnterHandler = (event: React.MouseEvent<HTMLElement>) => {
         const target = event.currentTarget;
 
-        if (tooltipRef.current?.getAttribute("aria-hidden") === "false")
+        if (tooltipRef.current?.getAttribute("aria-hidden") === "false") {
             clearTimeout(timerRef.current);
-        // } else {
-        // timerRef.current = setTimeout(() => {
-        if (!tooltipRef.current) return;
-
-        const viewportWidth = window.innerWidth;
-        const tooltipElement = tooltipRef.current;
-        const tooltipRect = tooltipElement.getBoundingClientRect();
-        const anchorRect = target.getBoundingClientRect();
-
-        if (
-            (anchorRect.right + anchorRect.left) / 2 +
-                (tooltipRect.right - tooltipRect.left) / 2 -
-                16 >
-            viewportWidth - 32
-        ) {
-            tooltipElement.style.left = `${Math.max(
-                viewportWidth - 32 - (tooltipRect.right - tooltipRect.left),
-                anchorRect.right - tooltipRect.width
-            )}px`;
         } else {
-            tooltipElement.style.left = `${
-                (anchorRect.right + anchorRect.left) / 2 -
-                (tooltipRect.right - tooltipRect.left) / 2
-            }px`;
+            timerRef.current = setTimeout(() => {
+                if (!tooltipRef.current) return;
+
+                const scrollOffset = document.documentElement.scrollTop;
+                const viewportWidth = window.innerWidth;
+                const tooltipElement = tooltipRef.current;
+                const tooltipRect = tooltipElement.getBoundingClientRect();
+                const anchorRect = target.getBoundingClientRect();
+
+                if (
+                    (anchorRect.right + anchorRect.left) / 2 +
+                        (tooltipRect.right - tooltipRect.left) / 2 -
+                        16 >
+                    viewportWidth - 32
+                ) {
+                    tooltipElement.style.left = `${Math.max(
+                        viewportWidth -
+                            32 -
+                            (tooltipRect.right - tooltipRect.left),
+                        anchorRect.right - tooltipRect.width
+                    )}px`;
+                } else {
+                    tooltipElement.style.left = `${
+                        (anchorRect.right + anchorRect.left) / 2 -
+                        (tooltipRect.right - tooltipRect.left) / 2
+                    }px`;
+                }
+
+                tooltipElement.style.top = `calc(${
+                    anchorRect.top + scrollOffset - tooltipRect.height
+                }px - 8px)`;
+
+                tooltipElement.setAttribute("aria-hidden", "false");
+            }, 1000);
         }
-
-        tooltipElement.style.top = `calc(${
-            anchorRect.top - tooltipRect.height
-        }px - 8px)`;
-
-        tooltipElement.setAttribute("aria-hidden", "false");
-        // }, 1000);
-        // }
     };
 
     const onMouseLeaveHandler = () => {
@@ -115,6 +118,7 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
             timerRef.current = setTimeout(() => {
                 if (!tooltipRef.current) return;
 
+                const scrollOffset = document.documentElement.scrollTop;
                 const viewportWidth = window.innerWidth;
                 const tooltipElement = tooltipRef.current;
                 const tooltipRect = tooltipElement.getBoundingClientRect();
@@ -140,7 +144,7 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
                 }
 
                 tooltipElement.style.top = `calc(${
-                    anchorRect.top - tooltipRect.height
+                    anchorRect.top + scrollOffset - tooltipRect.height
                 }px - 8px)`;
 
                 tooltipElement.setAttribute("aria-hidden", "false");
