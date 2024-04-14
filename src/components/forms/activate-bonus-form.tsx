@@ -1,10 +1,10 @@
 import { useRef } from "react";
 
 import { useActivatePromoCodeMutation } from "@/store/api/userApi";
+import { handleErrorResponse } from "@/store/services";
 import { toast } from "@/components/toasts/toast";
 
 import { ImSpinner9 } from "react-icons/im";
-import { isErrorWithMessage, isFetchBaseQueryError } from "@/store/services";
 
 interface FormFields {
     promoCode: HTMLInputElement;
@@ -30,20 +30,7 @@ export const ActivationBonusForm = () => {
 
             toast.notify("Промокод успешно активирован");
         } catch (error) {
-            if (isFetchBaseQueryError(error)) {
-                const errorMessage =
-                    "error" in error
-                        ? error.error
-                        : (
-                              error.data as {
-                                  status: number;
-                                  message: string;
-                              }
-                          ).message;
-                toast.error(errorMessage);
-            } else if (isErrorWithMessage(error)) {
-                toast.error(error.message);
-            }
+            handleErrorResponse(error, message => toast.error(message));
         }
     };
 

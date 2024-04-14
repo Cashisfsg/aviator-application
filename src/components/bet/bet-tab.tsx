@@ -1,7 +1,6 @@
 import { useRef } from "react";
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
-// import { useGetUserBetsQuery } from "@/store/api/betApi";
 
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import { useAuth } from "@/store/hooks/useAuth";
@@ -13,7 +12,6 @@ import {
     selectCurrentGameTab,
     setCurrentBet
 } from "@/store/slices/gameSlice";
-// import { selectAirplaneState } from "@/store/slices/test.slice";
 
 import { BetInput } from "./bet-input";
 import { BetButton } from "./bet-button";
@@ -27,7 +25,8 @@ const raiseBets = {
     UAH: [100, 200, 500, 1000],
     RUB: [250, 500, 1000, 2000],
     UZS: [50000, 100000, 200000, 500000],
-    KZT: [1000, 2500, 5000, 10000]
+    KZT: [1000, 2500, 5000, 10000],
+    USDT: [1, 1, 1, 1]
 };
 
 interface BetTabProps {
@@ -48,18 +47,9 @@ export const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
-    // const { refetch } = useGetUserBetsQuery({ skip: 0, limit: 6 });
 
     const dispatch = useAppDispatch();
-    // const roundState = useStateSelector(state => selectAirplaneState(state));
     const soundEnabled = useStateSelector(state => selectSoundSettings(state));
-
-    // useEffect(() => {
-    //     if (roundState !== "crash" || currentGameTab.betState !== "cash")
-    //         return;
-
-    //     refetch();
-    // }, [roundState, currentGameTab.betState]);
 
     const handlePointerDown = (
         type: "increment" | "decrement",
@@ -111,7 +101,7 @@ export const BetTab: React.FC<BetTabProps> = ({ betNumber, audioRef }) => {
                 >
                     {betNumber === 1 && bonus.bonusActive ? (
                         <div className="col-span-2 flex h-8.5 w-full items-center justify-between gap-1.5 rounded-full border border-gray-50 bg-black-250 px-2.5 leading-none">
-                            <span className="flex-auto text-center text-xl font-bold">
+                            <span className="flex-auto text-center text-base font-bold">
                                 {bonus.bonusQuantity}
                             </span>
                             <button onClick={() => dispatch(deactivateBonus())}>

@@ -64,7 +64,7 @@ export interface ChangePasswordRequest {
 
 //! ================= User types ================= //
 
-export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "USDT";
+export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "UAH" | "USDT";
 
 export type CurrencyRecord = Record<Currency, number>;
 

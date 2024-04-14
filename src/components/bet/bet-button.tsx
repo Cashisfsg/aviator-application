@@ -75,7 +75,9 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
     const cashOutMoney: React.MouseEventHandler<HTMLButtonElement> = event => {
         toast.win(
-            rate * currentGameTab.currentBet,
+            rate * bonus.bonusActive
+                ? bonus.bonusQuantity
+                : currentGameTab.currentBet,
             rate,
             currentGameTab.currency
         );

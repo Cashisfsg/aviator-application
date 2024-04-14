@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useStateSelector, useAppDispatch } from "@/store/hooks";
 import {
@@ -25,6 +25,7 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     betNumber,
     audioRef
 }) => {
+    const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
 
     const currentGameTab = useStateSelector(state =>
@@ -34,8 +35,14 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     const bonus = useStateSelector(state => selectBonus(state));
     const soundEnabled = useStateSelector(state => selectSoundSettings(state));
 
+    useEffect(() => {
+        if (!bonus.bonusActive || betNumber !== 1 || !inputRef.current) return;
+
+        inputRef.current.value = bonus.bonusCoefficient.toFixed(2);
+    }, [bonus.bonusActive]);
+
     const inputValidValue = useRef<string>(
-        bonus.bonusActive
+        bonus.bonusActive && betNumber === 1
             ? (bonus.bonusCoefficient as number).toFixed(2)
             : MIN_RATE.toFixed(2)
     );
@@ -84,9 +91,14 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
             {/* <div className="flex h-8 items-center gap-2 rounded-full border border-gray-50 bg-black-250 px-3 leading-none"> */}
             <input
                 disabled={!currentGameTab.autoModeOn}
-                defaultValue={MIN_RATE.toFixed(2)}
+                defaultValue={
+                    bonus.bonusActive && betNumber === 1
+                        ? bonus.bonusCoefficient.toFixed(2)
+                        : MIN_RATE.toFixed(2)
+                }
                 onChange={onChangeHandler}
                 onBlur={onBlurHandler}
+                ref={inputRef}
                 className="h-8 w-full rounded-full border border-gray-50 bg-black-250 px-3 text-center font-bold leading-none focus-visible:outline-none disabled:opacity-50"
             />
 

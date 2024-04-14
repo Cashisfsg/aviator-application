@@ -41,7 +41,6 @@ export const BonusTable: React.FC<BonusTableProps> = ({ setOpen }) => {
                 bonusCoefficient
             })
         );
-        // dispatch(userApi.util.invalidateTags(["Promo"]));
 
         toast.notify("Промокод на одноразовую ставку успешно активирован");
 

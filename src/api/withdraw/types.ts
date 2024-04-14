@@ -1,4 +1,4 @@
-export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "USDT";
+export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "USDT" | "UAH";
 
 export type CurrencyRecord = Record<Currency, number>;
 

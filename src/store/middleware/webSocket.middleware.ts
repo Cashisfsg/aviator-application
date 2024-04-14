@@ -59,6 +59,8 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 socket.on("game", ({ x }) => {
                     const bets = store.getState().game.bets;
                     const gameState = store.getState().test.state;
+                    const bonus = store.getState().game.bonus;
+
                     store.dispatch(setRate(x));
 
                     if (x === 1) {
@@ -77,23 +79,26 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                             }
                         });
                     } else {
-                        const bonus = store.getState().game.bonus;
-
                         if (gameState !== "game") {
                             store.dispatch(toggleState("game"));
                         }
 
-                        if (bonus.bonusActive && bets[0].state === "cash") {
-                            if (x >= bonus.bonusCoefficient) {
-                                store.dispatch(enableBonusCashOut());
-                            }
+                        if (
+                            bonus.bonusActive &&
+                            bets[0].betState === "cash" &&
+                            x >= bonus.bonusCoefficient
+                        ) {
+                            store.dispatch(enableBonusCashOut());
                         }
                     }
 
                     bets.forEach((bet, index) => {
-                        if (!bet.autoModeOn || bet.betState !== "cash") return;
-
-                        if (x < bet.autoBetCoefficient) return;
+                        if (
+                            !bet.autoModeOn ||
+                            bet.betState !== "cash" ||
+                            x < bet.autoBetCoefficient
+                        )
+                            return;
 
                         socket.emit("cash-out", {
                             betNumber: (index + 1) as 1 | 2
@@ -113,16 +118,30 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         store.dispatch(
                             userApi.util.invalidateTags(["Balance"])
                         );
-                        toast.win(
-                            bet.autoBetCoefficient * bet.currentBet,
-                            bet.autoBetCoefficient,
-                            bet.currency
-                        );
+
+                        if (bonus.bonusActive && index === 0) {
+                            store.dispatch(deactivateBonus());
+                            store.dispatch(
+                                userApi.util.invalidateTags(["Promo"])
+                            );
+                            toast.win(
+                                bet.autoBetCoefficient * bonus.bonusQuantity,
+                                bet.autoBetCoefficient,
+                                bet.currency
+                            );
+                        } else {
+                            toast.win(
+                                bet.autoBetCoefficient * bet.currentBet,
+                                bet.autoBetCoefficient,
+                                bet.currency
+                            );
+                        }
                     });
                 });
 
                 socket.on("loading", () => {
                     store.dispatch(toggleState("loading"));
+
                     if (store.getState().test.roundStats.playersAmount !== 0) {
                         store.dispatch(updateRoundData(initialRoundData));
                     }
@@ -175,15 +194,15 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 });
 
                 socket.on("crash", () => {
-                    store.dispatch(toggleState("crash"));
-                    store.dispatch(setLastRate(store.getState().test.rate));
-
                     const { bets, bonus } = store.getState().game;
 
-                    if (bonus.bonusActive && bets[0].state === "cash") {
+                    if (bonus.bonusActive && bets[0].betState === "cash") {
                         store.dispatch(deactivateBonus());
                         store.dispatch(userApi.util.invalidateTags(["Promo"]));
                     }
+
+                    store.dispatch(toggleState("crash"));
+                    store.dispatch(setLastRate(store.getState().test.rate));
 
                     // if (bets.some(bet => bet.betState === "cash")) {
                     //     store.dispatch(
@@ -292,16 +311,13 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
                 if (store.getState().game.bonus.bonusActive) {
+                    store.dispatch(deactivateBonus());
                     store.dispatch(userApi.util.invalidateTags(["Promo"]));
                 }
 
                 break;
 
             case "test/abortBet":
-                if (store.getState().game.bonus.bonusActive) {
-                    store.dispatch(deactivateBonus());
-                }
-
                 store.dispatch(
                     setBetState({
                         betNumber: action.payload as 1 | 2,
@@ -309,8 +325,10 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     })
                 );
                 socket.emit("cancel", { betNumber: action.payload as 1 | 2 });
-                store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
+                if (!store.getState().game.bonus.bonusActive) {
+                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
+                }
                 break;
 
             default:
