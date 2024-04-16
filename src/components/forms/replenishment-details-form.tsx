@@ -135,7 +135,12 @@ export const ReplenishmentDetailsForm = () => {
                         <span>
                             <span>Время на оплату</span>{" "}
                             <CountDownTimer
-                                finishTime={replenishment?.createdAt}
+                                finishTime={
+                                    new Date(
+                                        replenishment?.createdAt as string
+                                    ).getTime() +
+                                    15 * 60 * 1000
+                                }
                             />{" "}
                             <TimerTooltip />
                         </span>
@@ -173,7 +178,12 @@ export const ReplenishmentDetailsForm = () => {
                         <span>
                             <span>Время на оплату</span>{" "}
                             <CountDownTimer
-                                finishTime={replenishment?.createdAt}
+                                finishTime={
+                                    new Date(
+                                        replenishment?.createdAt as string
+                                    ).getTime() +
+                                    15 * 60 * 1000
+                                }
                             />{" "}
                             <TimerTooltip />
                         </span>
@@ -245,7 +255,12 @@ export const ReplenishmentDetailsForm = () => {
                         <span>
                             <span>Время на оплату</span>{" "}
                             <CountDownTimer
-                                finishTime={replenishment?.createdAt}
+                                finishTime={
+                                    new Date(
+                                        replenishment?.createdAt as string
+                                    ).getTime() +
+                                    15 * 60 * 1000
+                                }
                             />{" "}
                             <TimerTooltip />
                         </span>
