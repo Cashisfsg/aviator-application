@@ -32,7 +32,7 @@ import { CreateReplenishmentDialog } from "@/components/dialogs/create-replenish
 import { ReplenishmentDetailsDialog } from "@/components/dialogs/replenishment-details-dialog";
 
 import { ReferralRedirect } from "./referral-redirect";
-import { VerifyReplenishmentDialog } from "@/components/dialogs/verify-replenishment-dialog";
+import { VerifyReplenishmentDialog } from "@/components/dialogs/verify-credit-card-dialog";
 
 const PaymentLayout = lazy(async () =>
     import("@/pages/payment/layout").then(module => ({
@@ -246,11 +246,11 @@ const router = createBrowserRouter([
                         element: <CreateReplenishmentDialog />
                     },
                     {
-                        path: "requisite/:requisiteId/replenishment/:replenishmentId",
+                        path: ":replenishmentId/requisite/:requisiteId",
                         element: <ReplenishmentDetailsDialog />
                     },
                     {
-                        path: "verify/:replenishmentId",
+                        path: ":replenishmentId/requisite/:requisiteId/verify",
                         element: <VerifyReplenishmentDialog />
                     }
                 ],

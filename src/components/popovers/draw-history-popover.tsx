@@ -30,7 +30,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
         <section
             {...props}
             className={cn(
-                "rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md",
+                "rounded-lg border border-green-50 bg-[#36ca12] px-0 py-4 shadow-md",
                 className
             )}
         >

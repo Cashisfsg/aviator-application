@@ -1,18 +1,27 @@
-import { useRef, useId } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useId } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { useVerifyReplenishmentByIdMutation } from "@/api/replenishment";
 
 import { toast } from "@/components/toasts/toast";
 
 import UploadIcon from "@/assets/upload.png";
 import { ImSpinner9 } from "react-icons/im";
+import { handleErrorResponse } from "@/store/services";
+
+interface FormFields {
+    card: HTMLInputElement;
+}
 
 export const VerifyCreditCardForm = () => {
+    const [submitEnabled, setSubmitEnabled] = useState(false);
     const inputFileId = useId();
-    const buttonRef = useRef<HTMLButtonElement>(null);
 
-    const { replenishmentId } = useParams();
+    const [verify, { isLoading }] = useVerifyReplenishmentByIdMutation();
 
-    console.log(replenishmentId);
+    const navigate = useNavigate();
+    const { replenishmentId, requisiteId } = useParams();
 
     const uploadImageHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -29,11 +38,36 @@ export const VerifyCreditCardForm = () => {
             return;
         }
 
-        buttonRef.current?.removeAttribute("disabled");
+        setSubmitEnabled(true);
+    };
+
+    const onSubmitHandler: React.FormEventHandler<
+        HTMLFormElement & FormFields
+    > = async event => {
+        event.preventDefault();
+
+        if (replenishmentId === undefined || requisiteId === undefined) return;
+
+        const { card } = event.currentTarget;
+
+        if (!card.files) return;
+
+        try {
+            const { message } = await verify({
+                id: replenishmentId,
+                card: card.files[0]
+            }).unwrap();
+            navigate(
+                `/payment/replenishment/${replenishmentId}/requisite/${requisiteId}`
+            );
+            toast.notify(message);
+        } catch (error) {
+            handleErrorResponse(error, message => toast.error(message));
+        }
     };
 
     return (
-        <form>
+        <form onSubmit={onSubmitHandler}>
             <label
                 htmlFor={inputFileId}
                 className="mx-auto grid w-max cursor-pointer grid-cols-[auto_minmax(0,_1fr)] grid-rows-[repeat(3,_auto)] place-content-center gap-x-4"
@@ -52,36 +86,42 @@ export const VerifyCreditCardForm = () => {
                     Загрузить файл
                 </strong>
                 <span className="hidden text-xs sm:block">
-                    Максимальный размер файла 3 МБ
+                    Максимальный размер файла <strong>3 МБ</strong>
                 </span>
                 <span className="hidden text-xs sm:block">
-                    Доступные форматы: PNG, JPG, PDF
+                    Доступные форматы:{" "}
+                    <strong>PNG, JPG, HEIC, WEBP, PDF</strong>
                 </span>
             </label>
 
-            <div className="mt-4 text-xs font-bold sm:hidden">
-                <p>* Максимальный размер файла 3 МБ</p>
-                <p>** Доступные форматы: PNG, JPG, PDF</p>
+            <div className="mt-4 text-xs sm:hidden">
+                <p>
+                    * Максимальный размер файла: <strong>3 МБ</strong>
+                </p>
+                <p>
+                    ** Доступные форматы:{" "}
+                    <strong>PNG, JPG, HEIC, WEBP, PDF</strong>
+                </p>
             </div>
 
             <input
                 id={inputFileId}
                 type="file"
                 multiple={false}
+                name="card"
                 accept="image/*, .pdf"
                 hidden
                 onChange={uploadImageHandler}
             />
 
             <button
-                disabled
-                className="mx-auto mt-4 block w-full max-w-72 rounded-md bg-green-500 px-4 py-2 text-base font-semibold text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
-                ref={buttonRef}
+                disabled={!submitEnabled || isLoading}
+                className="mx-auto mt-4 block w-full max-w-72 rounded-md bg-[#36ca12] px-4 py-2 text-base font-semibold text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
             >
-                {false ? (
+                {isLoading ? (
                     <ImSpinner9 className="mx-auto animate-spin text-2xl" />
                 ) : (
-                    "Пополнить"
+                    "Продолжить"
                 )}
             </button>
         </form>

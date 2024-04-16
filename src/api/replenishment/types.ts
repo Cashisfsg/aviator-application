@@ -8,6 +8,7 @@ interface Turnover {
 
 interface Requisite {
     _id: string;
+    name: string;
     account: string;
     requisite: string;
     active: boolean;
@@ -89,4 +90,5 @@ export interface CancelReplenishmentRequest {
 
 export interface ConfirmReplenishmentRequest {
     id: string;
+    receipt?: File;
 }

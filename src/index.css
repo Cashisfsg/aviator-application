@@ -134,6 +134,7 @@ button:focus-visible {
     overflow-y: scroll;
     /* scrollbar-width: thin; */
     transition: --var1 0.5s;
+    scrollbar-gutter: stable;
 }
 
 @-moz-document url-prefix() {

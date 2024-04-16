@@ -78,11 +78,12 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
         }),
         verifyReplenishmentById: builder.mutation<
             SuccessResponse,
-            { id: string; file: File }
+            { id: string; card: File }
         >({
-            query: ({ id, file }) => {
+            query: ({ id, card }) => {
                 const formData = new FormData();
-                formData.append("card", file);
+                formData.append("card", card);
+
                 return {
                     url: `/replenishments/verify/${id}`,
                     method: "PUT",
@@ -100,10 +101,27 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
             SuccessResponse,
             ConfirmReplenishmentRequest
         >({
-            query: ({ id }) => ({
-                url: `replenishments/confirm/${id}`,
-                method: "PUT"
-            }),
+            query: ({ id, receipt }) => {
+                if (receipt === undefined) {
+                    return {
+                        url: `replenishments/confirm/${id}`,
+                        method: "PUT"
+                    };
+                }
+
+                const formData = new FormData();
+                formData.append("receipt", receipt);
+
+                return {
+                    url: `/replenishments/confirm/${id}`,
+                    method: "PUT",
+                    body: formData,
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    formData: true
+                };
+            },
             invalidatesTags: (result, error, arg) =>
                 error ? [] : [{ type: "Replenishment", id: arg.id }]
         })
@@ -119,5 +137,6 @@ export const {
     useLazyFetchReplenishmentLimitsQuery,
     useCreateReplenishmentMutation,
     useCancelReplenishmentByIdMutation,
+    useVerifyReplenishmentByIdMutation,
     useConfirmReplenishmentByIdMutation
 } = replenishmentApi;

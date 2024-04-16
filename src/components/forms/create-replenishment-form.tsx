@@ -71,12 +71,15 @@ export const CreateReplenishmentForm = () => {
                 requisite: requisite?._id as string
             }).unwrap();
             if (isCardFileRequired) {
-                navigate(`/payment/replenishment/verify/${_id}`, {
-                    replace: true
-                });
+                navigate(
+                    `/payment/replenishment/${_id}/requisite/${requisiteId}/verify`,
+                    {
+                        replace: true
+                    }
+                );
             } else {
                 navigate(
-                    `/payment/replenishment/requisite/${requisiteId}/replenishment/${_id}`,
+                    `/payment/replenishment/${_id}/requisite/${requisiteId}`,
                     { replace: true }
                 );
             }
@@ -133,7 +136,7 @@ export const CreateReplenishmentForm = () => {
 
                 <button
                     disabled={isLimitsLoading || isReplenishmentRequestLoading}
-                    className="mt-4 rounded-md bg-green-500 px-4 py-2 text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
+                    className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md transition-colors duration-300 focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
                 >
                     {isReplenishmentRequestLoading ? (
                         <ImSpinner9 className="mx-auto animate-spin text-2xl" />

@@ -51,10 +51,7 @@ export const SecurityPopover: React.FC<SecurityPopoverProps> = ({
                     sessionStorage.removeItem("email");
                     navigate("/main");
                 }}
-                onEscapeKeyDown={event => {
-                    if ((event.target as HTMLElement).closest("li.toast"))
-                        return;
-
+                onEscapeKeyDown={() => {
                     sessionStorage.removeItem("email");
                     navigate("/main");
                 }}

@@ -17,7 +17,7 @@ export const DepositsHistoryPopover = () => {
         useFetchAllReplenishmentsQuery();
 
     return (
-        <section className="w-72 rounded-lg border border-green-50 bg-green-500 px-0 py-4 shadow-md">
+        <section className="w-72 rounded-lg border border-green-50 bg-[#36ca12] px-0 py-4 shadow-md">
             <ScrollArea
                 className={
                     replenishments && replenishments?.length >= 2
@@ -52,29 +52,8 @@ interface PaymentDetailsProps {
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
-    // const showReplenishmentDetails = () => {};
     const { dialogRef } = usePopoverContext();
     const { data: balance } = useGetUserBalanceQuery();
-
-    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
-        () => {
-            // if (deposit?.isPayConfirmed) {
-            //     setInitialFormState?.(state => ({
-            //         ...state,
-            //         state: "confirmed",
-            //         replenishmentId: deposit?._id
-            //     }));
-            // } else {
-            //     setInitialFormState?.(state => ({
-            //         ...state,
-            //         state: "second",
-            //         replenishmentId: deposit?._id
-            //     }));
-            // }
-            // setDialogOpen?.(true);
-            dialogRef?.current?.close();
-        };
-    };
 
     return (
         <table className="w-full bg-slate-100 text-left text-sm">
@@ -145,7 +124,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
                     {replenishment?.status === "Ожидает оплаты" ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
                             <Link
-                                to={`/payment/replenishment/requisite/${replenishment?.requisite?._id}/replenishment/${replenishment?._id}`}
+                                to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment?.requisite?._id}`}
                                 onClick={() => dialogRef?.current?.close()}
                                 className="text-right text-blue-500"
                             >

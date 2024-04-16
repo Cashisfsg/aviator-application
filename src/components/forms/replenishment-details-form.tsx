@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useId, PropsWithChildren } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
 
@@ -21,6 +21,7 @@ import { handleErrorResponse } from "@/store/services";
 
 import { ImSpinner9 } from "react-icons/im";
 import Visa from "@/assets/visa-360w.webp";
+import UploadIcon from "@/assets/upload.png";
 
 type ReplenishmentFormState =
     | "init"
@@ -39,6 +40,7 @@ export const ReplenishmentDetailsForm = () => {
         });
 
     const [formState, setFormState] = useState<ReplenishmentFormState>("init");
+    const [receipt, setReceipt] = useState<File | undefined>(undefined);
 
     const [
         confirmReplenishment,
@@ -51,8 +53,18 @@ export const ReplenishmentDetailsForm = () => {
         if (!id) return;
 
         try {
-            await confirmReplenishment({ id }).unwrap();
+            if (receipt === undefined) {
+                const { message } = await confirmReplenishment({ id }).unwrap();
+                toast.notify(message);
+            } else {
+                const { message } = await confirmReplenishment({
+                    id,
+                    receipt
+                }).unwrap();
+                toast.notify(message);
+            }
 
+            setReceipt(undefined);
             setFormState("confirmed");
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));
@@ -63,8 +75,10 @@ export const ReplenishmentDetailsForm = () => {
         if (!id) return;
 
         try {
-            await cancelReplenishment({ id }).unwrap();
+            const { message } = await cancelReplenishment({ id }).unwrap();
+            toast.notify(message);
 
+            setReceipt(undefined);
             setFormState("rejected");
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));
@@ -80,7 +94,10 @@ export const ReplenishmentDetailsForm = () => {
 
     if (replenishment?.status === "В обработке...")
         return (
-            <PaymentDetails replenishment={replenishment}>
+            <PaymentDetails
+                replenishment={replenishment}
+                setReceipt={setReceipt}
+            >
                 <Field
                     label={"Статус заявки"}
                     value={"В обработке..."}
@@ -100,7 +117,10 @@ export const ReplenishmentDetailsForm = () => {
 
     if (replenishment?.status === "Отменена")
         return (
-            <PaymentDetails replenishment={replenishment}>
+            <PaymentDetails
+                replenishment={replenishment}
+                setReceipt={setReceipt}
+            >
                 <Field
                     label={"Статус заявки"}
                     value={"Отменена"}
@@ -121,7 +141,10 @@ export const ReplenishmentDetailsForm = () => {
     switch (formState) {
         case "init":
             return (
-                <PaymentDetails replenishment={replenishment}>
+                <PaymentDetails
+                    replenishment={replenishment}
+                    setReceipt={setReceipt}
+                >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
@@ -148,7 +171,7 @@ export const ReplenishmentDetailsForm = () => {
 
                     <button
                         onClick={() => setFormState("confirm")}
-                        className="mt-4 rounded-md bg-green-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5"
+                        className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5"
                     >
                         Подтвердить оплату
                     </button>
@@ -164,7 +187,10 @@ export const ReplenishmentDetailsForm = () => {
 
         case "confirm":
             return (
-                <PaymentDetails replenishment={replenishment}>
+                <PaymentDetails
+                    replenishment={replenishment}
+                    setReceipt={setReceipt}
+                >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
@@ -193,11 +219,11 @@ export const ReplenishmentDetailsForm = () => {
                         Вы подтверждаете оплату?
                     </p>
 
-                    <p className="text-center text-sm text-black">
+                    <p>
                         <button
                             onClick={() => confirmPayment(replenishment?._id)}
                             disabled={isPaymentConfirmRequestLoading}
-                            className="float-left w-24 bg-green-500 py-2 text-white disabled:pointer-events-none"
+                            className="float-left w-24 bg-[#36ca12] py-2 text-white disabled:pointer-events-none"
                         >
                             {isPaymentConfirmRequestLoading ? (
                                 <ImSpinner9 className="mx-auto animate-spin text-xl" />
@@ -219,7 +245,10 @@ export const ReplenishmentDetailsForm = () => {
 
         case "confirmed":
             return (
-                <PaymentDetails replenishment={replenishment}>
+                <PaymentDetails
+                    replenishment={replenishment}
+                    setReceipt={setReceipt}
+                >
                     <Field
                         label={"Статус заявки"}
                         value={"В обработке..."}
@@ -241,7 +270,10 @@ export const ReplenishmentDetailsForm = () => {
 
         case "reject":
             return (
-                <PaymentDetails replenishment={replenishment}>
+                <PaymentDetails
+                    replenishment={replenishment}
+                    setReceipt={setReceipt}
+                >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
@@ -270,7 +302,7 @@ export const ReplenishmentDetailsForm = () => {
                         Вы уверены, что хотите отменить оплату?
                     </p>
 
-                    <p className="text-center text-sm text-black">
+                    <p>
                         <button
                             onClick={() =>
                                 abortReplenishment(replenishment?._id)
@@ -288,7 +320,7 @@ export const ReplenishmentDetailsForm = () => {
                             onClick={() => {
                                 setFormState("init");
                             }}
-                            className="float-right w-24 bg-green-500 py-2 text-white"
+                            className="float-right w-24 bg-[#36ca12] py-2 text-white"
                         >
                             Нет
                         </button>
@@ -298,7 +330,10 @@ export const ReplenishmentDetailsForm = () => {
 
         case "rejected":
             return (
-                <PaymentDetails replenishment={replenishment}>
+                <PaymentDetails
+                    replenishment={replenishment}
+                    setReceipt={setReceipt}
+                >
                     <Field
                         label={"Статус заявки"}
                         value={"Отменена"}
@@ -345,16 +380,36 @@ const Field: React.FC<FieldProps> = ({ className, label, value }) => {
     );
 };
 
-interface PaymentDetailsProps {
+interface PaymentDetailsProps extends PropsWithChildren {
     replenishment: Replenishment | undefined;
-    children: React.ReactNode;
+    setReceipt: React.Dispatch<React.SetStateAction<File | undefined>>;
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     replenishment,
+    setReceipt,
     children
 }) => {
+    const receiptId = useId();
     const { data: balance } = useGetUserBalanceQuery();
+
+    const onChangeHandler: React.ChangeEventHandler<
+        HTMLInputElement
+    > = event => {
+        const input = event.currentTarget;
+
+        if (!input.files) return;
+
+        const file = input.files[0];
+
+        if (file.size > 3 * 1024 * 1024) {
+            toast.error("Размер файла не должен превышать 3 мб");
+            input.value = "";
+            return;
+        }
+
+        setReceipt(file);
+    };
 
     const onErrorHandler: React.ReactEventHandler<HTMLImageElement> = event => {
         event.currentTarget.src = Visa;
@@ -408,6 +463,39 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 ]?.toFixed(2)} ${balance?.currency}`}
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
+
+            {replenishment?.requisite?.isReceiptFileRequired ? (
+                <fieldset className="grid grid-cols-[minmax(0,_3fr),_minmax(0,_1fr)] place-items-center gap-x-1">
+                    <p className="text-[0.625rem]">
+                        Загрузите квитанцию об оплате после перевода. Квитанцию
+                        можно получить в приложении или на сайте вашего банка.
+                        Вносить в неё изменения запрещено. Максимальный размер
+                        файла — <strong>3 МБ</strong>. Доступные форматы:{" "}
+                        <strong>PNG, JPG, HEIC, WEBP, PDF.</strong>
+                    </p>
+
+                    <label
+                        htmlFor={receiptId}
+                        className="cursor-pointer"
+                    >
+                        <span className="text-sm">Загрузить</span>
+                        <img
+                            src={UploadIcon}
+                            alt="Загрузите квитанцию"
+                        />
+                    </label>
+
+                    <input
+                        id={receiptId}
+                        type="file"
+                        multiple={false}
+                        accept="image/*, .pdf"
+                        name="receipt"
+                        onChange={onChangeHandler}
+                        hidden
+                    />
+                </fieldset>
+            ) : null}
 
             {children}
         </div>

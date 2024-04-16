@@ -13,7 +13,7 @@ export const TechnicalSupport = () => {
         >
             <FaPhoneVolume />
             <span className="sr-only sm:not-sr-only">Поддержка 24/7</span>
-            <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
+            <span className="inline-block h-2 w-2 rounded-full bg-[#36ca12]"></span>
         </a>
     );
 };

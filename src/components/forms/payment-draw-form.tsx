@@ -118,7 +118,7 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 
             <button
                 disabled={isLoading}
-                className="mt-4 rounded-md bg-green-500 px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
+                className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
             >
                 {isLoading ? (
                     <ImSpinner9 className="mx-auto animate-spin text-2xl" />
