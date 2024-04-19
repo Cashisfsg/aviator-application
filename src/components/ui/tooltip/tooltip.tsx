@@ -102,7 +102,38 @@ const TooltipTrigger: React.FC<React.PropsWithChildren> = ({ children }) => {
         event.stopPropagation();
 
         if (tooltipRef.current?.getAttribute("aria-hidden") === "true") {
-            tooltipRef.current?.setAttribute("aria-hidden", "false");
+            const target = event.currentTarget;
+
+            if (!tooltipRef.current) return;
+
+            const scrollOffset = document.documentElement.scrollTop;
+            const viewportWidth = window.innerWidth;
+            const tooltipElement = tooltipRef.current;
+            const tooltipRect = tooltipElement.getBoundingClientRect();
+            const anchorRect = target.getBoundingClientRect();
+
+            if (
+                (anchorRect.right + anchorRect.left) / 2 +
+                    (tooltipRect.right - tooltipRect.left) / 2 -
+                    16 >
+                viewportWidth - 32
+            ) {
+                tooltipElement.style.left = `${Math.max(
+                    viewportWidth - 32 - (tooltipRect.right - tooltipRect.left),
+                    anchorRect.right - tooltipRect.width
+                )}px`;
+            } else {
+                tooltipElement.style.left = `${
+                    (anchorRect.right + anchorRect.left) / 2 -
+                    (tooltipRect.right - tooltipRect.left) / 2
+                }px`;
+            }
+
+            tooltipElement.style.top = `calc(${
+                anchorRect.top + scrollOffset - tooltipRect.height
+            }px - 8px)`;
+
+            tooltipElement.setAttribute("aria-hidden", "false");
         } else {
             tooltipRef.current?.setAttribute("aria-hidden", "true");
         }

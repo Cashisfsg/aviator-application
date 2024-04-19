@@ -181,7 +181,10 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         }
                     });
 
-                    if (bets.some(bet => bet.betState === "bet")) {
+                    if (
+                        (bets[0].betState === "bet" && !bonus.bonusActive) ||
+                        bets[1].betState === "bet"
+                    ) {
                         store.dispatch(
                             userApi.util.invalidateTags(["Balance"])
                         );
@@ -190,6 +193,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     if (!store.getState().game.currentRound) {
                         store.dispatch(setCurrentRound(true));
                     }
+
                     store.dispatch(betApi.util.invalidateTags(["Previous"]));
                 });
 
@@ -197,8 +201,8 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     const { bets, bonus } = store.getState().game;
 
                     if (bonus.bonusActive && bets[0].betState === "cash") {
-                        store.dispatch(deactivateBonus());
                         store.dispatch(userApi.util.invalidateTags(["Promo"]));
+                        store.dispatch(deactivateBonus());
                     }
 
                     store.dispatch(toggleState("crash"));
@@ -288,7 +292,12 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                             betState: "start"
                         })
                     );
-                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
+
+                    if (!store.getState().game.bonus.bonusActive) {
+                        store.dispatch(
+                            userApi.util.invalidateTags(["Balance"])
+                        );
+                    }
                 }
 
                 break;
@@ -311,8 +320,8 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
                 if (store.getState().game.bonus.bonusActive) {
-                    store.dispatch(deactivateBonus());
                     store.dispatch(userApi.util.invalidateTags(["Promo"]));
+                    store.dispatch(deactivateBonus());
                 }
 
                 break;
