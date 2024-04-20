@@ -199,38 +199,44 @@ export const Chart = () => {
 
                     <RateCoefficient />
 
-                    <g transform="translate(15, 270) scale(0.95, 1)">
-                        {Array(10)
-                            .fill(0)
-                            .map((_, i) => (
-                                <g key={i}>
-                                    <circle
-                                        cx={
-                                            animationEnabled
-                                                ? "10"
-                                                : `${(i + 1) * 10}%`
-                                        }
-                                        cy="0"
-                                        r="2"
-                                        fill="white"
-                                    >
-                                        {animationEnabled ? (
-                                            <animate
-                                                attributeName="cx"
-                                                values={`${(i + 1) * 10}%; ${
-                                                    i * 10
-                                                }%`}
-                                                dur="10s"
-                                                begin="0s"
-                                                repeatCount="indefinite"
-                                            />
-                                        ) : null}
-                                    </circle>
-                                </g>
-                            ))}
-                    </g>
                     <svg
-                        height="295"
+                        height="10"
+                        x="30"
+                        y="270"
+                    >
+                        <g>
+                            {Array(10)
+                                .fill(0)
+                                .map((_, i) => (
+                                    <g key={i}>
+                                        <circle
+                                            cx={
+                                                animationEnabled
+                                                    ? "10"
+                                                    : `${i * 10 + 0.5}%`
+                                            }
+                                            cy="5"
+                                            r="2"
+                                            fill="white"
+                                        >
+                                            {animationEnabled ? (
+                                                <animate
+                                                    attributeName="cx"
+                                                    values={`${
+                                                        (i + 1) * 10
+                                                    }%; ${i * 10}%`}
+                                                    dur="2s"
+                                                    begin="1s"
+                                                    repeatCount="indefinite"
+                                                />
+                                            ) : null}
+                                        </circle>
+                                    </g>
+                                ))}
+                        </g>
+                    </svg>
+                    <svg
+                        height="275"
                         x="0"
                         y="-25"
                     >
@@ -243,7 +249,7 @@ export const Chart = () => {
                                         cy={
                                             animationEnabled
                                                 ? "0"
-                                                : `${(i + 0.5) * 10}%`
+                                                : `${(i + 1) * 10 - 1}%`
                                         }
                                         r="2"
                                         fill="red"
@@ -252,9 +258,9 @@ export const Chart = () => {
                                             <animate
                                                 attributeName="cy"
                                                 values={`${i * 10}%; ${
-                                                    (i + 1) * 9.9
+                                                    (i + 1) * 10
                                                 }%`}
-                                                dur="10s"
+                                                dur="2s"
                                                 begin="0s"
                                                 repeatCount="indefinite"
                                             />
