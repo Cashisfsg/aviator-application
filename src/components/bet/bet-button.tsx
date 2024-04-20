@@ -27,10 +27,10 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const rate = useStateSelector(state => selectRoundRate(state, betNumber));
 
     const placeBet: React.MouseEventHandler<HTMLButtonElement> = event => {
-        if (bonus.bonusActive) {
+        if (bonus.bonusActive && betNumber === 1) {
             dispatch(
                 makeBet({
-                    betNumber,
+                    betNumber: 1,
                     currency: currentGameTab.currency,
                     bet: bonus.bonusQuantity,
                     promoId: bonus.bonusId
@@ -75,9 +75,10 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
     const cashOutMoney: React.MouseEventHandler<HTMLButtonElement> = event => {
         toast.win(
-            rate * bonus.bonusActive
-                ? bonus.bonusQuantity
-                : currentGameTab.currentBet,
+            rate *
+                (bonus.bonusActive && betNumber === 1
+                    ? bonus.bonusQuantity
+                    : currentGameTab.currentBet),
             rate,
             currentGameTab.currency
         );
@@ -134,7 +135,11 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
             return (
                 <button
                     onClick={cashOutMoney}
-                    disabled={bonus.bonusActive && !bonus.bonusCashOutEnabled}
+                    disabled={
+                        bonus.bonusActive &&
+                        betNumber === 1 &&
+                        !bonus.bonusCashOutEnabled
+                    }
                     className="min-h-[86px] rounded-2.5xl border-2 border-[#ffbd71] bg-[#d07206] px-3 py-1.5 text-xl font-semibold uppercase leading-none tracking-wider shadow-[inset_0_1px_1px_#ffffff80] transition-all duration-150 active:translate-y-[1px] active:border-[#c69500] disabled:opacity-60 mh:hover:enabled:bg-[#f58708] mh:disabled:hover:cursor-not-allowed"
                 >
                     <p>Вывести</p>
@@ -142,7 +147,7 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                         <span className="text-2xl">
                             {(
                                 rate *
-                                (bonus.bonusActive
+                                (bonus.bonusActive && betNumber === 1
                                     ? bonus.bonusQuantity
                                     : currentGameTab.currentBet)
                             )?.toFixed(2)}

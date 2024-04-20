@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/store/hooks/useAuth";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
-import { selectBonus } from "@/store/slices/gameSlice";
 import { useStateSelector } from "@/store/hooks";
 import { selectCurrentGameTab } from "@/store";
 import { toast } from "@/components/toasts/toast";
@@ -21,8 +20,6 @@ import {
 export const BalanceMenu = () => {
     const [open, setOpen] = useState(false);
     const { isAuthenticated } = useAuth();
-
-    const bonus = useStateSelector(state => selectBonus(state));
 
     const { betState: firstBetState } = useStateSelector(state =>
         selectCurrentGameTab(state, 1)
@@ -58,11 +55,7 @@ export const BalanceMenu = () => {
             ) : (
                 <PopoverTrigger className="rounded-full border border-[#414148] bg-[#252528] px-3 py-0.5">
                     <span className="font-bold text-[#28A909]">
-                        {bonus.bonusActive
-                            ? (balance?.balance + bonus.bonusQuantity)?.toFixed(
-                                  2
-                              )
-                            : balance?.balance?.toFixed(2)}
+                        {balance?.balance?.toFixed(2)}
                     </span>{" "}
                     {balance?.currency}
                 </PopoverTrigger>
@@ -77,12 +70,7 @@ export const BalanceMenu = () => {
                 >
                     <ul className="select-none text-left text-sm text-white">
                         <li className="w-max bg-[#2c2d30] px-2.5 py-2 font-semibold">
-                            Баланс{" "}
-                            {bonus.bonusActive
-                                ? (
-                                      balance?.balance + bonus.bonusQuantity
-                                  )?.toFixed(2)
-                                : balance?.balance?.toFixed(2)}{" "}
+                            Баланс {balance?.balance?.toFixed(2)}{" "}
                             {balance?.currency}
                         </li>
 

@@ -96,16 +96,6 @@ export const VerifyReplenishmentDialog = () => {
                                 alt=""
                                 className="h-full"
                             />
-                            {/* <img
-                                src={CreditCard}
-                                alt=""
-                                className="h-full object-contain"
-                            />
-                            <img
-                                src={BankApplication}
-                                alt=""
-                                className="h-full object-contain"
-                            /> */}
                         </section>
 
                         <VerifyCreditCardForm />

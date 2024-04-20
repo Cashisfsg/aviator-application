@@ -65,7 +65,7 @@ const initialState = {
         {
             betState: "init",
             betNumber: 1,
-            balance: 300,
+            balance: 0,
             currency: "USD",
             autoModeOn: false,
             autoBetCoefficient: 1.1,
@@ -76,7 +76,7 @@ const initialState = {
         {
             betState: "init",
             betNumber: 2,
-            balance: 300,
+            balance: 0,
             currency: "USD",
             autoModeOn: false,
             autoBetCoefficient: 1.1,
