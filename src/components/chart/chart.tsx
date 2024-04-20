@@ -116,7 +116,7 @@ export const Chart = () => {
                 </h2>
             ) : null} */}
 
-            <figure className="rounded-2.5xl">
+            <figure className="chart-container rounded-2.5xl">
                 <svg
                     width="100%"
                     viewBox="0 0 557 253"

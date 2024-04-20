@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import CreditCard from "@/assets/credit-card.png";
 import BankApplication from "@/assets/bank-application.png";
 
-import { ZoomableImage } from "../ui/zoomable-image";
+import { ZoomableImage } from "../ui/zoomable-image/zoomable-image";
 
 export const VerifyReplenishmentDialog = () => {
     const navigate = useNavigate();
@@ -84,18 +84,28 @@ export const VerifyReplenishmentDialog = () => {
 
                         {/* <ZoomableImage src={CreditCard} /> */}
 
-                        <section className="grid grid-cols-[2fr,_1fr] grid-rows-[minmax(0,_1fr)] place-items-center px-4 py-2">
-                            <img
+                        <section className="grid grid-cols-[2fr,_1fr] grid-rows-[minmax(150px,_1fr)] place-items-center px-4 py-2">
+                            <ZoomableImage
+                                src={CreditCard}
+                                alt=""
+                                className="h-full"
+                            />
+
+                            <ZoomableImage
+                                src={BankApplication}
+                                alt=""
+                                className="h-full"
+                            />
+                            {/* <img
                                 src={CreditCard}
                                 alt=""
                                 className="h-full object-contain"
                             />
-
                             <img
                                 src={BankApplication}
                                 alt=""
                                 className="h-full object-contain"
-                            />
+                            /> */}
                         </section>
 
                         <VerifyCreditCardForm />
