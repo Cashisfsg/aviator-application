@@ -39,6 +39,12 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
         if (!bonus.bonusActive || betNumber !== 1 || !inputRef.current) return;
 
         inputRef.current.value = bonus.bonusCoefficient.toFixed(2);
+        dispatch(
+            setAutoBetCoefficient({
+                betNumber: 1,
+                coefficient: Number(bonus.bonusCoefficient.toFixed(2))
+            })
+        );
     }, [bonus.bonusActive]);
 
     const inputValidValue = useRef<string>(
@@ -60,11 +66,13 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     };
 
     const onBlurHandler: React.FocusEventHandler<HTMLInputElement> = event => {
-        if (!currentGameTab.balance) return;
+        // if (!currentGameTab.balance) return;
 
         const value = validateBet(
             event.target.value,
-            bonus.bonusActive ? (bonus.bonusCoefficient as number) : MIN_RATE,
+            bonus.bonusActive && betNumber === 1
+                ? (bonus.bonusCoefficient as number)
+                : MIN_RATE,
             100
         );
         event.currentTarget.value = value.toFixed(2);
