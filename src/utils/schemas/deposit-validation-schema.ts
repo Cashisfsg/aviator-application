@@ -11,7 +11,9 @@ export const depositValidationSchema = (
                 required_error: "Поле обязательно для заполнения",
                 invalid_type_error: "Поле может содержать только цифры"
             })
-            .int({ message: "Введенное значение должно быть целым числом" })
+            .multipleOf(0.01, {
+                message: "Введена не корректная сумма пополнения"
+            })
             .gte(
                 min,
                 `Минимальная сумма пополнения ${min.toFixed(2)} ${currency}`

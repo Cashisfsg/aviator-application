@@ -13,7 +13,7 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
     const { data: referral } = useGetUserReferralQuery();
 
     return (
-        <>
+        <div className="scrollbar max-h-36">
             <Table
                 className="text-center"
                 headers={["ID", "Дата регистрации", "Заработано"]}
@@ -57,6 +57,6 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                     Пусто
                 </p>
             ) : null}
-        </>
+        </div>
     );
 };

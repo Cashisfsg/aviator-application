@@ -225,8 +225,8 @@ export const Chart = () => {
                                                     values={`${
                                                         (i + 1) * 10
                                                     }%; ${i * 10}%`}
-                                                    dur="2s"
-                                                    begin="1s"
+                                                    dur="3s"
+                                                    begin="1.5s"
                                                     repeatCount="indefinite"
                                                 />
                                             ) : null}
@@ -260,7 +260,7 @@ export const Chart = () => {
                                                 values={`${i * 10}%; ${
                                                     (i + 1) * 10
                                                 }%`}
-                                                dur="2s"
+                                                dur="3s"
                                                 begin="0s"
                                                 repeatCount="indefinite"
                                             />

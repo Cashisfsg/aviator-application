@@ -33,7 +33,7 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     const referralLink = `https://avibet.io/referral?uid=${user?.uid}`;
     const telegramReferralLink = `https://t.me/${
         import.meta.env.VITE_BOT_NAME
-    }?uid=${user?.uid}`;
+    }?start=${user?.uid}`;
 
     const onClickHandler = () => {
         setTimeout(() => {
@@ -82,9 +82,13 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                 </p>
 
                 <p className="grid grid-cols-[1fr_auto] items-center gap-1.5 text-xs text-white">
-                    <span className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600">
-                        {referralLink}
-                    </span>
+                    <a
+                        href={referralLink}
+                        target="_blank"
+                        className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600"
+                    >
+                        Ссылка на сайт
+                    </a>
                     <ClipboardCopy
                         textToCopy={referralLink}
                         toastMessage="Ссылка скопирована в буфер обмена"
@@ -93,9 +97,13 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                         Скопировать
                     </ClipboardCopy>
 
-                    <span className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600">
-                        {telegramReferralLink}
-                    </span>
+                    <a
+                        href={telegramReferralLink}
+                        target="_blank"
+                        className="w-full overflow-hidden text-ellipsis text-nowrap text-blue-600"
+                    >
+                        Ссылка на телеграм-бот
+                    </a>
                     <ClipboardCopy
                         textToCopy={telegramReferralLink}
                         toastMessage="Ссылка скопирована в буфер обмена"
