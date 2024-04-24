@@ -64,13 +64,21 @@ export const CreateReplenishmentForm = () => {
         try {
             const {
                 _id,
-                requisite: { isCardFileRequired }
+                requisite: requisiteResponse,
+                paymentUrl
             } = await createReplenishment({
                 currency: requisite?.currency as string,
                 amount: Number(amount),
                 requisite: requisite?._id as string
             }).unwrap();
-            if (isCardFileRequired) {
+
+            if (requisiteResponse === undefined && paymentUrl !== undefined) {
+                window.open(paymentUrl, "_blank");
+                navigate("/payment/replenishment");
+            } else if (
+                requisiteResponse !== undefined &&
+                requisiteResponse.isCardFileRequired
+            ) {
                 navigate(
                     `/payment/replenishment/${_id}/requisite/${requisiteId}/verify`,
                     {

@@ -14,8 +14,8 @@ interface Requisite {
     active: boolean;
     currency: Currency;
     turnover: Turnover;
-    isCardFileRequired: false;
-    isReceiptFileRequired: false;
+    isCardFileRequired: boolean;
+    isReceiptFileRequired: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -49,12 +49,13 @@ export interface Replenishment {
     status: string;
     statusMessage: string;
     isPayConfirmed: boolean;
-    requisite: Requisite;
+    requisite?: Requisite;
     method: Method;
     createdAt: string;
     completedDate: string;
     card: string;
     receipt: string;
+    paymentUrl?: string;
     uid: number;
 }
 
