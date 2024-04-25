@@ -27,7 +27,9 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 }) => {
     const [createDraw, { isLoading, isError, error }] =
         useCreateWithdrawMutation();
-    const { data: requisites } = useFetchRequisitesQuery();
+    const { data: requisites } = useFetchRequisitesQuery({
+        type: "withdrawal"
+    });
     const { data: balance } = useGetUserBalanceQuery();
 
     const selectedRequisite = requisites

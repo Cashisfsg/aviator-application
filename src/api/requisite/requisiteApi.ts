@@ -3,17 +3,22 @@ import { RequisitesResponse, RecommendedRequisitesResponse } from "./types";
 
 export const requisiteApi = userApi.injectEndpoints({
     endpoints: builder => ({
-        fetchRequisites: builder.query<RequisitesResponse, void>({
-            query: () => ({
-                url: "user/requisites"
+        fetchRequisites: builder.query<
+            RequisitesResponse,
+            { type?: "replenishment" | "withdrawal" }
+        >({
+            query: ({ type = "replenishment" }) => ({
+                url: "user/requisites",
+                params: { type }
             })
         }),
         fetchRecommendedRequisites: builder.query<
             RecommendedRequisitesResponse,
-            void
+            { type: "replenishment" | "withdrawal" }
         >({
-            query: () => ({
-                url: "user/requisites/recommended"
+            query: ({ type = "replenishment" }) => ({
+                url: "user/requisites/recommended",
+                params: { type }
             })
         })
     })

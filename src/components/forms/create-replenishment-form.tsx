@@ -33,7 +33,9 @@ export const CreateReplenishmentForm = () => {
     } = useFetchReplenishmentLimitsQuery({ id: requisiteId || "" });
     const [createReplenishment, { isLoading: isReplenishmentRequestLoading }] =
         useCreateReplenishmentMutation();
-    const { data: requisites } = useFetchRequisitesQuery();
+    const { data: requisites } = useFetchRequisitesQuery({
+        type: "replenishment"
+    });
 
     const {
         register,

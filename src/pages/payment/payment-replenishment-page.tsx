@@ -22,11 +22,11 @@ export const PaymentReplenishmentPage = () => {
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
-        useFetchRequisitesQuery();
+        useFetchRequisitesQuery({ type: "replenishment" });
     const {
         data: recommendedRequisites,
         isSuccess: isRecommendedRequisitesRequestSuccess
-    } = useFetchRecommendedRequisitesQuery();
+    } = useFetchRecommendedRequisitesQuery({ type: "replenishment" });
 
     const onClickHandler = (id: string) => {
         navigate(`/payment/replenishment/requisite/${id}`, {

@@ -26,11 +26,11 @@ export const PaymentDrawPage = () => {
 
     const { data: user } = useGetUserQuery();
     const { data: requisites, isSuccess: isRequisitesRequestSuccess } =
-        useFetchRequisitesQuery();
+        useFetchRequisitesQuery({ type: "withdrawal" });
     const {
         data: recommendedRequisites,
         isSuccess: isRecommendedRequisitesRequestSuccess
-    } = useFetchRecommendedRequisitesQuery();
+    } = useFetchRecommendedRequisitesQuery({ type: "withdrawal" });
 
     return (
         <>
