@@ -29,13 +29,22 @@ export const CountDownTimer: React.FC<TimerProps> = ({
     onTimeout,
     ...props
 }) => {
+    const targetTime = useRef(
+        finishTime
+            ? new Date(finishTime).getTime()
+            : new Date(
+                  new Date().getTime() +
+                      (minutes * SECONDS_PER_MINUTE + seconds + 1) *
+                          MILLISECONDS_PER_SECOND
+              ).getTime()
+    );
+
     const [time, setTime] = useState(() => {
         if (finishTime === undefined)
             return { minutes: minutes, seconds: seconds };
 
-        const targetTime = new Date(finishTime).getTime();
         const currentTime = new Date().getTime();
-        const timeDifference = targetTime - currentTime;
+        const timeDifference = targetTime.current - currentTime;
 
         if (timeDifference <= 0) return { minutes: minutes, seconds: seconds };
 
@@ -47,21 +56,13 @@ export const CountDownTimer: React.FC<TimerProps> = ({
                 (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)
         );
 
-        const startSeconds = Math.round(
+        const startSeconds = Math.floor(
             (timeDifference % (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) /
                 MILLISECONDS_PER_SECOND
         );
 
         return { minutes: startMinutes, seconds: startSeconds };
     });
-
-    const targetTime = useRef(
-        finishTime
-            ? new Date(finishTime).getTime()
-            : new Date().getTime() +
-                  (minutes * SECONDS_PER_MINUTE + seconds) *
-                      MILLISECONDS_PER_SECOND
-    );
 
     // prettier-ignore
     const timeString = `${
@@ -90,7 +91,7 @@ export const CountDownTimer: React.FC<TimerProps> = ({
                     (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)
             );
 
-            const secondsLeft = Math.round(
+            const secondsLeft = Math.floor(
                 (timeDifference %
                     (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) /
                     MILLISECONDS_PER_SECOND
