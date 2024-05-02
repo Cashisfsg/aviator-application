@@ -40,7 +40,7 @@ export const ReplenishmentDetailsForm = () => {
         });
 
     const [formState, setFormState] = useState<ReplenishmentFormState>("init");
-    const [receipt, setReceipt] = useState<File | undefined>(undefined);
+    const [receiptPhoto, setReceiptPhoto] = useState<File | null>(null);
 
     const [
         confirmReplenishment,
@@ -53,21 +53,22 @@ export const ReplenishmentDetailsForm = () => {
         if (!id) return;
 
         try {
-            if (receipt === undefined) {
+            if (!receiptPhoto) {
                 const { message } = await confirmReplenishment({ id }).unwrap();
                 toast.notify(message);
             } else {
                 const { message } = await confirmReplenishment({
                     id,
-                    receipt
+                    receipt: receiptPhoto
                 }).unwrap();
                 toast.notify(message);
             }
 
-            setReceipt(undefined);
             setFormState("confirmed");
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));
+        } finally {
+            setReceiptPhoto(null);
         }
     };
 
@@ -78,10 +79,11 @@ export const ReplenishmentDetailsForm = () => {
             const { message } = await cancelReplenishment({ id }).unwrap();
             toast.notify(message);
 
-            setReceipt(undefined);
             setFormState("rejected");
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));
+        } finally {
+            setReceiptPhoto(null);
         }
     };
 
@@ -96,7 +98,7 @@ export const ReplenishmentDetailsForm = () => {
         return (
             <PaymentDetails
                 replenishment={replenishment}
-                setReceipt={setReceipt}
+                setReceipt={setReceiptPhoto}
             >
                 <Field
                     label={"Статус заявки"}
@@ -119,7 +121,7 @@ export const ReplenishmentDetailsForm = () => {
         return (
             <PaymentDetails
                 replenishment={replenishment}
-                setReceipt={setReceipt}
+                setReceipt={setReceiptPhoto}
             >
                 <Field
                     label={"Статус заявки"}
@@ -143,7 +145,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
-                    setReceipt={setReceipt}
+                    setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
@@ -170,8 +172,12 @@ export const ReplenishmentDetailsForm = () => {
                     </p>
 
                     <button
+                        disabled={
+                            replenishment?.requisite?.isReceiptFileRequired &&
+                            !receiptPhoto
+                        }
                         onClick={() => setFormState("confirm")}
-                        className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5"
+                        className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
                     >
                         Подтвердить оплату
                     </button>
@@ -189,7 +195,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
-                    setReceipt={setReceipt}
+                    setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
@@ -247,7 +253,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
-                    setReceipt={setReceipt}
+                    setReceipt={setReceiptPhoto}
                 >
                     <Field
                         label={"Статус заявки"}
@@ -272,7 +278,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
-                    setReceipt={setReceipt}
+                    setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
                         <span className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
@@ -332,7 +338,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
-                    setReceipt={setReceipt}
+                    setReceipt={setReceiptPhoto}
                 >
                     <Field
                         label={"Статус заявки"}
@@ -382,7 +388,7 @@ const Field: React.FC<FieldProps> = ({ className, label, value }) => {
 
 interface PaymentDetailsProps extends PropsWithChildren {
     replenishment: Replenishment | undefined;
-    setReceipt: React.Dispatch<React.SetStateAction<File | undefined>>;
+    setReceipt: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({
@@ -405,6 +411,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
         if (file.size > 3 * 1024 * 1024) {
             toast.error("Размер файла не должен превышать 3 мб");
             input.value = "";
+            setReceipt(null);
             return;
         }
 
