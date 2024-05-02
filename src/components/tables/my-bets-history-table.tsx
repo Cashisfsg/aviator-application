@@ -91,7 +91,7 @@ const MyBetsTable: React.FC<MyBetsTableProps> = ({
     return (
         <TableVirtuoso
             data={bets}
-            className="scrollbar !h-[265px]"
+            className={"scrollbar !h-[265px]"}
             itemContent={(_, bet) => (
                 <>
                     <Cell

@@ -17,6 +17,8 @@ import {
 } from "../slices/gameSlice";
 import { userApi } from "../api/userApi";
 import { betApi } from "../api/betApi";
+import { replenishmentApi } from "@/api/replenishment";
+import { withdrawApi } from "@/api/withdraw";
 import { toast } from "@/components/toasts/toast";
 import { authApi } from "..";
 
@@ -253,6 +255,9 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 );
 
                 store.dispatch(userApi.util.resetApiState());
+                store.dispatch(betApi.util.resetApiState());
+                store.dispatch(replenishmentApi.util.resetApiState());
+                store.dispatch(withdrawApi.util.resetApiState());
 
                 socket.auth = { token: "" };
 

@@ -35,7 +35,8 @@ export const SucceedToast: React.FC<SucceedToastProps> = ({
                 onClick={() => toast.dismiss(t)}
                 className="flex flex-auto items-center justify-center text-xl"
             >
-                <IoCloseSharp />
+                <IoCloseSharp className="isolate" />
+                <span className="sr-only">Закрыть вслывающее уведомление</span>
             </button>
         </div>
     );
