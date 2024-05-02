@@ -162,7 +162,7 @@ export const ReplenishmentDetailsForm = () => {
                                     new Date(
                                         replenishment?.createdAt as string
                                     ).getTime() +
-                                    15 * 60 * 1000
+                                    30 * 60 * 1000
                                 }
                             />{" "}
                             <TimerTooltip />
@@ -208,7 +208,7 @@ export const ReplenishmentDetailsForm = () => {
                                     new Date(
                                         replenishment?.createdAt as string
                                     ).getTime() +
-                                    15 * 60 * 1000
+                                    30 * 60 * 1000
                                 }
                             />{" "}
                             <TimerTooltip />
@@ -291,7 +291,7 @@ export const ReplenishmentDetailsForm = () => {
                                     new Date(
                                         replenishment?.createdAt as string
                                     ).getTime() +
-                                    15 * 60 * 1000
+                                    30 * 60 * 1000
                                 }
                             />{" "}
                             <TimerTooltip />
