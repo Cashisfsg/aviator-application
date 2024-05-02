@@ -14,6 +14,7 @@ interface FormFields {
 }
 
 export const VerifyCreditCardForm = () => {
+    const [cardPhoto, setCardPhoto] = useState<File | null>(null);
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const inputFileId = useId();
 
@@ -34,9 +35,12 @@ export const VerifyCreditCardForm = () => {
         if (file.size > 3 * 1024 * 1024) {
             toast.error("Размер файла не должен превышать 3 мб");
             input.value = "";
+            setCardPhoto(null);
+            setSubmitEnabled(false);
             return;
         }
 
+        setCardPhoto(file);
         setSubmitEnabled(true);
     };
 
@@ -45,16 +49,17 @@ export const VerifyCreditCardForm = () => {
     > = async event => {
         event.preventDefault();
 
-        if (replenishmentId === undefined || requisiteId === undefined) return;
-
-        const { card } = event.currentTarget;
-
-        if (!card.files) return;
+        if (
+            replenishmentId === undefined ||
+            requisiteId === undefined ||
+            !cardPhoto
+        )
+            return;
 
         try {
             const { message } = await verify({
                 id: replenishmentId,
-                card: card.files[0]
+                card: cardPhoto
             }).unwrap();
             navigate(
                 `/payment/replenishment/${replenishmentId}/requisite/${requisiteId}`
