@@ -15,6 +15,6 @@ export interface ServerToClientListen {
 export interface ClientToServerListen {
     // message: (message: ) => void;
     bet: (data: BetTest) => void;
-    "cash-out": (data: { betNumber: 1 | 2 }) => void;
+    "cash-out": (data: { betNumber: 1 | 2; winX: number }) => void;
     cancel: (data: { betNumber: 1 | 2 }) => void;
 }

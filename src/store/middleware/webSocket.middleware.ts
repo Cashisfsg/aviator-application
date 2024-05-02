@@ -101,7 +101,8 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                             return;
 
                         socket.emit("cash-out", {
-                            betNumber: (index + 1) as 1 | 2
+                            betNumber: (index + 1) as 1 | 2,
+                            winX: x
                         });
                         store.dispatch(
                             setBetState({
@@ -310,7 +311,11 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     })
                 );
 
-                socket.emit("cash-out", { betNumber: action.payload as 1 | 2 });
+                socket.emit("cash-out", {
+                    betNumber: action.payload as 1 | 2,
+                    winX: store.getState().test.rate
+                });
+
                 store.dispatch(
                     betApi.endpoints.getUserBets.initiate(
                         { skip: 0, limit: 6 },
