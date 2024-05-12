@@ -30,7 +30,10 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
     });
     const { data: user } = useGetUserQuery(undefined, { skip: !open });
 
-    const referralLink = `https://avibet.io/referral?uid=${user?.uid}`;
+    const referralLink = `${
+        import.meta.env.VITE_BASE_URL
+    }/referral?uid=${user?.uid}`;
+
     const telegramReferralLink = `https://t.me/${
         import.meta.env.VITE_BOT_NAME
     }?start=${user?.uid}`;

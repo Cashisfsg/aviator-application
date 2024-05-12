@@ -121,7 +121,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
                             </ClipboardCopy>
                         </p>
                     </td>
-                    {replenishment?.status === "Ожидает оплаты" ? (
+                    {replenishment?.status === "Ожидает оплаты" ||
+                    replenishment?.status === "В обработке..." ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
                             <Link
                                 to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment?.requisite?._id}`}

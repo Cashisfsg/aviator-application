@@ -12,7 +12,7 @@ export interface Requisite {
     status: string;
 }
 
-export interface Withdraw {
+export interface Withdrawal {
     _id: string;
     user: string;
     amount: CurrencyRecord;
@@ -33,9 +33,9 @@ export interface PaymentDrawRequest {
     userRequisite: string;
 }
 
-export interface FetchAllWithdrawsResponse extends Withdraw {}
+export interface FetchAllWithdrawsResponse extends Withdrawal {}
 
-export interface CreateWithdrawResponse extends Withdraw {}
+export interface CreateWithdrawResponse extends Withdrawal {}
 
 export interface CreateWithdrawRequest {
     currency: string;
@@ -44,7 +44,7 @@ export interface CreateWithdrawRequest {
     userRequisite: string;
 }
 
-export interface CreateWithdrawResponse extends Withdraw {}
+export interface CreateWithdrawResponse extends Withdrawal {}
 
 export interface CancelWithdrawByIdRequest {
     id: string;
@@ -52,4 +52,16 @@ export interface CancelWithdrawByIdRequest {
 
 export interface CancelWithdrawByIdResponse {
     message: string;
+}
+
+export interface WithdrawalLimitsRequest {
+    id: string;
+}
+
+export interface WithdrawalLimitsResponse {
+    minLimit: number;
+    maxLimit: number;
+    currency: Currency;
+    minSymbols: number;
+    maxSymbols: number;
 }

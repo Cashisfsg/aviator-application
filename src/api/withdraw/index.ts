@@ -1,2 +1,2 @@
 export * from "./withdrawApi";
-export type { Withdraw } from "./types";
+export type { Withdrawal as Withdraw } from "./types";

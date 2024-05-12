@@ -8,18 +8,15 @@ import { FaChrome } from "react-icons/fa";
 import { TelegramClient } from "@/store/api/types";
 
 export const RedirectMenu = () => {
-    // const { telegramId } = useStateSelector(state => selectInitData(state));
-
     const tg = (
         window as Window & typeof globalThis & { Telegram: TelegramClient }
     ).Telegram.WebApp;
 
     const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
-        tg.openLink("https://avibet.io");
+        tg.openLink(`${import.meta.env.VITE_BASE_URL}`);
     };
 
     return (
-        // ? "googlechrome://navigate?url=https://avibet.io"
         <>
             <DropDownMenuItem>
                 {tg?.initDataUnsafe?.user?.id ? (

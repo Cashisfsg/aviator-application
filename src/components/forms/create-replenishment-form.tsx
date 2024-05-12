@@ -129,11 +129,10 @@ export const CreateReplenishmentForm = () => {
                         placeholder="0"
                         className="h-10 border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                     />
+
                     {errors?.amount ? (
                         <ErrorMessage message={errors?.amount?.message} />
-                    ) : null}
-
-                    {isLimitsSuccessResponse ? (
+                    ) : isLimitsSuccessResponse ? (
                         <span className="text-right text-xs">
                             {`от ${limits?.minLimit?.toFixed(
                                 2

@@ -5,7 +5,10 @@ import {
     CreateWithdrawRequest,
     CreateWithdrawResponse,
     CancelWithdrawByIdRequest,
-    CancelWithdrawByIdResponse
+    CancelWithdrawByIdResponse,
+    Currency,
+    WithdrawalLimitsRequest,
+    WithdrawalLimitsResponse
 } from "./types";
 
 export const withdrawApi = baseWithdrawApi.injectEndpoints({
@@ -18,6 +21,12 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
                 return response.reverse();
             },
             providesTags: ["Withdraw"]
+        }),
+        fetchWithdrawalLimits: builder.query<
+            WithdrawalLimitsResponse,
+            WithdrawalLimitsRequest
+        >({
+            query: ({ id }) => ({ url: `/withdrawals/limits/${id}` })
         }),
         createWithdraw: builder.mutation<
             CreateWithdrawResponse,
@@ -60,6 +69,8 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
 export const {
     useFetchAllWithdrawsQuery,
     useLazyFetchAllWithdrawsQuery,
+    useFetchWithdrawalLimitsQuery,
+    useLazyFetchWithdrawalLimitsQuery,
     useCreateWithdrawMutation,
     useCancelWithdrawByIdMutation
 } = withdrawApi;

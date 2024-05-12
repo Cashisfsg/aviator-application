@@ -7,7 +7,10 @@ import {
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import { useFetchRequisitesQuery } from "@/api/requisite";
-import { useCreateWithdrawMutation } from "@/api/withdraw";
+import {
+    useFetchWithdrawalLimitsQuery,
+    useCreateWithdrawMutation
+} from "@/api/withdraw";
 
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,20 +18,27 @@ import { toast } from "@/components/toasts/toast";
 
 import { ImSpinner9 } from "react-icons/im";
 import Visa from "@/assets/visa-360w.webp";
+import { handleErrorResponse } from "@/store/services/helpers";
 
-interface PaymentWithdrawFormProps {
+interface CreateWithdrawFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     selectedRequisiteId: string | null;
 }
 
-export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
+export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     setOpen,
     selectedRequisiteId
 }) => {
-    const [createDraw, { isLoading, isError, error }] =
-        useCreateWithdrawMutation();
+    const [createWithdrawal, { isLoading }] = useCreateWithdrawMutation();
     const { data: requisites } = useFetchRequisitesQuery({
         type: "withdrawal"
+    });
+    const {
+        data: limits,
+        isSuccess: isLimitsSuccessResponse,
+        isLoading: isLimitsLoading
+    } = useFetchWithdrawalLimitsQuery({
+        id: selectedRequisiteId || ""
     });
     const { data: balance } = useGetUserBalanceQuery();
 
@@ -41,19 +51,29 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
         handleSubmit,
         formState: { errors }
     } = useForm<FormSchema>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(
+            formSchema(
+                limits?.minLimit || 100,
+                limits?.maxLimit || 1000,
+                limits?.currency || "USD",
+                limits?.minSymbols || 10,
+                limits?.maxSymbols || 20
+            )
+        ),
         defaultValues: {
             amount: undefined,
             userRequisite: ""
         }
     });
 
+    console.log(limits);
+
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         amount,
         userRequisite
     }) => {
         try {
-            await createDraw({
+            await createWithdrawal({
                 currency: selectedRequisite?.currency as string,
                 amount: Number(amount),
                 requisite: selectedRequisite?._id as string,
@@ -62,7 +82,9 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
 
             toast.notify("Заявка на вывод успешно создана");
             setOpen(false);
-        } catch (error) {}
+        } catch (error) {
+            handleErrorResponse(error, message => toast.error(message));
+        }
     };
 
     const onErrorHandler: React.ReactEventHandler<HTMLImageElement> = event => {
@@ -89,7 +111,6 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 <span className="text-left ">Введите реквизиты для вывода</span>
                 <Input
                     inputMode="numeric"
-                    placeholder="XXXX-XXXX-XXXX-XXXX"
                     {...register("userRequisite")}
                     aria-invalid={errors?.userRequisite ? "true" : "false"}
                     className="h-10 border-transparent bg-slate-300/70 text-center leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
@@ -102,24 +123,26 @@ export const PaymentDrawForm: React.FC<PaymentWithdrawFormProps> = ({
                 <span className="">Введите сумму в {balance?.currency}</span>
                 <Input
                     inputMode="numeric"
-                    // placeholder="0"
                     {...register("amount")}
                     placeholder="0"
                     aria-invalid={errors?.amount ? "true" : "false"}
                     className="h-10 border-transparent bg-slate-300/70 leading-none text-black shadow-md focus:placeholder:opacity-0 focus-visible:outline-slate-400/70"
                 />
                 {errors?.amount ? (
-                    <ErrorMessage
-                        message={`${errors?.amount?.message} ${selectedRequisite?.currency}`}
-                    />
-                ) : null}
-                {isError ? (
-                    <ErrorMessage message={error?.data?.message} />
+                    <ErrorMessage message={`${errors?.amount?.message}`} />
+                ) : isLimitsSuccessResponse ? (
+                    <span className="block text-right text-xs">
+                        {`от ${limits?.minLimit?.toFixed(
+                            2
+                        )} до ${limits?.maxLimit?.toFixed(
+                            2
+                        )} ${limits?.currency}`}
+                    </span>
                 ) : null}
             </Label>
 
             <button
-                disabled={isLoading}
+                disabled={isLimitsLoading || isLoading}
                 className="mt-4 rounded-md bg-[#36ca12] px-4 py-2 text-white shadow-md focus-visible:outline-green-400 active:translate-y-0.5 disabled:pointer-events-none disabled:bg-slate-400/70"
             >
                 {isLoading ? (
