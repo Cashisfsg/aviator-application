@@ -45,7 +45,7 @@ export const CreateReplenishmentForm = () => {
         type: "replenishment"
     });
     const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
-        type: "withdrawal"
+        type: "replenishment"
     });
 
     const {
