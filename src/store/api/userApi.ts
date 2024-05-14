@@ -67,7 +67,16 @@ export const userApi = createApi({
         getUserReferral: builder.query<Referral, void>({
             query: () => ({
                 url: "/user/referral"
-            })
+            }),
+            transformResponse: (response: Referral) => {
+                response.descendants.sort(
+                    (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime()
+                );
+
+                return response;
+            }
         }),
         getUserReferralByDays: builder.query<
             EntityState<ReferralByDay, string>,
