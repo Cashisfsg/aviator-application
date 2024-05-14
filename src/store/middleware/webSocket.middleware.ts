@@ -211,11 +211,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(toggleState("crash"));
                     store.dispatch(setLastRate(store.getState().test.rate));
 
-                    // if (bets.some(bet => bet.betState === "cash")) {
-                    //     store.dispatch(
-                    //         userApi.util.invalidateTags(["Balance"])
-                    //     );
-                    // }
+                    if (bets.some(bet => bet.betState === "cash")) {
+                        store.dispatch(
+                            betApi.endpoints.getUserBets.initiate(
+                                { skip: 0, limit: 6 },
+                                { subscribe: false, forceRefetch: true }
+                            )
+                        );
+                    }
 
                     bets.forEach((bet, index) => {
                         if (bet.betState !== "cash") return;
