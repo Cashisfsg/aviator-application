@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -6,7 +7,10 @@ import {
 } from "@/utils/schemas";
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
-import { useFetchRequisitesQuery } from "@/api/requisite";
+import {
+    useFetchRecommendedRequisitesQuery,
+    useFetchRequisitesQuery
+} from "@/api/requisite";
 import {
     useFetchWithdrawalLimitsQuery,
     useCreateWithdrawMutation
@@ -33,6 +37,9 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     const { data: requisites } = useFetchRequisitesQuery({
         type: "withdrawal"
     });
+    const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
+        type: "withdrawal"
+    });
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,
@@ -42,9 +49,18 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     });
     const { data: balance } = useGetUserBalanceQuery();
 
-    const selectedRequisite = requisites
-        ?.flatMap(requisite => requisite.requisites)
-        .find(requisite => requisite._id === selectedRequisiteId);
+    // const selectedRequisite = requisites
+    //     ?.flatMap(requisite => requisite.requisites)
+    //     .find(requisite => requisite._id === selectedRequisiteId);
+
+    const selectedRequisite = useMemo(
+        () =>
+            [
+                ...requisites?.flatMap(requisite => requisite.requisites),
+                ...recommendedRequisites
+            ].find(requisite => requisite._id === selectedRequisiteId),
+        [requisites, recommendedRequisites, selectedRequisiteId]
+    );
 
     const {
         register,
@@ -74,9 +90,9 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     }) => {
         try {
             await createWithdrawal({
-                currency: selectedRequisite?.currency as string,
+                currency: balance?.currency || "",
                 amount: Number(amount),
-                requisite: selectedRequisite?._id as string,
+                requisite: selectedRequisiteId || "",
                 userRequisite
             }).unwrap();
 

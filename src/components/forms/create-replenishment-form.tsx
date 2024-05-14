@@ -12,7 +12,11 @@ import {
     useCreateReplenishmentMutation,
     useFetchReplenishmentLimitsQuery
 } from "@/api/replenishment/replenishmentApi";
-import { useFetchRequisitesQuery } from "@/api/requisite/requisiteApi";
+import { useGetUserBalanceQuery } from "@/store/api/userApi";
+import {
+    useFetchRecommendedRequisitesQuery,
+    useFetchRequisitesQuery
+} from "@/api/requisite/requisiteApi";
 import { handleErrorResponse } from "@/store/services";
 
 import { toast } from "@/components/toasts/toast";
@@ -26,15 +30,22 @@ export const CreateReplenishmentForm = () => {
     const navigate = useNavigate();
     const { requisiteId } = useParams();
 
+    console.log(requisiteId);
+
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,
         isLoading: isLimitsLoading
     } = useFetchReplenishmentLimitsQuery({ id: requisiteId || "" });
+    const { data: balance } = useGetUserBalanceQuery();
+
     const [createReplenishment, { isLoading: isReplenishmentRequestLoading }] =
         useCreateReplenishmentMutation();
     const { data: requisites } = useFetchRequisitesQuery({
         type: "replenishment"
+    });
+    const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
+        type: "withdrawal"
     });
 
     const {
@@ -56,10 +67,11 @@ export const CreateReplenishmentForm = () => {
 
     const requisite = useMemo(
         () =>
-            requisites
-                ?.flatMap(requisite => requisite.requisites)
-                .find(requisite => requisite._id === requisiteId),
-        [requisites, requisiteId]
+            [
+                ...requisites?.flatMap(requisite => requisite.requisites),
+                ...recommendedRequisites
+            ].find(requisite => requisite._id === requisiteId),
+        [requisites, recommendedRequisites, requisiteId]
     );
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ amount }) => {
@@ -69,9 +81,9 @@ export const CreateReplenishmentForm = () => {
                 requisite: requisiteResponse,
                 paymentUrl
             } = await createReplenishment({
-                currency: requisite?.currency as string,
+                currency: balance?.currency || "",
                 amount: Number(amount),
-                requisite: requisite?._id as string
+                requisite: requisiteId || ""
             }).unwrap();
 
             if (requisiteResponse === undefined && paymentUrl !== undefined) {
