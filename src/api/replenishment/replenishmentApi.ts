@@ -17,12 +17,6 @@ export const replenishmentApi = baseReplenishmentApi.injectEndpoints({
             query: () => ({
                 url: "replenishments"
             }),
-            transformResponse: (response: AllReplenishmentsResponse) => {
-                if (Array.isArray(response)) {
-                    return response.reverse();
-                }
-                return response;
-            },
             providesTags: (result, error, arg) =>
                 result
                     ? [

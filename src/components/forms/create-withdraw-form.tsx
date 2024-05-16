@@ -8,7 +8,7 @@ import {
 
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import {
-    useFetchRecommendedRequisitesQuery,
+    // useFetchRecommendedRequisitesQuery,
     useFetchRequisitesQuery
 } from "@/api/requisite";
 import {
@@ -37,9 +37,9 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     const { data: requisites } = useFetchRequisitesQuery({
         type: "withdrawal"
     });
-    const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
-        type: "withdrawal"
-    });
+    // const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
+    //     type: "withdrawal"
+    // });
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,
@@ -49,18 +49,18 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
     });
     const { data: balance } = useGetUserBalanceQuery();
 
-    // const selectedRequisite = requisites
-    //     ?.flatMap(requisite => requisite.requisites)
-    //     .find(requisite => requisite._id === selectedRequisiteId);
+    const selectedRequisite = requisites
+        ?.flatMap(requisite => requisite.requisites)
+        .find(requisite => requisite._id === selectedRequisiteId);
 
-    const selectedRequisite = useMemo(
-        () =>
-            [
-                ...requisites?.flatMap(requisite => requisite.requisites),
-                ...recommendedRequisites
-            ].find(requisite => requisite._id === selectedRequisiteId),
-        [requisites, recommendedRequisites, selectedRequisiteId]
-    );
+    // const selectedRequisite = useMemo(
+    //     () =>
+    //         [
+    //             ...requisites?.flatMap(requisite => requisite.requisites),
+    //             ...recommendedRequisites
+    //         ].find(requisite => requisite._id === selectedRequisiteId),
+    //     [requisites, recommendedRequisites, selectedRequisiteId]
+    // );
 
     const {
         register,
@@ -71,7 +71,7 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
             formSchema(
                 limits?.minLimit || 100,
                 limits?.maxLimit || 1000,
-                limits?.currency || "USD",
+                balance?.currency || "USD",
                 limits?.minSymbols || 10,
                 limits?.maxSymbols || 20
             )

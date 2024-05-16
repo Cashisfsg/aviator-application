@@ -13,10 +13,7 @@ import {
     useFetchReplenishmentLimitsQuery
 } from "@/api/replenishment/replenishmentApi";
 import { useGetUserBalanceQuery } from "@/store/api/userApi";
-import {
-    useFetchRecommendedRequisitesQuery,
-    useFetchRequisitesQuery
-} from "@/api/requisite/requisiteApi";
+import { useFetchRequisitesQuery } from "@/api/requisite/requisiteApi";
 import { handleErrorResponse } from "@/store/services";
 
 import { toast } from "@/components/toasts/toast";
@@ -44,9 +41,6 @@ export const CreateReplenishmentForm = () => {
     const { data: requisites } = useFetchRequisitesQuery({
         type: "replenishment"
     });
-    const { data: recommendedRequisites } = useFetchRecommendedRequisitesQuery({
-        type: "replenishment"
-    });
 
     const {
         register,
@@ -57,7 +51,7 @@ export const CreateReplenishmentForm = () => {
             formSchema(
                 limits?.minLimit || 100,
                 limits?.maxLimit || 1000,
-                limits?.currency || "RUB"
+                balance?.currency || "RUB"
             )
         ),
         defaultValues: {
@@ -67,11 +61,10 @@ export const CreateReplenishmentForm = () => {
 
     const requisite = useMemo(
         () =>
-            [
-                ...requisites?.flatMap(requisite => requisite.requisites),
-                ...recommendedRequisites
-            ].find(requisite => requisite._id === requisiteId),
-        [requisites, recommendedRequisites, requisiteId]
+            requisites
+                ?.flatMap(requisite => requisite.requisites)
+                .find(requisite => requisite._id === requisiteId),
+        [requisites, requisiteId]
     );
 
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({ amount }) => {

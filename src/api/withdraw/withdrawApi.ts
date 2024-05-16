@@ -17,9 +17,6 @@ export const withdrawApi = baseWithdrawApi.injectEndpoints({
             query: () => ({
                 url: "withdrawals"
             }),
-            transformResponse: (response: FetchAllWithdrawsResponse[]) => {
-                return response.reverse();
-            },
             providesTags: ["Withdraw"]
         }),
         fetchWithdrawalLimits: builder.query<

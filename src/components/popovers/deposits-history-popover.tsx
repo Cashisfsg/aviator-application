@@ -27,9 +27,9 @@ export const DepositsHistoryPopover = () => {
             >
                 {isSuccess ? (
                     replenishments && replenishments.length !== 0 ? (
-                        replenishments.map((deposit, index) => (
-                            <div key={deposit?._id}>
-                                <PaymentDetails replenishment={deposit} />
+                        replenishments.map((replenishment, index) => (
+                            <div key={replenishment?._id}>
+                                <PaymentDetails replenishment={replenishment} />
                                 {index !== replenishments.length - 1 ? (
                                     <hr
                                         key={index}
@@ -81,7 +81,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
                 <tr>
                     <td className="px-1.5 py-0.5">Метод</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {replenishment?.requisite?.name}
+                        {replenishment?.method?.name}
                     </td>
                 </tr>
                 <tr>

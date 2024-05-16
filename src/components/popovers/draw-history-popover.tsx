@@ -24,7 +24,7 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
     className,
     ...props
 }) => {
-    const { data: draws, isSuccess } = useFetchAllWithdrawsQuery();
+    const { data: withdrawals, isSuccess } = useFetchAllWithdrawsQuery();
 
     return (
         <section
@@ -35,14 +35,16 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
             )}
         >
             <ScrollArea
-                className={draws && draws?.length >= 2 ? "h-64" : "h-auto"}
+                className={
+                    withdrawals && withdrawals?.length >= 2 ? "h-64" : "h-auto"
+                }
             >
                 {isSuccess ? (
-                    draws && draws.length !== 0 ? (
-                        draws.map((draw, index) => (
-                            <div key={draw?._id}>
-                                <PaymentDetails draw={draw} />
-                                {index !== draws.length - 1 ? (
+                    withdrawals && withdrawals.length !== 0 ? (
+                        withdrawals.map((withdrawal, index) => (
+                            <div key={withdrawal?._id}>
+                                <PaymentDetails withdrawal={withdrawal} />
+                                {index !== withdrawals.length - 1 ? (
                                     <hr
                                         key={index}
                                         className="h-2"
@@ -60,10 +62,10 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
 };
 
 interface DrawDetailsProps {
-    draw?: Withdraw;
+    withdrawal?: Withdraw;
 }
 
-const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
+const PaymentDetails: React.FC<DrawDetailsProps> = ({ withdrawal }) => {
     const { data: balance } = useGetUserBalanceQuery();
     const [cancelDraw] = useCancelWithdrawByIdMutation();
 
@@ -84,34 +86,34 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                 <tr>
                     <td className="w-5/12 px-1.5 py-0.5">Дата создания</td>
                     <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
-                        {draw?.createdAt
-                            ? `${formatDate(draw?.createdAt)} ${formatTime(
-                                  draw?.createdAt
-                              )}`
+                        {withdrawal?.createdAt
+                            ? `${formatDate(
+                                  withdrawal?.createdAt
+                              )} ${formatTime(withdrawal?.createdAt)}`
                             : ""}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Дата потверждения</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.completedDate
-                            ? `${formatDate(draw?.completedDate)} ${formatTime(
-                                  draw?.completedDate
-                              )}`
+                        {withdrawal?.completedDate
+                            ? `${formatDate(
+                                  withdrawal?.completedDate
+                              )} ${formatTime(withdrawal?.completedDate)}`
                             : ""}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Метод</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.requisite?.name}
+                        {withdrawal?.requisite?.name}
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Сумма</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
-                        {draw?.amount?.[balance?.currency || "USD"]
-                            ? `${draw?.amount?.[
+                        {withdrawal?.amount?.[balance?.currency || "USD"]
+                            ? `${withdrawal?.amount?.[
                                   balance?.currency || "USD"
                               ].toFixed(2)} ${balance?.currency}`
                             : null}
@@ -121,23 +123,25 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                     <td className="px-1.5 py-0.5">Реквизит</td>
                     <td className="py-0.5 pl-1.5 pr-2.5">
                         <ClipboardCopy
-                            textToCopy={draw?.userRequisite}
+                            textToCopy={withdrawal?.userRequisite}
                             toastMessage="Реквизиты скопированы в буфер обмена"
                             className="text-nowrap transition-colors mh:hover:text-slate-600"
                         >
-                            {draw?.userRequisite}
+                            {withdrawal?.userRequisite}
                         </ClipboardCopy>
                     </td>
                 </tr>
                 <tr>
                     <td className="px-1.5 py-0.5">Статус</td>
-                    <td className="py-0.5 pl-1.5 pr-2.5">{draw?.status}</td>
+                    <td className="py-0.5 pl-1.5 pr-2.5">
+                        {withdrawal?.status}
+                    </td>
                 </tr>
-                {draw?.statusMessage ? (
+                {withdrawal?.statusMessage ? (
                     <tr>
                         <td className="px-1.5 py-0.5">Причина отмены</td>
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            {draw?.statusMessage}
+                            {withdrawal?.statusMessage}
                         </td>
                     </tr>
                 ) : null}
@@ -146,18 +150,18 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ draw }) => {
                         <p className="justify-self-start text-nowrap text-sm leading-5 text-slate-400">
                             <span>ID</span>{" "}
                             <ClipboardCopy
-                                textToCopy={draw?.uid}
+                                textToCopy={withdrawal?.uid}
                                 className="inline-block max-w-[14ch] overflow-hidden text-ellipsis whitespace-nowrap transition-colors mh:hover:text-slate-600"
                             >
-                                {draw?.uid || ""}
+                                {withdrawal?.uid || ""}
                             </ClipboardCopy>
                         </p>
                     </td>
-                    {draw?.status === "Ожидает оплаты" ? (
+                    {withdrawal?.status === "Ожидает оплаты" ? (
                         <td className="w-6/12 py-0.5 pl-1.5 pr-2.5">
                             <button
                                 onClick={() => {
-                                    abortDraw(draw?._id);
+                                    abortDraw(withdrawal?._id);
                                 }}
                                 className="text-right text-blue-500"
                             >
