@@ -54,7 +54,7 @@ export const BonusTable: React.FC<BonusTableProps> = ({ setOpen }) => {
                 headers={[
                     `Сумма бонуса, ${balance?.currency}`,
                     "Коэфф., при котором можно забрать выигрыш",
-                    "Срок действия"
+                    "Действует до"
                 ]}
                 data={promo || []}
                 renderData={data => (

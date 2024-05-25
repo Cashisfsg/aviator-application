@@ -15,7 +15,7 @@ export const DepositBonusTable = () => {
                 headers={[
                     `Лимит бонуса, ${balance?.currency}`,
                     "Скидка, %",
-                    "Срок действия"
+                    "Действует до"
                 ]}
                 data={promo || []}
                 renderData={data => (

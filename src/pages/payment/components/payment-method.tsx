@@ -27,7 +27,7 @@ export const PaymentMethod: React.FC<PaymentProps> = ({
                 loading="lazy"
                 className="max-h-full object-cover object-center"
             />
-            <p className="text-left text-xs font-bold sm:text-base xs:text-sm">
+            <p className="truncate text-left text-xs font-bold sm:text-base xs:text-sm">
                 {requisite?.name}
             </p>
         </li>

@@ -11,6 +11,7 @@ export interface ServerToClientListen {
     loading: () => void;
     crash: () => void;
     currentPlayers: (data: CurrentPlayers) => void;
+    "game-stop": (text: string) => void;
 }
 export interface ClientToServerListen {
     // message: (message: ) => void;

@@ -90,7 +90,7 @@ const PaymentDetails: React.FC<DrawDetailsProps> = ({ withdrawal }) => {
                             ? `${formatDate(
                                   withdrawal?.createdAt
                               )} ${formatTime(withdrawal?.createdAt)}`
-                            : ""}
+                            : null}
                     </td>
                 </tr>
                 <tr>

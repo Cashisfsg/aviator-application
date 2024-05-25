@@ -110,12 +110,6 @@ export const Chart = () => {
 
     return (
         <section>
-            {/* {!isAuthenticated ? (
-                <h2 className="rounded-t-2.5xl bg-[#e59407cc] text-xl font-bold uppercase">
-                    Fun mode
-                </h2>
-            ) : null} */}
-
             <figure className="chart-container rounded-2.5xl">
                 <svg
                     width="100%"
