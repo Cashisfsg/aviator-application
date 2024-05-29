@@ -7,6 +7,18 @@ type Currency = "USD" | "RUB" | "KZT" | "UZS" | "USDT";
 
 export type CurrencyRecordTest = Record<Currency, number>;
 
+type ActiveGameStatus = {
+    status: "active";
+    message: null;
+};
+
+type InactiveGameStatus = {
+    status: "inactive";
+    message: string;
+};
+
+type GameStatus = ActiveGameStatus | InactiveGameStatus;
+
 export interface RoundStatistic {
     playersAmount: number;
     betAmount: CurrencyRecordTest;
@@ -27,6 +39,7 @@ interface State {
     rate: number;
     lastRate: number;
     state: AvailableState;
+    gameStatus: GameStatus;
     roundStats: RoundStatistic;
     playersList: PlayerTest[];
 }
@@ -35,6 +48,10 @@ const initialState: State = {
     rate: 1,
     lastRate: 1,
     state: "idle",
+    gameStatus: {
+        status: "active",
+        message: null
+    },
     roundStats: {
         playersAmount: 0,
         betAmount: { USD: 0, UZS: 0, KZT: 0, RUB: 0, USDT: 0 },
@@ -55,7 +72,7 @@ const testSlice = createSlice({
     initialState,
     reducers: {
         setRate: (state, action: PayloadAction<number>) => {
-            state.rate = action.payload;
+            state.rate = Math.round(action.payload * 100) / 100;
         },
         setLastRate: (state, action: PayloadAction<number>) => {
             state.lastRate = action.payload;
@@ -79,6 +96,15 @@ const testSlice = createSlice({
             state.roundStats.betAmount = action.payload.betAmount;
             state.roundStats.winAmount = action.payload.winAmount;
             state.playersList = action.payload.currentPlayers;
+        },
+        activateGame: state => {
+            state.gameStatus = { status: "active", message: null };
+        },
+        deactivateGame: (state, action: PayloadAction<{ message: string }>) => {
+            state.gameStatus = {
+                status: "inactive",
+                message: action.payload.message
+            };
         }
     }
     // selectors: { selectRate: state => state.rate }
@@ -94,7 +120,9 @@ export const {
     abortBet,
     makeBet,
     cashOut,
-    updateRoundData
+    updateRoundData,
+    activateGame,
+    deactivateGame
 } = testSlice.actions;
 
 // export const { selectRate } = testSlice.selectors;

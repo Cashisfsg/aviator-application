@@ -13,6 +13,7 @@ import { SoundEffects } from "../sound-effects/sound-effects";
 
 export const Chart = () => {
     const [isSliderVisible, setIsSliderVisible] = useState(false);
+    const [startScreen, setStartScreen] = useState(false);
     const airplaneRef = useRef<SVGUseElement>(null);
     // const rateRef = useRef<RateElement>(null);
     const containerRef = useRef<SVGSVGElement>(null);
@@ -22,8 +23,6 @@ export const Chart = () => {
     const animationEnabled = useStateSelector(state =>
         selectAnimationSettings(state)
     );
-
-    const [startScreen, setStartScreen] = useState(false);
 
     useEffect(() => {
         if (animationEnabled) {
@@ -37,7 +36,6 @@ export const Chart = () => {
         const crash = () => {
             if (!airplaneRef.current) return;
 
-            // if (animationEnabled) {
             animationRef.current = airplaneRef.current.animate(
                 [
                     {
@@ -51,47 +49,26 @@ export const Chart = () => {
                 airplaneRef.current?.classList.remove("fly");
                 airplaneRef.current?.classList.add("hidden");
             }, 1000);
-            // }
 
-            // rateRef.current?.stopAnimation();
             containerRef.current?.setAttribute("data-active", "false");
             if (startScreen) setStartScreen(false);
             if (isSliderVisible) setIsSliderVisible(false);
-            // if (!rateRef.current?.className?.includes("opacity-100")) {
-            //     if (!rateRef.current) return;
-            //     rateRef.current.className =
-            //         rateRef.current?.className + " opacity-100";
-            // }
         };
 
         const loading = () => {
             if (!airplaneRef.current) return;
 
-            // rateRef.current?.resetAnimation();
-
             containerRef.current?.setAttribute("data-active", "true");
 
             setStartScreen(true);
 
-            if (
-                // animationEnabled &&
-                airplaneRef.current.classList.contains("hidden")
-            )
+            if (airplaneRef.current.classList.contains("hidden"))
                 airplaneRef.current?.classList.remove("hidden");
         };
 
         const game = () => {
-            // rateRef.current?.startAnimation();
             setStartScreen(false);
-            // if (animationEnabled) {
             airplaneRef.current?.classList.add("fly");
-            // airplaneRef.current?.classList.add("fly");
-            // airplaneRef.current?.classList.remove("hidden");
-            // } else {
-            // airplaneRef.current?.classList.remove("fly");
-            // airplaneRef.current?.classList.remove("fly");
-            // airplaneRef.current?.classList.add("hidden");
-            // }
         };
 
         if (airplaneState === "loading") {
@@ -99,12 +76,8 @@ export const Chart = () => {
             setIsSliderVisible(true);
         } else if (airplaneState === "crash") {
             crash();
-            // setTimeout(() => {
-            //     setIsSliderVisible(false);
-            // }, 500);
         } else if (airplaneState === "start" || airplaneState === "game") {
             game();
-            // if (!isSliderVisible) setIsSliderVisible(false);
         }
     }, [airplaneState]);
 
@@ -133,15 +106,7 @@ export const Chart = () => {
                         href="#airplane"
                         className="airplane origin-top-left"
                         ref={airplaneRef}
-                    >
-                        {/* <animateMotion
-                            path="M21,203 C151,210 289,164 321,27 z"
-                            dur="3s"
-                            repeatCount="indefinite"
-                            // rotate="auto"
-                            fill="remove"
-                        /> */}
-                    </use>
+                    />
 
                     {startScreen ? (
                         <g
@@ -179,15 +144,7 @@ export const Chart = () => {
                             >
                                 Ожидаем новый раунд
                             </text>
-                            {/* {isSliderVisible ? ( */}
                             <Slider />
-                            {/* <use
-                                className="use-slider"
-                                href="#slider"
-                                x="50%"
-                                y="50%"
-                            /> */}
-                            {/* ) : null} */}
                         </g>
                     ) : null}
 

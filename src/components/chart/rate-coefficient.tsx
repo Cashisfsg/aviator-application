@@ -11,6 +11,7 @@ export interface RateElement extends React.ComponentProps<"g"> {
 
 export const RateCoefficient = ({ ...props }) => {
     const rate = useStateSelector(state => selectRate(state));
+    const gameStatus = useStateSelector(state => state.test.gameStatus);
 
     const groupRef = useRef<SVGGElement>(null);
     const textRef = useRef<SVGTextElement>(null);
@@ -40,31 +41,48 @@ export const RateCoefficient = ({ ...props }) => {
             ref={groupRef}
             className="opacity-0"
         >
-            <text
-                fill="#fff"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                x="50%"
-                y="30%"
-                fontSize="2rem"
-                className="font-semibold uppercase opacity-0 transition-opacity duration-500"
-                ref={textRef}
-            >
-                Улетел!
-            </text>
-            <text
-                {...props}
-                fill="#fff"
-                fontSize="3rem"
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="font-bold leading-none transition-colors duration-500"
-                ref={rateRef}
-            >
-                {rate.toFixed(2)}x
-            </text>
+            {gameStatus.status === "active" ? (
+                <>
+                    <text
+                        fill="#fff"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        x="50%"
+                        y="30%"
+                        fontSize="2rem"
+                        className="font-semibold uppercase opacity-0 transition-opacity duration-500"
+                        ref={textRef}
+                    >
+                        Улетел!
+                    </text>
+                    <text
+                        {...props}
+                        fill="#fff"
+                        fontSize="3rem"
+                        x="50%"
+                        y="50%"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className="font-bold leading-none transition-colors duration-500"
+                        ref={rateRef}
+                    >
+                        {rate.toFixed(2)}x
+                    </text>
+                </>
+            ) : (
+                <text
+                    fill="#fff"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    x="50%"
+                    y="30%"
+                    fontSize="2rem"
+                    className="font-semibold uppercase opacity-0 transition-opacity duration-500"
+                    ref={textRef}
+                >
+                    {gameStatus.message}
+                </text>
+            )}
         </g>
     );
 };

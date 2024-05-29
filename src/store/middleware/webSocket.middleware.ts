@@ -7,7 +7,9 @@ import {
     setLastRate,
     toggleState,
     updateRoundData,
-    BetTest
+    BetTest,
+    activateGame,
+    deactivateGame
 } from "../slices/test.slice";
 import {
     setBetState,
@@ -145,6 +147,12 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 socket.on("loading", () => {
                     store.dispatch(toggleState("loading"));
 
+                    if (
+                        store.getState().test.gameStatus.status === "inactive"
+                    ) {
+                        store.dispatch(activateGame());
+                    }
+
                     if (store.getState().test.roundStats.playersAmount !== 0) {
                         store.dispatch(updateRoundData(initialRoundData));
                     }
@@ -236,6 +244,10 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     }, 0);
                 });
 
+                socket.on("game-stop", text => {
+                    store.dispatch(deactivateGame({ message: text }));
+                });
+
                 socket.on("currentPlayers", data => {
                     store.dispatch(updateRoundData(data));
                 });
@@ -321,7 +333,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                 socket.emit("cash-out", {
                     betNumber: action.payload as 1 | 2,
-                    winX: store.getState().test.rate
+                    winX: Math.round(store.getState().test.rate * 100) / 100
                 });
 
                 store.dispatch(
