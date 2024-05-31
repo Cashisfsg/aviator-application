@@ -124,13 +124,24 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
                     {replenishment?.status === "Ожидает оплаты" ||
                     replenishment?.status === "В обработке..." ? (
                         <td className="py-0.5 pl-1.5 pr-2.5">
-                            <Link
-                                to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment?.requisite?._id}`}
-                                onClick={() => dialogRef?.current?.close()}
-                                className="text-right text-blue-500"
-                            >
-                                Открыть
-                            </Link>
+                            {replenishment?.paymentUrl ? (
+                                <a
+                                    href={replenishment?.paymentUrl}
+                                    target="_blank"
+                                    className="text-right text-blue-500"
+                                    onClick={() => dialogRef?.current?.close()}
+                                >
+                                    Открыть
+                                </a>
+                            ) : (
+                                <Link
+                                    to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment?.requisite?._id}`}
+                                    onClick={() => dialogRef?.current?.close()}
+                                    className="text-right text-blue-500"
+                                >
+                                    Открыть
+                                </Link>
+                            )}
                         </td>
                     ) : null}
                 </tr>

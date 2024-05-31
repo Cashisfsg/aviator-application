@@ -35,9 +35,15 @@ export const ReplenishmentDetailsForm = () => {
     const navigate = useNavigate();
 
     const { data: replenishment, isLoading: isReplenishmentDataLoading } =
-        useFetchReplenishmentByIdQuery({
-            id: params?.replenishmentId as string
-        });
+        useFetchReplenishmentByIdQuery(
+            {
+                id: params?.replenishmentId as string
+            },
+            {
+                pollingInterval: 30000,
+                refetchOnMountOrArgChange: true
+            }
+        );
 
     const [formState, setFormState] = useState<ReplenishmentFormState>("init");
     const [receiptPhoto, setReceiptPhoto] = useState<File | null>(null);
