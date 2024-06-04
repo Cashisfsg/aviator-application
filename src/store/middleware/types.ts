@@ -12,9 +12,10 @@ export interface ServerToClientListen {
     crash: () => void;
     currentPlayers: (data: CurrentPlayers) => void;
     "game-stop": (text: string) => void;
+    "replenishment-refresh": () => void;
+    "withdrawal-refresh": () => void;
 }
 export interface ClientToServerListen {
-    // message: (message: ) => void;
     bet: (data: BetTest) => void;
     "cash-out": (data: { betNumber: 1 | 2; winX: number }) => void;
     cancel: (data: { betNumber: 1 | 2 }) => void;

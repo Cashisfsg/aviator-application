@@ -252,6 +252,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(updateRoundData(data));
                 });
 
+                socket.on("replenishment-refresh", () => {
+                    replenishmentApi.util.invalidateTags(["Replenishment"]);
+                });
+
+                socket.on("withdrawal-refresh", () => {
+                    withdrawApi.util.invalidateTags(["Withdraw"]);
+                });
+
                 socket.connect();
                 break;
 
