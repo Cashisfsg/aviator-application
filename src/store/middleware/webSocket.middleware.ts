@@ -253,11 +253,15 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 });
 
                 socket.on("replenishment-refresh", () => {
-                    replenishmentApi.util.invalidateTags(["Replenishment"]);
+                    store.dispatch(
+                        replenishmentApi.util.invalidateTags(["Replenishment"])
+                    );
                 });
 
                 socket.on("withdrawal-refresh", () => {
-                    withdrawApi.util.invalidateTags(["Withdraw"]);
+                    store.dispatch(
+                        withdrawApi.util.invalidateTags(["Withdraw"])
+                    );
                 });
 
                 socket.connect();

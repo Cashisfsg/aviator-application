@@ -26,9 +26,6 @@ import Visa from "@/assets/visa-360w.webp";
 export const CreateReplenishmentForm = () => {
     const navigate = useNavigate();
     const { requisiteId } = useParams();
-
-    console.log(requisiteId);
-
     const {
         data: limits,
         isSuccess: isLimitsSuccessResponse,

@@ -456,24 +456,27 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
             <Field
                 label={"Сумма депозита"}
                 value={`${replenishment?.amount?.[
-                    balance?.currency || "USD"
-                ]?.toFixed(2)} ${balance?.currency}`}
+                    replenishment?.method?.currency || "USD"
+                ]?.toFixed(2)} ${replenishment?.method?.currency}`}
             />
 
             <Field
                 label={"Комиссия"}
                 value={`${(
-                    (replenishment?.deduction?.[balance?.currency || "USD"] ||
-                        0) -
-                    (replenishment?.amount?.[balance?.currency || "USD"] || 0)
-                )?.toFixed(2)} ${balance?.currency}`}
+                    (replenishment?.deduction?.[
+                        replenishment?.method?.currency || "USD"
+                    ] || 0) -
+                    (replenishment?.amount?.[
+                        replenishment?.method?.currency || "USD"
+                    ] || 0)
+                )?.toFixed(2)} ${replenishment?.method?.currency}`}
             />
 
             <Field
                 label={"К оплате"}
                 value={`${replenishment?.deduction?.[
-                    balance?.currency || "USD"
-                ]?.toFixed(2)} ${balance?.currency}`}
+                    replenishment?.method?.currency || "USD"
+                ]?.toFixed(2)} ${replenishment?.method?.currency}`}
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
 

@@ -28,7 +28,7 @@ interface Limit {
 export interface Method {
     _id: string;
     name: string;
-    currency: string;
+    currency: Currency;
     img: string;
     commission: number;
     active: boolean;
