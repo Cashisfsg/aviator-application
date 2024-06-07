@@ -2,7 +2,6 @@ import React, { useState, useId, PropsWithChildren } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
 
-import { useGetUserBalanceQuery } from "@/store/api/userApi";
 import {
     useFetchReplenishmentByIdQuery,
     useConfirmReplenishmentByIdMutation,
@@ -35,15 +34,9 @@ export const ReplenishmentDetailsForm = () => {
     const navigate = useNavigate();
 
     const { data: replenishment, isLoading: isReplenishmentDataLoading } =
-        useFetchReplenishmentByIdQuery(
-            {
-                id: params?.replenishmentId as string
-            },
-            {
-                pollingInterval: 30000,
-                refetchOnMountOrArgChange: true
-            }
-        );
+        useFetchReplenishmentByIdQuery({
+            id: params?.replenishmentId as string
+        });
 
     const [formState, setFormState] = useState<ReplenishmentFormState>("init");
     const [receiptPhoto, setReceiptPhoto] = useState<File | null>(null);
@@ -100,21 +93,53 @@ export const ReplenishmentDetailsForm = () => {
             </div>
         );
 
-    if (replenishment?.status === "В обработке...")
+    // if (replenishment?.status === "В обработке...")
+    //     return (
+    //         <PaymentDetails
+    //             replenishment={replenishment}
+    //             setReceipt={setReceiptPhoto}
+    //         >
+    //             <Field
+    //                 label={"Статус заявки"}
+    //                 value={"В обработке..."}
+    //             />
+
+    //             <DialogClose
+    //                 type="button"
+    //                 onClick={() =>
+    //                     navigate("/payment/replenishment", { replace: true })
+    //                 }
+    //                 className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
+    //             >
+    //                 Закрыть
+    //             </DialogClose>
+    //         </PaymentDetails>
+    //     );
+
+    if (
+        replenishment?.status === "В обработке..." ||
+        replenishment?.status === "Успешно завершена" ||
+        replenishment?.status === "Отменена" ||
+        formState === "rejected" ||
+        formState === "confirmed"
+    )
         return (
             <PaymentDetails
                 replenishment={replenishment}
+                formState={formState}
                 setReceipt={setReceiptPhoto}
             >
                 <Field
                     label={"Статус заявки"}
-                    value={"В обработке..."}
+                    value={replenishment?.status}
                 />
 
                 <DialogClose
                     type="button"
                     onClick={() =>
-                        navigate("/payment/replenishment", { replace: true })
+                        navigate("/payment/replenishment", {
+                            replace: true
+                        })
                     }
                     className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
                 >
@@ -123,34 +148,35 @@ export const ReplenishmentDetailsForm = () => {
             </PaymentDetails>
         );
 
-    if (replenishment?.status === "Отменена")
-        return (
-            <PaymentDetails
-                replenishment={replenishment}
-                setReceipt={setReceiptPhoto}
-            >
-                <Field
-                    label={"Статус заявки"}
-                    value={"Отменена"}
-                />
+    // if (replenishment?.status === "Отменена" || formState === "rejected")
+    //     return (
+    //         <PaymentDetails
+    //             replenishment={replenishment}
+    //             setReceipt={setReceiptPhoto}
+    //         >
+    //             <Field
+    //                 label={"Статус заявки"}
+    //                 value={"Отменена"}
+    //             />
 
-                <DialogClose
-                    type="button"
-                    onClick={() =>
-                        navigate("/payment/replenishment", { replace: true })
-                    }
-                    className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
-                >
-                    Закрыть
-                </DialogClose>
-            </PaymentDetails>
-        );
+    //             <DialogClose
+    //                 type="button"
+    //                 onClick={() =>
+    //                     navigate("/payment/replenishment", { replace: true })
+    //                 }
+    //                 className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
+    //             >
+    //                 Закрыть
+    //             </DialogClose>
+    //         </PaymentDetails>
+    //     );
 
     switch (formState) {
         case "init":
             return (
                 <PaymentDetails
                     replenishment={replenishment}
+                    formState={formState}
                     setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
@@ -201,6 +227,7 @@ export const ReplenishmentDetailsForm = () => {
             return (
                 <PaymentDetails
                     replenishment={replenishment}
+                    formState={formState}
                     setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
@@ -255,35 +282,11 @@ export const ReplenishmentDetailsForm = () => {
                 </PaymentDetails>
             );
 
-        case "confirmed":
-            return (
-                <PaymentDetails
-                    replenishment={replenishment}
-                    setReceipt={setReceiptPhoto}
-                >
-                    <Field
-                        label={"Статус заявки"}
-                        value={"В обработке..."}
-                    />
-
-                    <DialogClose
-                        type="button"
-                        onClick={() =>
-                            navigate("/payment/replenishment", {
-                                replace: true
-                            })
-                        }
-                        className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
-                    >
-                        Закрыть
-                    </DialogClose>
-                </PaymentDetails>
-            );
-
         case "reject":
             return (
                 <PaymentDetails
                     replenishment={replenishment}
+                    formState={formState}
                     setReceipt={setReceiptPhoto}
                 >
                     <p className="flex items-center justify-between text-xs text-slate-400">
@@ -340,30 +343,30 @@ export const ReplenishmentDetailsForm = () => {
                 </PaymentDetails>
             );
 
-        case "rejected":
-            return (
-                <PaymentDetails
-                    replenishment={replenishment}
-                    setReceipt={setReceiptPhoto}
-                >
-                    <Field
-                        label={"Статус заявки"}
-                        value={"Отменена"}
-                    />
+        // case "rejected":
+        //     return (
+        //         <PaymentDetails
+        //             replenishment={replenishment}
+        //             setReceipt={setReceiptPhoto}
+        //         >
+        //             <Field
+        //                 label={"Статус заявки"}
+        //                 value={"Отменена"}
+        //             />
 
-                    <DialogClose
-                        type="button"
-                        onClick={() =>
-                            navigate("/payment/replenishment", {
-                                replace: true
-                            })
-                        }
-                        className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
-                    >
-                        Закрыть
-                    </DialogClose>
-                </PaymentDetails>
-            );
+        //             <DialogClose
+        //                 type="button"
+        //                 onClick={() =>
+        //                     navigate("/payment/replenishment", {
+        //                         replace: true
+        //                     })
+        //                 }
+        //                 className="border-none bg-slate-400/70 py-2 text-center text-black shadow-md focus-visible:outline-slate-400/70"
+        //             >
+        //                 Закрыть
+        //             </DialogClose>
+        //         </PaymentDetails>
+        //     );
 
         default:
             break;
@@ -394,16 +397,17 @@ const Field: React.FC<FieldProps> = ({ className, label, value }) => {
 
 interface PaymentDetailsProps extends PropsWithChildren {
     replenishment: Replenishment | undefined;
+    formState: ReplenishmentFormState;
     setReceipt: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const PaymentDetails: React.FC<PaymentDetailsProps> = ({
     replenishment,
+    formState,
     setReceipt,
     children
 }) => {
     const receiptId = useId();
-    const { data: balance } = useGetUserBalanceQuery();
 
     const onChangeHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -480,7 +484,10 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
                 className="border-green-50 bg-green-450 shadow-[inset_0_1px_1px_#ffffff80]"
             />
 
-            {replenishment?.requisite?.isReceiptFileRequired ? (
+            {replenishment?.requisite?.isReceiptFileRequired &&
+            (formState === "init" ||
+                formState === "confirm" ||
+                formState === "reject") ? (
                 <fieldset className="grid grid-cols-[minmax(0,_3fr),_minmax(0,_1fr)] place-items-center gap-x-1">
                     <p className="text-[0.625rem]">
                         Загрузите квитанцию об оплате после перевода. Квитанцию

@@ -21,7 +21,7 @@ export const withdrawValidationSchema = (
             // .int({ message: "Введенное значение должно быть целым числом" })
             .gte(
                 minLimit,
-                `Минимальная сумма выплат ${minLimit.toFixed(2)} ${currency}`
+                `Укажите сумму от ${minLimit.toFixed(2)} ${currency}`
             )
             .lte(
                 maxLimit,

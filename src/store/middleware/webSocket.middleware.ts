@@ -30,7 +30,8 @@ let socket: Socket<ServerToClientListen, ClientToServerListen> = io(BASE_URL, {
     auth: {
         token: JSON.parse(localStorage.getItem("token") || "{}")?.token
     },
-    autoConnect: false
+    autoConnect: false,
+    transports: ["websocket"]
 });
 
 const initialRoundData = {
@@ -39,21 +40,8 @@ const initialRoundData = {
     currentPlayers: []
 };
 
-// const userSocket: Socket<ServerToClientListen, ClientToServerListen> = io(
-//     BASE_URL,
-//     {
-//         auth: {
-//             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTJkZDljODUwYTU5YjRhMTAzYmIxZCIsImlhdCI6MTcxMDU3NzY1MSwiZXhwIjoxNzExMTgyNDUxfQ.cagKAE90xfW2qu4UmV9hn0Gv01f7A2Et2JklGSNWAEc"
-//         }
-//         // autoConnect: false
-//     }
-// );
-
 export const webSocketMiddleware: Middleware<{}, RootStore> =
     store => next => action => {
-        // const webSocketState = (store.getState() as RootStore).webSocket;
-        // const gameState = (store.getState() as RootStore).test;
-
         switch (action.type) {
             case "webSocket/wsConnect":
                 socket.on("connect", () => {
