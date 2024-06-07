@@ -24,13 +24,8 @@ export const DrawHistoryPopover: React.FC<DrawHistoryPopoverProps> = ({
     className,
     ...props
 }) => {
-    const { data: withdrawals, isSuccess } = useFetchAllWithdrawsQuery(
-        undefined,
-        {
-            pollingInterval: 30000,
-            refetchOnMountOrArgChange: true
-        }
-    );
+    const { data: withdrawals, isSuccess } =
+        useFetchAllWithdrawsQuery(undefined);
 
     return (
         <section

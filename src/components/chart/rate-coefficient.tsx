@@ -1,17 +1,21 @@
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
 import { selectAirplaneState, selectRate } from "@/store/slices/test.slice";
 import { useStateSelector } from "@/store/hooks";
+import { GameStatus } from "@/store/slices/test.slice";
 
 export interface RateElement extends React.ComponentProps<"g"> {
-    startAnimation: () => void;
-    stopAnimation: () => void;
-    resetAnimation: () => void;
+    gameStatus: GameStatus;
+    // startAnimation: () => void;
+    // stopAnimation: () => void;
+    // resetAnimation: () => void;
 }
 
-export const RateCoefficient = ({ ...props }) => {
+export const RateCoefficient: React.FC<RateElement> = ({
+    gameStatus,
+    ...props
+}) => {
     const rate = useStateSelector(state => selectRate(state));
-    const gameStatus = useStateSelector(state => state.test.gameStatus);
 
     const groupRef = useRef<SVGGElement>(null);
     const textRef = useRef<SVGTextElement>(null);
@@ -22,7 +26,10 @@ export const RateCoefficient = ({ ...props }) => {
     useEffect(() => {
         if (airplaneState === "start" || airplaneState === "game") {
             groupRef.current?.classList.replace("opacity-0", "opacity-100");
-        } else if (airplaneState === "crash") {
+        } else if (
+            airplaneState === "crash" ||
+            gameStatus.status === "inactive"
+        ) {
             groupRef.current?.classList.replace("opacity-0", "opacity-100");
 
             textRef.current?.classList.remove("opacity-0");
@@ -34,7 +41,7 @@ export const RateCoefficient = ({ ...props }) => {
             textRef.current?.classList.replace("opacity-100", "opacity-0");
             rateRef.current?.setAttribute("fill", "#fff");
         }
-    }, [airplaneState]);
+    }, [airplaneState, gameStatus.status]);
 
     return (
         <g
@@ -70,18 +77,23 @@ export const RateCoefficient = ({ ...props }) => {
                     </text>
                 </>
             ) : (
-                <text
-                    fill="#fff"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    x="50%"
-                    y="30%"
-                    fontSize="2rem"
-                    className="font-semibold uppercase opacity-0 transition-opacity duration-500"
-                    ref={textRef}
+                <foreignObject
+                    // fill="#fff"
+                    // textAnchor="middle"
+                    // dominantBaseline="middle"
+                    x="12.5%"
+                    y="12.5%"
+                    // transform="translate(-50%,-50%)"
+                    // fontSize="2rem"
+                    className="h-3/4 w-3/4 place-content-center text-2xl font-semibold uppercase"
                 >
-                    {gameStatus.message}
-                </text>
+                    <p
+                        xmlns="http://www.w3.org/1999/xhtml"
+                        // className="h-full "
+                    >
+                        {gameStatus.message}
+                    </p>
+                </foreignObject>
             )}
         </g>
     );

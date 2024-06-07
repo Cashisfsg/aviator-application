@@ -30,8 +30,8 @@ let socket: Socket<ServerToClientListen, ClientToServerListen> = io(BASE_URL, {
     auth: {
         token: JSON.parse(localStorage.getItem("token") || "{}")?.token
     },
-    autoConnect: false,
-    transports: ["websocket"]
+    autoConnect: false
+    // transports: ["websocket"]
 });
 
 const initialRoundData = {

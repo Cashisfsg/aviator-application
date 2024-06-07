@@ -17,7 +17,7 @@ type InactiveGameStatus = {
     message: string;
 };
 
-type GameStatus = ActiveGameStatus | InactiveGameStatus;
+export type GameStatus = ActiveGameStatus | InactiveGameStatus;
 
 export interface RoundStatistic {
     playersAmount: number;

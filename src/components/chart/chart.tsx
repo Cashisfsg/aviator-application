@@ -8,7 +8,7 @@ import "./chart.css";
 import { Airplane } from "./airplane";
 import { Propeller } from "./propeller";
 import { Slider } from "./slider";
-import { RateCoefficient, RateElement } from "./rate-coefficient";
+import { RateCoefficient } from "./rate-coefficient";
 import { SoundEffects } from "../sound-effects/sound-effects";
 
 export const Chart = () => {
@@ -20,6 +20,8 @@ export const Chart = () => {
     const animationRef = useRef<Animation>();
 
     const airplaneState = useStateSelector(state => selectAirplaneState(state));
+    const gameStatus = useStateSelector(state => state.test.gameStatus);
+
     const animationEnabled = useStateSelector(state =>
         selectAnimationSettings(state)
     );
@@ -71,6 +73,14 @@ export const Chart = () => {
             airplaneRef.current?.classList.add("fly");
         };
 
+        if (gameStatus.status === "inactive") {
+            airplaneRef.current?.classList.add("hidden");
+            containerRef.current?.setAttribute("data-active", "false");
+            if (startScreen) setStartScreen(false);
+            if (isSliderVisible) setIsSliderVisible(false);
+            return;
+        }
+
         if (airplaneState === "loading") {
             loading();
             setIsSliderVisible(true);
@@ -79,7 +89,7 @@ export const Chart = () => {
         } else if (airplaneState === "start" || airplaneState === "game") {
             game();
         }
-    }, [airplaneState]);
+    }, [airplaneState, gameStatus.status]);
 
     return (
         <section>
@@ -148,7 +158,7 @@ export const Chart = () => {
                         </g>
                     ) : null}
 
-                    <RateCoefficient />
+                    <RateCoefficient gameStatus={gameStatus} />
 
                     <svg
                         height="10"
