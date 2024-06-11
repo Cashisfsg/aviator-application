@@ -8,6 +8,7 @@ import {
     AlertDialogContent,
     AlertDialogFooter,
     AlertDialogHeader,
+    AlertDialogOverlay,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 
@@ -31,7 +32,7 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
             open={open}
             onOpenChange={setOpen}
         >
-            <AlertDialogContent>
+            <AlertDialogContent setOpen={setOpen}>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         Вы действительно хотите выйти?
