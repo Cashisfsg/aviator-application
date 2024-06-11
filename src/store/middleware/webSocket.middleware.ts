@@ -238,10 +238,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     }, 0);
                 });
 
-                socket.on("game-stop", text => {
-                    store.dispatch(deactivateGame({ message: text }));
-                });
-
                 socket.on("currentPlayers", data => {
                     store.dispatch(updateRoundData(data));
                 });
@@ -256,6 +252,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(
                         withdrawApi.util.invalidateTags(["Withdraw"])
                     );
+                });
+
+                socket.on("error", ({ message }) => {
+                    toast.error(message);
+                });
+
+                socket.on("game-stop", text => {
+                    store.dispatch(deactivateGame({ message: text }));
                 });
 
                 socket.on("bot-stop", message => {

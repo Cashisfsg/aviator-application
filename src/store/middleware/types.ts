@@ -11,9 +11,10 @@ export interface ServerToClientListen {
     loading: () => void;
     crash: () => void;
     currentPlayers: (data: CurrentPlayers) => void;
-    "game-stop": (message: string) => void;
     "replenishment-refresh": () => void;
     "withdrawal-refresh": () => void;
+    error: ({ message }: { message: string }) => void;
+    "game-stop": (message: string) => void;
     "bot-stop": (message: string) => void;
 }
 export interface ClientToServerListen {

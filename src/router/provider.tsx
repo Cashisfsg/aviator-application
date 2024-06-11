@@ -12,14 +12,6 @@ import { useStateSelector } from "@/store/hooks";
 import { MainPage, ErrorPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
-// import {
-//     ConfirmEmailForm
-//     // action as confirmEmailAction
-// } from "@/containers/header/components/form/confirm-email-form";
-// import {
-//     ResetPasswordForm
-//     // action as resetPasswordAction
-// } from "@/containers/header/components/form/reset-password-form";
 import {
     SecurityForm,
     SecurityBindEmailForm,
