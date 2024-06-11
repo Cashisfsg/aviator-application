@@ -1,5 +1,6 @@
 import { useGetUserQuery } from "@/store/api/userApi";
 import { useAuth } from "@/store/hooks/useAuth";
+import { useStateSelector } from "@/store/hooks";
 import { TelegramClient } from "@/store/api/types";
 
 import { ClipboardCopy } from "@/components/ui/clipboard-copy";
@@ -13,6 +14,7 @@ export const UserProfileDetails = () => {
     ).Telegram.WebApp;
 
     const { isAuthenticated } = useAuth();
+    const botState = useStateSelector(state => state.test.botState);
 
     const { data: user, isLoading } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
@@ -61,7 +63,9 @@ export const UserProfileDetails = () => {
                     </>
                 )}
             </div>
-            {isAuthenticated ? <UploadImage /> : null}
+            {botState.status === "active" && isAuthenticated ? (
+                <UploadImage />
+            ) : null}
         </div>
     );
 };

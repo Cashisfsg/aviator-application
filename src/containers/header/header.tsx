@@ -2,7 +2,6 @@ import { BurgerMenu, BalanceMenu } from "@/components/dropdown-menus";
 import { SignInButton } from "./components/sign-in-button";
 import { SignUpButton } from "./components/sign-up-button";
 import { Logo } from "./components/logo";
-import { LatestRatiosList } from "@/components/latest-ratios-list";
 
 import { useAuth } from "@/store/hooks/useAuth";
 
@@ -40,7 +39,6 @@ export const Header = () => {
                     <SignUpButton />
                 </div>
             ) : null}
-            <LatestRatiosList />
         </header>
     );
 };

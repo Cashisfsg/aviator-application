@@ -7,6 +7,18 @@ type Currency = "USD" | "RUB" | "KZT" | "UZS" | "USDT";
 
 export type CurrencyRecordTest = Record<Currency, number>;
 
+type ActiveBotState = {
+    status: "active";
+    message: null;
+};
+
+type InactiveBotState = {
+    status: "inactive";
+    message: string;
+};
+
+type BotState = ActiveBotState | InactiveBotState;
+
 type ActiveGameStatus = {
     status: "active";
     message: null;
@@ -40,6 +52,7 @@ interface State {
     lastRate: number;
     state: AvailableState;
     gameStatus: GameStatus;
+    botState: BotState;
     roundStats: RoundStatistic;
     playersList: PlayerTest[];
 }
@@ -52,6 +65,7 @@ const initialState: State = {
         status: "active",
         message: null
     },
+    botState: { status: "active", message: null },
     roundStats: {
         playersAmount: 0,
         betAmount: { USD: 0, UZS: 0, KZT: 0, RUB: 0, USDT: 0 },
@@ -105,6 +119,15 @@ const testSlice = createSlice({
                 status: "inactive",
                 message: action.payload.message
             };
+        },
+        activateBot: state => {
+            state.botState = { status: "active", message: null };
+        },
+        deactivateBot: (state, action: PayloadAction<{ message: string }>) => {
+            state.botState = {
+                status: "inactive",
+                message: action.payload.message
+            };
         }
     }
     // selectors: { selectRate: state => state.rate }
@@ -122,7 +145,9 @@ export const {
     cashOut,
     updateRoundData,
     activateGame,
-    deactivateGame
+    deactivateGame,
+    activateBot,
+    deactivateBot
 } = testSlice.actions;
 
 // export const { selectRate } = testSlice.selectors;

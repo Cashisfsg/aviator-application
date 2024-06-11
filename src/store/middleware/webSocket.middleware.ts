@@ -9,7 +9,9 @@ import {
     updateRoundData,
     BetTest,
     activateGame,
-    deactivateGame
+    deactivateGame,
+    activateBot,
+    deactivateBot
 } from "../slices/test.slice";
 import {
     setBetState,
@@ -135,6 +137,10 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 socket.on("loading", () => {
                     store.dispatch(toggleState("loading"));
 
+                    if (store.getState().test.botState.status === "active") {
+                        store.dispatch(activateBot());
+                    }
+
                     if (
                         store.getState().test.gameStatus.status === "inactive"
                     ) {
@@ -250,6 +256,10 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(
                         withdrawApi.util.invalidateTags(["Withdraw"])
                     );
+                });
+
+                socket.on("bot-stop", message => {
+                    store.dispatch(deactivateBot({ message }));
                 });
 
                 socket.connect();

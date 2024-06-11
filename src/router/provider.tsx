@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
 
+import { useStateSelector } from "@/store/hooks";
+
 import { MainPage, ErrorPage } from "@/pages";
 import { PrivateRoute } from "./private-outlet";
 
@@ -33,6 +35,12 @@ import { ReplenishmentDetailsDialog } from "@/components/dialogs/replenishment-d
 
 import { ReferralRedirect } from "./referral-redirect";
 import { VerifyReplenishmentDialog } from "@/components/dialogs/verify-credit-card-dialog";
+
+const ServiceUnavailablePage = lazy(async () =>
+    import("@/pages/service-unavailable-page").then(module => ({
+        default: module.ServiceUnavailablePage
+    }))
+);
 
 const PaymentLayout = lazy(async () =>
     import("@/pages/payment/layout").then(module => ({
@@ -282,6 +290,22 @@ const router = createBrowserRouter([
     }
 ]);
 
+const secondaryRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <ServiceUnavailablePage />
+    },
+    {
+        path: "*",
+        element: <Navigate to="/" />
+    }
+]);
+
 export const ReactRouterProvider = () => {
-    return <Provider router={router} />;
+    const botState = useStateSelector(state => state.test.botState);
+
+    const currentRouter =
+        botState.status === "active" ? router : secondaryRouter;
+
+    return <Provider router={currentRouter} />;
 };

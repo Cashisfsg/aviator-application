@@ -11,9 +11,10 @@ export interface ServerToClientListen {
     loading: () => void;
     crash: () => void;
     currentPlayers: (data: CurrentPlayers) => void;
-    "game-stop": (text: string) => void;
+    "game-stop": (message: string) => void;
     "replenishment-refresh": () => void;
     "withdrawal-refresh": () => void;
+    "bot-stop": (message: string) => void;
 }
 export interface ClientToServerListen {
     bet: (data: BetTest) => void;

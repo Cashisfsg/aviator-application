@@ -51,7 +51,7 @@ export const LatestRatiosList = () => {
     };
 
     return (
-        <div className="relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">
+        <div className="content-wrapper relative mt-1.5 flex items-center gap-2 px-1.5 py-2.5">
             {isSuccess ? (
                 <div className="flex flex-auto gap-2 overflow-x-hidden">
                     {coefficients?.slice(0, 16)?.map((coefficient, i) => (
