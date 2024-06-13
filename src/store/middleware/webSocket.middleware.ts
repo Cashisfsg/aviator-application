@@ -137,7 +137,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 socket.on("loading", () => {
                     store.dispatch(toggleState("loading"));
 
-                    if (store.getState().test.botState.status === "active") {
+                    if (store.getState().test.botState.status === "inactive") {
                         store.dispatch(activateBot());
                     }
 
