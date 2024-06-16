@@ -32,7 +32,7 @@ export const SecurityForm = () => {
                 await sendConfirmationCodeOnExistingEmail().unwrap();
             toast.notify(message);
             navigate("/main/security/email/confirm", {
-                state: { nextUrl: "/main/security/bind-email" }
+                state: { nextUrl: "/main/security/bind-email", type: "email" }
             });
         } catch (error) {
             handleErrorResponse(error, message => toast.error(message));

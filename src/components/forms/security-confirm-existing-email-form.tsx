@@ -6,6 +6,11 @@ import {
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation
 } from "@/store/api/userApi";
+import {
+    useSendConfirmationCodeMutation,
+    useConfirmPasswordChangeMutation
+} from "@/store/api/authApi";
+
 import { useAuth } from "@/store/hooks/useAuth";
 import { handleErrorResponse } from "@/store/services";
 
@@ -34,10 +39,16 @@ export const SecurityConfirmExistingEmailForm = () => {
     const { data: user } = useGetUserQuery(undefined, {
         skip: !isAuthenticated
     });
-    const [sendConfirmationCodeOnExistingEmail, { isLoading: isCodeSending }] =
-        useSendConfirmationCodeOnExistingEmailMutation();
+    const [
+        sendConfirmationCodeOnExistingEmail,
+        { isLoading: isCodeSendingOnExistingEmail }
+    ] = useSendConfirmationCodeOnExistingEmailMutation();
+    const [sendConfirmationCode, { isLoading: isConfirmationCodeSending }] =
+        useSendConfirmationCodeMutation();
     const [confirmExistingEmail, { isLoading }] =
         useConfirmExistingEmailMutation();
+    const [confirmPasswordChange, { isLoading: isPasswordChangeConfirming }] =
+        useConfirmPasswordChangeMutation();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -45,8 +56,14 @@ export const SecurityConfirmExistingEmailForm = () => {
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
     > = async () => {
+        if (!user?.email) return;
+
         try {
-            await sendConfirmationCodeOnExistingEmail().unwrap();
+            if (location.state.type === "email") {
+                await sendConfirmationCodeOnExistingEmail().unwrap();
+            } else if (location.state.type === "password") {
+                await sendConfirmationCode({ email: user?.email }).unwrap();
+            }
             buttonRef.current?.show();
             buttonRef.current?.disable();
         } catch (error) {
@@ -57,15 +74,25 @@ export const SecurityConfirmExistingEmailForm = () => {
     const onSubmitHandler: React.FormEventHandler<
         HTMLFormElement & FormFields
     > = async event => {
+        if (!user?.email) return;
+
         event.preventDefault();
 
         try {
             const { code } = event.currentTarget;
 
-            await confirmExistingEmail({
-                code: Number(code.value),
-                email: user?.email as string
-            }).unwrap();
+            if (location.state.type === "email") {
+                await confirmExistingEmail({
+                    code: Number(code.value),
+                    email: user?.email
+                }).unwrap();
+            } else if (location.state.type === "password") {
+                await confirmPasswordChange({
+                    code: Number(code.value),
+                    email: user?.email
+                }).unwrap();
+            }
+
             navigate(location?.state?.nextUrl);
         } catch (error) {
             handleErrorResponse(error, message => {
@@ -103,17 +130,20 @@ export const SecurityConfirmExistingEmailForm = () => {
                     className="border-[#414148]"
                 />
                 <ResendCodeButton
-                    disabled={isCodeSending}
+                    disabled={
+                        isCodeSendingOnExistingEmail ||
+                        isConfirmationCodeSending
+                    }
                     onClick={onClickHandler}
                     ref={buttonRef}
                 />
             </div>
 
             <button
-                disabled={isLoading}
+                disabled={isLoading || isPasswordChangeConfirming}
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"
             >
-                {isLoading ? (
+                {isLoading || isPasswordChangeConfirming ? (
                     <ImSpinner9 className="mx-auto animate-spin text-sm" />
                 ) : (
                     "Изменить"

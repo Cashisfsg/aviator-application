@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/components/toasts/toast";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,6 @@ import {
 } from "@/utils/schemas";
 
 import { useChangeUserPasswordMutation } from "@/store/api/userApi";
-import { useAuth } from "@/store/hooks/useAuth";
 import { handleErrorResponse } from "@/store/services";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
@@ -25,9 +24,9 @@ export const SecurityConfirmResetPasswordForm = () => {
     const passwordConfirmErrorId = useId();
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [changePassword, { isLoading }] = useChangeUserPasswordMutation();
-    const { token } = useAuth();
 
     const {
         handleSubmit,
@@ -45,6 +44,9 @@ export const SecurityConfirmResetPasswordForm = () => {
         password,
         passwordConfirm
     }) => {
+        const token = location.state.token;
+        console.log("Token: ", token);
+
         if (!token) return;
 
         try {

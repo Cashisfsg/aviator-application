@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -9,12 +9,14 @@ import {
     useGetUserQuery,
     useChangePasswordConfirmMutation
 } from "@/store/api/userApi";
+import { useSendConfirmationCodeMutation } from "@/store/api/authApi";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImSpinner9 } from "react-icons/im";
 import { handleErrorResponse } from "@/store/services";
+import { toast } from "../toasts/toast";
 
 export const SecurityResetPasswordForm = () => {
     const passwordId = useId();
@@ -25,6 +27,8 @@ export const SecurityResetPasswordForm = () => {
     const { data: user } = useGetUserQuery();
     const [changeOldPassword, { isLoading }] =
         useChangePasswordConfirmMutation();
+    const [sendConfirmationCode, { isLoading: isConfirmationCodeSending }] =
+        useSendConfirmationCodeMutation();
     const {
         handleSubmit,
         register,
@@ -42,8 +46,10 @@ export const SecurityResetPasswordForm = () => {
         password
     }) => {
         try {
-            await changeOldPassword({ password }).unwrap();
-            navigate("/main/security/reset-password/confirm");
+            const { token } = await changeOldPassword({ password }).unwrap();
+            navigate("/main/security/reset-password/confirm", {
+                state: { token: token }
+            });
         } catch (error) {
             handleErrorResponse(error, message => {
                 setError("root", {
@@ -58,6 +64,30 @@ export const SecurityResetPasswordForm = () => {
         if (!errors?.root) return;
 
         clearErrors("root");
+    };
+
+    const onClickHandler: React.MouseEventHandler<
+        HTMLButtonElement
+    > = async () => {
+        if (!user?.email) {
+            navigate("/main/security/bind-email");
+            return;
+        }
+
+        try {
+            await sendConfirmationCode({ email: user?.email }).unwrap();
+
+            navigate("/main/security/email/confirm", {
+                state: {
+                    nextUrl: "/main/security/reset-password/confirm",
+                    type: "password"
+                }
+            });
+        } catch (error) {
+            handleErrorResponse(error, message => {
+                toast.error(message);
+            });
+        }
     };
 
     // if (isSuccess) {
@@ -104,7 +134,7 @@ export const SecurityResetPasswordForm = () => {
                         message={errors?.password?.message}
                     />
                 ) : null}
-                <Link
+                {/* <Link
                     to={
                         user?.email
                             ? "/main/security/email/confirm"
@@ -121,7 +151,15 @@ export const SecurityResetPasswordForm = () => {
                     className="ml-auto block w-fit text-xs text-[#757b85]"
                 >
                     Сбросить через Email
-                </Link>
+                </Link> */}
+                <button
+                    type="button"
+                    disabled={isConfirmationCodeSending}
+                    onClick={onClickHandler}
+                    className="ml-auto block w-fit text-xs text-[#757b85]"
+                >
+                    Сбросить через Email
+                </button>
             </Label>
 
             <button

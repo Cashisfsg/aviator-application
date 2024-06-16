@@ -54,6 +54,7 @@ export interface ForgotPasswordRequest {
 
 export interface ChangePasswordConfirmRequest {
     code: number;
+    email: string;
 }
 
 export interface ChangePasswordRequest {

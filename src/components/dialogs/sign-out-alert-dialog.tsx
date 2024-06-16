@@ -32,7 +32,7 @@ export const SignOutAlertDialog: React.FC<SignOutAlertDialogProps> = ({
             open={open}
             onOpenChange={setOpen}
         >
-            <AlertDialogContent setOpen={setOpen}>
+            <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         Вы действительно хотите выйти?
