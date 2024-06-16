@@ -86,14 +86,14 @@ export const SecurityConfirmExistingEmailForm = () => {
                     code: Number(code.value),
                     email: user?.email
                 }).unwrap();
+                navigate(location?.state?.nextUrl);
             } else if (location.state.type === "password") {
-                await confirmPasswordChange({
+                const { token } = await confirmPasswordChange({
                     code: Number(code.value),
                     email: user?.email
                 }).unwrap();
+                navigate(location?.state?.nextUrl, { state: { token } });
             }
-
-            navigate(location?.state?.nextUrl);
         } catch (error) {
             handleErrorResponse(error, message => {
                 toast.error(message);
