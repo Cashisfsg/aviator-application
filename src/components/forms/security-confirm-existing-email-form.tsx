@@ -6,10 +6,10 @@ import {
     useSendConfirmationCodeOnExistingEmailMutation,
     useConfirmExistingEmailMutation
 } from "@/store/api/userApi";
-import {
-    useSendConfirmationCodeMutation,
-    useConfirmPasswordChangeMutation
-} from "@/store/api/authApi";
+// import {
+//     useSendConfirmationCodeMutation,
+//     useConfirmPasswordChangeMutation
+// } from "@/store/api/authApi";
 
 import { useAuth } from "@/store/hooks/useAuth";
 import { handleErrorResponse } from "@/store/services";
@@ -45,8 +45,8 @@ export const SecurityConfirmExistingEmailForm = () => {
     ] = useSendConfirmationCodeOnExistingEmailMutation();
     const [confirmExistingEmail, { isLoading }] =
         useConfirmExistingEmailMutation();
-    const [confirmPasswordChange, { isLoading: isPasswordChangeConfirming }] =
-        useConfirmPasswordChangeMutation();
+    // const [confirmPasswordChange, { isLoading: isPasswordChangeConfirming }] =
+    //     useConfirmPasswordChangeMutation();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -82,20 +82,23 @@ export const SecurityConfirmExistingEmailForm = () => {
         try {
             const { code } = event.currentTarget;
 
-            // if (location.state.type === "email") {
-            const { message } = await confirmExistingEmail({
-                code: Number(code.value),
-                email: user?.email
-            }).unwrap();
-            toast.notify(message);
-            navigate(location?.state?.nextUrl);
-            // } else if (location.state.type === "password") {
-            //     const { token } = await confirmPasswordChange({
-            //         code: Number(code.value),
-            //         email: user?.email
-            //     }).unwrap();
-            //     navigate(location?.state?.nextUrl, { state: { token } });
-            // }
+            if (location.state.type === "email") {
+                const { message } = await confirmExistingEmail({
+                    code: Number(code.value),
+                    email: user?.email,
+                    type: "change"
+                }).unwrap();
+                toast.notify(message);
+                navigate(location?.state?.nextUrl);
+            } else if (location.state.type === "password") {
+                const { token } = await confirmExistingEmail({
+                    code: Number(code.value),
+                    email: user?.email,
+                    type: "reset"
+                }).unwrap();
+                // toast.notify(message);
+                navigate(location?.state?.nextUrl, { state: { token } });
+            }
         } catch (error) {
             handleErrorResponse(error, message => {
                 toast.error(message);
@@ -139,10 +142,14 @@ export const SecurityConfirmExistingEmailForm = () => {
             </div>
 
             <button
-                disabled={isLoading || isPasswordChangeConfirming}
+                disabled={
+                    isLoading
+                    // isPasswordChangeConfirming
+                }
                 className="mt-2 border border-gray-50 bg-[#2c2d30] py-1.5"
             >
-                {isLoading || isPasswordChangeConfirming ? (
+                {isLoading ? (
+                    // || isPasswordChangeConfirming
                     <ImSpinner9 className="mx-auto animate-spin text-sm" />
                 ) : (
                     "Изменить"

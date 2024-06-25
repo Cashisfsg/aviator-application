@@ -226,8 +226,8 @@ export const userApi = createApi({
             })
         }),
         confirmExistingEmail: builder.mutation<
-            SuccessResponse,
-            { code: number; email: string }
+            { message: string; token: string },
+            { code: number; email: string; type: "reset" | "change" }
         >({
             query: body => ({
                 url: "user/confirm-email",
