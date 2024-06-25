@@ -43,8 +43,6 @@ export const SecurityConfirmExistingEmailForm = () => {
         sendConfirmationCodeOnExistingEmail,
         { isLoading: isCodeSendingOnExistingEmail }
     ] = useSendConfirmationCodeOnExistingEmailMutation();
-    const [sendConfirmationCode, { isLoading: isConfirmationCodeSending }] =
-        useSendConfirmationCodeMutation();
     const [confirmExistingEmail, { isLoading }] =
         useConfirmExistingEmailMutation();
     const [confirmPasswordChange, { isLoading: isPasswordChangeConfirming }] =
@@ -59,11 +57,14 @@ export const SecurityConfirmExistingEmailForm = () => {
         if (!user?.email) return;
 
         try {
-            if (location.state.type === "email") {
-                await sendConfirmationCodeOnExistingEmail().unwrap();
-            } else if (location.state.type === "password") {
-                await sendConfirmationCode({ email: user?.email }).unwrap();
-            }
+            await sendConfirmationCodeOnExistingEmail({
+                type: location.state.type === "email" ? "change" : "reset"
+            }).unwrap();
+            // if (location.state.type === "email") {
+            //     await sendConfirmationCodeOnExistingEmail().unwrap();
+            // } else if (location.state.type === "password") {
+            //     await sendConfirmationCode({ email: user?.email }).unwrap();
+            // }
             buttonRef.current?.show();
             buttonRef.current?.disable();
         } catch (error) {
@@ -130,10 +131,7 @@ export const SecurityConfirmExistingEmailForm = () => {
                     className="border-[#414148]"
                 />
                 <ResendCodeButton
-                    disabled={
-                        isCodeSendingOnExistingEmail ||
-                        isConfirmationCodeSending
-                    }
+                    disabled={isCodeSendingOnExistingEmail}
                     onClick={onClickHandler}
                     ref={buttonRef}
                 />

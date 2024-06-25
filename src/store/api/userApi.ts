@@ -215,11 +215,14 @@ export const userApi = createApi({
         }),
         sendConfirmationCodeOnExistingEmail: builder.mutation<
             SuccessResponse,
-            void
+            { type: "change" | "reset" } | void
         >({
-            query: () => ({
+            query: args => ({
                 url: "user/confirm-email/send-code",
-                method: "POST"
+                method: "POST",
+                body: {
+                    type: args?.type ? args?.type : "change"
+                }
             })
         }),
         confirmExistingEmail: builder.mutation<

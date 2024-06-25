@@ -7,9 +7,9 @@ import { passwordSchema, PasswordFormSchema } from "@/utils/schemas";
 
 import {
     useGetUserQuery,
-    useChangePasswordConfirmMutation
+    useChangePasswordConfirmMutation,
+    useSendConfirmationCodeOnExistingEmailMutation
 } from "@/store/api/userApi";
-import { useSendConfirmationCodeMutation } from "@/store/api/authApi";
 
 import { PreviousRouteLink } from "@/components/previous-route-link";
 import { Input, ErrorMessage } from "@/components/ui/input";
@@ -27,8 +27,10 @@ export const SecurityResetPasswordForm = () => {
     const { data: user } = useGetUserQuery();
     const [changeOldPassword, { isLoading }] =
         useChangePasswordConfirmMutation();
-    const [sendConfirmationCode, { isLoading: isConfirmationCodeSending }] =
-        useSendConfirmationCodeMutation();
+    const [
+        sendConfirmationCodeOnExistingEmail,
+        { isLoading: isConfirmationCodeSending }
+    ] = useSendConfirmationCodeOnExistingEmailMutation();
     const {
         handleSubmit,
         register,
@@ -75,7 +77,9 @@ export const SecurityResetPasswordForm = () => {
         }
 
         try {
-            await sendConfirmationCode({ email: user?.email }).unwrap();
+            await sendConfirmationCodeOnExistingEmail({
+                type: "reset"
+            }).unwrap();
 
             navigate("/main/security/email/confirm", {
                 state: {
