@@ -77,9 +77,11 @@ export const SecurityResetPasswordForm = () => {
         }
 
         try {
-            await sendConfirmationCodeOnExistingEmail({
+            const { message } = await sendConfirmationCodeOnExistingEmail({
                 type: "reset"
             }).unwrap();
+
+            toast.notify(message);
 
             navigate("/main/security/email/confirm", {
                 state: {

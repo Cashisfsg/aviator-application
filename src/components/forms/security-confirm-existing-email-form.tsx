@@ -82,19 +82,20 @@ export const SecurityConfirmExistingEmailForm = () => {
         try {
             const { code } = event.currentTarget;
 
-            if (location.state.type === "email") {
-                await confirmExistingEmail({
-                    code: Number(code.value),
-                    email: user?.email
-                }).unwrap();
-                navigate(location?.state?.nextUrl);
-            } else if (location.state.type === "password") {
-                const { token } = await confirmPasswordChange({
-                    code: Number(code.value),
-                    email: user?.email
-                }).unwrap();
-                navigate(location?.state?.nextUrl, { state: { token } });
-            }
+            // if (location.state.type === "email") {
+            const { message } = await confirmExistingEmail({
+                code: Number(code.value),
+                email: user?.email
+            }).unwrap();
+            toast.notify(message);
+            navigate(location?.state?.nextUrl);
+            // } else if (location.state.type === "password") {
+            //     const { token } = await confirmPasswordChange({
+            //         code: Number(code.value),
+            //         email: user?.email
+            //     }).unwrap();
+            //     navigate(location?.state?.nextUrl, { state: { token } });
+            // }
         } catch (error) {
             handleErrorResponse(error, message => {
                 toast.error(message);
