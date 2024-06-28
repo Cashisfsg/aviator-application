@@ -366,17 +366,26 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 break;
 
             case "test/abortBet":
+                if (
+                    store.getState().game.bets[(action.payload as 1 | 2) - 1]
+                        .betState === "start"
+                ) {
+                    socket.emit("cancel", {
+                        betNumber: action.payload as 1 | 2
+                    });
+                }
+
+                if (!store.getState().game.bonus.bonusActive) {
+                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
+                }
+
                 store.dispatch(
                     setBetState({
                         betNumber: action.payload as 1 | 2,
                         betState: "init"
                     })
                 );
-                socket.emit("cancel", { betNumber: action.payload as 1 | 2 });
 
-                if (!store.getState().game.bonus.bonusActive) {
-                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
-                }
                 break;
 
             default:
