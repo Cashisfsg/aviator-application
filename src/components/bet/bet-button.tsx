@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useAppDispatch, useStateSelector } from "@/store/hooks";
 import { selectBonus, selectCurrentGameTab } from "@/store/slices/gameSlice";
@@ -26,6 +26,10 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     const bonus = useStateSelector(state => selectBonus(state));
     const rate = useStateSelector(state => selectRoundRate(state, betNumber));
 
+    const discardBet = useCallback(() => {
+        dispatch(abortBet(betNumber));
+    }, [betNumber]);
+
     const placeBet: React.MouseEventHandler<HTMLButtonElement> = event => {
         if (bonus.bonusActive && betNumber === 1) {
             dispatch(
@@ -36,6 +40,9 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                     promoId: bonus.bonusId
                 })
             );
+
+            window.addEventListener("unload", discardBet);
+
             return;
         }
 
@@ -67,10 +74,13 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
                 })
             );
         }
+
+        window.addEventListener("unload", discardBet);
     };
 
     const cancelBet = () => {
         dispatch(abortBet(betNumber));
+        window.removeEventListener("unload", discardBet);
     };
 
     const cashOutMoney: React.MouseEventHandler<HTMLButtonElement> = event => {
@@ -84,6 +94,7 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
         );
 
         dispatch(cashOut(betNumber));
+        window.removeEventListener("unload", discardBet);
         onClick?.(event);
     };
 
