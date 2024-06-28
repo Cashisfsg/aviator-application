@@ -16,6 +16,7 @@ export interface ServerToClientListen {
     error: ({ message }: { message: string }) => void;
     "game-stop": (message: string) => void;
     "bot-stop": (message: string) => void;
+    "user-balance": (balance: number) => void;
 }
 export interface ClientToServerListen {
     bet: (data: BetTest) => void;

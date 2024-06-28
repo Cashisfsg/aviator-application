@@ -110,9 +110,9 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                 { subscribe: false, forceRefetch: true }
                             )
                         );
-                        store.dispatch(
-                            userApi.util.invalidateTags(["Balance"])
-                        );
+                        // store.dispatch(
+                        //     userApi.util.invalidateTags(["Balance"])
+                        // );
 
                         if (bonus.bonusActive && index === 0) {
                             store.dispatch(deactivateBonus());
@@ -186,14 +186,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         }
                     });
 
-                    if (
-                        (bets[0].betState === "bet" && !bonus.bonusActive) ||
-                        bets[1].betState === "bet"
-                    ) {
-                        store.dispatch(
-                            userApi.util.invalidateTags(["Balance"])
-                        );
-                    }
+                    // if (
+                    //     (bets[0].betState === "bet" && !bonus.bonusActive) ||
+                    //     bets[1].betState === "bet"
+                    // ) {
+                    //     store.dispatch(
+                    //         userApi.util.invalidateTags(["Balance"])
+                    //     );
+                    // }
 
                     if (!store.getState().game.currentRound) {
                         store.dispatch(setCurrentRound(true));
@@ -266,6 +266,18 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(deactivateBot({ message }));
                 });
 
+                socket.on("user-balance", balance =>
+                    store.dispatch(
+                        userApi.util.updateQueryData(
+                            "getUserBalance",
+                            undefined,
+                            draft => {
+                                Object.assign(draft, { balance: balance });
+                            }
+                        )
+                    )
+                );
+
                 socket.connect();
                 break;
 
@@ -328,11 +340,11 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         })
                     );
 
-                    if (!store.getState().game.bonus.bonusActive) {
-                        store.dispatch(
-                            userApi.util.invalidateTags(["Balance"])
-                        );
-                    }
+                    // if (!store.getState().game.bonus.bonusActive) {
+                    //     store.dispatch(
+                    //         userApi.util.invalidateTags(["Balance"])
+                    //     );
+                    // }
                 }
 
                 break;
@@ -356,7 +368,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         { subscribe: false, forceRefetch: true }
                     )
                 );
-                store.dispatch(userApi.util.invalidateTags(["Balance"]));
+                // store.dispatch(userApi.util.invalidateTags(["Balance"]));
 
                 if (store.getState().game.bonus.bonusActive) {
                     store.dispatch(userApi.util.invalidateTags(["Promo"]));
@@ -375,9 +387,9 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     });
                 }
 
-                if (!store.getState().game.bonus.bonusActive) {
-                    store.dispatch(userApi.util.invalidateTags(["Balance"]));
-                }
+                // if (!store.getState().game.bonus.bonusActive) {
+                //     store.dispatch(userApi.util.invalidateTags(["Balance"]));
+                // }
 
                 store.dispatch(
                     setBetState({
