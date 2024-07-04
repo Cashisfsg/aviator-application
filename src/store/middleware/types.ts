@@ -6,6 +6,8 @@ interface CurrentPlayers {
     currentPlayers: PlayerTest[];
 }
 
+type Callback<T> = (response: T) => void;
+
 export interface ServerToClientListen {
     game: ({ x }: { x: number }) => void;
     loading: () => void;
@@ -19,7 +21,13 @@ export interface ServerToClientListen {
     "user-balance": (balance: number) => void;
 }
 export interface ClientToServerListen {
-    bet: (data: BetTest) => void;
+    bet: (
+        data: BetTest,
+        callback: Callback<{ message: string; success: boolean }>
+    ) => void;
     "cash-out": (data: { betNumber: 1 | 2; winX: number }) => void;
-    cancel: (data: { betNumber: 1 | 2 }) => void;
+    cancel: (
+        data: { betNumber: 1 | 2 },
+        callback: Callback<{ message: string; success: boolean }>
+    ) => void;
 }

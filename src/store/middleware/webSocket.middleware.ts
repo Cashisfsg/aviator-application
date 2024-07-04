@@ -42,8 +42,32 @@ const initialRoundData = {
     currentPlayers: []
 };
 
+const withTimeout = (
+    onSuccess,
+    onTimeout,
+    timeout: number | undefined = 1000
+) => {
+    let called = false;
+
+    const timer = setTimeout(() => {
+        if (called) return;
+        called = true;
+        onTimeout();
+    }, timeout);
+
+    return (...args) => {
+        if (called) return;
+        called = true;
+        clearTimeout(timer);
+        onSuccess.apply(this, args);
+    };
+};
+
 export const webSocketMiddleware: Middleware<{}, RootStore> =
     store => next => action => {
+        let cancelEnabled = true;
+        let bettingEnabled = [true, true];
+
         switch (action.type) {
             case "webSocket/wsConnect":
                 socket.on("connect", () => {
@@ -155,26 +179,84 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                     bets.forEach((bet, index) => {
                         if (bet.betState === "bet") {
+                            if (!bettingEnabled[index]) return;
                             if (bonus.bonusActive && index === 0) {
-                                socket.emit("bet", {
-                                    betNumber: 1,
-                                    currency: bet.currency,
-                                    bet: bonus.bonusQuantity,
-                                    promoId: bonus.bonusId
-                                });
+                                bettingEnabled[index] = false;
+                                socket.emit(
+                                    "bet",
+                                    {
+                                        betNumber: 1,
+                                        currency: bet.currency,
+                                        bet: bonus.bonusQuantity,
+                                        promoId: bonus.bonusId
+                                    },
+                                    withTimeout(
+                                        ({ success, message }) => {
+                                            if (!success) {
+                                                toast.error(message);
+                                                bettingEnabled[0] = true;
+                                                return;
+                                            }
+                                            console.log("Success!", message);
+                                            store.dispatch(
+                                                setBetState({
+                                                    betNumber: 1,
+                                                    betState: "start"
+                                                })
+                                            );
+                                            bettingEnabled[0] = true;
+                                        },
+                                        () => {
+                                            // store.dispatch(
+                                            //     setBetState({
+                                            //         betNumber: 1,
+                                            //         betState: "init"
+                                            //     })
+                                            // );
+                                            bettingEnabled[0] = true;
+                                        }
+                                    )
+                                );
                             } else {
-                                socket.emit("bet", {
-                                    betNumber: (index + 1) as 1 | 2,
-                                    currency: bet.currency,
-                                    bet: bet.currentBet
-                                });
+                                socket.emit(
+                                    "bet",
+                                    {
+                                        betNumber: (index + 1) as 1 | 2,
+                                        currency: bet.currency,
+                                        bet: bet.currentBet
+                                    },
+                                    withTimeout(
+                                        ({ success, message }) => {
+                                            if (!success) {
+                                                toast.error(message);
+                                                bettingEnabled[index] = true;
+                                                return;
+                                            }
+                                            console.log("Success!", message);
+                                            store.dispatch(
+                                                setBetState({
+                                                    betNumber: (index + 1) as
+                                                        | 1
+                                                        | 2,
+                                                    betState: "start"
+                                                })
+                                            );
+                                            bettingEnabled[index] = true;
+                                        },
+                                        () => {
+                                            // store.dispatch(
+                                            //     setBetState({
+                                            //         betNumber: (index + 1) as
+                                            //             | 1
+                                            //             | 2,
+                                            //         betState: "init"
+                                            //     })
+                                            // );
+                                            bettingEnabled[index] = true;
+                                        }
+                                    )
+                                );
                             }
-                            store.dispatch(
-                                setBetState({
-                                    betNumber: (index + 1) as 1 | 2,
-                                    betState: "start"
-                                })
-                            );
 
                             // if (index === 1) {
                             //     console.log("Invalidate balance");
@@ -332,13 +414,60 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         })
                     );
                 else {
-                    socket.emit("bet", action.payload as BetTest);
-                    store.dispatch(
-                        setBetState({
-                            betNumber: (action.payload as BetTest).betNumber,
-                            betState: "start"
-                        })
+                    if (
+                        !bettingEnabled[
+                            (action.payload as BetTest).betNumber - 1
+                        ]
+                    )
+                        break;
+                    bettingEnabled[(action.payload as BetTest).betNumber - 1] =
+                        false;
+
+                    socket.emit(
+                        "bet",
+                        action.payload as BetTest,
+                        withTimeout(
+                            ({ success, message }) => {
+                                if (!success) {
+                                    toast.error(message);
+                                    bettingEnabled[
+                                        (action.payload as BetTest).betNumber -
+                                            1
+                                    ] = true;
+                                    return;
+                                }
+                                console.log("Success!", message);
+                                store.dispatch(
+                                    setBetState({
+                                        betNumber: (action.payload as BetTest)
+                                            .betNumber,
+                                        betState: "start"
+                                    })
+                                );
+                                bettingEnabled[
+                                    (action.payload as BetTest).betNumber - 1
+                                ] = true;
+                            },
+                            () => {
+                                // store.dispatch(
+                                //     setBetState({
+                                //         betNumber: (action.payload as BetTest)
+                                //             .betNumber,
+                                //         betState: "init"
+                                //     })
+                                // );
+                                bettingEnabled[
+                                    (action.payload as BetTest).betNumber
+                                ] = true;
+                            }
+                        )
                     );
+                    // store.dispatch(
+                    //     setBetState({
+                    //         betNumber: (action.payload as BetTest).betNumber,
+                    //         betState: "start"
+                    //     })
+                    // );
 
                     // if (!store.getState().game.bonus.bonusActive) {
                     //     store.dispatch(
@@ -378,25 +507,61 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 break;
 
             case "test/abortBet":
+                console.log("Cancel enabled: ", cancelEnabled);
+
+                if (!cancelEnabled) break;
                 if (
                     store.getState().game.bets[(action.payload as 1 | 2) - 1]
                         .betState === "start"
                 ) {
-                    socket.emit("cancel", {
-                        betNumber: action.payload as 1 | 2
-                    });
-                }
+                    cancelEnabled = false;
+                    socket.emit(
+                        "cancel",
+                        {
+                            betNumber: action.payload as 1 | 2
+                        },
+                        withTimeout(
+                            ({ message, success }) => {
+                                console.log("Success", success, message);
+                                if (!success) {
+                                    toast.error(message);
+                                    cancelEnabled = true;
+                                    return;
+                                }
 
+                                store.dispatch(
+                                    setBetState({
+                                        betNumber: action.payload as 1 | 2,
+                                        betState: "init"
+                                    })
+                                );
+                                cancelEnabled = true;
+                            },
+                            () => {
+                                // store.dispatch(
+                                //     setBetState({
+                                //         betNumber: action.payload as 1 | 2,
+                                //         betState: "init"
+                                //     })
+                                // );
+                                cancelEnabled = true;
+                            }
+                        )
+                    );
+                } else if (
+                    store.getState().game.bets[(action.payload as 1 | 2) - 1]
+                        .betState === "bet"
+                ) {
+                    store.dispatch(
+                        setBetState({
+                            betNumber: action.payload as 1 | 2,
+                            betState: "init"
+                        })
+                    );
+                }
                 // if (!store.getState().game.bonus.bonusActive) {
                 //     store.dispatch(userApi.util.invalidateTags(["Balance"]));
                 // }
-
-                store.dispatch(
-                    setBetState({
-                        betNumber: action.payload as 1 | 2,
-                        betState: "init"
-                    })
-                );
 
                 break;
 
