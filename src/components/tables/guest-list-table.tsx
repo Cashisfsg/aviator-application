@@ -45,7 +45,8 @@ export const GuestListTable: React.FC<GuestListTableProps> = ({
                                     {formatDate(descendant?.createdAt)}
                                 </Cell>
                                 <Cell className="text-xs text-white">
-                                    {descendant?.earnings} {referral?.currency}
+                                    {descendant?.earnings?.toFixed(2)}{" "}
+                                    {referral?.currency}
                                 </Cell>
                             </Row>
                         ))}
