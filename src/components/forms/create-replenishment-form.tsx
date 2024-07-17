@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -158,15 +158,33 @@ export const CreateReplenishmentForm = () => {
             </form>
 
             <p className="text-center text-xs text-black">
-                <span>
-                    Нажимая на кнопку <b>«Пополнить»</b> вы соглашаетесь с
-                </span>{" "}
-                <Link
-                    to=""
+                Нажимая на кнопку <b>«Пополнить»</b> вы соглашаетесь с{" "}
+                <a
+                    href="https://telegra.ph/Publichnaya-oferta-07-06-4"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="font-semibold text-blue-500"
                 >
-                    Условиями сервиса
-                </Link>
+                    Публичной офертой
+                </a>
+                ,{" "}
+                <a
+                    href="https://telegra.ph/Politika-konfidencialnosti-07-06-5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-blue-500"
+                >
+                    Политикой конфиденциальности
+                </a>{" "}
+                и{" "}
+                <a
+                    href="http://"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-blue-500"
+                >
+                    Правилами сервиса
+                </a>
             </p>
         </>
     );

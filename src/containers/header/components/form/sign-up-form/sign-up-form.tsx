@@ -284,16 +284,33 @@ export const SignUpForm = () => {
                                     />
                                 </FormControl>
                                 <p className="inline select-none text-xs">
-                                    <span>
-                                        Я подтверждаю, что я ознакомлен и
-                                        полностью согласен с
-                                    </span>{" "}
+                                    Я подтверждаю, что я ознакомлен и полностью
+                                    согласен с{" "}
                                     <a
-                                        href=""
+                                        href="https://telegra.ph/Publichnaya-oferta-07-06-4"
                                         target="_blank"
-                                        className="cursor-pointer text-blue-500 underline-offset-2 mh:hover:underline"
+                                        rel="noopener noreferrer"
+                                        className="cursor-pointer font-semibold text-blue-500 underline-offset-2 mh:hover:underline"
                                     >
-                                        Условиями пользовательского соглашения
+                                        Публичной офертой
+                                    </a>
+                                    ,{" "}
+                                    <a
+                                        href="https://telegra.ph/Politika-konfidencialnosti-07-06-5"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="cursor-pointer font-semibold text-blue-500 underline-offset-2 mh:hover:underline"
+                                    >
+                                        Политикой конфиденциальности
+                                    </a>{" "}
+                                    и{" "}
+                                    <a
+                                        href="http://"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="cursor-pointer font-semibold text-blue-500 underline-offset-2 mh:hover:underline"
+                                    >
+                                        Правилами сервиса
                                     </a>
                                 </p>
                             </FormItem>
