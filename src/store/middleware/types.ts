@@ -23,11 +23,11 @@ export interface ServerToClientListen {
 export interface ClientToServerListen {
     bet: (
         data: BetTest,
-        callback: Callback<{ message: string; success: boolean }>
+        callback: Callback<{ _id: string; message: string; success: boolean }>
     ) => void;
     "cash-out": (data: { betNumber: 1 | 2; winX: number }) => void;
     cancel: (
-        data: { betNumber: 1 | 2 },
+        data: { id: string; betNumber: 1 | 2 },
         callback: Callback<{ message: string; success: boolean }>
     ) => void;
 }

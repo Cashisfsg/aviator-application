@@ -63,11 +63,12 @@ const withTimeout = (
     };
 };
 
+let cancelEnabled = true;
+let bettingEnabled = [true, true];
+const BET_ID: string[] = [];
+
 export const webSocketMiddleware: Middleware<{}, RootStore> =
     store => next => action => {
-        let cancelEnabled = true;
-        let bettingEnabled = [true, true];
-
         switch (action.type) {
             case "webSocket/wsConnect":
                 socket.on("connect", () => {
@@ -191,13 +192,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                         promoId: bonus.bonusId
                                     },
                                     withTimeout(
-                                        ({ success, message }) => {
+                                        ({ _id, success, message }) => {
                                             if (!success) {
                                                 toast.error(message);
                                                 bettingEnabled[0] = true;
                                                 return;
                                             }
                                             console.log("Success!", message);
+                                            BET_ID[index] = _id;
                                             store.dispatch(
                                                 setBetState({
                                                     betNumber: 1,
@@ -226,13 +228,18 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                         bet: bet.currentBet
                                     },
                                     withTimeout(
-                                        ({ success, message }) => {
+                                        ({ _id, success, message }) => {
                                             if (!success) {
                                                 toast.error(message);
                                                 bettingEnabled[index] = true;
                                                 return;
                                             }
                                             console.log("Success!", message);
+                                            console.log(
+                                                "Trigger else condition"
+                                            );
+
+                                            BET_ID[index] = _id;
                                             store.dispatch(
                                                 setBetState({
                                                     betNumber: (index + 1) as
@@ -427,7 +434,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         "bet",
                         action.payload as BetTest,
                         withTimeout(
-                            ({ success, message }) => {
+                            ({ _id, success, message }) => {
                                 if (!success) {
                                     toast.error(message);
                                     bettingEnabled[
@@ -437,6 +444,9 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                     return;
                                 }
                                 console.log("Success!", message);
+                                BET_ID[
+                                    (action.payload as BetTest).betNumber - 1
+                                ] = _id;
                                 store.dispatch(
                                     setBetState({
                                         betNumber: (action.payload as BetTest)
@@ -518,16 +528,18 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     socket.emit(
                         "cancel",
                         {
+                            id: BET_ID[(action.payload as 1 | 2) - 1],
                             betNumber: action.payload as 1 | 2
                         },
                         withTimeout(
                             ({ message, success }) => {
-                                console.log("Success", success, message);
                                 if (!success) {
                                     toast.error(message);
                                     cancelEnabled = true;
                                     return;
                                 }
+
+                                console.log("Cancel bet");
 
                                 store.dispatch(
                                     setBetState({
