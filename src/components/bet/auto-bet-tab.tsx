@@ -7,7 +7,7 @@ import {
     setAutoBetCoefficient,
     toggleAutoMode
 } from "@/store/slices/gameSlice";
-import { selectSoundSettings } from "@/store/slices/settingsSlice";
+// import { selectSoundSettings } from "@/store/slices/settingsSlice";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -22,8 +22,8 @@ interface AutoBetTabProps {
 const MIN_RATE = 1.1;
 
 export const AutoBetTab: React.FC<AutoBetTabProps> = ({
-    betNumber,
-    audioRef
+    betNumber
+    // audioRef
 }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     );
 
     const bonus = useStateSelector(state => selectBonus(state));
-    const soundEnabled = useStateSelector(state => selectSoundSettings(state));
+    // const soundEnabled = useStateSelector(state => selectSoundSettings(state));
 
     useEffect(() => {
         if (!bonus.bonusActive || betNumber !== 1 || !inputRef.current) return;

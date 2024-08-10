@@ -121,7 +121,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                         socket.emit("cash-out", {
                             betNumber: (index + 1) as 1 | 2,
-                            winX: x
+                            winX: bet.autoModeOn ? bet.autoBetCoefficient : x
                         });
                         store.dispatch(
                             setBetState({
