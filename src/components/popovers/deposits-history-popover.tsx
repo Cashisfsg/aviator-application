@@ -135,7 +135,14 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ replenishment }) => {
                                 </a>
                             ) : (
                                 <Link
-                                    to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment?.requisite?._id}`}
+                                    to={`/payment/replenishment/${replenishment?._id}/requisite/${replenishment
+                                        ?.requisite?._id}${
+                                        replenishment?.requisite
+                                            ?.isCardFileRequired &&
+                                        replenishment?.card === undefined
+                                            ? "/verify"
+                                            : ""
+                                    }`}
                                     onClick={() => dialogRef?.current?.close()}
                                     className="text-right text-blue-500"
                                 >

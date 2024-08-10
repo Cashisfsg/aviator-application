@@ -1,7 +1,10 @@
 import { useState, useId } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 
-import { useVerifyReplenishmentByIdMutation } from "@/api/replenishment";
+import {
+    useFetchReplenishmentByIdQuery,
+    useVerifyReplenishmentByIdMutation
+} from "@/api/replenishment";
 import { handleErrorResponse } from "@/store/services";
 
 import { toast } from "@/components/toasts/toast";
@@ -18,10 +21,13 @@ export const VerifyCreditCardForm = () => {
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const inputFileId = useId();
 
-    const [verify, { isLoading }] = useVerifyReplenishmentByIdMutation();
-
     const navigate = useNavigate();
     const { replenishmentId, requisiteId } = useParams();
+
+    const [verify, { isLoading }] = useVerifyReplenishmentByIdMutation();
+    const { data: replenishment, isSuccess } = useFetchReplenishmentByIdQuery({
+        id: replenishmentId!
+    });
 
     const uploadImageHandler: React.ChangeEventHandler<
         HTMLInputElement
@@ -69,6 +75,18 @@ export const VerifyCreditCardForm = () => {
             handleErrorResponse(error, message => toast.error(message));
         }
     };
+
+    if (
+        isSuccess &&
+        replenishment?.requisite?.isCardFileRequired &&
+        replenishment?.card !== undefined
+    ) {
+        return (
+            <Navigate
+                to={`/payment/replenishment/${replenishmentId}/requisite/${requisiteId}`}
+            />
+        );
+    }
 
     return (
         <form onSubmit={onSubmitHandler}>
