@@ -1,42 +1,42 @@
-import { useState, useEffect, useId } from "react";
+import { useId } from "react";
 
-import { selectLastRate } from "@/store/slices/test.slice";
-import { useStateSelector, useAppDispatch } from "@/store/hooks";
-import { betApi, useGetLastThirtyCoefficientsQuery } from "@/store/api/betApi";
+// import { selectLastRate } from "@/store/slices/test.slice";
+// import { useStateSelector, useAppDispatch } from "@/store/hooks";
+import { useGetLastThirtyCoefficientsQuery } from "@/store/api/betApi";
 
 import { Badge } from "@/components/ui/badge";
 
 export const LatestRatiosList = () => {
-    const [key, setKey] = useState(0);
+    // const [key, setKey] = useState(0);
 
-    const lastRate = useStateSelector(state => selectLastRate(state));
+    // const lastRate = useStateSelector(state => selectLastRate(state));
 
     const dropdownMenuId = useId();
 
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const { data: coefficients, isSuccess } =
         useGetLastThirtyCoefficientsQuery();
 
-    useEffect(() => {
-        if (!isSuccess) return;
+    // useEffect(() => {
+    //     if (!isSuccess) return;
 
-        dispatch(
-            betApi.util.updateQueryData(
-                "getLastThirtyCoefficients",
-                undefined,
-                draft => {
-                    draft.length = draft.length - 1;
-                    draft.unshift({
-                        _id: new Date().toISOString(),
-                        game_coeff: lastRate
-                        // createdAt: new Date().toISOString()
-                    });
-                }
-            )
-        );
+    //     dispatch(
+    //         betApi.util.updateQueryData(
+    //             "getLastThirtyCoefficients",
+    //             undefined,
+    //             draft => {
+    //                 draft.length = draft.length - 1;
+    //                 draft.unshift({
+    //                     _id: new Date().toISOString(),
+    //                     game_coeff: lastRate
+    //                     // createdAt: new Date().toISOString()
+    //                 });
+    //             }
+    //         )
+    //     );
 
-        setKey(key => key + 1);
-    }, [lastRate]);
+    //     setKey(key => key + 1);
+    // }, [lastRate]);
 
     const onClickHandler: React.MouseEventHandler<
         HTMLButtonElement
@@ -56,7 +56,7 @@ export const LatestRatiosList = () => {
                 <div className="flex flex-auto gap-2 overflow-x-hidden">
                     {coefficients?.slice(0, 16)?.map((coefficient, i) => (
                         <Badge
-                            key={`${coefficient?._id} - ${key}`}
+                            key={`${coefficient?._id} - ${i}`}
                             value={coefficient?.game_coeff}
                             className={generateClassName(i)}
                         />

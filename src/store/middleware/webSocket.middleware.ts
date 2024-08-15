@@ -322,6 +322,21 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         );
                     });
 
+                    store.dispatch(
+                        betApi.util.updateQueryData(
+                            "getLastThirtyCoefficients",
+                            undefined,
+                            draft => {
+                                draft.length = draft.length - 1;
+                                draft.unshift({
+                                    _id: new Date().toISOString(),
+                                    game_coeff: store.getState().test.lastRate
+                                    // createdAt: new Date().toISOString()
+                                });
+                            }
+                        )
+                    );
+
                     setTimeout(() => {
                         store.dispatch(toggleState("end"));
                     }, 0);
