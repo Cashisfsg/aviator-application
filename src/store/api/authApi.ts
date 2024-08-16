@@ -47,8 +47,9 @@ export const authApi = createApi({
             }),
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
-                    await queryFulfilled;
+                    const response = await queryFulfilled;
                     dispatch(userApi.util.invalidateTags(["User", "Balance"]));
+                    dispatch(authenticate(response.data.token));
                 } catch {}
             }
         }),
