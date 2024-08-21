@@ -310,7 +310,7 @@ export const SignUpForm = () => {
                                         rel="noopener noreferrer"
                                         className="cursor-pointer font-semibold text-blue-500 underline-offset-2 mh:hover:underline"
                                     >
-                                        Правилами сервиса
+                                        Правилами платформы
                                     </a>
                                 </p>
                             </FormItem>

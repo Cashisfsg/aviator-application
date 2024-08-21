@@ -183,7 +183,7 @@ export const CreateReplenishmentForm = () => {
                     rel="noopener noreferrer"
                     className="font-semibold text-blue-500"
                 >
-                    Правилами сервиса
+                    Правилами платформы
                 </a>
             </p>
         </>
