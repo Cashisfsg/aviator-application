@@ -17,7 +17,8 @@ import {
     setBetState,
     setCurrentRound,
     deactivateBonus,
-    enableBonusCashOut
+    enableBonusCashOut,
+    setBalance
 } from "../slices/gameSlice";
 import { userApi } from "../api/userApi";
 import { betApi } from "../api/betApi";
@@ -365,7 +366,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                     store.dispatch(deactivateBot({ message }));
                 });
 
-                socket.on("user-balance", balance =>
+                socket.on("user-balance", balance => {
                     store.dispatch(
                         userApi.util.updateQueryData(
                             "getUserBalance",
@@ -374,8 +375,9 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                 Object.assign(draft, { balance: balance });
                             }
                         )
-                    )
-                );
+                    );
+                    store.dispatch(setBalance(balance));
+                });
 
                 socket.connect();
                 break;

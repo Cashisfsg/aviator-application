@@ -42,6 +42,8 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
         const target = event.currentTarget;
 
+        console.log(currentGameTab.currentBet);
+
         if (currentGameTab.currentBet > currentGameTab.balance) {
             toast.notEnoughMoney();
             clickCounter.current += 1;

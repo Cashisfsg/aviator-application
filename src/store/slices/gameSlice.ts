@@ -240,6 +240,10 @@ const gameSlice = createSlice({
             } else {
                 state.currentRound = !state.currentRound;
             }
+        },
+        setBalance: (state, action: PayloadAction<number>) => {
+            state.bets[0].balance = action.payload;
+            state.bets[1].balance = action.payload;
         }
         // setGameDetails: (state, action: PayloadAction<GameDetails>) => {
         //     state.gameDetails.betAmount = action.payload.betAmount;
@@ -287,6 +291,7 @@ export const { reducer: gameSliceReducer, actions: gameSliceActions } =
 export const {
     setBetState,
     setCurrentBet,
+    setBalance,
     // setGameDetails,
     // resetGameDetails,
     toggleAutoMode,
