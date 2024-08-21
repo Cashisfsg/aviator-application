@@ -14,32 +14,12 @@ export const CurrentRoundDetailsTab = () => {
     const { data: balance } = useGetUserBalanceQuery(undefined, {
         skip: !isAuthenticated
     });
-    // const tableRef = useRef<HTMLDivElement>(null);
 
-    // const roundDetails = useStateSelector(state => selectGameDetails(state));
     const roundStats = useStateSelector(state => selectRoundStatistic(state));
     const playersList = useStateSelector(state => selectPlayersList(state));
 
-    // const isFirstRender = useFirstRender();
-
-    // useEffect(() => {
-    //     console.log("First render");
-    //     console.log(isFirstRender);
-
-    //     if (isFirstRender) return;
-
-    //     console.log("Scroll");
-
-    //     tableRef.current?.scrollIntoView({
-    //         behavior: "smooth",
-    //         block: "start"
-    //     });
-    // }, [isFirstRender]);
-
     return (
         <>
-            {/* {!isLoading ? (
-                <> */}
             <TotalRoundDetailsTable
                 betsAmount={roundStats.playersAmount}
                 totalBets={roundStats.betAmount?.[balance?.currency || "USD"]}
@@ -53,8 +33,7 @@ export const CurrentRoundDetailsTab = () => {
                 players={playersList || []}
                 currency={balance?.currency || "USD"}
             />
-            {/* </>
-            ) : null} */}
+
             {playersList.length === 0 ? (
                 <p className="py-2 text-center text-base font-semibold">
                     Пусто

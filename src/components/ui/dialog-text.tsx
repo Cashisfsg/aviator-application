@@ -34,7 +34,6 @@ export const Dialog = forwardRef<DialogElement>(({ ...props }, ref) => {
 
         const isOpen = event.currentTarget.getAttribute("data-open") === "true";
 
-        console.log("Animations finished", isOpen);
         if (!isOpen) event.currentTarget.close();
     };
 

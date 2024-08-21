@@ -82,8 +82,6 @@ export const CreateWithdrawalForm: React.FC<CreateWithdrawFormProps> = ({
         }
     });
 
-    console.log(limits);
-
     const onSubmitHandler: SubmitHandler<FormSchema> = async ({
         amount,
         userRequisite

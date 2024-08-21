@@ -198,7 +198,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                                 bettingEnabled[0] = true;
                                                 return;
                                             }
-                                            console.log("Success!", message);
                                             BET_ID[index] = _id;
                                             store.dispatch(
                                                 setBetState({
@@ -234,10 +233,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                                 bettingEnabled[index] = true;
                                                 return;
                                             }
-                                            console.log("Success!", message);
-                                            console.log(
-                                                "Trigger else condition"
-                                            );
 
                                             BET_ID[index] = _id;
                                             store.dispatch(
@@ -458,7 +453,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                     ] = true;
                                     return;
                                 }
-                                console.log("Success!", message);
                                 BET_ID[
                                     (action.payload as BetTest).betNumber - 1
                                 ] = _id;
@@ -532,8 +526,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 break;
 
             case "test/abortBet":
-                console.log("Cancel enabled: ", cancelEnabled);
-
                 if (!cancelEnabled) break;
                 if (
                     store.getState().game.bets[(action.payload as 1 | 2) - 1]
@@ -553,8 +545,6 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                     cancelEnabled = true;
                                     return;
                                 }
-
-                                console.log("Cancel bet");
 
                                 store.dispatch(
                                     setBetState({

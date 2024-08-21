@@ -84,19 +84,13 @@ const columns = [
     {
         id: "actions",
         header: "Действия",
-        cell: cell => {
-            console.log(cell.row.original);
-
-            return <button>Нажми меня</button>;
-        }
+        cell: () => <button>Нажми меня</button>
     }
 ];
 
 export const AdminReplenishmentPage = () => {
     const { data: replenishments, isSuccess } =
         useGetAllReplenishmentsListForAdminQuery();
-
-    console.log("Data: ", replenishments);
 
     return (
         <article className="rounded-xl bg-slate-200 px-2 py-6 text-black">

@@ -45,7 +45,6 @@ export const SecurityConfirmResetPasswordForm = () => {
         passwordConfirm
     }) => {
         const token = location.state.token;
-        console.log("Token: ", token);
 
         if (!token) return;
 
