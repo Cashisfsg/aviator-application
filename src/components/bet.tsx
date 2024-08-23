@@ -37,7 +37,7 @@ export const Bet: React.FC<BetProps> = ({ betNumber }) => {
     return (
         <>
             <Tabs
-                defaultValue="bet"
+                defaultValue={currentGameTab.autoModeOn ? "auto" : "bet"}
                 onClickCapture={onClickHandler}
                 className="group rounded-2.5xl border-2 border-transparent bg-black-50 px-1.5 pb-8 pt-4 has-[fieldset[data-state=bet]:disabled]:border-[#cb011a] has-[fieldset[data-state=cash]:disabled]:border-[#d07206] has-[fieldset[data-state=start]:disabled]:border-[#cb011a] sm:px-6 xs:px-3"
             >

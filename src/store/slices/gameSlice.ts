@@ -68,7 +68,7 @@ const initialState = {
             balance: 0,
             currency: "USD",
             autoModeOn: false,
-            autoBetCoefficient: 1.1,
+            autoBetCoefficient: 1.01,
             currentBet: 1,
             min: 1,
             max: 100
@@ -79,7 +79,7 @@ const initialState = {
             balance: 0,
             currency: "USD",
             autoModeOn: false,
-            autoBetCoefficient: 1.1,
+            autoBetCoefficient: 1.01,
             currentBet: 1,
             min: 1,
             max: 100

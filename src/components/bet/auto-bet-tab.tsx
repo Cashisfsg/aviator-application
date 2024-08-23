@@ -19,7 +19,7 @@ interface AutoBetTabProps {
     audioRef: React.RefObject<HTMLAudioElement>;
 }
 
-const MIN_RATE = 1.1;
+const MIN_RATE = 1.01;
 
 export const AutoBetTab: React.FC<AutoBetTabProps> = ({
     betNumber
@@ -93,6 +93,7 @@ export const AutoBetTab: React.FC<AutoBetTabProps> = ({
                 <span>Авто кешаут</span>
                 <Switch
                     disabled={currentGameTab.betState !== "init"}
+                    checked={currentGameTab.autoModeOn}
                     onClick={() => dispatch(toggleAutoMode({ betNumber }))}
                 />
             </Label>
