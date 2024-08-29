@@ -46,7 +46,7 @@ const initialRoundData = {
 const withTimeout = (
     onSuccess: (...args: any[]) => void,
     onTimeout: (...args: any[]) => void,
-    timeout: number | undefined = 1000
+    timeout: number | undefined = 3000
 ) => {
     let called = false;
 
@@ -135,51 +135,48 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                         return;
                                     }
 
-                                    toast.win(
-                                        winX *
-                                            (bonus.bonusActive && index === 0
-                                                ? bonus.bonusQuantity
-                                                : bet.currentBet),
-                                        winX,
-                                        bet.currency
+                                    store.dispatch(
+                                        setBetState({
+                                            betNumber: (index + 1) as 1 | 2,
+                                            betState: "init"
+                                        })
                                     );
+
+                                    store.dispatch(
+                                        betApi.endpoints.getUserBets.initiate(
+                                            { skip: 0, limit: 6 },
+                                            {
+                                                subscribe: false,
+                                                forceRefetch: true
+                                            }
+                                        )
+                                    );
+
+                                    if (bonus.bonusActive && index === 0) {
+                                        store.dispatch(deactivateBonus());
+                                        store.dispatch(
+                                            userApi.util.invalidateTags([
+                                                "Promo"
+                                            ])
+                                        );
+                                        toast.win(
+                                            bet.autoBetCoefficient *
+                                                bonus.bonusQuantity,
+                                            bet.autoBetCoefficient,
+                                            bet.currency
+                                        );
+                                    } else {
+                                        toast.win(
+                                            bet.autoBetCoefficient *
+                                                bet.currentBet,
+                                            bet.autoBetCoefficient,
+                                            bet.currency
+                                        );
+                                    }
                                 },
                                 () => {}
                             )
                         );
-                        store.dispatch(
-                            setBetState({
-                                betNumber: (index + 1) as 1 | 2,
-                                betState: "init"
-                            })
-                        );
-                        store.dispatch(
-                            betApi.endpoints.getUserBets.initiate(
-                                { skip: 0, limit: 6 },
-                                { subscribe: false, forceRefetch: true }
-                            )
-                        );
-                        // store.dispatch(
-                        //     userApi.util.invalidateTags(["Balance"])
-                        // );
-
-                        if (bonus.bonusActive && index === 0) {
-                            store.dispatch(deactivateBonus());
-                            store.dispatch(
-                                userApi.util.invalidateTags(["Promo"])
-                            );
-                            toast.win(
-                                bet.autoBetCoefficient * bonus.bonusQuantity,
-                                bet.autoBetCoefficient,
-                                bet.currency
-                            );
-                        } else {
-                            toast.win(
-                                bet.autoBetCoefficient * bet.currentBet,
-                                bet.autoBetCoefficient,
-                                bet.currency
-                            );
-                        }
                     });
                 });
 
@@ -500,6 +497,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                 //         betState: "init"
                                 //     })
                                 // );
+
+                                store.dispatch(
+                                    setBetState({
+                                        betNumber: (action.payload as BetTest)
+                                            .betNumber,
+                                        betState: "start"
+                                    })
+                                );
                                 bettingEnabled[
                                     (action.payload as BetTest).betNumber
                                 ] = true;
@@ -547,30 +552,42 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                 winX,
                                 bets[action.payload - 1].currency
                             );
+
+                            store.dispatch(
+                                setBetState({
+                                    betNumber: action.payload,
+                                    betState: "init"
+                                })
+                            );
+
+                            store.dispatch(
+                                betApi.endpoints.getUserBets.initiate(
+                                    { skip: 0, limit: 6 },
+                                    { subscribe: false, forceRefetch: true }
+                                )
+                            );
+
+                            if (store.getState().game.bonus.bonusActive) {
+                                store.dispatch(
+                                    userApi.util.invalidateTags(["Promo"])
+                                );
+                                store.dispatch(deactivateBonus());
+                            }
                         },
-                        () => {}
+                        () => {
+                            store.dispatch(
+                                setBetState({
+                                    betNumber: action.payload,
+                                    betState: "init"
+                                })
+                            );
+
+                            if (store.getState().game.bonus.bonusActive) {
+                                store.dispatch(deactivateBonus());
+                            }
+                        }
                     )
                 );
-
-                store.dispatch(
-                    setBetState({
-                        betNumber: action.payload,
-                        betState: "init"
-                    })
-                );
-
-                store.dispatch(
-                    betApi.endpoints.getUserBets.initiate(
-                        { skip: 0, limit: 6 },
-                        { subscribe: false, forceRefetch: true }
-                    )
-                );
-                // store.dispatch(userApi.util.invalidateTags(["Balance"]));
-
-                if (store.getState().game.bonus.bonusActive) {
-                    store.dispatch(userApi.util.invalidateTags(["Promo"]));
-                    store.dispatch(deactivateBonus());
-                }
 
                 break;
             }
