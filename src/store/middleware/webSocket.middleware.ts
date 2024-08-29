@@ -522,18 +522,42 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
 
                 break;
 
-            case "test/cashOut":
+            case "test/cashOut": {
+                const bets = store.getState().game.bets;
+                const bonus = store.getState().game.bonus;
+
+                socket.emit(
+                    "cash-out",
+                    {
+                        betNumber: action.payload as 1 | 2,
+                        winX: Math.round(store.getState().test.rate * 100) / 100
+                    },
+                    withTimeout(
+                        ({ message, success, winX }) => {
+                            if (!success) {
+                                toast.error(message);
+                                return;
+                            }
+
+                            toast.win(
+                                winX *
+                                    (bonus.bonusActive && action.payload === 1
+                                        ? bonus.bonusQuantity
+                                        : bets[action.payload - 1].currentBet),
+                                winX,
+                                bets[action.payload - 1].currency
+                            );
+                        },
+                        () => {}
+                    )
+                );
+
                 store.dispatch(
                     setBetState({
                         betNumber: action.payload,
                         betState: "init"
                     })
                 );
-
-                socket.emit("cash-out", {
-                    betNumber: action.payload as 1 | 2,
-                    winX: Math.round(store.getState().test.rate * 100) / 100
-                });
 
                 store.dispatch(
                     betApi.endpoints.getUserBets.initiate(
@@ -549,6 +573,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                 }
 
                 break;
+            }
 
             case "test/abortBet":
                 if (!cancelEnabled) break;
