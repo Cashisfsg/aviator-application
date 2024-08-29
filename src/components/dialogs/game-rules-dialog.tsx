@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import PlayButtonImage from "@/assets/play-button.png";
+import PauseButtonImage from "@/assets/pause-button.png";
 import VideoRulesWebm from "@/assets/video/rules.webm";
 import VideoRulesMP4 from "@/assets/video/rules.mp4";
 
@@ -24,18 +25,61 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
 }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const imageRef = useRef<HTMLImageElement>(null);
+    const headerRef = useRef<HTMLElement>(null);
     const sectionRef = useRef<HTMLElement>(null);
+    const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-    const onClickHandler: React.MouseEventHandler<
-        HTMLButtonElement
+    const mouseMoveHandler = () => {
+        clearTimeout(timerRef.current);
+
+        timerRef.current = setTimeout(() => {
+            buttonRef.current?.classList.remove("opacity-100");
+            buttonRef.current?.classList.add("opacity-0");
+        }, 1000);
+    };
+
+    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+        if (videoRef.current?.paused) {
+            videoRef.current?.play();
+        } else {
+            videoRef.current?.pause();
+        }
+    };
+
+    const onPlayHandler: React.ReactEventHandler<HTMLVideoElement> = () => {
+        buttonRef.current?.classList.remove("opacity-100");
+        buttonRef.current?.classList.add("opacity-0");
+        setTimeout(() => {
+            if (!imageRef.current) return;
+            imageRef.current.src = PauseButtonImage;
+        }, 500);
+    };
+
+    const onPauseHandler: React.ReactEventHandler<HTMLVideoElement> = () => {
+        if (!imageRef.current) return;
+        clearTimeout(timerRef.current);
+        buttonRef.current?.classList.remove("opacity-0");
+        buttonRef.current?.classList.add("opacity-100");
+        imageRef.current.src = PlayButtonImage;
+    };
+
+    const onMouseMoveHandler: React.MouseEventHandler<
+        HTMLVideoElement
     > = event => {
-        videoRef.current?.play();
-        event.currentTarget.classList.add("hidden");
+        if (event.currentTarget.paused) return;
+
+        buttonRef.current?.classList.remove("opacity-0");
+        buttonRef.current?.classList.add("opacity-100");
+
+        requestAnimationFrame(mouseMoveHandler);
     };
 
     const onEndedHandler: React.ReactEventHandler<HTMLVideoElement> = event => {
-        buttonRef.current?.classList.remove("hidden");
+        if (!imageRef.current) return;
         event.currentTarget.currentTime = 0;
+        buttonRef.current?.classList.add("opacity-100");
+        imageRef.current.src = PlayButtonImage;
     };
 
     const viewDetails: React.MouseEventHandler<HTMLButtonElement> = event => {
@@ -44,9 +88,15 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
 
         if (hidden) {
             sectionRef.current?.classList.replace("hidden", "grid");
+            headerRef.current?.classList.remove("hidden");
+            videoRef.current?.style.setProperty("grid-area", "3 / 1");
+            buttonRef.current?.style.setProperty("grid-area", "3 / 1");
             button.textContent = "Свернуть";
         } else {
             sectionRef.current?.classList.replace("grid", "hidden");
+            headerRef.current?.classList.add("hidden");
+            videoRef.current?.style.setProperty("grid-area", "2 / 1");
+            buttonRef.current?.style.setProperty("grid-area", "2 / 1");
             button.textContent = "Подробнее";
         }
     };
@@ -58,26 +108,36 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
         >
             <DialogContent
                 route={false}
-                className="w-[calc(75%_-_2rem)] max-w-3xl overflow-y-auto pb-0"
+                className="min-h-[calc(100dvh_-_2rem)] w-[min(100%_-_2rem,_1024px)] max-w-3xl flex-col overflow-y-auto pb-0"
             >
                 <header className="-mx-6 -mt-6 bg-[#2c2d30] px-6 py-3 text-xl font-semibold uppercase">
                     Правила игры
                 </header>
                 <section className="grid place-items-center gap-y-4">
-                    <header>
+                    <header
+                        ref={headerRef}
+                        className="hidden"
+                    >
                         Aviator - это новое поколение развлечений. Выигрывайте в
                         разы больше, чем в классических играх, за считанные
                         секунды!
                     </header>
-                    <h2 className="w-full text-xl font-semibold">
+
+                    <h2 className="w-full text-xl font-semibold uppercase">
                         Как играть?
                     </h2>
+
+                    {/* <div className="relative self-start"> */}
                     <video
                         preload="metadata"
+                        controls
                         ref={videoRef}
+                        onPlay={onPlayHandler}
+                        onPause={onPauseHandler}
+                        onMouseMove={onMouseMoveHandler}
                         onEnded={onEndedHandler}
                         className="aspect-video w-full"
-                        style={{ gridArea: "3 / 1" }}
+                        style={{ gridArea: "2 / 1" }}
                     >
                         <source
                             src={VideoRulesWebm}
@@ -100,6 +160,24 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                             instead.
                         </p>
                     </video>
+
+                    <button
+                        onClick={onClickHandler}
+                        ref={buttonRef}
+                        style={{ gridArea: "2 / 1" }}
+                        className="z-10 cursor-pointer opacity-100 transition-opacity duration-500"
+                    >
+                        <img
+                            src={PlayButtonImage}
+                            alt="Play button"
+                            height="64"
+                            width="64"
+                            ref={imageRef}
+                            className="size-16"
+                        />
+                        <span className="sr-only">Play video</span>
+                    </button>
+                    {/* </div> */}
 
                     <ol className="grid grid-cols-[auto,_minmax(min-content,_auto),_1fr] gap-y-2 text-pretty">
                         <li className="col-span-3 grid grid-cols-subgrid items-center">
@@ -145,22 +223,6 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                             </p>
                         </li>
                     </ol>
-
-                    <button
-                        onClick={onClickHandler}
-                        ref={buttonRef}
-                        style={{ gridArea: "3 / 1" }}
-                        className="z-10 cursor-pointer"
-                    >
-                        <img
-                            src={PlayButtonImage}
-                            alt="Play button"
-                            height="64"
-                            width="64"
-                            className="size-16"
-                        />
-                        <span className="sr-only">Play video</span>
-                    </button>
                 </section>
 
                 <section
@@ -264,7 +326,9 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </li>
                     </ul>
 
-                    <h2 className="text-xl font-semibold">Функции игры</h2>
+                    <h2 className="text-xl font-semibold uppercase">
+                        Функции игры
+                    </h2>
                     <h3 className="text-lg font-semibold">
                         Ставка и вывод средств
                     </h3>
@@ -323,7 +387,7 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </li>
                     </ul>
 
-                    <h3 className="text-lg font-semibold">Бонусы</h3>
+                    <h2 className="text-xl font-semibold uppercase">Бонусы</h2>
 
                     <ul>
                         <li>
