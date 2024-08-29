@@ -25,6 +25,9 @@ export default {
                 4.5: "18px",
                 25: "100px"
             },
+            margin: {
+                13: "3.25rem"
+            },
             padding: {
                 0.25: "1px"
             },
@@ -68,6 +71,10 @@ export default {
             },
             borderRadius: {
                 "2.5xl": "20px"
+            },
+            listStyleType: {
+                "decimal-leading-zero": "decimal-leading-zero",
+                dash: '"–"'
             },
             screens: { xs: "360px", mh: { raw: "(hover: hover)" } },
             keyframes: {

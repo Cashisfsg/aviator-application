@@ -44,8 +44,8 @@ const initialRoundData = {
 };
 
 const withTimeout = (
-    onSuccess,
-    onTimeout,
+    onSuccess: (...args: any[]) => void,
+    onTimeout: (...args: any[]) => void,
     timeout: number | undefined = 1000
 ) => {
     let called = false;
@@ -56,7 +56,7 @@ const withTimeout = (
         onTimeout();
     }, timeout);
 
-    return (...args) => {
+    return (...args: any[]) => {
         if (called) return;
         called = true;
         clearTimeout(timer);
@@ -120,10 +120,33 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         )
                             return;
 
-                        socket.emit("cash-out", {
-                            betNumber: (index + 1) as 1 | 2,
-                            winX: bet.autoModeOn ? bet.autoBetCoefficient : x
-                        });
+                        socket.emit(
+                            "cash-out",
+                            {
+                                betNumber: (index + 1) as 1 | 2,
+                                winX: bet.autoModeOn
+                                    ? bet.autoBetCoefficient
+                                    : x
+                            },
+                            withTimeout(
+                                ({ message, success, winX }) => {
+                                    if (!success) {
+                                        toast.error(message);
+                                        return;
+                                    }
+
+                                    toast.win(
+                                        winX *
+                                            (bonus.bonusActive && index === 0
+                                                ? bonus.bonusQuantity
+                                                : bet.currentBet),
+                                        winX,
+                                        bet.currency
+                                    );
+                                },
+                                () => {}
+                            )
+                        );
                         store.dispatch(
                             setBetState({
                                 betNumber: (index + 1) as 1 | 2,

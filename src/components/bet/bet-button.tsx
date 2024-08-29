@@ -42,8 +42,6 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
 
         const target = event.currentTarget;
 
-        console.log(currentGameTab.currentBet);
-
         if (currentGameTab.currentBet > currentGameTab.balance) {
             toast.notEnoughMoney();
             clickCounter.current += 1;
@@ -77,14 +75,14 @@ export const BetButton: React.FC<BetButtonProps> = ({ betNumber, onClick }) => {
     };
 
     const cashOutMoney: React.MouseEventHandler<HTMLButtonElement> = event => {
-        toast.win(
-            rate *
-                (bonus.bonusActive && betNumber === 1
-                    ? bonus.bonusQuantity
-                    : currentGameTab.currentBet),
-            rate,
-            currentGameTab.currency
-        );
+        // toast.win(
+        //     rate *
+        //         (bonus.bonusActive && betNumber === 1
+        //             ? bonus.bonusQuantity
+        //             : currentGameTab.currentBet),
+        //     rate,
+        //     currentGameTab.currency
+        // );
 
         dispatch(cashOut(betNumber));
         onClick?.(event);
