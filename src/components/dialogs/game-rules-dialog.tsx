@@ -39,13 +39,13 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
         }, 1000);
     };
 
-    const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
-        if (videoRef.current?.paused) {
-            videoRef.current?.play();
-        } else {
-            videoRef.current?.pause();
-        }
-    };
+    // const onClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+    //     if (videoRef.current?.paused) {
+    //         videoRef.current?.play();
+    //     } else {
+    //         videoRef.current?.pause();
+    //     }
+    // };
 
     const onPlayHandler: React.ReactEventHandler<HTMLVideoElement> = () => {
         buttonRef.current?.classList.remove("opacity-100");
@@ -108,22 +108,23 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
         >
             <DialogContent
                 route={false}
-                className="min-h-[calc(100dvh_-_2rem)] w-[min(100%_-_2rem,_1024px)] max-w-3xl flex-col overflow-y-auto pb-0"
+                className="flex min-h-[calc(100dvh_-_2rem)] w-[min(100%_-_2rem,_1024px)] max-w-3xl flex-col overflow-y-auto pb-0"
             >
-                <header className="-mx-6 -mt-6 bg-[#2c2d30] px-6 py-3 text-xl font-semibold uppercase">
+                <header className="-mx-6 -mt-6 bg-[#2c2d30] px-6 py-3 text-xl font-bold uppercase">
                     Правила игры
                 </header>
-                <section className="grid place-items-center gap-y-4">
+
+                <section className="flex flex-auto flex-col place-items-center gap-y-4">
                     <header
                         ref={headerRef}
                         className="hidden"
                     >
-                        Aviator - это новое поколение развлечений. Выигрывайте в
-                        разы больше, чем в классических играх, за считанные
-                        секунды!
+                        <strong>Aviator</strong> - это новое поколение
+                        развлечений. Выигрывайте в разы больше, чем в
+                        классических играх, за считанные секунды!
                     </header>
 
-                    <h2 className="w-full text-xl font-semibold uppercase">
+                    <h2 className="w-full text-xl font-bold uppercase">
                         Как играть?
                     </h2>
 
@@ -131,22 +132,23 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                     <video
                         preload="metadata"
                         controls
+                        // controlsList="nodownload"
                         ref={videoRef}
                         onPlay={onPlayHandler}
                         onPause={onPauseHandler}
                         onMouseMove={onMouseMoveHandler}
                         onEnded={onEndedHandler}
                         className="aspect-video w-full"
-                        style={{ gridArea: "2 / 1" }}
+                        // style={{ gridArea: "2 / 1" }}
                     >
-                        <source
-                            src={VideoRulesWebm}
-                            type="video/webm"
-                        />
-
                         <source
                             src={VideoRulesMP4}
                             type="video/mp4"
+                        />
+
+                        <source
+                            src={VideoRulesWebm}
+                            type="video/webm"
                         />
 
                         <p>
@@ -161,7 +163,7 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </p>
                     </video>
 
-                    <button
+                    {/* <button
                         onClick={onClickHandler}
                         ref={buttonRef}
                         style={{ gridArea: "2 / 1" }}
@@ -176,10 +178,10 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                             className="size-16"
                         />
                         <span className="sr-only">Play video</span>
-                    </button>
+                    </button> */}
                     {/* </div> */}
 
-                    <ol className="grid grid-cols-[auto,_minmax(min-content,_auto),_1fr] gap-y-2 text-pretty">
+                    <ol className="grid flex-auto grid-cols-[auto,_minmax(min-content,_auto),_1fr] gap-y-2 text-pretty">
                         <li className="col-span-3 grid grid-cols-subgrid items-center">
                             <span className="text-xl font-bold">01</span>
                             <img
@@ -312,7 +314,7 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         Всё в ваших руках!
                     </p>
 
-                    <h2 className="text-xl font-semibold">Подробнее:</h2>
+                    <h2 className="text-xl font-bold">Подробнее:</h2>
 
                     <ul>
                         <li>
@@ -326,17 +328,17 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </li>
                     </ul>
 
-                    <h2 className="text-xl font-semibold uppercase">
+                    <h2 className="text-xl font-bold uppercase">
                         Функции игры
                     </h2>
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-lg font-bold">
                         Ставка и вывод средств
                     </h3>
                     <ul>
                         <li>
                             – Чтобы сделать ставку, введите или выберите из
-                            предложенных вариантов сумму и нажмите кнопку
-                            «Ставка».
+                            предложенных вариантов сумму и нажмите кнопку{" "}
+                            <strong>«Ставка»</strong>.
                         </li>
                         <li>
                             – Вы можете делать две ставки одновременно, добавив
@@ -345,9 +347,9 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                             ставки.
                         </li>
                         <li>
-                            – Чтобы вывести свой выигрыш, нажмите на кнопку
-                            «Вывести». Ваш выигрыш — это Ваша ставка, умноженная
-                            на множитель вывода.
+                            – Чтобы вывести свой выигрыш, нажмите на кнопку{" "}
+                            <strong>«Вывести»</strong>. Ваш выигрыш — это Ваша
+                            ставка, умноженная на множитель вывода.
                         </li>
                         <li>
                             – Ваша ставка сгорит, если Вы не успеете вывести
@@ -355,19 +357,20 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </li>
                     </ul>
 
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-lg font-bold">
                         Автоматический вывод средств (Авто кешаут)
                     </h3>
                     <ul>
                         <li>
                             – Функция автоматического вывода средств доступна на
-                            вкладке «Авто» на панели ставок. После активации
-                            ваша ставка будет автоматически выведена, когда
-                            Самолёт удачи достигнет указанного множителя.
+                            вкладке <strong>«Авто»</strong> на панели ставок.
+                            После активации ваша ставка будет автоматически
+                            выведена, когда Самолёт удачи достигнет указанного
+                            множителя.
                         </li>
                     </ul>
 
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-lg font-bold">
                         Текущие ставки и статистика
                     </h3>
                     <ul>
@@ -377,28 +380,28 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                             ставки, сделанные в текущем раунде.
                         </li>
                         <li>
-                            – На панели «Мои ставки» Вы можете видеть все свои
-                            ставки и информацию о них.
+                            – На панели <strong>«Мои ставки»</strong> Вы можете
+                            видеть все свои ставки и информацию о них.
                         </li>
                         <li>
-                            – На панели «Топ» расположена игровая статистика.
-                            Тут можно посмотреть самые большие выигрыши по сумме
-                            или множителю лучших игроков.
+                            – На панели <strong>«Топ»</strong> расположена
+                            игровая статистика. Тут можно посмотреть самые
+                            большие выигрыши по сумме или множителю лучших
+                            игроков.
                         </li>
                     </ul>
 
-                    <h2 className="text-xl font-semibold uppercase">Бонусы</h2>
+                    <h2 className="text-xl font-bold uppercase">Бонусы</h2>
 
                     <ul>
                         <li>
-                            – Бонусы деляться на одноразовые ставки и бонусы к
-                            депозиту.
+                            – Бонусы деляться на{" "}
+                            <strong>одноразовые ставки</strong> и{" "}
+                            <strong>бонусы к депозиту</strong>.
                         </li>
                     </ul>
 
-                    <h3 className="text-lg font-semibold">
-                        Одноразовая ставка
-                    </h3>
+                    <h3 className="text-lg font-bold">Одноразовая ставка</h3>
 
                     <ul>
                         <li>
@@ -409,7 +412,7 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                         </li>
                     </ul>
 
-                    <h3 className="text-lg font-semibold">Бонус к депозиту</h3>
+                    <h3 className="text-lg font-bold">Бонус к депозиту</h3>
 
                     <ul>
                         <li>
