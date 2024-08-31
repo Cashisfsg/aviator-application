@@ -89,14 +89,14 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
         if (hidden) {
             sectionRef.current?.classList.replace("hidden", "grid");
             headerRef.current?.classList.remove("hidden");
-            videoRef.current?.style.setProperty("grid-area", "3 / 1");
-            buttonRef.current?.style.setProperty("grid-area", "3 / 1");
+            // videoRef.current?.style.setProperty("grid-area", "3 / 1");
+            // buttonRef.current?.style.setProperty("grid-area", "3 / 1");
             button.textContent = "Свернуть";
         } else {
             sectionRef.current?.classList.replace("grid", "hidden");
             headerRef.current?.classList.add("hidden");
-            videoRef.current?.style.setProperty("grid-area", "2 / 1");
-            buttonRef.current?.style.setProperty("grid-area", "2 / 1");
+            // videoRef.current?.style.setProperty("grid-area", "2 / 1");
+            // buttonRef.current?.style.setProperty("grid-area", "2 / 1");
             button.textContent = "Подробнее";
         }
     };
@@ -132,6 +132,8 @@ export const GameRulesDialog: React.FC<GameRulesDialogProps> = ({
                     <video
                         preload="metadata"
                         controls
+                        autoPlay
+                        playsInline
                         // controlsList="nodownload"
                         ref={videoRef}
                         onPlay={onPlayHandler}

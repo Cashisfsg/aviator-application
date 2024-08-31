@@ -65,7 +65,8 @@ const withTimeout = (
 };
 
 let cancelEnabled = true;
-let bettingEnabled = [true, true];
+const bettingEnabled = [true, true];
+const autoCashOutEnabled = [true, true];
 const BET_ID: string[] = [];
 
 export const webSocketMiddleware: Middleware<{}, RootStore> =
@@ -116,9 +117,14 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                         if (
                             !bet.autoModeOn ||
                             bet.betState !== "cash" ||
-                            x < bet.autoBetCoefficient
+                            x < bet.autoBetCoefficient ||
+                            !autoCashOutEnabled[index]
                         )
                             return;
+
+                        if (bet.autoModeOn) {
+                            autoCashOutEnabled[index] = false;
+                        }
 
                         socket.emit(
                             "cash-out",
@@ -129,7 +135,7 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                     : x
                             },
                             withTimeout(
-                                ({ message, success, winX }) => {
+                                ({ message, success }) => {
                                     if (!success) {
                                         toast.error(message);
                                         return;
@@ -173,8 +179,27 @@ export const webSocketMiddleware: Middleware<{}, RootStore> =
                                             bet.currency
                                         );
                                     }
+
+                                    if (bet.autoModeOn) {
+                                        autoCashOutEnabled[index] = true;
+                                    }
                                 },
-                                () => {}
+                                () => {
+                                    store.dispatch(
+                                        setBetState({
+                                            betNumber: (index + 1) as 1 | 2,
+                                            betState: "init"
+                                        })
+                                    );
+
+                                    if (bonus.bonusActive && index === 0) {
+                                        store.dispatch(deactivateBonus());
+                                    }
+
+                                    if (bet.autoModeOn) {
+                                        autoCashOutEnabled[index] = true;
+                                    }
+                                }
                             )
                         );
                     });
