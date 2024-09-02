@@ -73,8 +73,9 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
                 <p className="text-sm">
                     Приглашая людей, вы можете заработать до 40% от их ставок{" "}
                     <a
-                        href="#"
+                        href="https://telegra.ph/Partnyorskaya-programma-avibetio-08-31"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-blue-600"
                     >
                         Подробнее...
@@ -124,7 +125,8 @@ export const ReferralProgramPopover: React.FC<ReferralProgramPopoverProps> = ({
 
                     <span>Всего заработано</span>
                     <span className="rounded border border-green-50 bg-green-450 px-1.5 py-1 text-center text-xs text-white shadow-[inset_0_1px_1px_#ffffff80]">
-                        {referral?.referralBalance?.toFixed(2) || 0} {referral?.currency}
+                        {referral?.referralBalance?.toFixed(2) || 0}{" "}
+                        {referral?.currency}
                     </span>
                 </p>
 

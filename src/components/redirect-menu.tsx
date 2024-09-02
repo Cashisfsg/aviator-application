@@ -31,6 +31,7 @@ export const RedirectMenu = () => {
                     <a
                         href={`https://t.me/${import.meta.env.VITE_BOT_NAME}`}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="flex gap-x-2 px-2.5 py-2"
                     >
                         <PiTelegramLogoBold className="text-base text-[#767B85]" />
