@@ -1,216 +1,56 @@
-//! ================= Authentication types ================= //
-
-export interface UserRegistrationCredentials {
-    currency: string;
-    login: string;
-    password: string;
-    passwordConfirm: string;
-    email?: string;
-    telegramId?: number;
-    from?: string;
-    promocode?: string;
-}
-
-export interface AuthenticationUserRequest {
-    login: string;
-    password: string;
-}
-
-export interface AuthenticationUserResponse {
-    twoFactorEnabled: boolean;
-    token: string;
-    message: string;
-}
-
-export interface Token {
-    token: string;
-}
-
-export interface CreateNewUserResponse {
-    isEmailToken: boolean;
-    token: string;
-}
-
-export interface ConfirmNewUserEmailRequest {
-    currency: string;
-    login: string;
-    password: string;
-    passwordConfirm: string;
-    email: string;
-    telegramId?: number;
-    promocode?: string;
-    from?: string;
-    token: string;
-    code: number;
-}
-
-export interface SuccessResponse {
-    message: string;
-}
-
-export interface ForgotPasswordRequest {
-    email: string;
-}
-
-export interface ChangePasswordConfirmRequest {
-    code: number;
-    email: string;
-}
-
-export interface ChangePasswordRequest {
-    token: string;
-    password: string;
-    passwordConfirm: string;
-}
-
-//! ================= User types ================= //
-
-export type Currency = "USD" | "RUB" | "UZS" | "KZT" | "UAH" | "USDT";
-
-export type CurrencyRecord = Record<Currency, number>;
-
-export interface User {
-    _id: string;
-    telegramId: number;
-    currency: Currency;
-    login: string;
-    email: string;
-    balance: number;
-    profileImage: string;
-    twoFA: boolean;
-    uid: number;
-}
-
-export interface UserBalance {
-    balance: number;
-    currency: Currency;
-}
-
-export interface Promo {
-    _id: string;
-    type: "add_balance" | "promo";
-    name: string;
-    amount: number;
-    currency: Currency;
-    max_count: number;
-    limit: number | null;
-    coef: number;
-    will_finish: "string";
-}
-
-export interface UserRequisite {
-    requisites: Requisite[];
-    currency: string;
-}
-
-//! ================= Bet types ================= //
-
-export interface Bet {
-    _id: string;
-    bet: CurrencyRecord;
-    currency: Currency;
-    time: string;
-    coeff: number;
-    win: CurrencyRecord;
-    playerId: string;
-    playerLogin: string;
-    profileImage: string;
-    game_coeff: number;
-}
-
-export interface PaginationParams {
-    skip?: number;
-    limit?: number;
-}
-
-export interface Player {
-    bet: CurrencyRecord;
-    time: string;
-    coeff: number;
-    win: CurrencyRecord | undefined;
-    playerId: string;
-    playerLogin: string;
-    profileImage: string;
-}
-
-export interface PreviousRoundInfoResponse {
-    winAmount: CurrencyRecord;
-    betAmount: CurrencyRecord;
-    bets: Player[];
-}
-
-//! ================= Admin types ================= //
-
-export interface AdminAuthorizationData {
-    login: string;
-    password: string;
-}
-
-//! ================= Payment types ================= //
-export interface Requisite {
-    _id: string;
-    requisite: string;
-    name: string;
-    currency: string;
-    img: string;
-    commission: number;
-    status: string;
-}
-
-export interface Replenishment {
-    _id: string;
-    user: string;
-    amount: number;
-    currency: string;
-    deduction: number;
-    status: string;
-    statusMessage: string;
-    isPayConfirmed: boolean;
-    requisite: Requisite;
-    createdAt: string;
-    completedDate: string;
-}
-
-export interface PaymentDrawRequest {
-    currency: string;
-    amount: number;
-    requisite: string;
-    userRequisite: string;
-}
-
 //! ================= Telegram types ================= //
 
 interface WebAppUser {
     id: number;
-    is_bot: boolean;
+    is_bot?: boolean;
     first_name: string;
-    last_name: string;
-    username: string;
-    language_code: string;
-    is_premium: boolean;
-    added_to_attachment_menu: boolean;
-    allows_write_to_pm: boolean;
-    photo_url: string;
+    last_name?: string;
+    username?: string;
+    language_code?: string;
+    is_premium?: boolean;
+    added_to_attachment_menu?: boolean;
+    allows_write_to_pm?: boolean;
+    photo_url?: string;
 }
+
+type WebAppChatType = "group" | "supergroup" | "channel";
 
 interface WebAppChat {
     id: number;
-    type: string;
+    type: WebAppChatType;
     title: string;
-    username: string;
-    photo_url: string;
+    username?: string;
+    photo_url?: string;
 }
 interface WebAppInitData {
-    query_id: string;
-    user: WebAppUser;
-    receiver: WebAppUser;
-    chat: WebAppChat;
-    chat_type: string;
-    chat_instance: string;
-    start_param: string;
-    can_send_after: number;
+    query_id?: string;
+    user?: WebAppUser;
+    receiver?: WebAppUser;
+    chat?: WebAppChat;
+    chat_type?: string;
+    chat_instance?: string;
+    start_param?: string;
+    can_send_after?: number;
     auth_date: number;
     hash: string;
+}
+
+interface ThemeParams {
+    bg_color: string;
+    text_color: string;
+    hint_color: string;
+    link_color: string;
+    button_color: string;
+    button_text_color: string;
+    secondary_bg_color: string;
+    header_bg_color: string;
+    bottom_bar_bg_color: string;
+    accent_text_color: string;
+    section_bg_color: string;
+    section_header_text_color: string;
+    section_separator_color: string;
+    subtitle_text_color: string;
+    destructive_text_color: string;
 }
 
 interface BackButton {
@@ -222,11 +62,14 @@ interface BackButton {
 }
 
 interface MainButton {
+    type: Readonly<string>;
     text: string;
     color: string;
     textColor: string;
     isVisible: boolean;
     isActive: boolean;
+    hasShineEffect: boolean;
+    position: string;
     isProgressVisible: boolean;
     setText: (text: string) => void;
     onClick: (callback: () => void) => void;
@@ -235,15 +78,145 @@ interface MainButton {
     hide: () => void;
     enable: () => void;
     disable: () => void;
-    showProgress: (leaveActive: unknown) => boolean;
+    showProgress: (leaveActive: boolean) => void;
     hideProgress: () => void;
     setParams: (params: {
         text: string;
         color: string;
         text_color: string;
+        has_shine_effect: boolean;
+        position: string;
         is_active: boolean;
         is_visible: boolean;
     }) => void;
+}
+
+interface SettingsButton {
+    isVisible: boolean;
+    onClick: (callback: () => void) => void;
+    offClick: (callback: () => void) => void;
+    show: () => void;
+    hide: () => void;
+}
+
+type NotificationType = "error" | "success" | "warning";
+
+interface HapticFeedback {
+    impactOccurred: (
+        style: "light" | "medium" | "heavy" | "rigid" | "soft"
+    ) => void;
+    notificationOccurred: (type: NotificationType) => void;
+    selectionChanged: () => void;
+}
+
+export interface CloudStorage {
+    setItem: (
+        key: string,
+        value: string,
+        callback: (error: string | null, success?: boolean) => void
+
+        // callback?: {
+        //     (error: string): void;
+        //     (error: null, success: boolean): void;
+        // }
+    ) => void;
+    getItem: (
+        key: string,
+        callback: (error: string | null, value?: string) => string | void
+    ) => void;
+    getItems: (
+        keys: string[],
+        callback: (error: Error | null, values?: string[]) => void
+    ) => void;
+    removeItem: (
+        key: string,
+        callback?: (error: Error | null, success?: boolean) => void
+    ) => void;
+    removeItems: (
+        keys: string[],
+        callback?: (error: Error | null, success?: boolean) => void
+    ) => void;
+    getKeys: (callback: (error: Error | null, keys?: string[]) => void) => void;
+}
+
+type BiometricType = "finger" | "face" | "unknown";
+
+interface BiometricRequestAccessParams {
+    reason?: string;
+}
+
+interface BiometricAuthenticateParams {
+    // !The text to be displayed to a user in the popup describing why you are asking them to authenticate and what action you will be taking based on that authentication, 0-128 characters.
+    reason?: string;
+}
+
+interface BiometricManager {
+    isInited: boolean;
+    isBiometricAvailable: boolean;
+    biometricType: BiometricType;
+    isAccessRequested: boolean;
+    isAccessGranted: boolean;
+    isBiometricTokenSaved: boolean;
+    deviceId: string;
+    init: (callback?: () => void) => void;
+    requestAccess: (
+        params: BiometricRequestAccessParams,
+        callback?: (accessGranted: boolean) => void
+    ) => void;
+    authenticate: (
+        params: BiometricAuthenticateParams,
+        callback?: (success: boolean, token?: string) => void
+    ) => void;
+    updateBiometricToken: (
+        token: string,
+        callback?: (success: boolean) => void
+    ) => void;
+    openSettings: () => void;
+}
+
+type EventType =
+    | "themeChanged"
+    | "viewportChanged"
+    | "mainButtonClicked"
+    | "secondaryButtonClicked"
+    | "backButtonClicked"
+    | "settingsButtonClicked"
+    | "invoiceClosed"
+    | "popupClosed"
+    | "qrTextReceived"
+    | "scanQrPopupClosed"
+    | "clipboardTextReceived"
+    | "writeAccessRequested"
+    | "contactRequested"
+    | "biometricManagerUpdated"
+    | "biometricAuthRequested"
+    | "biometricTokenUpdated";
+
+interface StoryWidgetLink {
+    url: string;
+    name?: string;
+}
+interface StoryShareParams {
+    text: string;
+    widget_link?: StoryWidgetLink;
+}
+
+type PopupButtonType = "default" | "ok" | "close" | "cancel" | "destructive";
+
+interface PopupButton {
+    id?: string;
+    type?: PopupButtonType;
+    text?: string;
+}
+
+interface PopupParams {
+    title?: string;
+    message: string;
+    buttons?: PopupButton[];
+}
+
+interface ScanQrPopupParams {
+    text?: string;
 }
 
 interface WebApp {
@@ -252,15 +225,54 @@ interface WebApp {
     version: string;
     platform: string;
     colorScheme: string;
+    themeParams: ThemeParams;
     isExpanded: boolean;
     viewportHeight: number;
     viewportStableHeight: number;
     headerColor: string;
     backgroundColor: string;
+    bottomBarColor: string;
     isClosingConfirmationEnabled: boolean;
+    isVerticalSwipesEnabled: boolean;
     BackButton: BackButton;
     MainButton: MainButton;
-    openLink: (url: string) => void;
+    SecondaryButton: MainButton;
+    SettingsButton: SettingsButton;
+    HapticFeedback: HapticFeedback;
+    CloudStorage: CloudStorage;
+    BiometricManager: BiometricManager;
+    isVersionAtLeast: (version: string) => boolean;
+    setHeaderColor: (color: string) => void;
+    setBackgroundColor: (color: string) => void;
+    setBottomBarColor: (color: string) => void;
+    enableClosingConfirmation: () => void;
+    disableClosingConfirmation: () => void;
+    enableVerticalSwipes: () => void;
+    disableVerticalSwipes: () => void;
+    onEvent: (eventType: EventType, eventHandler: () => void) => void;
+    offEvent: (eventType: EventType, eventHandler: () => void) => void;
+    sendData: (data: { data: string; button_text: string }) => void;
+    openLink: (url: string, options?: { try_instant_view: boolean }) => void;
+    openTelegramLink: (url: string) => void;
+    openInvoice: (url: string, callback?: (status: string) => void) => void;
+    shareToStory: (media_url: string, params?: StoryShareParams) => void;
+    showPopup: (params: PopupParams, callback?: (id: string) => void) => void;
+    showAlert: (message: string, callback?: () => void) => void;
+    showConfirm: (
+        message: string,
+        callback?: (success: boolean) => void
+    ) => void;
+    showScanQrPopup: (
+        params: ScanQrPopupParams,
+        callback?: (text: string) => boolean
+    ) => void;
+    closeScanQrPopup: () => void;
+    readTextFromClipboard: (callback?: (text: string) => void) => void;
+    requestWriteAccess: (callback?: (accessGranted: boolean) => void) => void;
+    requestContact: (callback?: (success: boolean) => void) => void;
+    ready: () => void;
+    expand: () => void;
+    close: () => void;
 }
 
 export interface TelegramClient {

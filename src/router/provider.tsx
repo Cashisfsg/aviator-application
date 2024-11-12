@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { useRef, useEffect, lazy, Suspense } from "react";
 
 import {
     createBrowserRouter,
@@ -27,6 +27,7 @@ import { ReplenishmentDetailsDialog } from "@/components/dialogs/replenishment-d
 
 import { ReferralRedirect } from "./referral-redirect";
 import { VerifyReplenishmentDialog } from "@/components/dialogs/verify-credit-card-dialog";
+import { TelegramClient } from "@/store/api/types";
 
 const ServiceUnavailablePage = lazy(async () =>
     import("@/pages/service-unavailable-page").then(module => ({
@@ -295,6 +296,15 @@ const secondaryRouter = createBrowserRouter([
 
 export const ReactRouterProvider = () => {
     const botState = useStateSelector(state => state.test.botState);
+
+    const tg = useRef(
+        (window as Window & typeof globalThis & { Telegram: TelegramClient })
+            .Telegram.WebApp
+    );
+
+    useEffect(() => {
+        tg.current.enableClosingConfirmation();
+    }, []);
 
     const currentRouter =
         botState.status === "active" ? router : secondaryRouter;
