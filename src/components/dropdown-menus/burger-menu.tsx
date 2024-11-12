@@ -123,7 +123,7 @@ export const BurgerMenu = () => {
                             // className="flex gap-x-2 px-2.5 py-2"
                         >
                             <a
-                                href="https://telegra.ph/Pravila-avibetio-08-19"
+                                href="https://telegra.ph/Pravila-avibetio-11-12"
                                 target="_blank"
                                 onClick={closeBurgerMenu}
                                 className="flex gap-x-2 px-2.5 py-2"

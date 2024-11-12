@@ -178,7 +178,7 @@ export const CreateReplenishmentForm = () => {
                 </a>{" "}
                 и{" "}
                 <a
-                    href="https://telegra.ph/Pravila-avibetio-08-19"
+                    href="https://telegra.ph/Pravila-avibetio-11-12"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold text-blue-500"
